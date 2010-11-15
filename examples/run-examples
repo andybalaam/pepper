@@ -1,0 +1,118 @@
+#!/usr/bin/python
+
+import os
+import os.path
+import shutil
+
+MODE_NONE   = 0
+MODE_FILE   = 1
+MODE_OUTPUT = 2
+
+def tmp( filename ):
+    return os.path.join( "tmp", filename )
+
+class EeyoreExample( object ):
+
+    def __init__( self ):
+        self.eeyore_filenames = []
+        self.c_filenames = []
+        self.output = ""
+
+        self.mode = MODE_NONE
+        self.current_file = None
+
+    def FinishReading( self ):
+        self.CloseCurrentFile()
+
+    def CloseCurrentFile( self ):
+        if self.current_file is not None:
+            self.current_file.close()
+
+    def ProcessLineIfSpecial( self, ln ):
+        if ln.startswith( "EEYORE " ):
+            self.mode = MODE_FILE
+            self.CloseCurrentFile()
+            fn = ln[7:].strip()
+            self.eeyore_filenames.append( fn )
+            self.current_file = open( tmp( fn ), "w" )
+            return True
+        elif ln.startswith( "C " ):
+            self.mode = MODE_FILE
+            self.CloseCurrentFile()
+            fn = ln[2:].strip()
+            self.c_filenames.append( fn )
+            self.current_file = open( tmp( fn ), "w" )
+            return True
+        elif ln.startswith( "OUTPUT" ):
+            assert( ln.strip() == "OUTPUT" )
+            self.CloseCurrentFile()
+            self.mode = MODE_OUTPUT
+            return True
+        return False
+
+    def ReadLine( self, ln ):
+        special = self.ProcessLineIfSpecial( ln )
+        if special:
+            return
+
+        if self.mode == MODE_FILE:
+            assert( self.current_file is not None )
+            self.current_file.write( ln )
+        elif self.mode == MODE_OUTPUT:
+            self.output += ln
+        else:
+            print ln
+            assert( len( ln.strip() ) == 0 )
+
+
+def run_example( example ):
+
+    c_filename = tmp( example.c_filenames[0] )
+    exe_filename = c_filename[:-2]
+
+    cmd = 'gcc -Wall -Werror -o "%s" "%s"' % (
+        exe_filename, c_filename )
+
+    #print cmd
+
+    os.system( cmd )
+
+    # TODO: retval
+
+    os.system( exe_filename )
+
+    # TODO: compare output with expected
+
+if __name__ == "__main__":
+
+    tmpdir = tmp( "" )
+
+    try:
+        if not os.path.isdir( tmpdir ):
+            os.makedirs( tmpdir )
+
+        for ex_filename in os.listdir( "." ):
+
+            if not ex_filename.endswith( ".eeyore_example" ):
+                continue
+
+            fl = open( ex_filename, 'r' )
+
+            example = EeyoreExample()
+            for ln in fl:
+                example.ReadLine( ln )
+            example.FinishReading()
+
+            fl.close()
+
+            run_example( example )
+
+    except:
+        if os.path.isdir( tmpdir ):
+            shutil.rmtree( tmpdir )
+        raise
+
+    if os.path.isdir( tmpdir ):
+        shutil.rmtree( tmpdir )
+
+
