@@ -1,5 +1,6 @@
-
 = Eeyore Examples =
+
+:toc:
 
 == Hello, world! ==
 
