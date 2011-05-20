@@ -1,4 +1,4 @@
-e.main( e.print( e.add( e.int( "1" ), e.int( "2" ) ) ) )
+e.main( e.eprint( e.add( e.eint( "1" ), e.eint( "2" ) ) ) )
 
 # Because all the arguments to e.add are known at compile time,
 # it can execute at compile time.
