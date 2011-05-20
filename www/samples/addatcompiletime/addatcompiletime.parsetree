@@ -1,0 +1,7 @@
+e.main( e.print( e.add( e.int( "1" ), e.int( "2" ) ) ) )
+
+# Because all the arguments to e.add are known at compile time,
+# it can execute at compile time.
+
+# e.print can never execute at compile time because it has
+# a runtime side effect.

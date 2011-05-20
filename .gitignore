@@ -1,0 +1,4 @@
+*~
+www/samples/*/*.asciidoc
+*.pyc
+www/html

@@ -1,0 +1,72 @@
+#!/usr/bin/env python
+
+import os
+import sys
+
+output_ext = ".asciidoc"
+
+input_exts = (
+	".eeyore",
+	".cpp",
+	".parsetree",
+	".output",
+	)
+
+formatters = {
+	".eeyore"    : "python",
+	".cpp"       : "cpp",
+	".parsetree" : "python"
+	}
+
+def ext_matches( filename, exts ):
+	for ext in exts:
+		if filename.endswith( ext ):
+			return ext
+	return None
+
+if len( sys.argv ) < 2:
+	sys.stderr.write( "You must supply a sample asciidoc to generate.\n" )
+	sys.exit( 1 )
+
+sample_dir = os.path.dirname( sys.argv[1] )
+
+sample_name = os.path.basename( sample_dir )
+
+input_files = {}
+
+for fn in os.listdir( sample_dir ):
+	ext = ext_matches( fn, input_exts )
+	if ext is not None:
+		with open( os.path.join( sample_dir, fn ), "r" ) as infl:
+				input_files[ ext ] = ( fn, infl.read() )
+
+
+def get_formatter( ext ):
+	if ext in formatters:
+		return "[source,%s]" % formatters[ext]
+	return ""
+
+def get_title( ext, filename ):
+	if ext == ".output":
+		return "Output"
+	else:
+		return filename
+
+output_filename = os.path.join( sample_dir, sample_name + output_ext )
+with open( output_filename, "w" ) as output_file:
+
+	for ext in input_exts:
+		if ext in input_files:
+			output_file.write( ( """
+{formatter}
+.{title}
+----
+{text}
+----
+"""
+				).format(
+					formatter = get_formatter( ext ),
+					title = get_title( ext, input_files[ext][0] ),
+					text  = input_files[ext][1]
+				) )
+

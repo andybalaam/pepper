@@ -1,0 +1,151 @@
+= Explicit Ownership =
+
+****
+Eeyore will aim to allow and encourage being explicit in all areas. It is intended particularly to enforce explicit ownership of objects, so that memory management is automatic, but entirely within the control of the programmer.
+****
+
+== Performance is often about memory ==
+
+In my (limited) experience, when real-life computer programs perform poorly, it is often because of the way they are using memory.
+
+There are many reasons for this, including the fact that if you use too much memory the operating system "swaps" memory out to disk, which is very slow when you want to retrieve it again, and the fact that switching quickly between looking at different areas of memory can reduce the performance advantages of using registers or cache memory on a CPU.
+
+If we want to create computer programs that deal with large amounts of data, we must ensure that they handle memory in sensible ways.
+
+== Ignoring memory or managing it manually ==
+
+Perhaps surprisingly, the trend in programming language design has been towards paying less attention to what is going on with memory.  For example, languages such as Java and Python (and many more) allow the programmer to ignore how memory is used when they create an object, and ignore what happens to that memory when they have finished with it.  This can make life simpler, but can also lead to a lot of hoop-jumping when the language's libraries don't behave as we would like, and we have to try and persuade them to do so.
+
+In C and C++ and similar languages, we can control memory allocation and re-use explicitly.  The conventional wisdom is that this is more difficult than having our language do it for us.
+
+== Being explicit about ownership ==
+
+However, in C++, with modern techniques such as smart pointers, along with old-fashioned (but highly performant) techniques such as stack storage, we can succeed in creating "automatic" memory management (we don't have to remember to free memory we allocated) that is simple to use, without sacrificing control over what we are trying to achieve.
+
+When we write "good" or "modern" C++, what we are normally doing is being explicit about who owns the memory we are using.  For example, when we wish to tie the lifetime of one object to another that is its parent, we might include it directly as a data member like this:
+
+[source,cpp]
+----
+// C++
+class Parent
+{
+    // Other details omitted for brevity
+    Child child_;
+};
+----
+
+In C++ (with a normal compiler), this means that when an instance of Parent is created, enough memory is allocated in a single block to hold all the other members of Parent, and the whole of a Child.  It also means that when Parent is destroyed, the Child inside it is automatically destroyed too.
+
+If, for some reason, we need to hold a pointer to Child (perhaps Child is an abstract base class and the actual instance we will hold is derived from it), we might do this:
+
+[source,cpp]
+----
+// C++
+class Parent
+{
+    // Other details omitted for brevity
+    std::auto_ptr<Child> child_;
+};
+----
+
+In this case, 2 memory allocations are required to create a Parent and its Child, but the management of that memory is still automatic - when Parent is destroyed, its Child will be destroyed too.
+
+The syntax of expressing ownership in C++ is awkward, relatively new and unknown, and dependent on coding standards.
+
+In Java we simply cannot tell the difference:
+
+[source,java]
+----
+// Java
+public class Winnie
+{
+    private Stick mystick; // We own this
+    private Owl owl;       // We refer to this
+}
+----
+
+I argue that explicit ownership makes code more expressive, and solves the memory management problem the right way, not by ignoring it, but by saying what we mean.
+
+== Expressing ownership ==
+
+How might we express ownership in a new, ficticious language?
+
+Perhaps like this:
+
+[source,python]
+----
+# Eeyore
+class Winnie:
+    Stick mystick
+    Owl* owl
+----
+
+Here, using the class name on its own means we own the object, and if we simply want to refer to something, we borrow from C++ and use a *.
+
+****
+Note: Eeyore uses "+.+" to refer to members of things referred to by reference, so to call a method on owl, we would do something like +owl.hoot()+.  This might look odd for a C++ person, but I've always felt the "`->`" unnecessary.
+****
+
+Under the covers, the Stick might be allocated as part of Winnie like in example eo1, or separately like in example eo2 - the language takes care of that (using the more efficient implementation if possible) but we can guarantee that the Stick will be destroyed when the Winnie is destroyed.
+
+For this to work, we would need our language to enforce ownership rules.  For example, one object couldn't "steal" an object from another:
+
+[source,python]
+----
+# Eeeyore
+def void grab_stick( Stick* sticktograb ):
+    Stick stick = sticktograb # Compile error
+----
+
+Here the local variable +stick+ is taking ownership of +sticktograb+, which was passed in as a reference.  This is not allowed, and results in a compile error.
+
+== Transfer of ownership ==
+
+Of course, in some cases ownership of an object needs to be transferred.  An obvious example is where an object is created inside a method and returned.  We can express this like this:
+
+[source,python]
+----
+# Eeeyore
+def Stick create_stick(): # return value expresses transfer of ownership
+    Stick ret = Stick.new()
+    # Details omitted
+    return ret;
+----
+
+In other cases, a more explicit transfer is needed.  This:
+
+[source,python]
+----
+# Eeyore
+def void steal_stick():
+    Stick stick1 = Stick.new()
+    Stick stick2 = stick1 # Steal here!
+----
+
+is a compile error, and we should force the programmer to be explicit about what he means, either:
+
+[source,python]
+----
+# Eeyore
+def void copy_stick():
+    Stick stick1 = Stick.new()
+    Stick stick2 = copy stick1 # Copy it
+----
+
+where we have used the +copy+ keyword to show we want to copy stick1 to create stick2, or:
+
+[source,python]
+----
+# Eeyore
+def void really_steal_stick():
+    none_or(Stick) stick1 = Stick.new()
+    Stick stick2 = release( stick1 ) # Steal it
+    assert( stick1 is None )
+----
+
+we genuinely want to change the ownership of this stick over to the stick2 variable, so we must use the +release+ keyword to do it.
+
+Of course, when we're simply using local variables none of this makes much sense, so let's put it together into a more complete example:
+
+include::../samples/poohsticks/poohsticks.asciidoc[]
+

@@ -1,0 +1,44 @@
+# Eeyore poohsticks - demononstrates transfer of ownership
+def int8 main( array_of(immutable(string)) args )
+    River river = River.new()
+
+    assert( river.Stick() is None )
+
+    play_game( river )
+
+    assert( river.Stick() is not None )
+    print( river.Stick().Name() )
+
+    return 0
+
+def void play_game( River* river ):
+    Pooh pooh = Pooh.new()
+    assert( pooh.Stick() is not null )
+
+    river.TakeStick( pooh.ReleaseStick() )
+
+class River:
+    none_or(Stick) stick_
+
+    def void __init__( self ):
+        # self.stick_ will be set to None automatically
+
+    def void TakeStick( Stick stick ):
+        """Take ownership of the supplied Stick"""
+        stick_ = stick
+
+    def const(Stick*) Stick():
+        return reference_to( stick_ )
+
+class Pooh:
+    none_or(Stick) stick_
+
+    def void __init__( self ):
+        stick_ = Stick.new( "Pooh's stick" )
+
+    def Stick ReleaseStick():
+        """Give up ownership of our Stick"""
+        return release( stick_ )
+
+    def const(Stick*) Stick():
+        return reference_to( stick_ )
