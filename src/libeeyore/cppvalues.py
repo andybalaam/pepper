@@ -1,5 +1,5 @@
 
-from libeeyore.values import *
+from values import *
 
 class EeyCppVar( EeyVar ):
 	def render( self ):
@@ -17,7 +17,7 @@ def eint( env, strint ):
 
 class EeyCppString( EeyString ):
 	def render( self ):
-		return self.value
+		return '"%s"' % self.value
 
 def estring( env, strvalue ):
 	return EeyCppString( env, strvalue )

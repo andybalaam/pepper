@@ -1,0 +1,3 @@
+
+class EeyCppRenderer( object ):
+	pass
