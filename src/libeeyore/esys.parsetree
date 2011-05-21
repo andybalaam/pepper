@@ -1,0 +1,10 @@
+
+# Eeyore module sys
+
+import libeeyore
+
+e = libeeyore
+
+e.defvar( "sys", "argv", e.quote(
+	"cpprenderer.add_mainfront( 'init_argv', cpprenderer.render_var( e.carray( 'argc', 'argv' ) ) )" ) )
+

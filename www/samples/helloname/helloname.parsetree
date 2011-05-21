@@ -1,0 +1,10 @@
+
+e.eimport( "sys" )
+
+e.eif( e.greater_than_or_equal( e.elen( e.var( "sys.argv" ) ), e.eint( 2 ) ),
+    e.quote( e.eprint(
+        e.add( e.add( e.estring( "Hello, " ), e.arraylookup( e.var( "sys.argv" ), 1 ) ),
+               e.estring( "!" ) ) )
+        )
+    )
+

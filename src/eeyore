@@ -4,7 +4,8 @@ import libeeyore.libeeyore
 
 e = libeeyore.libeeyore
 
-execfile( "../www/samples/addatcompiletime/addatcompiletime.parsetree" )
+#execfile( "../www/samples/addatcompiletime/addatcompiletime.parsetree" )
+execfile( "../www/samples/helloname/helloname.parsetree" )
 
 print e.cpprenderer.render()
 
