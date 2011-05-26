@@ -2,8 +2,7 @@
 from values import *
 
 def render_EeySymbol( env, value ):
-	#return evaluate().render()
-	return None
+	return value.symbol_name
 
 def render_EeyInt( env, value ):
 	return str( value.value )
@@ -12,14 +11,14 @@ def render_EeyString( env, value ):
 	return '"%s"' % value.value
 
 def render_EeyPlus( env, value ):
-	return None
-	#ans = value.evaluate()
-	# TODO: check for None (i.e. non-const args)
-	#return ans.render()
+	return "(%s + %s)" % (
+		value.left_value.render(), value.right_value.render() )
 
 type2renderer = {
 	EeyInt    : render_EeyInt,
+	EeyPlus   : render_EeyPlus,
 	EeyString : render_EeyString,
+	EeySymbol : render_EeySymbol,
 	}
 
 #class EeyCppSymbol( EeyRenderer ):
