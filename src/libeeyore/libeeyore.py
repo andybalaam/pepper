@@ -37,33 +37,39 @@ int main( int argc, char* argv[] )
 		else:
 			return var.var_name()
 
-class EeyInt( object ):
-	def __init__( self, strvalue ):
-		self.value = int( strvalue )
 
-	def p_int( self ):
-		return self.value
-
-	def p_str( self ):
-		return str( self.value )
-
-	def is_const( self ):
-		return True
-
-class EeyString( object ):
-	def __init__( self, strvalue ):
-		self.value = strvalue
-
-	def p_str( self ):
-		return self.value
-
-	def is_const( self ):
-		return True
-
-class EeyQuoted( object ):
-	def __init__( self, strcode ):
-		self.strcode = strcode
-
+#class EeySymbol( object ):
+#	def __init__( self, symbol_name ):
+#		self.symbol_name = symbol_name
+#
+#
+#class EeyInt( object ):
+#	def __init__( self, strvalue ):
+#		self.value = int( strvalue )
+#
+#	def p_int( self ):
+#		return self.value
+#
+#	def p_str( self ):
+#		return str( self.value )
+#
+#	def is_const( self ):
+#		return True
+#
+#class EeyString( object ):
+#	def __init__( self, strvalue ):
+#		self.value = strvalue
+#
+#	def p_str( self ):
+#		return self.value
+#
+#	def is_const( self ):
+#		return True
+#
+#class EeyQuoted( object ):
+#	def __init__( self, strcode ):
+#		self.strcode = strcode
+#
 class CArray( object ):
 	def __init__( self, lengthvar, arrayvar ):
 		self.lengthvar = lengthvar

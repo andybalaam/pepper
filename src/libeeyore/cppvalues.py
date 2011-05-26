@@ -1,24 +1,51 @@
 
 from values import *
 
-class EeyCppVar( EeyVar ):
-	def render( self ):
-		return self.varname
+def render_EeySymbol( env, value ):
+	#return evaluate().render()
+	return None
 
-def evar( env, varname ):
-	return EeyCppVar( env, varname )
+def render_EeyInt( env, value ):
+	return str( value.value )
 
-class EeyCppInt( EeyInt ):
-	def render( self ):
-		return str( self.value )
+def render_EeyString( env, value ):
+	return '"%s"' % value.value
 
-def eint( env, strint ):
-	return EeyCppInt( env, int( strint ) )
+def render_EeyPlus( env, value ):
+	return None
+	#ans = value.evaluate()
+	# TODO: check for None (i.e. non-const args)
+	#return ans.render()
 
-class EeyCppString( EeyString ):
-	def render( self ):
-		return '"%s"' % self.value
+type2renderer = {
+	EeyInt    : render_EeyInt,
+	EeyString : render_EeyString,
+	}
 
-def estring( env, strvalue ):
-	return EeyCppString( env, strvalue )
+#class EeyCppSymbol( EeyRenderer ):
+#	def __init__( self, value ):
+#		self.value = value
+#
+#	def render( self ):
+#		return self.value.lookup().render()
+#
+#class EeyCppInt( EeyRenderer ):
+#	def render( self ):
+#		return str( self.value.value )
+#
+#class EeyCppString( EeyRenderer ):
+#	def render( self ):
+#		return '"%s"' % self.value.value
+#
+#
+#class EeyCppPlus( EeyRenderer ):
+#	def render( self ):
+#		ans = self.value.calculate()
+#		if ans is not None:
+#			return ans.render()
+#		else:
+#			return "(%s + %s)" % (
+#				self.left_value.render(),
+#				self.right_value.render() )
+#
 

@@ -1,3 +1,6 @@
 
+import cppvalues
+		
 class EeyCppRenderer( object ):
-	pass
+	def value_renderer( self, value ):
+		return cppvalues.type2renderer[ value.__class__ ]
