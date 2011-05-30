@@ -68,3 +68,13 @@ def test_Nonconst_inside_nested_plus_causes_whole_sum_to_be_uncalculated():
 
 	assert_equal( value.render(), "(4 + (5 + input))" )
 
+
+def test_Print_string_renders_as_printf():
+	env = EeyEnvironment( EeyCppRenderer() )
+
+	value = EeyFunctionCall( env, EeySymbol( env, "print" ),
+		( EeyString( env, "hello" ), ) )
+
+	assert_equal( value.render(), 'printf( "hello\n" )' )
+	assert_equal( env.renderer.headers, [ "stdio" ] )
+

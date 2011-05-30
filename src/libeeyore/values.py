@@ -74,6 +74,9 @@ class EeyString( EeyValue ):
 	def evaluate( self ):
 		return self
 
+	def as_py_str( self ):
+		return self.value
+
 class EeyPlus( EeyValue ):
 	def __init__( self, env, left_value, right_value ):
 		EeyValue.__init__( self, env )
@@ -89,4 +92,21 @@ class EeyPlus( EeyValue ):
 
 	def is_const( self ):
 		return all_const( ( self.left_value, self.right_value ) )
+
+def is_callable( value ):
+	return True # TODO: check whether the object may be called
+
+class EeyFunctionCall( EeyValue ):
+	def __init__( self, env, func, args ):
+		EeyValue.__init__( self, env )
+		self.func = func
+		self.args = args
+
+	def evaluate( self ):
+		if all_const( self.args ):
+			fn = self.func.evaluate()
+			assert is_callable( fn )
+			return fn.call( self.args )
+		else:
+			return self
 
