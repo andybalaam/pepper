@@ -2,8 +2,8 @@
 from nose.tools import *
 
 from libeeyore.environment import EeyEnvironment
-from libeeyore.cppvalues import *
-from libeeyore.cpprenderer import EeyCppRenderer
+from libeeyore.cpp.cppvalues import *
+from libeeyore.cpp.cpprenderer import EeyCppRenderer
 
 def test_Const_int_value_renders_as_a_number():
 	env = EeyEnvironment( EeyCppRenderer() )

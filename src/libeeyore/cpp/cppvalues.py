@@ -1,7 +1,7 @@
 
-from values import *
-from builtins import *
-from cpp.cppbuiltins import *
+from libeeyore.values import *
+from libeeyore.builtins import *
+from cppbuiltins import *
 
 def render_EeySymbol( env, value ):
 	return value.symbol_name
