@@ -7,74 +7,74 @@ from libeeyore.cpp.cpprenderer import EeyCppRenderer
 
 def test_Const_int_value_renders_as_a_number():
 	env = EeyEnvironment( EeyCppRenderer() )
-	value = EeyInt( env, "23" )
+	value = EeyInt( "23" )
 
-	assert_equal( value.render(), "23" )
+	assert_equal( value.render( env ), "23" )
 
 
 def test_Const_string_value_renders_as_a_string():
 	env = EeyEnvironment( EeyCppRenderer() )
-	value = EeyString( env, "foo" )
+	value = EeyString( "foo" )
 
-	assert_equal( value.render(), '"foo"' )
+	assert_equal( value.render( env ), '"foo"' )
 
 
 def test_Variable_referring_to_const_int_renders_like_an_int():
 	env = EeyEnvironment( EeyCppRenderer() )
-	env.namespace["myvariable"] = EeyInt( env, 23 )
+	env.namespace["myvariable"] = EeyInt( 23 )
 
-	value = EeySymbol( env, "myvariable" )
+	value = EeySymbol( "myvariable" )
 
-	assert_equal( value.render(), "23" )
+	assert_equal( value.render( env ), "23" )
 
 def test_Add_two_const_ints_renders_calculated_sum():
 	env = EeyEnvironment( EeyCppRenderer() )
-	value = EeyPlus( env, EeyInt( env, 2 ), EeyInt( env, 3 ) )
+	value = EeyPlus( EeyInt( 2 ), EeyInt( 3 ) )
 
-	assert_equal( value.render(), "5" )
+	assert_equal( value.render( env ), "5" )
 
 def test_Nonconst_variable_renders_as_symbol():
 	env = EeyEnvironment( EeyCppRenderer() )
-	env.namespace["myvariable"] = EeyVariable( env, EeyInt )
+	env.namespace["myvariable"] = EeyVariable( EeyInt )
 
-	value = EeySymbol( env, "myvariable" )
+	value = EeySymbol( "myvariable" )
 
-	assert_equal( value.render(), "myvariable" )
+	assert_equal( value.render( env ), "myvariable" )
 
 def test_Add_Nonconst_to_const_literal_renders_uncalculated_sum():
 	env = EeyEnvironment( EeyCppRenderer() )
-	env.namespace["input"] = EeyVariable( env, EeyInt )
+	env.namespace["input"] = EeyVariable( EeyInt )
 
-	value = EeyPlus( env, EeyInt( env, 4 ), EeySymbol( env, "input" ) )
+	value = EeyPlus( EeyInt( 4 ), EeySymbol( "input" ) )
 
-	assert_equal( value.render(), "(4 + input)" )
+	assert_equal( value.render( env ), "(4 + input)" )
 
 def test_Add_Nonconst_to_const_symbol_renders_uncalculated_sum():
 	env = EeyEnvironment( EeyCppRenderer() )
-	env.namespace["input"] = EeyVariable( env, EeyInt )
-	env.namespace["four"] = EeyInt( env, 4 )
+	env.namespace["input"] = EeyVariable( EeyInt )
+	env.namespace["four"] = EeyInt( 4 )
 
-	value = EeyPlus( env, EeySymbol( env, "input" ), EeySymbol( env, "four" ) )
+	value = EeyPlus( EeySymbol( "input" ), EeySymbol( "four" ) )
 
-	assert_equal( value.render(), "(input + 4)" )
+	assert_equal( value.render( env ), "(input + 4)" )
 
 
 def test_Nonconst_inside_nested_plus_causes_whole_sum_to_be_uncalculated():
 	env = EeyEnvironment( EeyCppRenderer() )
-	env.namespace["input"] = EeyVariable( env, EeyInt )
+	env.namespace["input"] = EeyVariable( EeyInt )
 
-	value = EeyPlus( env, EeyInt( env, 4 ),
-		EeyPlus( env, EeyInt( env, 5 ), EeySymbol( env, "input" ) ) )
+	value = EeyPlus( EeyInt( 4 ),
+		EeyPlus( EeyInt( 5 ), EeySymbol( "input" ) ) )
 
-	assert_equal( value.render(), "(4 + (5 + input))" )
+	assert_equal( value.render( env ), "(4 + (5 + input))" )
 
 
 def test_Print_string_renders_as_printf():
 	env = EeyEnvironment( EeyCppRenderer() )
 
-	value = EeyFunctionCall( env, EeySymbol( env, "print" ),
-		( EeyString( env, "hello" ), ) )
+	value = EeyFunctionCall( EeySymbol( "print" ),
+		( EeyString( "hello" ), ) )
 
-	assert_equal( value.render(), 'printf( "hello\n" )' )
+	assert_equal( value.render( env ), 'printf( "hello\n" )' )
 	assert_equal( env.renderer.headers, [ "stdio" ] )
 

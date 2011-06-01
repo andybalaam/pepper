@@ -3,45 +3,40 @@
 
 class EeyValue( object ):
 
-	def __init__( self, env ):
-		self.env = env
+	def render( self, env ):
+		return env.render_value( self.evaluate( env ) )
 
-	def render( self ):
-		return self.env.render_value( self.evaluate() )
-
-	def is_const( self ):
+	def is_const( self, env ):
 		return True
 
-def all_const( values ):
-	return all( map( lambda v: v.is_const(), values ) )
+	def evaluate( self, env ):
+		return self
+
+def all_const( values, env ):
+	return all( map( lambda v: v.is_const( env ), values ) )
 
 # --- Specific value types ---
 
 class EeyVariable( EeyValue ):
-	def __init__( self, env, clazz ):
-		EeyValue.__init__( self, env )
+	def __init__( self, clazz ):
 		self.clazz = clazz
 
-	def evaluate( self ):
-		return self
-
-	def is_const( self ):
+	def is_const( self, env ):
 		return False
 
 class EeySymbol( EeyValue ):
-	def __init__( self, env, symbol_name ):
-		EeyValue.__init__( self, env )
+	def __init__( self, symbol_name ):
 		self.symbol_name = symbol_name
 
-	def _lookup( self ):
-		assert( self.symbol_name in self.env.namespace ) # TODO: not an assert
-		return self.env.namespace[self.symbol_name]
+	def _lookup( self, env ):
+		assert( self.symbol_name in env.namespace ) # TODO: not an assert
+		return env.namespace[self.symbol_name]
 
-	def evaluate( self ):
+	def evaluate( self, env ):
 		# Look up this symbol in the namespace of our environment
-		value = self._lookup().evaluate()
+		value = self._lookup( env ).evaluate( env )
 
-		if value.is_const():
+		if value.is_const( env ):
 			# Pass back what we looked up
 			return value
 		else:
@@ -50,61 +45,51 @@ class EeySymbol( EeyValue ):
 			# rendering, this _is_ a symbol.
 			return self
 
-	def is_const( self ):
-		return self._lookup().is_const()
+	def is_const( self, env ):
+		return self._lookup( env ).is_const( env )
 
 
 class EeyInt( EeyValue ):
-	def __init__( self, env, py_int ):
-		EeyValue.__init__( self, env )
+	def __init__( self,  py_int ):
 		self.value = py_int
-
-	def evaluate( self ):
-		return self
 
 	def plus( self, other ):
 		assert other.__class__ == self.__class__
-		return EeyInt( self.env, self.value + other.value )
+		return EeyInt( self.value + other.value )
 
 class EeyString( EeyValue ):
-	def __init__( self, env, py_str ):
-		EeyValue.__init__( self, env )
+	def __init__( self, py_str ):
 		self.value = py_str
-
-	def evaluate( self ):
-		return self
 
 	def as_py_str( self ):
 		return self.value
 
 class EeyPlus( EeyValue ):
-	def __init__( self, env, left_value, right_value ):
-		EeyValue.__init__( self, env )
+	def __init__( self, left_value, right_value ):
 		# TODO: assert( all( is_plusable, ( left_value, right_value ) )
 		self.left_value  = left_value
 		self.right_value = right_value
 
-	def evaluate( self ):
-		if self.is_const():
+	def evaluate( self, env ):
+		if self.is_const( env ):
 			return self.left_value.plus( self.right_value )
 		else:
 			return self
 
-	def is_const( self ):
-		return all_const( ( self.left_value, self.right_value ) )
+	def is_const( self, env ):
+		return all_const( ( self.left_value, self.right_value ), env )
 
 def is_callable( value ):
 	return True # TODO: check whether the object may be called
 
 class EeyFunctionCall( EeyValue ):
-	def __init__( self, env, func, args ):
-		EeyValue.__init__( self, env )
+	def __init__( self, func, args ):
 		self.func = func
 		self.args = args
 
-	def evaluate( self ):
-		if all_const( self.args ):
-			fn = self.func.evaluate()
+	def evaluate( self, env ):
+		if all_const( self.args, env ):
+			fn = self.func.evaluate( env )
 			assert is_callable( fn )
 			return fn.call( self.args )
 		else:

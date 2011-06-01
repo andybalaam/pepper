@@ -3,16 +3,13 @@ from abc import abstractmethod
 
 from values import EeyValue
 
-class EeyFunction( object ):
+class EeyFunction( EeyValue ):
 	__metaclass__ = ABCMeta
 
 	@abstractmethod
 	def call( self, args ): pass
 
-	def evaluate( self ):
-		return self
-
-	def is_const( self ):
+	def is_const( self, env ):
 		return True
 
 # --------

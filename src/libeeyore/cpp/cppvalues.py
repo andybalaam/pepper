@@ -14,7 +14,13 @@ def render_EeyString( env, value ):
 
 def render_EeyPlus( env, value ):
 	return "(%s + %s)" % (
-		value.left_value.render(), value.right_value.render() )
+		value.left_value.render( env ), value.right_value.render( env ) )
+
+def render_EeyFunction( env, value ):
+	raise Exception( "Don't know how to render a function yet" )
+
+def render_EeyPrint( env, value ):
+	return render_EeyFunction( env, value )
 
 type2renderer = {
 	EeyInt          : render_EeyInt,
@@ -22,6 +28,8 @@ type2renderer = {
 	EeyString       : render_EeyString,
 	EeySymbol       : render_EeySymbol,
 	EeyRuntimePrint : render_EeyRuntimePrint,
+	EeyFunction     : render_EeyFunction,
+	EeyPrint        : render_EeyPrint,
 	}
 
 
