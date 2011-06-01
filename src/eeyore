@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
-import libeeyore.libeeyore
+import libeeyore.main
 
-e = libeeyore.libeeyore
+def main( argv ):
+	libeeyore.main.main( argv )
 
-#execfile( "../www/samples/addatcompiletime/addatcompiletime.parsetree" )
-execfile( "../www/samples/helloname/helloname.parsetree" )
-
-print e.cpprenderer.render()
+if __name__ == "__main__":
+	main( sys.argv )
 
