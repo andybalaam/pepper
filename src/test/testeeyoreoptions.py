@@ -3,11 +3,13 @@ from nose.tools import *
 
 from libeeyore.eeyoreoptions import EeyoreOptions
 
-@raises( Exception )
+from libeeyore.usererrorexception import EeyUserErrorException
+
+@raises( EeyUserErrorException )
 def test_no_args():
 	EeyoreOptions( [ "progname" ] )
 
-@raises( Exception )
+@raises( EeyUserErrorException )
 def test_one_arg():
 	EeyoreOptions( [ "progname", "infile.eeyoreparsetree" ] )
 

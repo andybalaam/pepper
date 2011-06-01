@@ -8,5 +8,5 @@ def render_EeyRuntimePrint( env, value ):
 
 	env.renderer.headers.append( "stdio.h" )
 
-	return 'printf( "%s\n" )' % arg0.as_py_str()
+	return 'printf( "%s\\n" )' % arg0.as_py_str()
 

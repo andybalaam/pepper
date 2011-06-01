@@ -1,6 +1,9 @@
+
+from cStringIO import StringIO
 from nose.tools import *
 
 from libeeyore.eeyoreoptions import EeyoreOptions
+from libeeyore.usererrorexception import EeyUserErrorException
 import libeeyore.main
 
 class FakeObject( object ):
@@ -39,18 +42,18 @@ class FakeFileOperations( object ):
 		self.calls.append( "open_write(%s)" % filename )
 		return IdentifiableFakeFile( "w" )
 
+class FakeOptions( object ):
+	def __init__( self, argv ):
+		self.infile = FakeObject()
+		self.infile.filetype = EeyoreOptions.PARSE_TREE
+		self.infile.filename = "test.eeyoreparsetree"
+		self.outfile = FakeObject()
+		self.outfile.filetype = EeyoreOptions.CPP
+		self.outfile.filename = "test.cpp"
+
 def test_process_options_parse_tree_to_cpp():
 
-	options = FakeObject()
-
-	options.infile = FakeObject()
-	options.infile.filetype = EeyoreOptions.PARSE_TREE
-	options.infile.filename = "test.eeyoreparsetree"
-
-	options.outfile = FakeObject()
-	options.outfile.filetype = EeyoreOptions.CPP
-	options.outfile.filename = "test.cpp"
-
+	options = FakeOptions( "" )
 	file_operations = FakeFileOperations()
 	executor = FakeExecutor()
 
@@ -63,4 +66,33 @@ def test_process_options_parse_tree_to_cpp():
 	assert_equal( fo_calls[1], "open_write(test.cpp)" )
 
 	assert_equal( executor.calls, ["parse_tree_to_cpp(r,w)"] )
+
+
+class AlwaysThrowUserErrorOptions( object ):
+	def __init__( self, argv ):
+		raise EeyUserErrorException( "usage: blah" )
+
+def test_parse_and_process_options_arguments_wrong():
+
+	stderr = StringIO()
+
+	ret = libeeyore.main.parse_and_process_options( [],
+		AlwaysThrowUserErrorOptions, FakeObject, FakeObject, stderr )
+
+	assert_equal( stderr.getvalue(), "usage: blah\n" )
+	assert_equal( ret, 1 )
+
+
+
+
+def test_parse_and_process_options_arguments_wrong():
+
+	stderr = StringIO()
+
+	ret = libeeyore.main.parse_and_process_options( [],
+		FakeOptions, FakeFileOperations, FakeExecutor, stderr )
+
+	assert_equal( stderr.getvalue(), "" )
+	assert_equal( ret, 0 )
+
 

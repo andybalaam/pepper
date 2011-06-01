@@ -75,6 +75,6 @@ def test_Print_string_renders_as_printf():
 	value = EeyFunctionCall( EeySymbol( "print" ),
 		( EeyString( "hello" ), ) )
 
-	assert_equal( value.render( env ), 'printf( "hello\n" )' )
+	assert_equal( value.render( env ), 'printf( "hello\\n" )' )
 	assert_equal( env.renderer.headers, [ "stdio.h" ] )
 
