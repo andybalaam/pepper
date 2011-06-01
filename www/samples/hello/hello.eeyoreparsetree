@@ -1,0 +1,3 @@
+
+EeyFunctionCall( EeySymbol( "print" ), ( EeyString( "Hello, world!" ), ) )
+
