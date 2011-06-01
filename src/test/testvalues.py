@@ -19,7 +19,7 @@ def test_Const_string_value_renders_as_a_string():
 	assert_equal( value.render( env ), '"foo"' )
 
 
-def test_Variable_referring_to_const_int_renders_like_an_int():
+def test_Variable_referring_to_known_int_renders_like_an_int():
 	env = EeyEnvironment( EeyCppRenderer() )
 	env.namespace["myvariable"] = EeyInt( 23 )
 
@@ -27,7 +27,7 @@ def test_Variable_referring_to_const_int_renders_like_an_int():
 
 	assert_equal( value.render( env ), "23" )
 
-def test_Add_two_const_ints_renders_calculated_sum():
+def test_Add_two_known_ints_renders_calculated_sum():
 	env = EeyEnvironment( EeyCppRenderer() )
 	value = EeyPlus( EeyInt( 2 ), EeyInt( 3 ) )
 
@@ -41,7 +41,7 @@ def test_Nonconst_variable_renders_as_symbol():
 
 	assert_equal( value.render( env ), "myvariable" )
 
-def test_Add_Nonconst_to_const_literal_renders_uncalculated_sum():
+def test_Add_Nonconst_to_known_literal_renders_uncalculated_sum():
 	env = EeyEnvironment( EeyCppRenderer() )
 	env.namespace["input"] = EeyVariable( EeyInt )
 
@@ -49,7 +49,7 @@ def test_Add_Nonconst_to_const_literal_renders_uncalculated_sum():
 
 	assert_equal( value.render( env ), "(4 + input)" )
 
-def test_Add_Nonconst_to_const_symbol_renders_uncalculated_sum():
+def test_Add_Nonconst_to_known_symbol_renders_uncalculated_sum():
 	env = EeyEnvironment( EeyCppRenderer() )
 	env.namespace["input"] = EeyVariable( EeyInt )
 	env.namespace["four"] = EeyInt( 4 )

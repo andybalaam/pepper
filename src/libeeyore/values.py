@@ -6,14 +6,14 @@ class EeyValue( object ):
 	def render( self, env ):
 		return env.render_value( self.evaluate( env ) )
 
-	def is_const( self, env ):
+	def is_known( self, env ):
 		return True
 
 	def evaluate( self, env ):
 		return self
 
-def all_const( values, env ):
-	return all( map( lambda v: v.is_const( env ), values ) )
+def all_known( values, env ):
+	return all( map( lambda v: v.is_known( env ), values ) )
 
 # --- Specific value types ---
 
@@ -21,7 +21,7 @@ class EeyVariable( EeyValue ):
 	def __init__( self, clazz ):
 		self.clazz = clazz
 
-	def is_const( self, env ):
+	def is_known( self, env ):
 		return False
 
 class EeySymbol( EeyValue ):
@@ -36,7 +36,7 @@ class EeySymbol( EeyValue ):
 		# Look up this symbol in the namespace of our environment
 		value = self._lookup( env ).evaluate( env )
 
-		if value.is_const( env ):
+		if value.is_known( env ):
 			# Pass back what we looked up
 			return value
 		else:
@@ -45,8 +45,8 @@ class EeySymbol( EeyValue ):
 			# rendering, this _is_ a symbol.
 			return self
 
-	def is_const( self, env ):
-		return self._lookup( env ).is_const( env )
+	def is_known( self, env ):
+		return self._lookup( env ).is_known( env )
 
 
 class EeyInt( EeyValue ):
@@ -71,13 +71,13 @@ class EeyPlus( EeyValue ):
 		self.right_value = right_value
 
 	def evaluate( self, env ):
-		if self.is_const( env ):
+		if self.is_known( env ):
 			return self.left_value.plus( self.right_value )
 		else:
 			return self
 
-	def is_const( self, env ):
-		return all_const( ( self.left_value, self.right_value ), env )
+	def is_known( self, env ):
+		return all_known( ( self.left_value, self.right_value ), env )
 
 def is_callable( value ):
 	return True # TODO: check whether the object may be called
@@ -88,7 +88,7 @@ class EeyFunctionCall( EeyValue ):
 		self.args = args
 
 	def evaluate( self, env ):
-		if all_const( self.args, env ):
+		if all_known( self.args, env ):
 			fn = self.func.evaluate( env )
 			assert is_callable( fn )
 			return fn.call( self.args )

@@ -9,7 +9,7 @@ class EeyFunction( EeyValue ):
 	@abstractmethod
 	def call( self, args ): pass
 
-	def is_const( self, env ):
+	def is_known( self, env ):
 		return True
 
 # --------

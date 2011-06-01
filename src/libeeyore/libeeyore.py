@@ -32,7 +32,7 @@ int main( int argc, char* argv[] )
 		return ret
 
 	def render_var( self, var ):
-		if is_const( var ):
+		if is_known( var ):
 			return '"%s"' % var.p_str()
 		else:
 			return var.var_name()
@@ -53,7 +53,7 @@ int main( int argc, char* argv[] )
 #	def p_str( self ):
 #		return str( self.value )
 #
-#	def is_const( self ):
+#	def is_known( self ):
 #		return True
 #
 #class EeyString( object ):
@@ -63,7 +63,7 @@ int main( int argc, char* argv[] )
 #	def p_str( self ):
 #		return self.value
 #
-#	def is_const( self ):
+#	def is_known( self ):
 #		return True
 #
 #class EeyQuoted( object ):
@@ -79,7 +79,7 @@ class CArray( object ):
 		# TODO: check bounds
 		return "%s[%s]" % ( arrayvar, index )
 
-	def is_const( self ):
+	def is_known( self ):
 		return False
 
 cpprenderer = CppRenderer()
@@ -88,8 +88,8 @@ def main( arg ):
 	global cpprenderer
 	cpprenderer.add_maincode( "return 0;\n" )
 
-def is_const( var ):
-	return var.is_const()
+def is_known( var ):
+	return var.is_known()
 
 def eprint( value ):
 	global cpprenderer
@@ -97,7 +97,7 @@ def eprint( value ):
 	cpprenderer.add_maincode( 'printf( "%%d\\n", %s );\n' % value.p_str() )
 	return None
 
-def add_const( value1, value2 ):
+def add_known( value1, value2 ):
 	if is_int( value1 ) and is_int( value2 ):
 		return eint( value1.p_int() + value2.p_int() )
 	else:
@@ -109,8 +109,8 @@ def add_nonc( value1, value2 ):
 		cpprenderer.render_var( value1 ), cpprenderer.render_var( value2 ) ) )
 
 def add( value1, value2 ):
-	if is_const( value1 ) and is_const( value2 ):
-		return add_const( value1, value2 )
+	if is_known( value1 ) and is_known( value2 ):
+		return add_known( value1, value2 )
 	else:
 		return add_nonc( value1, value2 )
 
