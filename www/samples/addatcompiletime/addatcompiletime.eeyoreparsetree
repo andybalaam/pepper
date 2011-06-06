@@ -1,7 +1,1 @@
-e.main( e.eprint( e.add( e.eint( "1" ), e.eint( "2" ) ) ) )
-
-# Because all the arguments to e.add are known at compile time,
-# it can execute at compile time.
-
-# e.print can never execute at compile time because it has
-# a runtime side effect.
+EeyFunctionCall( EeySymbol( "print" ), ( EeyPlus( EeyInt( 1 ), EeyInt( 2 ) ), ) )

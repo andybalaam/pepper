@@ -93,19 +93,19 @@ def write_step( output_file, prev_name, thisfl, ext, cwd ):
 		if ( ret == 0 ) and ( contents == this_cont ):
 			fact_or_fiction = "fact"
 
-	if prev_name is not None:
-		print fact_or_fiction, prev_name, this_name
+		if prev_name is not None:
+			print fact_or_fiction, prev_name, this_name
 
-	output_file.write( ( """
+		output_file.write( ( """
 .({fact_or_fiction})
 ----
 $ eeyore {prev_name} {this_name}
 ----
 """ ).format(
-			fact_or_fiction = fact_or_fiction,
-			prev_name       = prev_name,
-			this_name       = this_name,
-		) )
+				fact_or_fiction = fact_or_fiction,
+				prev_name       = prev_name,
+				this_name       = this_name,
+			) )
 
 	output_file.write( ( """
 {formatter}
