@@ -6,6 +6,9 @@ from values import EeyValue
 class EeyFunction( EeyValue ):
 	__metaclass__ = ABCMeta
 
+#	def __init__( self, arg_types_and_names ):
+#		self.arg_types_and_names = arg_types_and_names
+
 	@abstractmethod
 	def call( self, args ): pass
 
@@ -19,6 +22,9 @@ class EeyRuntimePrint( EeyValue ):
 		self.args = args
 
 class EeyPrint( EeyFunction ):
+
+#	def __init__( self ):
+#		EeyFunction.__init__( self, ( ( EeyAny, EeySymbol( "object" ) ), ) )
 
 	def call( self, args ):
 		return EeyRuntimePrint( args )

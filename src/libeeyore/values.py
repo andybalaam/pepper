@@ -1,3 +1,4 @@
+from usererrorexception import EeyUserErrorException
 
 # -- Base class and global methods ---
 
@@ -29,8 +30,15 @@ class EeySymbol( EeyValue ):
 		self.symbol_name = symbol_name
 
 	def _lookup( self, env ):
-		assert( self.symbol_name in env.namespace ) # TODO: not an assert
+		if self.symbol_name not in env.namespace:
+			raise EeyUserErrorException( "The symbol '%s' is not defined." %
+				self.symbol_name )
+			# TODO: line, column, filename
+
 		return env.namespace[self.symbol_name]
+
+	def name( self ):
+		return self.symbol_name
 
 	def evaluate( self, env ):
 		# Look up this symbol in the namespace of our environment
@@ -94,4 +102,20 @@ class EeyFunctionCall( EeyValue ):
 			return fn.call( self.args )
 		else:
 			return self
+
+class EeyDefine( EeyValue ):
+	def __init__( self, symbol, value ):
+		self.symbol = symbol
+		self.value = value
+
+	def evaluate( self, env ):
+		name = self.symbol.name()
+
+		if name in env.namespace:
+			raise EeyUserErrorException( "The symbol '%s' is already defined." %
+				name )
+			# TODO: line, column, filename
+
+		env.namespace[name] = self.value
+		return self
 

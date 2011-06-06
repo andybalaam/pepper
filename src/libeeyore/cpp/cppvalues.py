@@ -22,14 +22,18 @@ def render_EeyFunction( env, value ):
 def render_EeyPrint( env, value ):
 	return render_EeyFunction( env, value )
 
+def render_EeyDefine( env, value ):
+	return ""
+
 type2renderer = {
+	EeyDefine       : render_EeyDefine,
+	EeyFunction     : render_EeyFunction,
 	EeyInt          : render_EeyInt,
+	EeyPrint        : render_EeyPrint,
+	EeyRuntimePrint : render_EeyRuntimePrint,
 	EeyPlus         : render_EeyPlus,
 	EeyString       : render_EeyString,
 	EeySymbol       : render_EeySymbol,
-	EeyRuntimePrint : render_EeyRuntimePrint,
-	EeyFunction     : render_EeyFunction,
-	EeyPrint        : render_EeyPrint,
 	}
 
 
