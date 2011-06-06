@@ -29,3 +29,5 @@ clean:
 upload: all
 	rsync -azii --delete html/ artificialworlds.net:www/eeyore/
 
+report: clean
+	make | egrep "^fact|fiction"

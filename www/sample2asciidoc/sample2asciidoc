@@ -1,21 +1,23 @@
 #!/usr/bin/env python
 
 import os
+import tempfile
+import subprocess
 import sys
 
 output_ext = ".asciidoc"
 
 input_exts = (
 	".eeyore",
+	".eeyoreparsetree",
 	".cpp",
-	".parsetree",
 	".output",
 	)
 
 formatters = {
-	".eeyore"    : "python",
-	".cpp"       : "cpp",
-	".parsetree" : "python"
+	".eeyore"          : "python",
+	".cpp"             : "cpp",
+	".eeyoreparsetree" : "python"
 	}
 
 def ext_matches( filename, exts ):
@@ -48,25 +50,84 @@ def get_formatter( ext ):
 
 def get_title( ext, filename ):
 	if ext == ".output":
-		return "Output"
+		return "(fiction)"
 	else:
 		return filename
 
-output_filename = os.path.join( sample_dir, sample_name + output_ext )
-with open( output_filename, "w" ) as output_file:
 
-	for ext in input_exts:
-		if ext in input_files:
-			output_file.write( ( """
+def read_file( filename ):
+	with file( filename, "r" ) as fl:
+		return fl.read()
+
+def temp_out_file( prefix, suffix = "" ):
+	return tempfile.NamedTemporaryFile( mode="w", prefix="s2a" + prefix,
+		suffix = suffix )
+
+def run_cmd( args, cwd ):
+	"""Runs a command and returns its return code, its standard output and its
+	standard error."""
+
+	with temp_out_file( "out" ) as stdoutfl:
+		with temp_out_file( "err" ) as stderrfl:
+			retval = subprocess.call( args=args, stdout=stdoutfl,
+				stderr=stderrfl, cwd=cwd )
+			stdout = read_file( stdoutfl.name )
+			stderr = read_file( stderrfl.name )
+
+	return ( retval, stdout, stderr )
+
+def write_step( output_file, prev_name, thisfl, ext, cwd ):
+
+	this_name = thisfl[0]
+	this_cont = thisfl[1]
+
+	fact_or_fiction = "fiction"
+
+	if prev_name is not None and ext != ".output":
+
+		with temp_out_file( "this", ext ) as outfile:
+			ret, out, err = run_cmd( ( "eeyore", prev_name, outfile.name ),
+				cwd )
+			contents = read_file( outfile.name )
+
+		if ( ret == 0 ) and ( contents == this_cont ):
+			fact_or_fiction = "fact"
+
+	if prev_name is not None:
+		print fact_or_fiction, prev_name, this_name
+
+	output_file.write( ( """
+.({fact_or_fiction})
+----
+$ eeyore {prev_name} {this_name}
+----
+""" ).format(
+			fact_or_fiction = fact_or_fiction,
+			prev_name       = prev_name,
+			this_name       = this_name,
+		) )
+
+	output_file.write( ( """
 {formatter}
 .{title}
 ----
 {text}
 ----
 """
-				).format(
-					formatter = get_formatter( ext ),
-					title = get_title( ext, input_files[ext][0] ),
-					text  = input_files[ext][1]
-				) )
+		).format(
+			formatter = get_formatter( ext ),
+			title     = get_title( ext, this_name ),
+			text      = this_cont,
+		) )
+
+
+output_filename = os.path.join( sample_dir, sample_name + output_ext )
+with open( output_filename, "w" ) as output_file:
+
+	prev_name = None
+	for ext in input_exts:
+		if ext in input_files:
+			thisfl = input_files[ext]
+			write_step( output_file, prev_name, thisfl, ext, sample_dir )
+			prev_name = thisfl[0]
 
