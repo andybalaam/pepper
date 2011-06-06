@@ -1,7 +1,8 @@
 
-from libeeyore.values import *
-from libeeyore.builtins import *
 from cppbuiltins import *
+from libeeyore.builtins import *
+from libeeyore.functionvalues import *
+from libeeyore.values import *
 
 def render_EeySymbol( env, value ):
 	return value.symbol_name
@@ -25,11 +26,16 @@ def render_EeyPrint( env, value ):
 def render_EeyDefine( env, value ):
 	return ""
 
+def render_EeyPass( env, value ):
+	return ""
+
+
 type2renderer = {
 	EeyDefine       : render_EeyDefine,
 	EeyFunction     : render_EeyFunction,
 	EeyInt          : render_EeyInt,
 	EeyPrint        : render_EeyPrint,
+	EeyPass         : render_EeyPass,
 	EeyRuntimePrint : render_EeyRuntimePrint,
 	EeyPlus         : render_EeyPlus,
 	EeyString       : render_EeyString,

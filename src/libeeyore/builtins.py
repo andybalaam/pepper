@@ -1,21 +1,6 @@
-from abc import ABCMeta
-from abc import abstractmethod
 
 from values import EeyValue
-
-class EeyFunction( EeyValue ):
-	__metaclass__ = ABCMeta
-
-#	def __init__( self, arg_types_and_names ):
-#		self.arg_types_and_names = arg_types_and_names
-
-	@abstractmethod
-	def call( self, args ): pass
-
-	def is_known( self, env ):
-		return True
-
-# --------
+from functionvalues import EeyFunction
 
 class EeyRuntimePrint( EeyValue ):
 	def __init__( self, args ):
@@ -26,7 +11,7 @@ class EeyPrint( EeyFunction ):
 #	def __init__( self ):
 #		EeyFunction.__init__( self, ( ( EeyAny, EeySymbol( "object" ) ), ) )
 
-	def call( self, args ):
+	def call( self, env, args ):
 		return EeyRuntimePrint( args )
 
 

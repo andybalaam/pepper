@@ -1,6 +1,7 @@
 
 from nose.tools import *
 
+from libeeyore import builtins
 from libeeyore.environment import EeyEnvironment
 from libeeyore.cpp.cppvalues import *
 from libeeyore.cpp.cpprenderer import EeyCppRenderer
@@ -71,6 +72,7 @@ def test_Nonconst_inside_nested_plus_causes_whole_sum_to_be_uncalculated():
 
 def test_Print_string_renders_as_printf():
 	env = EeyEnvironment( EeyCppRenderer() )
+	builtins.add_builtins( env )
 
 	value = EeyFunctionCall( EeySymbol( "print" ),
 		( EeyString( "hello" ), ) )

@@ -80,28 +80,13 @@ class EeyPlus( EeyValue ):
 
 	def evaluate( self, env ):
 		if self.is_known( env ):
-			return self.left_value.plus( self.right_value )
+			return self.left_value.evaluate( env ).plus(
+				self.right_value.evaluate( env ) )
 		else:
 			return self
 
 	def is_known( self, env ):
 		return all_known( ( self.left_value, self.right_value ), env )
-
-def is_callable( value ):
-	return True # TODO: check whether the object may be called
-
-class EeyFunctionCall( EeyValue ):
-	def __init__( self, func, args ):
-		self.func = func
-		self.args = args
-
-	def evaluate( self, env ):
-		if all_known( self.args, env ):
-			fn = self.func.evaluate( env )
-			assert is_callable( fn )
-			return fn.call( self.args )
-		else:
-			return self
 
 class EeyDefine( EeyValue ):
 	def __init__( self, symbol, value ):
@@ -118,4 +103,9 @@ class EeyDefine( EeyValue ):
 
 		env.namespace[name] = self.value
 		return self
+
+
+class EeyPass( EeyValue ):
+	"""A statement that does nothing."""
+	pass # Ironically
 

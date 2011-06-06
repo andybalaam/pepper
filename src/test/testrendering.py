@@ -1,11 +1,13 @@
 from nose.tools import *
 
+from libeeyore import builtins
 from libeeyore.environment import EeyEnvironment
 from libeeyore.cpp.cppvalues import *
 from libeeyore.cpp.cpprenderer import EeyCppRenderer
 
 def test_Hello_World():
 	env = EeyEnvironment( EeyCppRenderer() )
+	builtins.add_builtins( env )
 
 	value = EeyFunctionCall( EeySymbol( "print" ),
 		( EeyString( "Hello, World!" ), ) )
