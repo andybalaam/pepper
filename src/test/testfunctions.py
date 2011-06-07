@@ -13,8 +13,9 @@ def test_Call_fn_with_wrong_num_args():
 
 	fndecl = EeyDefine( EeySymbol( "myfunc" ),
 		EeyUserFunction(
+			EeyType( EeyInt ),
 			(
-				( EeyInt, EeySymbol( "x" ) ),
+				( EeyType( EeyInt ), EeySymbol( "x" ) ),
 				),
 			(
 				EeyPass(),
@@ -35,8 +36,9 @@ def test_Call_fn_with_wrong_arg_type():
 
 	fndecl = EeyDefine( EeySymbol( "myfunc" ),
 		EeyUserFunction(
+			EeyType( EeyInt ),
 			(
-				( EeyInt, EeySymbol( "x" ) ),
+				( EeyType( EeyInt ), EeySymbol( "x" ) ),
 				),
 			(
 				EeyPass(),
@@ -56,9 +58,10 @@ def test_Define_and_call_fn_to_add_known_numbers():
 
 	fndecl = EeyDefine( EeySymbol( "myfunc" ),
 		EeyUserFunction(
+			EeyType( EeyInt ),
 			(
-				( EeyInt, EeySymbol( "x" ) ),
-				( EeyInt, EeySymbol( "y" ) )
+				( EeyType( EeyInt ), EeySymbol( "x" ) ),
+				( EeyType( EeyInt ), EeySymbol( "y" ) )
 				),
 			(
 				EeyReturn( EeyPlus( EeySymbol( "x" ), EeySymbol( "y" ) ) ),
@@ -74,31 +77,34 @@ def test_Define_and_call_fn_to_add_known_numbers():
 	assert_equal( value.render( env ), "7" )
 
 
-#def test_Define_and_call_fn_to_add_unknown_numbers():
-#	env = EeyEnvironment( EeyCppRenderer() )
-#
-#	fndecl = EeyDefine( EeySymbol( "myfunc" ),
-#		EeyUserFunction(
-#			(
-#				( EeyInt, EeySymbol( "x" ) ),
-#				( EeyInt, EeySymbol( "y" ) )
-#				),
-#			(
-#				EeyReturn( EeyPlus( EeySymbol( "x" ), EeySymbol( "y" ) ) ),
-#				)
-#			)
-#		)
-#
-#	assert_equal( fndecl.render( env ), "" )
-#
-#	value = EeyFunctionCall( EeySymbol( "myfunc" ),
-#		( EeyInt( 3 ), EeySymbol( "othernum" ) ) )
-#
-#	assert_equal( value.render( env ), "myfunc( 3, othernum )" )
-#	assert_equal( env.functions[0],
-#"""int myfunc( int x, int y )
-#{
-#	return x + y;
-#}""" )
-#
+def test_Define_and_call_fn_to_add_unknown_numbers():
+	env = EeyEnvironment( EeyCppRenderer() )
+	env.namespace["othernum"] = EeyVariable( EeyInt )
+
+	fndecl = EeyDefine( EeySymbol( "myfunc" ),
+		EeyUserFunction(
+			EeyType( EeyInt ),
+			(
+				( EeyType( EeyInt ), EeySymbol( "x" ) ),
+				( EeyType( EeyInt ), EeySymbol( "y" ) )
+				),
+			(
+				EeyReturn( EeyPlus( EeySymbol( "x" ), EeySymbol( "y" ) ) ),
+				)
+			)
+		)
+
+	assert_equal( fndecl.render( env ), "" )
+
+	value = EeyFunctionCall( EeySymbol( "myfunc" ),
+		( EeyInt( 3 ), EeySymbol( "othernum" ) ) )
+
+	assert_equal( value.render( env ), "myfunc( 3, othernum )" )
+	assert_equal( env.renderer.functions[0],
+"""int myfunc( int x, int y )
+{
+	return (x + y);
+}
+""" )
+
 

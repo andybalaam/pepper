@@ -16,18 +16,10 @@ class EeyEnvironment( object ):
 	def render_exe( self, values ):
 		return self.renderer.render_exe( values, self )
 
-	def clone_deeper( self, values, types_and_names ):
-		"""Create a new environment based on this one, with
-		the extra values provided stored in its namespace under
-		the names provided."""
+	def clone_deeper( self ):
+		"""Create a new environment based on this one."""
 
-		ret = EeyEnvironment( self.renderer, EeyNamespace( self.namespace ) )
+		return EeyEnvironment( self.renderer, EeyNamespace( self.namespace ) )
 
-		for val, (UUtp, name) in izip( values, types_and_names ):
-			ret.namespace[name.name()] = val
-
-		print ret.namespace.thedict
-
-		return ret
 
 

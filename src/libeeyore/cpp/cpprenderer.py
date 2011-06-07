@@ -4,6 +4,7 @@ import cppvalues
 class EeyCppRenderer( object ):
 	def __init__( self ):
 		self.headers = []
+		self.functions = []
 
 	def value_renderer( self, value ):
 		return cppvalues.type2renderer[ value.__class__ ]

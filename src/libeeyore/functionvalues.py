@@ -3,7 +3,9 @@ from abc import abstractmethod
 from itertools import izip
 
 from environment import EeyEnvironment
+from values import EeySymbol
 from values import EeyValue
+from values import EeyVariable
 from values import all_known
 from usererrorexception import EeyUserErrorException
 
@@ -12,6 +14,10 @@ def is_callable( value ):
 
 class EeyFunctionCall( EeyValue ):
 	def __init__( self, func, args ):
+		assert( func.__class__ == EeySymbol ) # TODO: Might not be?  Handle
+		                                      #       expressions that eval to
+		                                      #       a symbol?
+		self.func_name = func.symbol_name
 		self.func = func
 		self.args = args
 
@@ -44,8 +50,9 @@ class EeyFunction( EeyValue ):
 		return True
 
 class EeyUserFunction( EeyFunction ):
-	def __init__( self, arg_types_and_names, body_stmts ):
+	def __init__( self, ret_type, arg_types_and_names, body_stmts ):
 		#EeyFunction.__init__( self, arg_types_and_names )
+		self.ret_type = ret_type
 		self.arg_types_and_names = arg_types_and_names
 		self.body_stmts = body_stmts
 
@@ -57,12 +64,26 @@ class EeyUserFunction( EeyFunction ):
 			# TODO: line, col, file
 
 		for arg, (reqtype, reqname) in izip( args, self.arg_types_and_names ):
-			if arg.__class__ is not reqtype:
+			if arg.__class__ is not reqtype.value:
 				raise EeyUserErrorException(
 					( "Incorrect argument type: '%s' should be a %s, but it "
-					+ "is a %s" ) % ( reqname, reqtype, arg.__class__ ) )
+					+ "is a %s" ) % ( reqname.symbol_name, reqtype.value,
+						arg.__class__ ) )
 
-		newenv = env.clone_deeper( args, self.arg_types_and_names )
+		newenv = self.execution_environment( env, args, True )
 
+		# TODO: not just the first statement
 		return self.body_stmts[0].evaluate( newenv )
+
+	def execution_environment( self, env, args, known ):
+		newenv = env.clone_deeper()
+
+		for val, (tp, name) in izip( args, self.arg_types_and_names ):
+			if known:
+				val = val.evaluate( env )
+			else:
+				val = EeyVariable( tp.value )
+			newenv.namespace[name.name()] = val
+
+		return newenv
 

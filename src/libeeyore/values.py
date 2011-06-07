@@ -109,3 +109,8 @@ class EeyPass( EeyValue ):
 	"""A statement that does nothing."""
 	pass # Ironically
 
+class EeyType( EeyValue ):
+	def __init__( self, value ):
+		# TODO: check we have been passed a type
+		self.value = value
+
