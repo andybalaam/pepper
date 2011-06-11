@@ -14,7 +14,7 @@ class EeyCppRenderer( object ):
 		ret = "\n".join( "#include <%s>" % h for h in self.headers )
 		ret += "\n\nint main( int argc, char* argv[] )\n{\n"
 
-		for ln in rendered_lines:
+		for ln in filter( lambda x: len( x ) != 0, rendered_lines ):
 			ret += "\t"
 			ret += ln
 			ret += ";\n"

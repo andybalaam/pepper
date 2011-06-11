@@ -120,5 +120,8 @@ class EeyArray( EeyValue ):
 		self.value_type = value_type
 		self.values = values
 
+	def lookup( self, int_index ):
+		return self.values[int_index]
+
 
 

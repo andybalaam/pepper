@@ -22,40 +22,41 @@ int main( int argc, char* argv[] )
 }
 """ )
 
-#def test_Echo_arg1():
-#	env = EeyEnvironment( EeyCppRenderer() )
-#	builtins.add_builtins( env )
-#
-#	# import sys
-#	#
-#	# def string getname( string name ):
-#	#     return name
-#	#
-#	# print getname( sys.argv[1] )
-#
-#	impt = EeyImport( "sys" )
-#
-#	fndef = EeyDefine( EeySymbol( "getname" ),
-#		EeyUserFunction(
-#			EeyType( EeyString ),
-#			(
-#				( EeyType( EeyString ), EeySymbol( "name" ) ),
-#				),
-#			(
-#				EeyReturn( EeySymbol( "name" ) ),
-#				)
-#			)
-#		)
-#
-#	fncall = EeyFunctionCall( EeySymbol( "print" ),
-#		( EeyFunctionCall( EeySymbol( "getname" ),
-#			EeyArrayLookup( EeySymbol( "sys.argv" ), 1 ) ), ) )
-#
-#	assert_equal( env.render_exe( ( value, ) ), """#include <stdio.h>
+def test_Echo_arg1():
+	env = EeyEnvironment( EeyCppRenderer() )
+	builtins.add_builtins( env )
+
+	# import sys
+	#
+	# def string getname( string name ):
+	#     return name
+	#
+	# print sys.argv[1]
+
+	impt = EeyImport( "sys" )
+
+	fndef = EeyDefine( EeySymbol( "getname" ),
+		EeyUserFunction(
+			EeyType( EeyString ),
+			(
+				( EeyType( EeyString ), EeySymbol( "name" ) ),
+				),
+			(
+				EeyReturn( EeySymbol( "name" ) ),
+				)
+			)
+		)
+
+	fncall = EeyFunctionCall( EeySymbol( "print" ),
+		( EeyArrayLookup( EeySymbol( "sys.argv" ), EeyInt( 1 ) ), ) )
+
+	program = ( impt, fndef, fncall )
+
+#	assert_equal( env.render_exe( program ), """#include <stdio.h>
 #
 #int main( int argc, char* argv[] )
 #{
-#	printf( "Hello, World!\\n" );
+#	printf( "%s\\n", argv[1] );
 #
 #	return 0;
 #}
