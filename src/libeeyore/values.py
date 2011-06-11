@@ -114,3 +114,11 @@ class EeyType( EeyValue ):
 		# TODO: check we have been passed a type
 		self.value = value
 
+
+class EeyArray( EeyValue ):
+	def __init__( self, value_type, values ):
+		self.value_type = value_type
+		self.values = values
+
+
+

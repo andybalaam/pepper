@@ -80,3 +80,16 @@ def test_Print_string_renders_as_printf():
 	assert_equal( value.render( env ), 'printf( "hello\\n" )' )
 	assert_equal( env.renderer.headers, [ "stdio.h" ] )
 
+
+def test_known_array_lookup():
+	env = EeyEnvironment( EeyCppRenderer() )
+
+	# int[] myarr = [3,4,5]
+	# myarr[1]
+
+	env.namespace["myarr"] = EeyArray( EeyType( EeyInt ), (
+		EeyInt( 3 ), EeyInt( 4 ), EeyInt( 5 ), ) )
+
+	value = EeyArrayLookup( EeySymbol( "myarr" ), EeyInt( 1 ) )
+
+	assert_equal( value.render( env ), "4" )
