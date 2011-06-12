@@ -1,10 +1,21 @@
 
-e.eimport( "sys" )
+# With the if:
 
-e.eif( e.greater_than_or_equal( e.elen( e.var( "sys.argv" ) ), e.eint( 2 ) ),
-    e.quote( e.eprint(
-        e.add( e.add( e.estring( "Hello, " ), e.arraylookup( e.var( "sys.argv" ), 1 ) ),
-               e.estring( "!" ) ) )
-        )
-    )
+#EeyImport( "sys" )
+#
+#EeyIf( EeyGreaterThanOrEqual( EeyLen( EeySymbol( "sys.argv" ) ), EeyInt( 2 ) ),
+#	EeyFunctionCall( EeySymbol( "print" ), ( EeyPlus(
+#		EeyPlus(
+#			EeyString( "Hello, " ),
+#			EeyArrayLookup( EeySymbol( "sys.argv" ), EeyInt( 1 ) )
+#			)
+#		EeyString( "!" )
+#		)
+#	), )
+
+# No if for now:
+
+EeyImport( "sys" )
+
+EeyFunctionCall( EeySymbol( "print" ), ( EeyPlus( EeyPlus( EeyString( "Hello, " ), EeyArrayLookup( EeySymbol( "sys.argv" ), EeyInt( 1 ) ) ), EeyString( "!" ) ), ), )
 
