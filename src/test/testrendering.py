@@ -35,30 +35,30 @@ def test_Echo_arg1():
 
 	impt = EeyImport( "sys" )
 
-	fndef = EeyDefine( EeySymbol( "getname" ),
-		EeyUserFunction(
-			EeyType( EeyString ),
-			(
-				( EeyType( EeyString ), EeySymbol( "name" ) ),
-				),
-			(
-				EeyReturn( EeySymbol( "name" ) ),
-				)
-			)
-		)
+#	fndef = EeyDefine( EeySymbol( "getname" ),
+#		EeyUserFunction(
+#			EeyType( EeyString ),
+#			(
+#				( EeyType( EeyString ), EeySymbol( "name" ) ),
+#				),
+#			(
+#				EeyReturn( EeySymbol( "name" ) ),
+#				)
+#			)
+#		)
 
 	fncall = EeyFunctionCall( EeySymbol( "print" ),
 		( EeyArrayLookup( EeySymbol( "sys.argv" ), EeyInt( 1 ) ), ) )
 
-	program = ( impt, fndef, fncall )
+	program = ( impt, fncall )
 
-#	assert_equal( env.render_exe( program ), """#include <stdio.h>
-#
-#int main( int argc, char* argv[] )
-#{
-#	printf( "%s\\n", argv[1] );
-#
-#	return 0;
-#}
-#""" )
+	assert_equal( env.render_exe( program ), """#include <stdio.h>
+
+int main( int argc, char* argv[] )
+{
+	printf( "%s\\n", argv[1] );
+
+	return 0;
+}
+""" )
 

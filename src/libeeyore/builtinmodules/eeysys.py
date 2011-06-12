@@ -8,8 +8,14 @@ _copyright = EeyString(
 	"Copyright (C) 2011 Andy Balaam and the Eeyore developers" )
 
 class EeySysArgv( EeyValue ):
-	def lookup( self, int_index ):
-		return EeyString( "x" )
+	def is_known( self, env ):
+		False
+
+	def evaluate( self, env ):
+		return self
+
+	def lookup( self, env ):
+		return self
 
 _argv = EeySysArgv()
 

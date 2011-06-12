@@ -1,4 +1,5 @@
 
+from libeeyore.eeyinterface import implements_interface
 from libeeyore.values import *
 
 def render_EeyRuntimePrint( env, value ):
@@ -17,8 +18,12 @@ def render_EeyRuntimePrint( env, value ):
 	elif arg0.__class__ is EeyInt:
 		fmtstr = '"%d\\n"'
 		fmtarg = arg0.render( env )
+	elif implements_interface( arg0, EeyString ):
+		fmtstr = '"%s\\n"'
+		fmtarg = arg0.render( env )
 	else:
-		raise Exception( "Unknown argument type to print: " + arg0.__class__ )
+		raise Exception( "Unknown argument type to print: "
+			+ str( arg0.__class__ ) )
 
 	ret = 'printf( ' + fmtstr
 	if fmtarg is not None:

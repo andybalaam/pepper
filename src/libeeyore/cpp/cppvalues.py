@@ -4,6 +4,7 @@ from libeeyore.builtins import *
 from libeeyore.functionvalues import *
 from libeeyore.languagevalues import *
 from libeeyore.values import *
+from libeeyore.builtinmodules.eeysys import EeySysArgv
 
 def render_EeySymbol( env, value ):
 	return value.name()
@@ -83,20 +84,30 @@ def render_EeyReturn( env, value ):
 	return "return " + value.value.render( env )
 
 
+def render_EeyArrayLookup( env, value ):
+	return value.array_value.render( env ) + "[%d]" % value.index.value
+
+def render_EeySysArgv( env, value ):
+	# TODO: set up a global variable called global_argv and initialise
+	#       it at the beginning of main
+	return "argv"
+
 type2renderer = {
-	EeyDefine       : render_EeyDefine,
-	EeyFunction     : render_EeyFunction,
-	EeyFunctionCall : render_EeyFunctionCall,
-	EeyImport       : render_EeyImport,
-	EeyInt          : render_EeyInt,
-	EeyPass         : render_EeyPass,
-	EeyPlus         : render_EeyPlus,
-	EeyPrint        : render_EeyPrint,
-	EeyReturn       : render_EeyReturn,
-	EeyRuntimePrint : render_EeyRuntimePrint,
-	EeyString       : render_EeyString,
-	EeySymbol       : render_EeySymbol,
-	EeyType         : render_EeyType,
+	EeyArrayLookup   : render_EeyArrayLookup,
+	EeyDefine        : render_EeyDefine,
+	EeyFunction      : render_EeyFunction,
+	EeyFunctionCall  : render_EeyFunctionCall,
+	EeyImport        : render_EeyImport,
+	EeyInt           : render_EeyInt,
+	EeyPass          : render_EeyPass,
+	EeyPlus          : render_EeyPlus,
+	EeyPrint         : render_EeyPrint,
+	EeyReturn        : render_EeyReturn,
+	EeyRuntimePrint  : render_EeyRuntimePrint,
+	EeyString        : render_EeyString,
+	EeySymbol        : render_EeySymbol,
+	EeySysArgv       : render_EeySysArgv,
+	EeyType          : render_EeyType,
 	}
 
 

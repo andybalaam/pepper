@@ -1,3 +1,5 @@
+
+from eeyinterface import implements_interface
 from usererrorexception import EeyUserErrorException
 
 # -- Base class and global methods ---
@@ -46,6 +48,8 @@ class EeySymbol( EeyValue ):
 
 		if value.is_known( env ):
 			# Pass back what we looked up
+			return value
+		elif implements_interface( value, EeySymbol ):
 			return value
 		else:
 			# If what we find is a variable (i.e. something unknown until
@@ -107,7 +111,7 @@ class EeyDefine( EeyValue ):
 
 class EeyPass( EeyValue ):
 	"""A statement that does nothing."""
-	pass # Ironically
+	pass # Perhaps unsurprisingly?
 
 class EeyType( EeyValue ):
 	def __init__( self, value ):
@@ -120,7 +124,7 @@ class EeyArray( EeyValue ):
 		self.value_type = value_type
 		self.values = values
 
-	def lookup( self, int_index ):
+	def get_index( self, int_index ):
 		return self.values[int_index]
 
 

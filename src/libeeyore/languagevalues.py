@@ -1,4 +1,5 @@
 
+from eeyinterface import implements_interface
 from values import EeyArray
 from values import EeyInt
 from values import EeyValue
@@ -18,8 +19,6 @@ class EeyImport( EeyValue ):
 				self.module_name )
 		return self
 
-def implements_interface( obj, interface ):
-	return True # TODO: check we implement it
 
 class EeyArrayLookup( EeyValue ):
 	def __init__( self, array_value, index ):
@@ -29,6 +28,9 @@ class EeyArrayLookup( EeyValue ):
 	def evaluate( self, env ):
 		idx = self.index.evaluate( env )
 		arr = self.array_value.evaluate( env )
-		assert( idx.__class__ == EeyInt )
-		assert( implements_interface( arr, EeyArray ) )
-		return arr.lookup( idx.value ).evaluate( env )
+		if arr.is_known( env ):
+			assert( idx.__class__ == EeyInt )
+			assert( implements_interface( arr, EeyArray ) )
+			return arr.get_index( idx.value ).evaluate( env )
+		else:
+			return self
