@@ -1,4 +1,5 @@
 
+from all_known import all_known
 from eeyinterface import implements_interface
 from usererrorexception import EeyUserErrorException
 
@@ -14,9 +15,6 @@ class EeyValue( object ):
 
 	def evaluate( self, env ):
 		return self
-
-def all_known( values, env ):
-	return all( map( lambda v: v.is_known( env ), values ) )
 
 # --- Specific value types ---
 

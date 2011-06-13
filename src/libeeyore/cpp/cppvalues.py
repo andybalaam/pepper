@@ -16,6 +16,7 @@ def render_EeyString( env, value ):
 	return '"%s"' % value.value
 
 def render_EeyPlus( env, value ):
+	# TODO: assert they are addable and switch on how to add them
 	return "(%s + %s)" % (
 		value.left_value.render( env ), value.right_value.render( env ) )
 
@@ -73,12 +74,17 @@ def render_EeyUserFunction_body( env, func_call ):
 
 def render_EeyFunctionCall( env, value ):
 
-	env.renderer.functions.append( render_EeyUserFunction_body(
-		env, value ) )
+	fn = value.func.evaluate( env )
 
-	return ( value.func_name + "( " +
-		", ".join( arg.render( env ) for arg in value.args )
-		+ " )" )
+	if fn.__class__ == EeyUserFunction:
+		env.renderer.functions.append( render_EeyUserFunction_body(
+			env, value ) )
+
+		return ( value.func_name + "( " +
+			", ".join( arg.render( env ) for arg in value.args )
+			+ " )" )
+	else:
+		return fn.call( env, value.args ).render( env )
 
 def render_EeyReturn( env, value ):
 	return "return " + value.value.render( env )

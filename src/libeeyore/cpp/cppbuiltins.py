@@ -2,6 +2,46 @@
 from libeeyore.eeyinterface import implements_interface
 from libeeyore.values import *
 
+
+class FormatString( object ):
+	def __init__( self, string ):
+		self.string = string
+
+	def append( self, to_append ):
+		self.string += to_append
+
+	def __str__( self ):
+		return self.string
+
+class FormatArgs( object ):
+	def __init__( self ):
+		self.lst = []
+
+	def append( self, to_append ):
+		self.lst.append( to_append )
+
+	def as_list( self ):
+		return self.lst
+
+
+def append_print_arg( fmtstr, fmtargs, env, value ):
+	if value.__class__ is EeyString:
+		# We don't call render, because we add our own quotes here
+		fmtstr.append( value.as_py_str() )
+	elif value.__class__ is EeyInt:
+		fmtstr.append( "%d" )
+		fmtargs.append( value.render( env ) )
+	elif value.__class__ is EeyPlus:
+		append_print_arg( fmtstr, fmtargs, env, value.left_value )
+		append_print_arg( fmtstr, fmtargs, env, value.right_value )
+	elif implements_interface( value, EeyString ):
+		fmtstr.append( "%s" )
+		fmtargs.append( value.render( env ) )
+	else:
+		raise Exception( "Unknown argument type to print: "
+			+ str( arg0.__class__ ) )
+
+
 def render_EeyRuntimePrint( env, value ):
 	assert( len( value.args ) == 1 ) # TODO: not an assert
 	arg0 = value.args[0]
@@ -11,24 +51,15 @@ def render_EeyRuntimePrint( env, value ):
 
 	arg0 = arg0.evaluate( env )
 
-	if arg0.__class__ is EeyString:
-		# We don't call render, because we add our own quotes here
-		fmtstr = '"%s\\n"' % arg0.as_py_str()
-		fmtarg = None
-	elif arg0.__class__ is EeyInt:
-		fmtstr = '"%d\\n"'
-		fmtarg = arg0.render( env )
-	elif implements_interface( arg0, EeyString ):
-		fmtstr = '"%s\\n"'
-		fmtarg = arg0.render( env )
-	else:
-		raise Exception( "Unknown argument type to print: "
-			+ str( arg0.__class__ ) )
+	fmtstr = FormatString( '"' )
+	fmtargs = FormatArgs()
 
-	ret = 'printf( ' + fmtstr
-	if fmtarg is not None:
-		ret += ", "
-		ret += fmtarg
+	append_print_arg( fmtstr, fmtargs, env, arg0 )
+
+	fmtstr.append( '\\n"' )
+
+	ret = 'printf( '
+	ret += ", ".join( [ str( fmtstr ) ] + fmtargs.as_list()  )
 	ret += " )"
 
 	return ret
