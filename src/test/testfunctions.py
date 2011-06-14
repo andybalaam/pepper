@@ -13,6 +13,7 @@ def test_Call_fn_with_wrong_num_args():
 
 	fndecl = EeyDefine( EeySymbol( "myfunc" ),
 		EeyUserFunction(
+			"myfunc",
 			EeyType( EeyInt ),
 			(
 				( EeyType( EeyInt ), EeySymbol( "x" ) ),
@@ -36,6 +37,7 @@ def test_Call_fn_with_wrong_arg_type():
 
 	fndecl = EeyDefine( EeySymbol( "myfunc" ),
 		EeyUserFunction(
+			"myfunc",
 			EeyType( EeyInt ),
 			(
 				( EeyType( EeyInt ), EeySymbol( "x" ) ),
@@ -58,6 +60,7 @@ def test_Define_and_call_fn_to_add_known_numbers():
 
 	fndecl = EeyDefine( EeySymbol( "myfunc" ),
 		EeyUserFunction(
+			"myfunc",
 			EeyType( EeyInt ),
 			(
 				( EeyType( EeyInt ), EeySymbol( "x" ) ),
@@ -83,6 +86,7 @@ def test_Define_and_call_fn_to_add_unknown_numbers():
 
 	fndecl = EeyDefine( EeySymbol( "myfunc" ),
 		EeyUserFunction(
+			"myfunc",
 			EeyType( EeyInt ),
 			(
 				( EeyType( EeyInt ), EeySymbol( "x" ) ),

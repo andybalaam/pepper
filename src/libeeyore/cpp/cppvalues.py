@@ -16,6 +16,7 @@ def render_EeyString( env, value ):
 	return '"%s"' % value.value
 
 def render_EeyPlus( env, value ):
+	# TODO: assert they are addable and switch on how to add them
 	return "(%s + %s)" % (
 		value.left_value.render( env ), value.right_value.render( env ) )
 
@@ -49,13 +50,13 @@ def render_type_and_name( env, typename ):
 		typename[1].symbol_name )
 
 def render_EeyUserFunction_body( env, func_call ):
-	fn = func_call.func.evaluate( env )
+	fn = func_call.user_function.evaluate( env )
 
 	assert( fn.__class__ == EeyUserFunction ) # TODO: handle other types
 
 	ret = fn.ret_type.render( env )
 	ret += " "
-	ret += func_call.func_name
+	ret += fn.name
 	ret += "( "
 	ret += ", ".join( render_type_and_name( env, typename ) for typename
 		in fn.arg_types_and_names )
@@ -71,14 +72,21 @@ def render_EeyUserFunction_body( env, func_call ):
 
 	return ret
 
-def render_EeyFunctionCall( env, value ):
-
+def render_EeyRuntimeUserFunction( env, value ):
 	env.renderer.functions.append( render_EeyUserFunction_body(
 		env, value ) )
 
-	return ( value.func_name + "( " +
+	return ( value.user_function.name + "( " +
 		", ".join( arg.render( env ) for arg in value.args )
 		+ " )" )
+
+def render_EeyFunctionCall( env, value ):
+
+	fn = value.func.evaluate( env )
+
+	# TODO: assert fn is callable
+
+	return fn.call( env, value.args ).render( env )
 
 def render_EeyReturn( env, value ):
 	return "return " + value.value.render( env )
@@ -93,21 +101,22 @@ def render_EeySysArgv( env, value ):
 	return "argv"
 
 type2renderer = {
-	EeyArrayLookup   : render_EeyArrayLookup,
-	EeyDefine        : render_EeyDefine,
-	EeyFunction      : render_EeyFunction,
-	EeyFunctionCall  : render_EeyFunctionCall,
-	EeyImport        : render_EeyImport,
-	EeyInt           : render_EeyInt,
-	EeyPass          : render_EeyPass,
-	EeyPlus          : render_EeyPlus,
-	EeyPrint         : render_EeyPrint,
-	EeyReturn        : render_EeyReturn,
-	EeyRuntimePrint  : render_EeyRuntimePrint,
-	EeyString        : render_EeyString,
-	EeySymbol        : render_EeySymbol,
-	EeySysArgv       : render_EeySysArgv,
-	EeyType          : render_EeyType,
+	EeyArrayLookup          : render_EeyArrayLookup,
+	EeyDefine               : render_EeyDefine,
+	EeyFunction             : render_EeyFunction,
+	EeyFunctionCall         : render_EeyFunctionCall,
+	EeyImport               : render_EeyImport,
+	EeyInt                  : render_EeyInt,
+	EeyPass                 : render_EeyPass,
+	EeyPlus                 : render_EeyPlus,
+	EeyPrint                : render_EeyPrint,
+	EeyReturn               : render_EeyReturn,
+	EeyRuntimePrint         : render_EeyRuntimePrint,
+	EeyRuntimeUserFunction  : render_EeyRuntimeUserFunction,
+	EeyString               : render_EeyString,
+	EeySymbol               : render_EeySymbol,
+	EeySysArgv              : render_EeySysArgv,
+	EeyType                 : render_EeyType,
 	}
 
 

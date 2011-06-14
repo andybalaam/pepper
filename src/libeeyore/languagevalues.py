@@ -1,4 +1,5 @@
 
+from all_known import all_known
 from eeyinterface import implements_interface
 from values import EeyArray
 from values import EeyInt
@@ -34,3 +35,7 @@ class EeyArrayLookup( EeyValue ):
 			return arr.get_index( idx.value ).evaluate( env )
 		else:
 			return self
+
+	def is_known( self, env ):
+		return all_known( ( self.array_value, self.index ), env )
+
