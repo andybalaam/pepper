@@ -1,0 +1,3 @@
+
+sudo apt-get install python g++ antlr python-antlr ant ant-optional
+
