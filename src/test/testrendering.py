@@ -37,6 +37,7 @@ def test_Echo_arg1():
 
 #	fndef = EeyDefine( EeySymbol( "getname" ),
 #		EeyUserFunction(
+#			"getname",
 #			EeyType( EeyString ),
 #			(
 #				( EeyType( EeyString ), EeySymbol( "name" ) ),

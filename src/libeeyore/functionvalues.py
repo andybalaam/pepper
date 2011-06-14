@@ -49,31 +49,48 @@ class EeyFunction( EeyValue ):
 	def is_known( self, env ):
 		return True
 
+
+class EeyRuntimeUserFunction( EeyValue ):
+	def __init__( self, user_function, args ):
+		# TODO: check arg types
+		self.user_function = user_function
+		self.args = args
+
+
 class EeyUserFunction( EeyFunction ):
-	def __init__( self, ret_type, arg_types_and_names, body_stmts ):
+	def __init__( self, name, ret_type, arg_types_and_names, body_stmts ):
 		#EeyFunction.__init__( self, arg_types_and_names )
+		self.name = name
 		self.ret_type = ret_type
 		self.arg_types_and_names = arg_types_and_names
 		self.body_stmts = body_stmts
 
 	def call( self, env, args ):
-		if len( args ) != len( self.arg_types_and_names ):
-			raise EeyUserErrorException(
-				"Wrong number of arguments to function." )
-			# TODO: function name
-			# TODO: line, col, file
-
-		for arg, (reqtype, reqname) in izip( args, self.arg_types_and_names ):
-			if arg.__class__ is not reqtype.value:
+		if all_known( args, env ):
+			if len( args ) != len( self.arg_types_and_names ):
 				raise EeyUserErrorException(
-					( "Incorrect argument type: '%s' should be a %s, but it "
-					+ "is a %s" ) % ( reqname.symbol_name, reqtype.value,
-						arg.__class__ ) )
+					"Wrong number of arguments to function." )
+				# TODO: function name
+				# TODO: line, col, file
 
-		newenv = self.execution_environment( env, args, True )
+			for arg, (reqtype, reqname) in izip( args,
+					self.arg_types_and_names ):
+				#while arg.__class__
+				if arg.__class__ is not reqtype.value:
+					raise EeyUserErrorException(
+						( "Incorrect argument type: '%s' should be a %s, but "
+							+ "it is a %s" ) % (
+							reqname.symbol_name, reqtype.value,
+							arg.__class__
+							)
+						)
 
-		# TODO: not just the first statement
-		return self.body_stmts[0].evaluate( newenv )
+			newenv = self.execution_environment( env, args, True )
+
+			# TODO: not just the first statement
+			return self.body_stmts[0].evaluate( newenv )
+		else:
+			return EeyRuntimeUserFunction( self, args )
 
 	def execution_environment( self, env, args, known ):
 		newenv = env.clone_deeper()
