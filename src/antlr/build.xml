@@ -1,0 +1,41 @@
+
+<project name="Scheme" default="all">
+    <target name="all" depends="scheme,compileJava,runTests" />
+        
+    <target name="scheme">
+        <antlr target="SchemeParser.g">
+            <classpath path="/usr/share/java/antlr.jar"/>
+        </antlr>
+        <antlr target="SchemeLexer.g">
+            <classpath path="/usr/share/java/antlr.jar"/>
+        </antlr>
+    </target>
+                
+    <target name="compileJava">
+        <mkdir dir="bin" />
+        <javac srcdir="." destDir="bin">
+            <classpath>
+                <pathelement path="${classpath}"/>
+                <pathelement location="/usr/share/java/antlr.jar"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="runTests">
+        <java classpath="bin;/usr/share/java/antlr.jar" classname="SchemeParser">
+            <arg value="tests"/>
+        </java>
+    </target>
+            
+    <target name="clean">
+        <delete>
+            <fileset dir=".">
+                <include name="**/SchemeLexer.java"/>
+                <include name="**/SchemeParser.java"/>
+                <include name="**/SchemeParserTokenTypes.java"/>
+                <include name="**/SchemeParserTokenTypes.txt"/>
+                <include name="**/*.smap"/>
+            </fileset>
+        </delete>
+    </target>
+</project>
