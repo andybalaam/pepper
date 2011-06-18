@@ -3,25 +3,29 @@
 
     <target name="all" depends="test" />
 
-    <target name="test" depends="compileJava">
-        <java classpath="bin;/usr/share/java/antlr.jar"
+    <target name="test" depends="generatePython">
+        <exec executable="python">
+            <arg value="scheme.py"/>
+            <arg value="test.scm"/>
+        </exec>
+        <!--java classpath="bin;/usr/share/java/antlr.jar"
                 classname="Main">
             <arg value="test.scm"/>
-        </java>
+        </java-->
     </target>
 
-    <target name="compileJava" depends="generateJava">
+    <!--target name="compileJava" depends="generateJava">
         <mkdir dir="bin" />
-        <javac srcdir="." destDir="bin">
+        <javac srcdir="." destDir="bin" includeantruntime="false">
             <classpath>
                 <pathelement path="${classpath}"/>
                 <pathelement location="/usr/share/java/antlr.jar"/>
             </classpath>
         </javac>
-    </target>
+    </target-->
 
-    <target name="generateJava">
-        <antlr target="expression.g">
+    <target name="generatePython">
+        <antlr target="scheme.g">
             <classpath path="/usr/share/java/antlr.jar"/>
         </antlr>
     </target>

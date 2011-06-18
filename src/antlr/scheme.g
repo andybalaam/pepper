@@ -1,9 +1,38 @@
-// A lexer for some of the constructs in Scheme
-//
-// My learning exercise with ANTLR - created as I
-// went through Scott Stanchfield's tutorial here:
-//
-// http://javadude.com/articles/antlrtut/
+
+options
+{
+    language = "Python";
+}
+
+class SchemeParser extends Parser;
+
+options
+{
+    buildAST = true;
+}
+
+program :
+    (expression)*
+;
+
+expression :
+    LPAREN^
+    operator
+    (operand)*
+    RPAREN
+;
+
+operator :
+      SYMBOL
+    | expression
+;
+
+operand :
+            SYMBOL
+        | INTLIT
+        | STRINGLIT
+        | expression
+;
 
 class SchemeLexer extends Lexer;
 
@@ -24,7 +53,7 @@ WHITESPACE :
             | '\r'
             | '\n'
           )
-          { newline(); }
+          { $newline }
     )
     { $setType(Token.SKIP); }
 ;
@@ -81,4 +110,21 @@ SYMBOL :
         // TODO: more
     )+
 ;
+
+
+{import java.lang.Math;}
+class SchemeTreeWalker extends TreeParser;
+
+
+expr returns [double r]
+  { double a,b; r=0; }
+
+  : #(PLUS  a=expr b=expr)  { r=a+b; }
+  | #(MINUS a=expr b=expr)  { r=a-b; }
+  | #(MUL   a=expr b=expr)  { r=a*b; }
+  | #(DIV   a=expr b=expr)  { r=a/b; }
+  | #(MOD   a=expr b=expr)  { r=a%b; }
+  | #(POW   a=expr b=expr)  { r=Math.pow(a,b); }
+  | i:INT { r=(double)Integer.parseInt(i.getText()); }
+  ;
 
