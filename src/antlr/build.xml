@@ -1,8 +1,37 @@
 
-<project name="Scheme" default="all">
-    <target name="all" depends="scheme,compileJava,runTests" />
-        
-    <target name="scheme">
+<project name="expression" default="all">
+
+    <target name="all" depends="test" />
+
+    <target name="test" depends="compileJava">
+        <java classpath="bin;/usr/share/java/antlr.jar"
+                classname="Main">
+            <arg value="test.scm"/>
+        </java>
+    </target>
+
+    <target name="compileJava" depends="generateJava">
+        <mkdir dir="bin" />
+        <javac srcdir="." destDir="bin">
+            <classpath>
+                <pathelement path="${classpath}"/>
+                <pathelement location="/usr/share/java/antlr.jar"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="generateJava">
+        <antlr target="expression.g">
+            <classpath path="/usr/share/java/antlr.jar"/>
+        </antlr>
+    </target>
+
+</project>
+
+<!--project name="Scheme" default="all">
+    <target name="all" depends="runTests" />
+
+    <target name="generateJava">
         <antlr target="SchemeParser.g">
             <classpath path="/usr/share/java/antlr.jar"/>
         </antlr>
@@ -10,8 +39,8 @@
             <classpath path="/usr/share/java/antlr.jar"/>
         </antlr>
     </target>
-                
-    <target name="compileJava">
+
+    <target name="compileJava" depends="generateJava">
         <mkdir dir="bin" />
         <javac srcdir="." destDir="bin">
             <classpath>
@@ -26,7 +55,13 @@
             <arg value="tests"/>
         </java>
     </target>
-            
+
+    <target name="test" depends="compileJava">
+        <java classpath="bin;/usr/share/java/antlr.jar" classname="SchemeParser">
+            <arg value="test.scm"/>
+        </java>
+    </target>
+
     <target name="clean">
         <delete>
             <fileset dir=".">
@@ -38,4 +73,4 @@
             </fileset>
         </delete>
     </target>
-</project>
+</project-->

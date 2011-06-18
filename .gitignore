@@ -3,3 +3,9 @@ www/samples/*/*.asciidoc
 *.pyc
 www/html
 *.marks
+*.smap
+src/antlr/bin
+src/antlr/Expression*.java
+src/antlr/Expression*.txt
+src/antlr/Scheme*.java
+src/antlr/Scheme*.txt
