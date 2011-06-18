@@ -4,8 +4,8 @@ www/samples/*/*.asciidoc
 www/html
 *.marks
 *.smap
-src/antlr/bin
-src/antlr/SchemeLexerTokenTypes.txt
-src/antlr/SchemeLexer.py
-src/antlr/SchemeParserTokenTypes.txt
-src/antlr/SchemeParser.py
+src/parse/bin
+src/parse/SchemeLexerTokenTypes.txt
+src/parse/SchemeLexer.py
+src/parse/SchemeParserTokenTypes.txt
+src/parse/SchemeParser.py
