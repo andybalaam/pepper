@@ -2,6 +2,16 @@ import sys
 
 from SchemeLexer import Lexer
 from SchemeParser import Parser
+#from SchemeTreeWalker import Walker
+
+def display_ast( node, indent ):
+    if node is None:
+        return
+
+    print " " * indent, node.getType(), node.getText()
+
+    display_ast( node.getFirstChild(), indent + 4 )
+    display_ast( node.getNextSibling(), indent )
 
 def parse_file( infl ):
 
@@ -11,14 +21,16 @@ def parse_file( infl ):
 
     parse_tree = parser.getAST()
 
-    print( parse_tree.toStringList() )
+    #print( parse_tree.toStringTree() )
+
+    display_ast( parse_tree, 0 )
 
     #frame = ASTFrame( "The tree", parse_tree )
     #frame.setVisible( true )
 
-    #ExpressionTreeWalker walker = new ExpressionTreeWalker();
-    #double r = walker.expr(parseTree);
-    #System.out.println("Value: "+r);
+    #walker = Walker()
+    #value = walker.expr( parse_tree )
+    #print( value )
 
 def main( argv ):
     if len( argv ) < 2:
