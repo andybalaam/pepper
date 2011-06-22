@@ -5,7 +5,7 @@ www/html
 *.marks
 *.smap
 src/parse/bin
-src/parse/SchemeLexerTokenTypes.txt
-src/parse/SchemeLexer.py
-src/parse/SchemeParserTokenTypes.txt
-src/parse/SchemeParser.py
+src/parse/EeyoreLexerTokenTypes.txt
+src/parse/EeyoreLexer.py
+src/parse/EeyoreParserTokenTypes.txt
+src/parse/EeyoreParser.py

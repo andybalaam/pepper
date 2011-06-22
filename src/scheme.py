@@ -1,8 +1,8 @@
 import sys
 
-from SchemeLexer import Lexer
-from SchemeParser import Parser
-#from SchemeTreeWalker import Walker
+from parse.EeyoreLexer import Lexer
+from parse.EeyoreParser import Parser
+#from parse.EeyoreTreeWalker import Walker
 
 def display_ast( node, indent ):
     if node is None:
