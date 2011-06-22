@@ -45,13 +45,13 @@ protected QUOTE : // TODO: single quoted strings
       '"'
 ;
 
-protected LINEFEED :
-    '\r'
-;
-
-protected CARRIAGERETURN :
-    '\n'
-;
+//protected LINEFEED :
+//    '\r'
+//;
+//
+//protected CARRIAGERETURN :
+//    '\n'
+//;
 
 //STRINGLIT : // TODO: escaped quotes within strings
 //    QUOTE!
@@ -116,7 +116,7 @@ statement :
 
 functionCall :
     expression
-    (LPAREN!)
+    (LPAREN^)
     (expression)?
     (COMMA! expression)*
     (RPAREN!)
@@ -141,14 +141,26 @@ expression :
 //;
 
 
-//class EeyoreTreeWalker extends TreeParser;
-//
-//expr returns [r]
-//    { r = 0 }
-//
-//    : #(LPAREN expr..expr)  { r = "x" }
-//    | s:SYMBOL { r = "s[" + str( s ) + "]" }
-//    | i:INTLIT { r = "i[" + str( i ) + "]" }
-//    | p:RPAREN { r = 3 }
-//;
+{
+from libeeyore.values import *
+from libeeyore.functionvalues import *
+}
+class EeyoreTreeWalker extends TreeParser;
+
+functionCall returns [r]
+    { r = None }
+    : #(LPAREN f=function a=arg) { r = EeyFunctionCall( f, (a,) ) }
+;
+
+function returns [r]
+    { r = None }
+    : f:SYMBOL { r = EeySymbol( f.getText() ) }
+;
+
+arg returns [r]
+    { r = None }
+    : s:SYMBOL     { r = EeySymbol( s.getText() ) }
+    | i: INTLIT    { r = EeyInt(    i.getText() ) }
+    | t: STRINGLIT { r = EeyString( t.getText() ) }
+;
 

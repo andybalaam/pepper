@@ -2,7 +2,11 @@ import sys
 
 from parse.EeyoreLexer import Lexer
 from parse.EeyoreParser import Parser
-#from parse.EeyoreTreeWalker import Walker
+from parse.EeyoreTreeWalker import Walker
+
+from libeeyore import builtins
+from libeeyore.environment import EeyEnvironment
+from libeeyore.cpp.cpprenderer import EeyCppRenderer
 
 def display_ast( node, indent ):
     if node is None:
@@ -23,14 +27,18 @@ def parse_file( infl ):
 
     #print( parse_tree.toStringTree() )
 
-    display_ast( parse_tree, 0 )
+    #display_ast( parse_tree, 0 )
 
     #frame = ASTFrame( "The tree", parse_tree )
     #frame.setVisible( true )
 
-    #walker = Walker()
-    #value = walker.expr( parse_tree )
-    #print( value )
+    walker = Walker()
+    value = walker.functionCall( parse_tree )
+
+    env = EeyEnvironment( EeyCppRenderer() )
+    builtins.add_builtins( env )
+
+    print( value.render( env ) )
 
 def main( argv ):
     if len( argv ) < 2:
