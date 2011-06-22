@@ -1,19 +1,22 @@
 
-all: test
+GRAMMAR=parse/eeyore.g
+GEN_LEX=parse/EeyoreLexer.py
+GEN_PAR=parse/EeyoreParser.py
+GEN_TRE=parse/EeyoreTreeWalker.py
+GENS=$(GEN_LEX) $(GEN_PAR) $(GEN_TRE)
 
-test: nosetests parsetests
+RUNANTLR=runantlr -o parse/ $(GRAMMAR) && touch $(GENS)
 
-nosetests:
+all: genparse
+
+test: genparse
 	nosetests
 
 parsetests: genparse
 	python scheme.py parse/test.eeyore
 
-genparse: parse/EeyoreLexer.py parse/EeyoreParser.py
+genparse: $(GENS)
 
-parse/EeyoreLexer.py: parse/eeyore.g
-	runantlr -o parse parse/eeyore.g
-
-parse/EeyoreParser.py: parse/eeyore.g
-	runantlr -o parse parse/eeyore.g
+%.py: $(GRAMMAR)
+	$(RUNANTLR)
 
