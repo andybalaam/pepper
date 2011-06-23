@@ -14,8 +14,9 @@ html: $(SAMPLES) $(HTMLS)
 
 samples/%.asciidoc: \
         $(wildcard $*.eeyore) \
+        $(wildcard $*.eeyorelexed) \
         $(wildcard $*.cpp) \
-        $(wildcard $*.parsetree) \
+        $(wildcard $*.eeyoreparsetree) \
         $(wildcard $*.output) \
         $(SAMPLE2ASCIIDOC)
 	$(SAMPLE2ASCIIDOC) $@

@@ -1,0 +1,4 @@
+0001:0001     SYMBOL(print)
+0001:0006     LPAREN
+0001:0008     STRING(Hello, world!)
+0001:0024     RPAREN

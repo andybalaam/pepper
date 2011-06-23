@@ -1,3 +1,10 @@
 
-sudo apt-get install python g++ antlr python-antlr ant ant-optional
+# To build parsers:
+sudo apt-get install antlr python-antlr
+
+# To run Eeyore:
+sudo apt-get install python g++
+
+# To build the docs:
+sudo apt-get install asciidoc
 
