@@ -22,6 +22,7 @@ samples/%.asciidoc: \
 	$(SAMPLE2ASCIIDOC) $@
 
 html/%.html: asciidoc/%.asciidoc layout.conf layout.css $(SAMPLES)
+	mkdir -p html
 	$(ASCIIDOC) $(ASCIIDOC_OPTS) --out-file $@ $<
 
 clean:
