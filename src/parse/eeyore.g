@@ -37,7 +37,7 @@ protected DIGIT :
     '0'..'9'
 ;
 
-INTLIT :
+INT :
     (DIGIT)+
 ;
 
@@ -53,13 +53,13 @@ protected QUOTE : // TODO: single quoted strings
 //    '\n'
 //;
 
-//STRINGLIT : // TODO: escaped quotes within strings
+//STRING : // TODO: escaped quotes within strings
 //    QUOTE!
 //    ( ~( '"'|'\r'|'\n' ) )* // Terminate string on quote or newline
 //    ( QUOTE! | )            // Fail if there was no " at the end (i.e. newline)
 //;
 
-STRINGLIT :
+STRING :
     QUOTE!
     ( ~( '"') )*
     QUOTE!
@@ -124,8 +124,8 @@ functionCall :
 
 expression :
       SYMBOL
-    | INTLIT
-    | STRINGLIT
+    | INT
+    | STRING
 ;
 
 //operator :
@@ -135,8 +135,8 @@ expression :
 //
 //operand :
 //            SYMBOL
-//        | INTLIT
-//        | STRINGLIT
+//        | INT
+//        | STRING
 //        | expression
 //;
 
@@ -159,8 +159,8 @@ function returns [r]
 
 arg returns [r]
     { r = None }
-    : s:SYMBOL     { r = EeySymbol( s.getText() ) }
-    | i: INTLIT    { r = EeyInt(    i.getText() ) }
-    | t: STRINGLIT { r = EeyString( t.getText() ) }
+    : s:SYMBOL { r = EeySymbol( s.getText() ) }
+    | i:INT    { r = EeyInt(    i.getText() ) }
+    | t:STRING { r = EeyString( t.getText() ) }
 ;
 

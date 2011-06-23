@@ -37,10 +37,10 @@ def _token( text, tp ):
 
 def test_hello_world():
     value = _parse( (
-        _token( "print",         EeyoreLexer.SYMBOL    ) ,
-        _token( "(",             EeyoreLexer.LPAREN    ) ,
-        _token( "Hello, world!", EeyoreLexer.STRINGLIT ),
-        _token( ")",             EeyoreLexer.RPAREN    ) ,
+        _token( "print",         EeyoreLexer.SYMBOL ) ,
+        _token( "(",             EeyoreLexer.LPAREN ) ,
+        _token( "Hello, world!", EeyoreLexer.STRING ),
+        _token( ")",             EeyoreLexer.RPAREN ) ,
         ) )
 
     assert_equal( value.__class__, EeyFunctionCall )

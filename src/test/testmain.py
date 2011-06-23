@@ -163,7 +163,7 @@ print( "Hello, world!" ) # comment 2
 	assert_equal( out_fl.getvalue().strip().split( "\n" ), [
 		"0004:0001     SYMBOL(print)",
 		"0004:0006     LPAREN",
-		"0004:0008  STRINGLIT(Hello, world!)",
+		"0004:0008     STRING(Hello, world!)",
 		"0004:0024     RPAREN",
 		] )
 
