@@ -3,7 +3,10 @@ from cStringIO import StringIO
 from nose.tools import *
 
 from libeeyore.eeyoreoptions import EeyoreOptions
+from libeeyore.parse_tree_to_cpp import parse_tree_to_cpp
+from libeeyore.source_to_lexed import source_to_lexed
 from libeeyore.usererrorexception import EeyUserErrorException
+
 import libeeyore.main
 
 class FakeObject( object ):
@@ -16,6 +19,10 @@ class FakeExecutor( object ):
 	def parse_tree_to_cpp( self, parse_tree_in_fl, cpp_out_fl ):
 		self.calls.append( "parse_tree_to_cpp(%s,%s)" % (
 			str( parse_tree_in_fl ), str( cpp_out_fl ) ) )
+
+	def source_to_lexed( self, source_in_fl, lexed_out_fl ):
+		self.calls.append( "source_to_lexed(%s,%s)" % (
+			str( source_in_fl ), str( lexed_out_fl ) ) )
 
 class IdentifiableFakeFile( object ):
 	def __init__( self, name ):
@@ -95,4 +102,68 @@ def test_parse_and_process_options_arguments_wrong():
 	assert_equal( stderr.getvalue(), "" )
 	assert_equal( ret, 0 )
 
+
+
+def test_process_options_source_to_lexed():
+
+	options = FakeOptions( "" )
+	options.infile.filetype = EeyoreOptions.SOURCE
+	options.infile.filename = "test.eeyore"
+	options.outfile.filetype = EeyoreOptions.LEXED
+	options.outfile.filename = "test.eeyorelexed"
+
+	file_operations = FakeFileOperations()
+	executor = FakeExecutor()
+
+	libeeyore.main.process_options( options, file_operations, executor )
+
+	fo_calls = file_operations.calls
+	assert_equal( len( fo_calls ), 2 )
+
+	assert_equal( fo_calls[0], "open_read(test.eeyore)" )
+	assert_equal( fo_calls[1], "open_write(test.eeyorelexed)" )
+
+	assert_equal( executor.calls, ["source_to_lexed(r,w)"] )
+
+
+def test_parse_tree_to_cpp():
+
+	in_fl = StringIO( """
+
+	# Comment
+	EeyFunctionCall( EeySymbol( "print" ), ( EeyString( "Hello, world!" ), ) ) #com
+	""" )
+
+	out_fl = StringIO()
+
+	parse_tree_to_cpp( in_fl, out_fl )
+
+	assert_equal( out_fl.getvalue(), """#include <stdio.h>
+
+int main( int argc, char* argv[] )
+{
+	printf( "Hello, world!\\n" );
+
+	return 0;
+}
+""" )
+
+def test_source_to_lexed():
+	in_fl = StringIO( """
+
+	# Comment
+print( "Hello, world!" ) # comment 2
+
+	""" )
+
+	out_fl = StringIO()
+
+	source_to_lexed( in_fl, out_fl )
+
+	assert_equal( out_fl.getvalue().strip().split( "\n" ), [
+		"0004:0001     SYMBOL(print)",
+		"0004:0006     LPAREN",
+		"0004:0008  STRINGLIT(Hello, world!)",
+		"0004:0024     RPAREN",
+		] )
 

@@ -7,24 +7,32 @@ from usererrorexception import EeyUserErrorException
 
 class EeyoreOptions( object ):
 
-	PARSE_TREE = 0
-	CPP        = 1
+	SOURCE     = 0
+	LEXED      = 1
+	PARSE_TREE = 2
+	CPP        = 3
 
 	USAGE = """%prog input_file output_file"""
 
 	VERSION = "%prog " + version.VERSION
 
+	EXT2TYPE = {
+		".eeyore"          : SOURCE,
+		".eeyorelexed"     : LEXED,
+		".eeyoreparsetree" : PARSE_TREE,
+		".cpp"             : CPP,
+		}
+
 	class FileDetails( object ):
+
 		def __init__( self, filename ):
 			self.filetype = self.filename2filetype( filename )
 			self.filename = filename
 
 		def filename2filetype( self, filename ):
-			if filename.endswith( ".eeyoreparsetree" ):
-				return EeyoreOptions.PARSE_TREE
-			elif filename.endswith( ".cpp" ):
-				return EeyoreOptions.CPP
-
+			for ext, tp in EeyoreOptions.EXT2TYPE.items():
+				if filename.endswith( ext ):
+					return tp
 
 	def __init__( self, argv ):
 		parser = OptionParser(
