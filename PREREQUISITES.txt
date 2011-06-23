@@ -6,5 +6,5 @@ sudo apt-get install antlr python-antlr
 sudo apt-get install python g++
 
 # To build the docs:
-sudo apt-get install asciidoc
+sudo apt-get install asciidoc source-highlight
 
