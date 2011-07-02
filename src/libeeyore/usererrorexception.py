@@ -1,3 +1,3 @@
 
 class EeyUserErrorException( Exception ):
-	pass
+    pass
