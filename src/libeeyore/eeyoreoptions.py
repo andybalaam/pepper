@@ -12,6 +12,7 @@ class EeyoreOptions( object ):
     PARSE_TREE = 2
     CPP        = 3
     EXE        = 4
+    RUN        = 5
 
     USAGE = """%prog input_file output_file"""
 
@@ -36,6 +37,10 @@ class EeyoreOptions( object ):
                     return tp
             return EeyoreOptions.EXE
 
+    class RunFileDetails( object ):
+        def __init__( self ):
+            self.filetype = EeyoreOptions.RUN
+
     def __init__( self, argv ):
         parser = OptionParser(
             usage   = EeyoreOptions.USAGE,
@@ -45,9 +50,13 @@ class EeyoreOptions( object ):
 
         (options, args) = parser.parse_args( argv[1:] )
 
-        if len( args ) != 2:
+        lenargs = len( args )
+        if lenargs == 2:
+            self.infile  = EeyoreOptions.FileDetails( args[0] )
+            self.outfile = EeyoreOptions.FileDetails( args[1] )
+        elif lenargs == 1:
+            self.infile  = EeyoreOptions.FileDetails( args[0] )
+            self.outfile = EeyoreOptions.RunFileDetails()
+        else:
             raise EeyUserErrorException( parser.get_usage() )
-
-        self.infile  = EeyoreOptions.FileDetails( args[0] )
-        self.outfile = EeyoreOptions.FileDetails( args[1] )
 
