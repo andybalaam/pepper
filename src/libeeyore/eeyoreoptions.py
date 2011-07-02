@@ -11,6 +11,7 @@ class EeyoreOptions( object ):
     LEXED      = 1
     PARSE_TREE = 2
     CPP        = 3
+    EXE        = 4
 
     USAGE = """%prog input_file output_file"""
 
@@ -33,6 +34,7 @@ class EeyoreOptions( object ):
             for ext, tp in EeyoreOptions.EXT2TYPE.items():
                 if filename.endswith( ext ):
                     return tp
+            return EeyoreOptions.EXE
 
     def __init__( self, argv ):
         parser = OptionParser(
