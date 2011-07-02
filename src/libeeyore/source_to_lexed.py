@@ -1,5 +1,6 @@
 
 from parse import EeyoreLexer
+from parse import EeyoreParser
 
 def _render_text( token ):
     if token.getType() in ( EeyoreLexer.LPAREN, EeyoreLexer.RPAREN ):
