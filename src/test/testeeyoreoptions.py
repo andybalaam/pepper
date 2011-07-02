@@ -34,3 +34,13 @@ def test_eeyore_to_lexed():
     assert_equal( opts.outfile.filename, "outfile.eeyorelexed" )
 
 
+def test_eeyore_to_exe():
+    opts = EeyoreOptions(
+        [ "progname", "infile.eeyore", "outfile" ] )
+
+    assert_equal( opts.infile.filetype, EeyoreOptions.SOURCE )
+    assert_equal( opts.infile.filename, "infile.eeyore" )
+
+    assert_equal( opts.outfile.filetype, EeyoreOptions.EXE )
+    assert_equal( opts.outfile.filename, "outfile" )
+
