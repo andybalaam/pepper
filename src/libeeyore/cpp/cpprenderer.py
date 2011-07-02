@@ -15,11 +15,11 @@ class EeyCppRenderer( object ):
         ret += "\n\nint main( int argc, char* argv[] )\n{\n"
 
         for ln in filter( lambda x: len( x ) != 0, rendered_lines ):
-            ret += "\t"
+            ret += "    "
             ret += ln
             ret += ";\n"
 
-        ret += "\n\treturn 0;\n"
+        ret += "\n    return 0;\n"
         ret += "}\n"
 
         return ret

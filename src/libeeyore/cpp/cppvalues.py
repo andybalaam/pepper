@@ -66,7 +66,7 @@ def render_EeyUserFunction_body( env, func_call ):
 
     # TODO: not every statement should be a return
     for body_stmt in fn.body_stmts:
-        ret += "\treturn %s;\n" % body_stmt.render( newenv )
+        ret += "    return %s;\n" % body_stmt.render( newenv )
 
     ret += "}\n"
 
