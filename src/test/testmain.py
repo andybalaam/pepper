@@ -8,10 +8,11 @@ from libeeyore.buildsteps.parsebuildstep import ParseBuildStep
 from libeeyore.buildsteps.renderbuildstep import RenderBuildStep
 from libeeyore.buildsteps.sourcebuildstep import SourceBuildStep
 from libeeyore.eeyoreoptions import EeyoreOptions
-from parse import EeyoreLexer
 from libeeyore.usererrorexception import EeyUserErrorException
 from libeeyore.functionvalues import *
 from libeeyore.values import *
+from parse import EeyoreLexer
+from tokenutils import Iterable2TokenStream, make_token
 
 import libeeyore.main
 
@@ -156,58 +157,6 @@ def test_process_options_source_to_lexed():
         ] )
 
 
-def test_ParseBuildStep_read_from_file():
-
-    step = ParseBuildStep()
-
-    in_fl = StringIO( """
-
-    # Comment
-    EeyFunctionCall( EeySymbol( "print" ), ( EeyString( "Hello, world!" ), ) ) #com
-    """ )
-
-    values = list( step.read_from_file( in_fl ) )
-
-    assert_equal( len( values ), 1 )
-
-    fncall = values[0]
-    assert_equal( fncall.__class__, EeyFunctionCall )
-    assert_equal( fncall.func_name, "print" )
-    func = fncall.func
-    assert_equal( func.__class__, EeySymbol )
-    assert_equal( func.symbol_name, "print" )
-    args = fncall.args
-    assert_equal( len( args ), 1 )
-    hwstr = args[0]
-    assert_equal( hwstr.__class__, EeyString )
-    assert_equal( hwstr.value, "Hello, world!" )
-
-def test_RenderBuildStep_process():
-
-    step = RenderBuildStep()
-
-    parsetree = [ EeyFunctionCall( EeySymbol( "print" ), (
-            EeyString( "Hello, world!" ),
-        ) ) ]
-
-    cpp = step.process( parsetree )
-
-    assert_equal( cpp, """#include <stdio.h>
-
-int main( int argc, char* argv[] )
-{
-    printf( "Hello, world!\\n" );
-
-    return 0;
-}
-""" )
-
-def test_RenderBuildStep_write_to_file():
-    step = RenderBuildStep()
-    out_fl = StringIO()
-    step.write_to_file( "foobar", out_fl )
-    assert_equal( out_fl.getvalue(), "foobar" )
-
 
 def test_SourceBuildStep_read_from_file():
     prog = """
@@ -222,6 +171,7 @@ print( "Hello, world!" ) # comment 2
     value = step.read_from_file( in_fl )
 
     assert_equal( value.getvalue(), prog )
+
 
 
 def test_LexBuildStep_process():
@@ -295,4 +245,88 @@ def test_LexBuildStep_write_to_file():
         "0004:0008     STRING(Hello)",
         "0004:0024     RPAREN",
         ] )
+
+
+def test_ParseBuildStep_read_from_file():
+
+    step = ParseBuildStep()
+
+    in_fl = StringIO( """
+
+    # Comment
+    EeyFunctionCall( EeySymbol( "print" ), ( EeyString( "Hello, world!" ), ) ) #com
+    """ )
+
+    values = list( step.read_from_file( in_fl ) )
+
+    assert_equal( len( values ), 1 )
+
+    fncall = values[0]
+    assert_equal( fncall.__class__, EeyFunctionCall )
+    assert_equal( fncall.func_name, "print" )
+    func = fncall.func
+    assert_equal( func.__class__, EeySymbol )
+    assert_equal( func.symbol_name, "print" )
+    args = fncall.args
+    assert_equal( len( args ), 1 )
+    hwstr = args[0]
+    assert_equal( hwstr.__class__, EeyString )
+    assert_equal( hwstr.value, "Hello, world!" )
+
+
+def test_ParseBuildStep_process():
+
+    step = ParseBuildStep()
+
+    tokens = Iterable2TokenStream( (
+        make_token( "print", EeyoreLexer.SYMBOL, 4, 1 ),
+        make_token( "(",     EeyoreLexer.LPAREN, 4, 6 ),
+        make_token( "Hello", EeyoreLexer.STRING, 4, 8 ),
+        make_token( ")",     EeyoreLexer.RPAREN, 4, 15 ),
+        ) )
+
+    values = list( step.process( tokens ) )
+
+    assert_equal( len( values ), 1 )
+
+    fncall = values[0]
+    assert_equal( fncall.__class__, EeyFunctionCall )
+    assert_equal( fncall.func_name, "print" )
+    func = fncall.func
+    assert_equal( func.__class__, EeySymbol )
+    assert_equal( func.symbol_name, "print" )
+    args = fncall.args
+    assert_equal( len( args ), 1 )
+    hwstr = args[0]
+    assert_equal( hwstr.__class__, EeyString )
+    assert_equal( hwstr.value, "Hello" )
+
+
+
+def test_RenderBuildStep_process():
+
+    step = RenderBuildStep()
+
+    parsetree = [ EeyFunctionCall( EeySymbol( "print" ), (
+            EeyString( "Hello, world!" ),
+        ) ) ]
+
+    cpp = step.process( parsetree )
+
+    assert_equal( cpp, """#include <stdio.h>
+
+int main( int argc, char* argv[] )
+{
+    printf( "Hello, world!\\n" );
+
+    return 0;
+}
+""" )
+
+def test_RenderBuildStep_write_to_file():
+    step = RenderBuildStep()
+    out_fl = StringIO()
+    step.write_to_file( "foobar", out_fl )
+    assert_equal( out_fl.getvalue(), "foobar" )
+
 
