@@ -9,9 +9,14 @@ from libeeyore.usererrorexception import EeyUserErrorException
 def test_no_args():
     EeyoreOptions( [ "progname" ] )
 
-@raises( EeyUserErrorException )
 def test_one_arg():
-    EeyoreOptions( [ "progname", "infile.eeyoreparsetree" ] )
+    opts = EeyoreOptions( [ "progname", "infile.eeyore" ] )
+
+    assert_equal( opts.infile.filetype, EeyoreOptions.SOURCE )
+    assert_equal( opts.infile.filename, "infile.eeyore" )
+
+    assert_equal( opts.outfile.filetype, EeyoreOptions.RUN )
+
 
 def test_parse_to_cpp():
     opts = EeyoreOptions(

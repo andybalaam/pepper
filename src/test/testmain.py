@@ -2,27 +2,48 @@
 from cStringIO import StringIO
 from nose.tools import *
 
+from libeeyore.buildsteps.buildstep import BuildStep
+from libeeyore.buildsteps.lexbuildstep import LexBuildStep
+from libeeyore.buildsteps.parsebuildstep import ParseBuildStep
+from libeeyore.buildsteps.renderbuildstep import RenderBuildStep
+from libeeyore.buildsteps.sourcebuildstep import SourceBuildStep
 from libeeyore.eeyoreoptions import EeyoreOptions
-from libeeyore.parse_tree_to_cpp import parse_tree_to_cpp
-from libeeyore.source_to_lexed import source_to_lexed
+from parse import EeyoreLexer
 from libeeyore.usererrorexception import EeyUserErrorException
+from libeeyore.functionvalues import *
+from libeeyore.values import *
 
 import libeeyore.main
 
 class FakeObject( object ):
     pass
 
+class FakeBuildStep( BuildStep ):
+    def __init__( self, executor, name ):
+        self.executor = executor
+        self.name = name
+
+    def read_from_file( self, fl ):
+        self.executor.calls.append( self.name + ".read_from_file(%s)" % (
+            fl.name ) )
+
+    def process( self, inp ):
+        self.executor.calls.append( self.name + ".process(inp)" )
+
+    def write_to_file( self, val, fl ):
+        self.executor.calls.append( self.name + ".write_to_file(val,%s)" % (
+            fl.name ) )
+
+
 class FakeExecutor( object ):
     def __init__( self ):
         self.calls = []
-
-    def parse_tree_to_cpp( self, parse_tree_in_fl, cpp_out_fl ):
-        self.calls.append( "parse_tree_to_cpp(%s,%s)" % (
-            str( parse_tree_in_fl ), str( cpp_out_fl ) ) )
-
-    def source_to_lexed( self, source_in_fl, lexed_out_fl ):
-        self.calls.append( "source_to_lexed(%s,%s)" % (
-            str( source_in_fl ), str( lexed_out_fl ) ) )
+        self.build_steps = [
+            FakeBuildStep( self, "Source" ),
+            FakeBuildStep( self, "Lex" ),
+            FakeBuildStep( self, "Parse" ),
+            FakeBuildStep( self, "Render" ),
+            ]
 
 class IdentifiableFakeFile( object ):
     def __init__( self, name ):
@@ -67,13 +88,17 @@ def test_process_options_parse_tree_to_cpp():
     libeeyore.main.process_options( options, file_operations, executor )
 
     fo_calls = file_operations.calls
-    assert_equal( len( fo_calls ), 2 )
 
-    assert_equal( fo_calls[0], "open_read(test.eeyoreparsetree)" )
-    assert_equal( fo_calls[1], "open_write(test.cpp)" )
+    assert_equal( fo_calls, [
+        "open_read(test.eeyoreparsetree)",
+        "open_write(test.cpp)"
+        ] )
 
-    assert_equal( executor.calls, ["parse_tree_to_cpp(r,w)"] )
-
+    assert_equal( executor.calls, [
+        "Parse.read_from_file(r)",
+        "Render.process(inp)",
+        "Render.write_to_file(val,w)",
+        ] )
 
 class AlwaysThrowUserErrorOptions( object ):
     def __init__( self, argv ):
@@ -92,7 +117,7 @@ def test_parse_and_process_options_arguments_wrong():
 
 
 
-def test_parse_and_process_options_arguments_wrong():
+def test_parse_and_process_options_arguments_right():
 
     stderr = StringIO()
 
@@ -118,15 +143,22 @@ def test_process_options_source_to_lexed():
     libeeyore.main.process_options( options, file_operations, executor )
 
     fo_calls = file_operations.calls
-    assert_equal( len( fo_calls ), 2 )
 
-    assert_equal( fo_calls[0], "open_read(test.eeyore)" )
-    assert_equal( fo_calls[1], "open_write(test.eeyorelexed)" )
+    assert_equal( fo_calls, [
+        "open_read(test.eeyore)",
+        "open_write(test.eeyorelexed)"
+        ] )
 
-    assert_equal( executor.calls, ["source_to_lexed(r,w)"] )
+    assert_equal( executor.calls, [
+        "Source.read_from_file(r)",
+        "Lex.process(inp)",
+        "Lex.write_to_file(val,w)",
+        ] )
 
 
-def test_parse_tree_to_cpp():
+def test_ParseBuildStep_read_from_file():
+
+    step = ParseBuildStep()
 
     in_fl = StringIO( """
 
@@ -134,11 +166,33 @@ def test_parse_tree_to_cpp():
     EeyFunctionCall( EeySymbol( "print" ), ( EeyString( "Hello, world!" ), ) ) #com
     """ )
 
-    out_fl = StringIO()
+    values = list( step.read_from_file( in_fl ) )
 
-    parse_tree_to_cpp( in_fl, out_fl )
+    assert_equal( len( values ), 1 )
 
-    assert_equal( out_fl.getvalue(), """#include <stdio.h>
+    fncall = values[0]
+    assert_equal( fncall.__class__, EeyFunctionCall )
+    assert_equal( fncall.func_name, "print" )
+    func = fncall.func
+    assert_equal( func.__class__, EeySymbol )
+    assert_equal( func.symbol_name, "print" )
+    args = fncall.args
+    assert_equal( len( args ), 1 )
+    hwstr = args[0]
+    assert_equal( hwstr.__class__, EeyString )
+    assert_equal( hwstr.value, "Hello, world!" )
+
+def test_RenderBuildStep_process():
+
+    step = RenderBuildStep()
+
+    parsetree = [ EeyFunctionCall( EeySymbol( "print" ), (
+            EeyString( "Hello, world!" ),
+        ) ) ]
+
+    cpp = step.process( parsetree )
+
+    assert_equal( cpp, """#include <stdio.h>
 
 int main( int argc, char* argv[] )
 {
@@ -148,22 +202,97 @@ int main( int argc, char* argv[] )
 }
 """ )
 
-def test_source_to_lexed():
-    in_fl = StringIO( """
+def test_RenderBuildStep_write_to_file():
+    step = RenderBuildStep()
+    out_fl = StringIO()
+    step.write_to_file( "foobar", out_fl )
+    assert_equal( out_fl.getvalue(), "foobar" )
+
+
+def test_SourceBuildStep_read_from_file():
+    prog = """
 
     # Comment
 print( "Hello, world!" ) # comment 2
 
-    """ )
+    """
+    step = SourceBuildStep()
+    in_fl = StringIO( prog )
+
+    value = step.read_from_file( in_fl )
+
+    assert_equal( value.getvalue(), prog )
+
+
+def test_LexBuildStep_process():
+
+    step = LexBuildStep()
+    values = list( step.process( StringIO( """
+
+    # Comment
+print( "Hello, world!" ) # comment 2
+
+    """ ) ) )
+
+    assert_equal( values[0].getType(),   EeyoreLexer.SYMBOL )
+    assert_equal( values[0].getText(),   "print" )
+    assert_equal( values[0].getLine(),   4 )
+    assert_equal( values[0].getColumn(), 1 )
+
+    assert_equal( values[1].getType(),   EeyoreLexer.LPAREN )
+    assert_equal( values[1].getLine(),   4 )
+    assert_equal( values[1].getColumn(), 6 )
+
+    assert_equal( values[2].getType(),   EeyoreLexer.STRING )
+    assert_equal( values[2].getText(),   "Hello, world!" )
+    assert_equal( values[2].getLine(),   4 )
+    assert_equal( values[2].getColumn(), 8 )
+
+    assert_equal( values[3].getType(),   EeyoreLexer.RPAREN )
+    assert_equal( values[3].getLine(),   4 )
+    assert_equal( values[3].getColumn(), 24 )
+
+    assert_equal( len( values ), 4 )
+
+class FakeToken( object ):
+    def __init__( self, tp, text, line, column ):
+        self.tp = tp
+        self.text = text
+        self.line = line
+        self.column = column
+
+    def getType( self ):
+        return self.tp
+
+    def getText( self ):
+        return self.text
+
+    def getLine( self ):
+        return self.line
+
+    def getColumn( self ):
+        return self.column
+
+
+def test_LexBuildStep_write_to_file():
+
+    tokens = [
+        FakeToken( EeyoreLexer.SYMBOL, "print", 4, 1 ),
+        FakeToken( EeyoreLexer.LPAREN, None,    4, 6 ),
+        FakeToken( EeyoreLexer.STRING, "Hello", 4, 8 ),
+        FakeToken( EeyoreLexer.RPAREN, None,    4, 24 ),
+        ]
 
     out_fl = StringIO()
 
-    source_to_lexed( in_fl, out_fl )
+    step = LexBuildStep()
+
+    step.write_to_file( tokens, out_fl )
 
     assert_equal( out_fl.getvalue().strip().split( "\n" ), [
         "0004:0001     SYMBOL(print)",
         "0004:0006     LPAREN",
-        "0004:0008     STRING(Hello, world!)",
+        "0004:0008     STRING(Hello)",
         "0004:0024     RPAREN",
         ] )
 

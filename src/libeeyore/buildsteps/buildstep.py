@@ -10,5 +10,5 @@ class BuildStep( object ):
     def process( self, inp ): pass
 
     @abstractmethod
-    def write_to_file( self, fl ): pass
+    def write_to_file( self, val, fl ): pass
 

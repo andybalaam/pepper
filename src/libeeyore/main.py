@@ -17,14 +17,13 @@ RET_SUCCESS    = 0
 RET_USER_ERROR = 1
 
 class Executor( object ):
-    def parse_tree_to_cpp( self, parse_tree_in_fl, cpp_out_fl ):
-        parse_tree_to_cpp.parse_tree_to_cpp( parse_tree_in_fl, cpp_out_fl )
-
-    def source_to_lexed( self, source_in_fl, lexed_out_fl ):
-        source_to_lexed.source_to_lexed( source_in_fl, lexed_out_fl )
-
-    def source_to_exe( self, source_in_fl, exe_out_filename ):
-        source_to_exe.source_to_exe( source_in_fl, exe_out_filename )
+    def __init__( self ):
+        self.build_steps = [
+            SourceBuildStep(),   # EeyoreOptions.SOURCE     = 0
+            LexBuildStep(),      # EeyoreOptions.LEXED      = 1
+            ParseBuildStep(),    # EeyoreOptions.PARSE_TREE = 2
+            RenderBuildStep(),   # EeyoreOptions.CPP        = 3
+            ]
 
 class FileOperations( object ):
     def open_read( self, filename ):
@@ -32,13 +31,6 @@ class FileOperations( object ):
 
     def open_write( self, filename ):
         return open( filename, "w" )
-
-build_steps = [
-    SourceBuildStep(),   # EeyoreOptions.SOURCE     = 0
-    LexBuildStep(),      # EeyoreOptions.LEXED      = 1
-    ParseBuildStep(),    # EeyoreOptions.PARSE_TREE = 2
-    RenderBuildStep(),   # EeyoreOptions.CPP        = 3
-    ]
 
 def process_options( opts, fl_op, executor ):
 
@@ -48,11 +40,11 @@ def process_options( opts, fl_op, executor ):
     assert( inf.filetype < ouf.filetype ) # TODO: proper error message
 
     with fl_op.open_read( inf.filename ) as in_fl:
-        step = build_steps[inf.filetype]
+        step = executor.build_steps[inf.filetype]
         val = step.read_from_file( in_fl )
         for i in range( inf.filetype + 1,
                 min( EeyoreOptions.EXE, ouf.filetype + 1 ) ):
-            step = build_steps[i]
+            step = executor.build_steps[i]
             val = step.process( val )
             if i == ouf.filetype:
                 with fl_op.open_write( ouf.filename ) as out_fl:

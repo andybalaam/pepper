@@ -6,9 +6,9 @@ from parse import EeyoreParser
 from parse import EeyoreTreeWalker
 
 def _parse_tree_string_to_values( string ):
-    from functionvalues import *
-    from languagevalues import *
-    from values import *
+    from libeeyore.functionvalues import *
+    from libeeyore.languagevalues import *
+    from libeeyore.values import *
 
     # The parse tree is actually a valid Python file
     return eval( string )
@@ -26,8 +26,8 @@ def _non_empty_line( ln ):
 class ParseBuildStep( BuildStep ):
     def read_from_file( self, fl ):
         return ( _parse_tree_string_to_values( ln ) for ln in
-            filter( non_empty_line,
-                imap( remove_comments, parse_tree_in_fl ) ) )
+            filter( _non_empty_line,
+                imap( _remove_comments, fl ) ) )
 
     def process( self, val ):
         parser = EeyoreParser.Parser( val )
