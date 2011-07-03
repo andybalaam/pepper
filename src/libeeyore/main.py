@@ -1,9 +1,6 @@
 
 import cmd_runner
 import cpp_compiler
-import parse_tree_to_cpp
-import source_to_exe
-import source_to_lexed
 
 from eeyoreoptions import EeyoreOptions
 from usererrorexception import EeyUserErrorException
