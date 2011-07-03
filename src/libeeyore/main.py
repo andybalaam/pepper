@@ -21,6 +21,8 @@ class Executor( object ):
             ParseBuildStep(),    # EeyoreOptions.PARSE_TREE = 2
             RenderBuildStep(),   # EeyoreOptions.CPP        = 3
             ]
+        self.cpp_compiler = cpp_compiler
+        self.cmd_runner   = cmd_runner
 
 class FileOperations( object ):
     def open_read( self, filename ):
@@ -48,11 +50,12 @@ def process_options( opts, fl_op, executor ):
                     step.write_to_file( val, out_fl )
 
         if ouf.filetype == EeyoreOptions.EXE:
-            cpp_compiler.run( val, ouf_filename )
+            executor.cpp_compiler.run( val, ouf_filename )
         elif ouf.filetype == EeyoreOptions.RUN:
             # TODO: make tmp dir and contruct filename
-            cpp_compiler.run( val, "./a.out" )
-            return cmd_runner.run( "./a.out" ) # TODO: pass through argv
+            executor.cpp_compiler.run( val, "./a.out" )
+             # TODO: pass through argv
+            return executor.cmd_runner.run( "./a.out" )
 
     return RET_SUCCESS
 

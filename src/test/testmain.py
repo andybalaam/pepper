@@ -35,6 +35,21 @@ class FakeBuildStep( BuildStep ):
         self.executor.calls.append( self.name + ".write_to_file(val,%s)" % (
             fl.name ) )
 
+class FakeCppCompiler( object ):
+    def __init__( self, executor ):
+        self.executor = executor
+
+    def run( self, cpp, exe_filename ):
+        self.executor.calls.append( "cpp_compiler.run(%s)" % exe_filename )
+
+
+class FakeCmdRunner( object ):
+    def __init__( self, executor ):
+        self.executor = executor
+
+    def run( self, exe_filename ):
+        self.executor.calls.append( "cmd_runner.run(%s)" % exe_filename )
+
 
 class FakeExecutor( object ):
     def __init__( self ):
@@ -45,6 +60,9 @@ class FakeExecutor( object ):
             FakeBuildStep( self, "Parse" ),
             FakeBuildStep( self, "Render" ),
             ]
+        self.cpp_compiler = FakeCppCompiler( self )
+        self.cmd_runner   = FakeCmdRunner( self )
+
 
 class IdentifiableFakeFile( object ):
     def __init__( self, name ):
@@ -155,6 +173,36 @@ def test_process_options_source_to_lexed():
         "Lex.process(inp)",
         "Lex.write_to_file(val,w)",
         ] )
+
+
+def test_process_options_source_to_run():
+
+    options = FakeOptions( "" )
+    options.infile.filetype = EeyoreOptions.SOURCE
+    options.infile.filename = "test.eeyore"
+    options.outfile.filetype = EeyoreOptions.RUN
+
+    file_operations = FakeFileOperations()
+    executor = FakeExecutor()
+
+    libeeyore.main.process_options( options, file_operations, executor )
+
+    fo_calls = file_operations.calls
+
+    assert_equal( fo_calls, [
+        "open_read(test.eeyore)",
+        ] )
+
+    assert_equal( executor.calls, [
+        "Source.read_from_file(r)",
+        "Lex.process(inp)",
+        "Parse.process(inp)",
+        "Render.process(inp)",
+        "cpp_compiler.run(./a.out)",
+        "cmd_runner.run(./a.out)",
+        ] )
+
+
 
 
 
