@@ -50,7 +50,7 @@ def process_options( opts, fl_op, executor ):
                     step.write_to_file( val, out_fl )
 
         if ouf.filetype == EeyoreOptions.EXE:
-            executor.cpp_compiler.run( val, ouf_filename )
+            executor.cpp_compiler.run( val, ouf.filename )
         elif ouf.filetype == EeyoreOptions.RUN:
             # TODO: make tmp dir and contruct filename
             executor.cpp_compiler.run( val, "./a.out" )

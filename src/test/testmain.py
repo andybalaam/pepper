@@ -204,6 +204,34 @@ def test_process_options_source_to_run():
 
 
 
+def test_process_options_source_to_exe():
+
+    options = FakeOptions( "" )
+    options.infile.filetype = EeyoreOptions.SOURCE
+    options.infile.filename = "test.eeyore"
+    options.outfile.filetype = EeyoreOptions.EXE
+    options.outfile.filename = "test"
+
+    file_operations = FakeFileOperations()
+    executor = FakeExecutor()
+
+    libeeyore.main.process_options( options, file_operations, executor )
+
+    fo_calls = file_operations.calls
+
+    assert_equal( fo_calls, [
+        "open_read(test.eeyore)",
+        ] )
+
+    assert_equal( executor.calls, [
+        "Source.read_from_file(r)",
+        "Lex.process(inp)",
+        "Parse.process(inp)",
+        "Render.process(inp)",
+        "cpp_compiler.run(test)",
+        ] )
+
+
 
 
 def test_SourceBuildStep_read_from_file():
