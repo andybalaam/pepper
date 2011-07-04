@@ -1,6 +1,8 @@
 
-import cmd_runner
-import cpp_compiler
+import subprocess
+
+import cpp.cmdrunner
+import cpp.cppcompiler
 
 from eeyoreoptions import EeyoreOptions
 from usererrorexception import EeyUserErrorException
@@ -14,15 +16,15 @@ RET_SUCCESS    = 0
 RET_USER_ERROR = 1
 
 class Executor( object ):
-    def __init__( self ):
+    def __init__( self, sys_op ):
         self.build_steps = [
             SourceBuildStep(),   # EeyoreOptions.SOURCE     = 0
             LexBuildStep(),      # EeyoreOptions.LEXED      = 1
             ParseBuildStep(),    # EeyoreOptions.PARSE_TREE = 2
             RenderBuildStep(),   # EeyoreOptions.CPP        = 3
             ]
-        self.cpp_compiler = cpp_compiler
-        self.cmd_runner   = cmd_runner
+        self.cppcompiler = cpp.cppcompiler.CppCompiler( sys_op )
+        self.cmdrunner   = cpp.cmdrunner.CmdRunner( sys_op )
 
 class SystemOperations( object ):
     def open_read( self, filename ):
@@ -30,6 +32,9 @@ class SystemOperations( object ):
 
     def open_write( self, filename ):
         return open( filename, "w" )
+
+    def Popen( self, args, stdin = None ):
+        return subprocess.Popen( args, stdin=stdin )
 
 def process_options( opts, sys_op, executor ):
 
@@ -50,26 +55,26 @@ def process_options( opts, sys_op, executor ):
                     step.write_to_file( val, out_fl )
 
         if ouf.filetype == EeyoreOptions.EXE:
-            executor.cpp_compiler.run( val, ouf.filename )
+            executor.cppcompiler.run( val, ouf.filename )
         elif ouf.filetype == EeyoreOptions.RUN:
             # TODO: make tmp dir and contruct filename
-            executor.cpp_compiler.run( val, "./a.out" )
+            executor.cppcompiler.run( val, "./a.out" )
              # TODO: pass through argv
-            return executor.cmd_runner.run( "./a.out" )
+            return executor.cmdrunner.run( "./a.out" )
 
     return RET_SUCCESS
 
 
-def parse_and_process_options( argv, options_Class, fileops_Class, exec_Class,
+def parse_and_process_options( argv, options_Class, sysops_Class, exec_Class,
         stderr ):
 
     try:
 
         options = options_Class( argv )
-        file_operations = fileops_Class()
-        executor = exec_Class()
+        sys_operations = sysops_Class()
+        executor = exec_Class( sys_operations )
 
-        return process_options( options, file_operations, executor )
+        return process_options( options, sys_operations, executor )
 
     except EeyUserErrorException, e:
         stderr.write( str( e ) + "\n" )

@@ -40,7 +40,7 @@ class FakeCppCompiler( object ):
         self.executor = executor
 
     def run( self, cpp, exe_filename ):
-        self.executor.calls.append( "cpp_compiler.run(%s)" % exe_filename )
+        self.executor.calls.append( "cppcompiler.run(%s)" % exe_filename )
 
 
 class FakeCmdRunner( object ):
@@ -48,11 +48,11 @@ class FakeCmdRunner( object ):
         self.executor = executor
 
     def run( self, exe_filename ):
-        self.executor.calls.append( "cmd_runner.run(%s)" % exe_filename )
+        self.executor.calls.append( "cmdrunner.run(%s)" % exe_filename )
 
 
 class FakeExecutor( object ):
-    def __init__( self ):
+    def __init__( self, sys_ops ):
         self.calls = []
         self.build_steps = [
             FakeBuildStep( self, "Source" ),
@@ -60,8 +60,8 @@ class FakeExecutor( object ):
             FakeBuildStep( self, "Parse" ),
             FakeBuildStep( self, "Render" ),
             ]
-        self.cpp_compiler = FakeCppCompiler( self )
-        self.cmd_runner   = FakeCmdRunner( self )
+        self.cppcompiler = FakeCppCompiler( self )
+        self.cmdrunner   = FakeCmdRunner( self )
 
 
 class IdentifiableFakeFile( object ):
@@ -77,7 +77,8 @@ class IdentifiableFakeFile( object ):
     def __str__( self ):
         return self.name
 
-class FakeFileOperations( object ):
+
+class FakeSystemOperations( object ):
     def __init__( self ):
         self.calls = []
 
@@ -88,6 +89,7 @@ class FakeFileOperations( object ):
     def open_write( self, filename ):
         self.calls.append( "open_write(%s)" % filename )
         return IdentifiableFakeFile( "w" )
+
 
 class FakeOptions( object ):
     def __init__( self, argv ):
@@ -101,8 +103,8 @@ class FakeOptions( object ):
 def test_process_options_parse_tree_to_cpp():
 
     options = FakeOptions( "" )
-    file_operations = FakeFileOperations()
-    executor = FakeExecutor()
+    file_operations = FakeSystemOperations()
+    executor = FakeExecutor( None )
 
     libeeyore.main.process_options( options, file_operations, executor )
 
@@ -141,7 +143,7 @@ def test_parse_and_process_options_arguments_right():
     stderr = StringIO()
 
     ret = libeeyore.main.parse_and_process_options( [],
-        FakeOptions, FakeFileOperations, FakeExecutor, stderr )
+        FakeOptions, FakeSystemOperations, FakeExecutor, stderr )
 
     assert_equal( stderr.getvalue(), "" )
     assert_equal( ret, 0 )
@@ -156,8 +158,8 @@ def test_process_options_source_to_lexed():
     options.outfile.filetype = EeyoreOptions.LEXED
     options.outfile.filename = "test.eeyorelexed"
 
-    file_operations = FakeFileOperations()
-    executor = FakeExecutor()
+    file_operations = FakeSystemOperations()
+    executor = FakeExecutor( None )
 
     libeeyore.main.process_options( options, file_operations, executor )
 
@@ -182,8 +184,8 @@ def test_process_options_source_to_run():
     options.infile.filename = "test.eeyore"
     options.outfile.filetype = EeyoreOptions.RUN
 
-    file_operations = FakeFileOperations()
-    executor = FakeExecutor()
+    file_operations = FakeSystemOperations()
+    executor = FakeExecutor( None )
 
     libeeyore.main.process_options( options, file_operations, executor )
 
@@ -198,8 +200,8 @@ def test_process_options_source_to_run():
         "Lex.process(inp)",
         "Parse.process(inp)",
         "Render.process(inp)",
-        "cpp_compiler.run(./a.out)",
-        "cmd_runner.run(./a.out)",
+        "cppcompiler.run(./a.out)",
+        "cmdrunner.run(./a.out)",
         ] )
 
 
@@ -212,8 +214,8 @@ def test_process_options_source_to_exe():
     options.outfile.filetype = EeyoreOptions.EXE
     options.outfile.filename = "test"
 
-    file_operations = FakeFileOperations()
-    executor = FakeExecutor()
+    file_operations = FakeSystemOperations()
+    executor = FakeExecutor( None )
 
     libeeyore.main.process_options( options, file_operations, executor )
 
@@ -228,7 +230,7 @@ def test_process_options_source_to_exe():
         "Lex.process(inp)",
         "Parse.process(inp)",
         "Render.process(inp)",
-        "cpp_compiler.run(test)",
+        "cppcompiler.run(test)",
         ] )
 
 
