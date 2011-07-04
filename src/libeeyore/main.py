@@ -24,21 +24,21 @@ class Executor( object ):
         self.cpp_compiler = cpp_compiler
         self.cmd_runner   = cmd_runner
 
-class FileOperations( object ):
+class SystemOperations( object ):
     def open_read( self, filename ):
         return open( filename, "r" )
 
     def open_write( self, filename ):
         return open( filename, "w" )
 
-def process_options( opts, fl_op, executor ):
+def process_options( opts, sys_op, executor ):
 
     inf = opts.infile
     ouf = opts.outfile
 
     assert( inf.filetype < ouf.filetype ) # TODO: proper error message
 
-    with fl_op.open_read( inf.filename ) as in_fl:
+    with sys_op.open_read( inf.filename ) as in_fl:
         step = executor.build_steps[inf.filetype]
         val = step.read_from_file( in_fl )
         for i in range( inf.filetype + 1,
@@ -46,7 +46,7 @@ def process_options( opts, fl_op, executor ):
             step = executor.build_steps[i]
             val = step.process( val )
             if i == ouf.filetype:
-                with fl_op.open_write( ouf.filename ) as out_fl:
+                with sys_op.open_write( ouf.filename ) as out_fl:
                     step.write_to_file( val, out_fl )
 
         if ouf.filetype == EeyoreOptions.EXE:
@@ -77,7 +77,7 @@ def parse_and_process_options( argv, options_Class, fileops_Class, exec_Class,
 
 def main( argv, stderr ):
 
-    return parse_and_process_options( argv, EeyoreOptions, FileOperations,
+    return parse_and_process_options( argv, EeyoreOptions, SystemOperations,
         Executor, stderr )
 
 
