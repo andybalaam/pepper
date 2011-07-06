@@ -7,10 +7,12 @@ GENS=$(GEN_LEX) $(GEN_PAR) $(GEN_TRE)
 
 RUNANTLR=runantlr -o parse/ $(GRAMMAR) && touch $(GENS)
 
+export PATH := ${PWD}:${PATH}
+
 all: genparse
 
 test: genparse
-	nosetests
+	python test/eeyorenosetests.py --with-eeyoresamplenoseplugin
 
 parsetests: genparse
 	python scheme.py parse/test.eeyore
