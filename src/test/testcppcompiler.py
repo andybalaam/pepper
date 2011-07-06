@@ -2,6 +2,7 @@
 from nose.tools import *
 
 from libeeyore.cpp.cppcompiler import CppCompiler
+from libeeyore.cpp.cmdrunner import CmdRunner
 
 
 class FakeProcess( object ):
@@ -47,5 +48,17 @@ def test_CppCompiler_failure():
     c = CppCompiler( fs )
     c.run( "myprog", "testexe" )
 
+
+def test_CmdRunner():
+    fs = FakeSystemOperations( 3 )
+    r = CmdRunner( fs )
+    retcode = r.run( "exename" )
+
+    assert_equal( fs.calls, [
+        "Popen(exename)",
+        "communicate()",
+        ] )
+
+    assert_equal( retcode, 3 )
 
 
