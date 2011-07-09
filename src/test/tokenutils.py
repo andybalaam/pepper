@@ -21,7 +21,7 @@ def make_token( text, tp, line = None, column = None ):
     if line is not None:
         ret.setLine( line )
     if column is not None:
-        ret.setLine( column )
+        ret.setColumn( column )
     return ret
 
 
