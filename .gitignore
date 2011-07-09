@@ -10,3 +10,6 @@ src/parse/EeyoreLexer.py
 src/parse/EeyoreParserTokenTypes.txt
 src/parse/EeyoreParser.py
 src/parse/EeyoreTreeWalker.py
+src/parse/LexedLexerTokenTypes.txt
+src/parse/LexedLexer.py
+src/parse/LexedParser.py

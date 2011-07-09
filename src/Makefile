@@ -1,11 +1,11 @@
 
-GRAMMAR=parse/eeyore.g
-GEN_LEX=parse/EeyoreLexer.py
-GEN_PAR=parse/EeyoreParser.py
-GEN_TRE=parse/EeyoreTreeWalker.py
-GENS=$(GEN_LEX) $(GEN_PAR) $(GEN_TRE)
+EGRAMMAR=parse/eeyore.g
+EGENS=parse/EeyoreLexer.py parse/EeyoreParser.py parse/EeyoreTreeWalker.py
 
-RUNANTLR=runantlr -o parse/ $(GRAMMAR) && touch $(GENS)
+LGRAMMAR=parse/lexed.g
+LGENS=parse/LexedLexer.py parse/LexedParser.py
+
+RUNANTLR=runantlr -o parse/ $(1) && touch $(2)
 
 export PATH := ${PWD}:${PATH}
 
@@ -17,8 +17,13 @@ test: genparse
 parsetests: genparse
 	python scheme.py parse/test.eeyore
 
-genparse: $(GENS)
+genparse: $(EGENS) $(LGENS)
 
-%.py: $(GRAMMAR)
-	$(RUNANTLR)
+parse/Eeyore%.py: $(EGRAMMAR)
+	$(call RUNANTLR,$(EGRAMMAR),$(EGENS))
 
+parse/Lexed%.py: $(LGRAMMAR)
+	$(call RUNANTLR,$(LGRAMMAR),$(LGENS))
+
+clean:
+	rm $(EGENS)
