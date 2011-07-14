@@ -5,13 +5,17 @@ from buildstep import BuildStep
 from parse import EeyoreParser
 from parse import EeyoreTreeWalker
 
-def _parse_tree_string_to_values( string ):
-    from libeeyore.functionvalues import *
-    from libeeyore.languagevalues import *
-    from libeeyore.values import *
+# We would like to do these imports inside _parse_tree_string_to_values,
+# but Python doesn't like us to do that.
+from libeeyore.functionvalues import *
+from libeeyore.languagevalues import *
+from libeeyore.values import *
 
+def _parse_tree_string_to_values( string ):
     # The parse tree is actually a valid Python file
     return eval( string )
+
+
 
 def _remove_comments( ln ):
     i = ln.find( "#" )
