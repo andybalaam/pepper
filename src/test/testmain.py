@@ -177,6 +177,35 @@ def test_process_options_source_to_lexed():
         ] )
 
 
+def test_process_options_lexed_to_parsed():
+
+    options = FakeOptions( "" )
+    options.infile.filetype = EeyoreOptions.LEXED
+    options.infile.filename = "test.eeyorelexed"
+    options.outfile.filetype = EeyoreOptions.PARSE_TREE
+    options.outfile.filename = "test.eeyoreparsetree"
+
+    file_operations = FakeSystemOperations()
+    executor = FakeExecutor( None )
+
+    libeeyore.main.process_options( options, file_operations, executor )
+
+    fo_calls = file_operations.calls
+
+    assert_equal( fo_calls, [
+        "open_read(test.eeyorelexed)",
+        "open_write(test.eeyoreparsetree)"
+        ] )
+
+    assert_equal( executor.calls, [
+        "Lex.read_from_file(r)",
+        "Parse.process(inp)",
+        "Parse.write_to_file(val,w)",
+        ] )
+
+
+
+
 def test_process_options_source_to_run():
 
     options = FakeOptions( "" )
