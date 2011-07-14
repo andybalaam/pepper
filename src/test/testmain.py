@@ -8,10 +8,11 @@ from libeeyore.buildsteps.parsebuildstep import ParseBuildStep
 from libeeyore.buildsteps.renderbuildstep import RenderBuildStep
 from libeeyore.buildsteps.sourcebuildstep import SourceBuildStep
 from libeeyore.eeyoreoptions import EeyoreOptions
-from libeeyore.usererrorexception import EeyUserErrorException
 from libeeyore.functionvalues import *
+from libeeyore.usererrorexception import EeyUserErrorException
 from libeeyore.values import *
 from parse import EeyoreLexer
+
 from tokenutils import Iterable2TokenStream, make_token
 
 import libeeyore.main
@@ -278,6 +279,39 @@ print( "Hello, world!" ) # comment 2
     value = step.read_from_file( in_fl )
 
     assert_equal( value.getvalue(), prog )
+
+
+
+
+def test_LexBuildStep_read_from_file():
+
+    step = LexBuildStep()
+    values = list( step.read_from_file( StringIO( """0001:0001     SYMBOL(print)
+0001:0006     LPAREN
+0001:0008     STRING(Hello, world!)
+0001:0024     RPAREN
+""" ) ) )
+
+    assert_equal( values[0].getType(),   EeyoreLexer.SYMBOL )
+    assert_equal( values[0].getText(),   "print" )
+    assert_equal( values[0].getLine(),   1 )
+    assert_equal( values[0].getColumn(), 1 )
+
+    assert_equal( values[1].getType(),   EeyoreLexer.LPAREN )
+    assert_equal( values[1].getLine(),   1 )
+    assert_equal( values[1].getColumn(), 6 )
+
+    assert_equal( values[2].getType(),   EeyoreLexer.STRING )
+    assert_equal( values[2].getText(),   "Hello, world!" )
+    assert_equal( values[2].getLine(),   1 )
+    assert_equal( values[2].getColumn(), 8 )
+
+    assert_equal( values[3].getType(),   EeyoreLexer.RPAREN )
+    assert_equal( values[3].getLine(),   1 )
+    assert_equal( values[3].getColumn(), 24 )
+
+    assert_equal( len( values ), 4 )
+
 
 
 

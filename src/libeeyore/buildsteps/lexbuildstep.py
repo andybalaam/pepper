@@ -2,6 +2,8 @@
 from buildstep import BuildStep
 from parse import EeyoreLexer
 from parse import EeyoreParser
+from parse.eeyoretokenstreamfromfile import EeyoreTokenStreamFromFile
+
 
 def _render_text( token ):
     if token.getType() in ( EeyoreLexer.LPAREN, EeyoreLexer.RPAREN ):
@@ -20,9 +22,10 @@ def _render_token( token ):
         _render_text( token ),
         )
 
+
 class LexBuildStep( BuildStep ):
     def read_from_file( self, fl ):
-        raise Exception( "TODO" )
+        return EeyoreTokenStreamFromFile( fl )
 
     def process( self, val ):
         return EeyoreLexer.Lexer( val )
