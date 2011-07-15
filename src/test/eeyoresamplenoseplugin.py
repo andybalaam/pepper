@@ -27,7 +27,7 @@ def ext( filename ):
 extns = (
     ".eeyore",
     ".eeyorelexed",
-    ".eeyoreparsetree",
+    ".eeyoreparsed",
     ".cpp",
     ".output"
     )
@@ -134,7 +134,7 @@ class EeyoreSampleNosePlugin( Plugin ):
     If a directory contains 2 or more files with extensions from this list:
       .eeyore
       .eeyorelexed
-      .eeyoreparsetree
+      .eeyoreparsed
       .cpp
       .output
     with matching names before the extensionm the eeyore executable will be

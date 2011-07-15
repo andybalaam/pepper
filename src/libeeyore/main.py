@@ -18,10 +18,10 @@ RET_USER_ERROR = 1
 class Executor( object ):
     def __init__( self, sys_op ):
         self.build_steps = [
-            SourceBuildStep(),   # EeyoreOptions.SOURCE     = 0
-            LexBuildStep(),      # EeyoreOptions.LEXED      = 1
-            ParseBuildStep(),    # EeyoreOptions.PARSE_TREE = 2
-            RenderBuildStep(),   # EeyoreOptions.CPP        = 3
+            SourceBuildStep(),   # EeyoreOptions.SOURCE = 0
+            LexBuildStep(),      # EeyoreOptions.LEXED  = 1
+            ParseBuildStep(),    # EeyoreOptions.PARSED = 2
+            RenderBuildStep(),   # EeyoreOptions.CPP    = 3
             ]
         self.cppcompiler = cpp.cppcompiler.CppCompiler( sys_op )
         self.cmdrunner   = cpp.cmdrunner.CmdRunner( sys_op )

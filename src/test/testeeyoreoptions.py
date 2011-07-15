@@ -20,10 +20,10 @@ def test_one_arg():
 
 def test_parse_to_cpp():
     opts = EeyoreOptions(
-        [ "progname", "infile.eeyoreparsetree", "outfile.cpp" ] )
+        [ "progname", "infile.eeyoreparsed", "outfile.cpp" ] )
 
-    assert_equal( opts.infile.filetype, EeyoreOptions.PARSE_TREE )
-    assert_equal( opts.infile.filename, "infile.eeyoreparsetree" )
+    assert_equal( opts.infile.filetype, EeyoreOptions.PARSED )
+    assert_equal( opts.infile.filename, "infile.eeyoreparsed" )
 
     assert_equal( opts.outfile.filetype, EeyoreOptions.CPP )
     assert_equal( opts.outfile.filename, "outfile.cpp" )

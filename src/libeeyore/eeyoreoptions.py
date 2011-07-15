@@ -7,22 +7,22 @@ from usererrorexception import EeyUserErrorException
 
 class EeyoreOptions( object ):
 
-    SOURCE     = 0
-    LEXED      = 1
-    PARSE_TREE = 2
-    CPP        = 3
-    EXE        = 4
-    RUN        = 5
+    SOURCE = 0
+    LEXED  = 1
+    PARSED = 2
+    CPP    = 3
+    EXE    = 4
+    RUN    = 5
 
     USAGE = """%prog input_file output_file"""
 
     VERSION = "%prog " + version.VERSION
 
     EXT2TYPE = {
-        ".eeyore"          : SOURCE,
-        ".eeyorelexed"     : LEXED,
-        ".eeyoreparsetree" : PARSE_TREE,
-        ".cpp"             : CPP,
+        ".eeyore"       : SOURCE,
+        ".eeyorelexed"  : LEXED,
+        ".eeyoreparsed" : PARSED,
+        ".cpp"          : CPP,
         }
 
     class FileDetails( object ):

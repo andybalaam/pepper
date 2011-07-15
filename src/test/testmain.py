@@ -95,8 +95,8 @@ class FakeSystemOperations( object ):
 class FakeOptions( object ):
     def __init__( self, argv ):
         self.infile = FakeObject()
-        self.infile.filetype = EeyoreOptions.PARSE_TREE
-        self.infile.filename = "test.eeyoreparsetree"
+        self.infile.filetype = EeyoreOptions.PARSED
+        self.infile.filename = "test.eeyoreparsed"
         self.outfile = FakeObject()
         self.outfile.filetype = EeyoreOptions.CPP
         self.outfile.filename = "test.cpp"
@@ -112,7 +112,7 @@ def test_process_options_parse_tree_to_cpp():
     fo_calls = file_operations.calls
 
     assert_equal( fo_calls, [
-        "open_read(test.eeyoreparsetree)",
+        "open_read(test.eeyoreparsed)",
         "open_write(test.cpp)"
         ] )
 
@@ -183,8 +183,8 @@ def test_process_options_lexed_to_parsed():
     options = FakeOptions( "" )
     options.infile.filetype = EeyoreOptions.LEXED
     options.infile.filename = "test.eeyorelexed"
-    options.outfile.filetype = EeyoreOptions.PARSE_TREE
-    options.outfile.filename = "test.eeyoreparsetree"
+    options.outfile.filetype = EeyoreOptions.PARSED
+    options.outfile.filename = "test.eeyoreparsed"
 
     file_operations = FakeSystemOperations()
     executor = FakeExecutor( None )
@@ -195,7 +195,7 @@ def test_process_options_lexed_to_parsed():
 
     assert_equal( fo_calls, [
         "open_read(test.eeyorelexed)",
-        "open_write(test.eeyoreparsetree)"
+        "open_write(test.eeyoreparsed)"
         ] )
 
     assert_equal( executor.calls, [
@@ -209,8 +209,8 @@ def test_process_options_lexed_to_parsed():
 def test_process_options_parsed_to_cpp():
 
     options = FakeOptions( "" )
-    options.infile.filetype = EeyoreOptions.PARSE_TREE
-    options.infile.filename = "test.eeyoreparsetree"
+    options.infile.filetype = EeyoreOptions.PARSED
+    options.infile.filename = "test.eeyoreparsed"
     options.outfile.filetype = EeyoreOptions.CPP
     options.outfile.filename = "test.cpp"
 
@@ -222,7 +222,7 @@ def test_process_options_parsed_to_cpp():
     fo_calls = file_operations.calls
 
     assert_equal( fo_calls, [
-        "open_read(test.eeyoreparsetree)",
+        "open_read(test.eeyoreparsed)",
         "open_write(test.cpp)"
         ] )
 
