@@ -82,6 +82,7 @@ class IdentifiableFakeFile( object ):
 class FakeSystemOperations( object ):
     def __init__( self ):
         self.calls = []
+        self.retisdir = False
 
     def open_read( self, filename ):
         self.calls.append( "open_read(%s)" % filename )
@@ -90,6 +91,13 @@ class FakeSystemOperations( object ):
     def open_write( self, filename ):
         self.calls.append( "open_write(%s)" % filename )
         return IdentifiableFakeFile( "w" )
+
+    def isdir( self, path ):
+        self.calls.append( "isdir(%s)" % path )
+        return self.retisdir
+
+    def makedirs( self, path ):
+        self.calls.append( "makedirs(%s)" % path )
 
 
 class FakeOptions( object ):
@@ -252,6 +260,8 @@ def test_process_options_source_to_run():
 
     assert_equal( fo_calls, [
         "open_read(test.eeyore)",
+        "isdir(.eeyore)",
+        "makedirs(.eeyore)",
         ] )
 
     assert_equal( executor.calls, [
@@ -259,9 +269,42 @@ def test_process_options_source_to_run():
         "Lex.process(inp)",
         "Parse.process(inp)",
         "Render.process(inp)",
-        "cppcompiler.run(./a.out)",
-        "cmdrunner.run(./a.out)",
+        "cppcompiler.run(.eeyore/test)",
+        "cmdrunner.run(.eeyore/test)",
         ] )
+
+
+def test_process_options_source_to_run_dir_exists():
+
+    options = FakeOptions( "" )
+    options.infile.filetype = EeyoreOptions.SOURCE
+    options.infile.filename = "test.eeyore"
+    options.outfile.filetype = EeyoreOptions.RUN
+
+    file_operations = FakeSystemOperations()
+    file_operations.retisdir = True
+    executor = FakeExecutor( None )
+
+    libeeyore.main.process_options( options, file_operations, executor )
+
+    fo_calls = file_operations.calls
+
+    assert_equal( fo_calls, [
+        "open_read(test.eeyore)",
+        "isdir(.eeyore)",
+        # No makedirs call because it exists
+        ] )
+
+    assert_equal( executor.calls, [
+        "Source.read_from_file(r)",
+        "Lex.process(inp)",
+        "Parse.process(inp)",
+        "Render.process(inp)",
+        "cppcompiler.run(.eeyore/test)",
+        "cmdrunner.run(.eeyore/test)",
+        ] )
+
+
 
 
 

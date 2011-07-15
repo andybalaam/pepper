@@ -13,3 +13,4 @@ src/parse/EeyoreTreeWalker.py
 src/parse/LexedLexerTokenTypes.txt
 src/parse/LexedLexer.py
 src/parse/LexedParser.py
+.eeyore
