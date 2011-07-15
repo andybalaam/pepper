@@ -24,7 +24,7 @@ class FakeSystemOperations( object ):
         self.calls = []
         self.retcode = retcode
 
-    def Popen( self, args, stdin = None ):
+    def Popen( self, args, stdin = None, stdout = None, stderr = None ):
         self.calls.append( "Popen(%s)" % ",".join( args ) )
         return FakeProcess( self, self.retcode )
 

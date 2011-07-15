@@ -7,13 +7,16 @@ class CppCompiler:
 
     def run( self, cpp, exe_out_filename ):
         p = self.sys_op.Popen(
-            args  = ( "g++", "-x", "c++", "-o", exe_out_filename, "-", ),
-            stdin = subprocess.PIPE )
+            args = ( "g++", "-x", "c++", "-o", exe_out_filename, "-", ),
+            stdin  = subprocess.PIPE,
+            stdout = subprocess.PIPE,
+            stderr = subprocess.STDOUT,
+            )
 
         ( stdout, stderr ) = p.communicate( cpp )
 
         if p.returncode != 0:
             # TODO: not just a exception
-            raise Exception( "Compile error: " + stderr )
+            raise Exception( "Compile error: " + stdout )
 
 

@@ -35,8 +35,9 @@ class SystemOperations( object ):
     def open_write( self, filename ):
         return open( filename, "w" )
 
-    def Popen( self, args, stdin = None ):
-        return subprocess.Popen( args, stdin=stdin )
+    def Popen( self, args, stdin = None, stdout = None, stderr = None ):
+        return subprocess.Popen( args, stdin=stdin, stdout=stdout,
+            stderr=stderr )
 
     def isdir( self, path ):
         return os.path.isdir( path )
