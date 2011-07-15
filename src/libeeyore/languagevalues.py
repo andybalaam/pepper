@@ -11,6 +11,9 @@ class EeyImport( EeyValue ):
     def __init__( self, module_name ):
         self.module_name = module_name
 
+    def construction_args( self ):
+        return ( self.module_name, )
+
     def evaluate( self, env ):
         if self.module_name == "sys":
             import builtinmodules.eeysys
@@ -25,6 +28,9 @@ class EeyArrayLookup( EeyValue ):
     def __init__( self, array_value, index ):
         self.array_value = array_value
         self.index = index
+
+    def construction_args( self ):
+        return ( self.array_value, self.index )
 
     def evaluate( self, env ):
         idx = self.index.evaluate( env )

@@ -206,6 +206,35 @@ def test_process_options_lexed_to_parsed():
 
 
 
+def test_process_options_parsed_to_cpp():
+
+    options = FakeOptions( "" )
+    options.infile.filetype = EeyoreOptions.PARSE_TREE
+    options.infile.filename = "test.eeyoreparsetree"
+    options.outfile.filetype = EeyoreOptions.CPP
+    options.outfile.filename = "test.cpp"
+
+    file_operations = FakeSystemOperations()
+    executor = FakeExecutor( None )
+
+    libeeyore.main.process_options( options, file_operations, executor )
+
+    fo_calls = file_operations.calls
+
+    assert_equal( fo_calls, [
+        "open_read(test.eeyoreparsetree)",
+        "open_write(test.cpp)"
+        ] )
+
+    assert_equal( executor.calls, [
+        "Parse.read_from_file(r)",
+        "Render.process(inp)",
+        "Render.write_to_file(val,w)",
+        ] )
+
+
+
+
 
 def test_process_options_source_to_run():
 
@@ -441,6 +470,31 @@ def test_ParseBuildStep_process():
     hwstr = args[0]
     assert_equal( hwstr.__class__, EeyString )
     assert_equal( hwstr.value, "Hello" )
+
+
+
+
+def test_ParseBuildStep_write_to_file():
+
+    step = ParseBuildStep()
+
+    parsetree = [
+        EeyFunctionCall( EeySymbol( 'print' ), (
+            EeyString( 'Hello,' ),
+            ) ),
+        EeyFunctionCall( EeySymbol( 'print' ), (
+            EeyString( 'world!' ),
+            ) ),
+        ]
+
+    out_fl = StringIO()
+
+    step.write_to_file( parsetree, out_fl )
+
+    assert_equal( out_fl.getvalue(),
+        """EeyFunctionCall(EeySymbol('print'),(EeyString('Hello,'),))
+EeyFunctionCall(EeySymbol('print'),(EeyString('world!'),))
+""" )
 
 
 

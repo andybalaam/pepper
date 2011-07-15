@@ -40,5 +40,7 @@ class ParseBuildStep( BuildStep ):
         return [walker.functionCall( parser.getAST() )]
 
     def write_to_file( self, val, fl ):
-        raise Exception( "TODO" )
+        for v in val:
+            fl.write( repr( v ) )
+            fl.write( "\n" )
 
