@@ -248,7 +248,7 @@ def test_process_options_source_to_run():
 
     options = FakeOptions( "" )
     options.infile.filetype = EeyoreOptions.SOURCE
-    options.infile.filename = "test.eeyore"
+    options.infile.filename = "test.x.eeyore"
     options.outfile.filetype = EeyoreOptions.RUN
 
     file_operations = FakeSystemOperations()
@@ -259,7 +259,7 @@ def test_process_options_source_to_run():
     fo_calls = file_operations.calls
 
     assert_equal( fo_calls, [
-        "open_read(test.eeyore)",
+        "open_read(test.x.eeyore)",
         "isdir(.eeyore)",
         "makedirs(.eeyore)",
         ] )
@@ -269,8 +269,8 @@ def test_process_options_source_to_run():
         "Lex.process(inp)",
         "Parse.process(inp)",
         "Render.process(inp)",
-        "cppcompiler.run(.eeyore/test)",
-        "cmdrunner.run(.eeyore/test)",
+        "cppcompiler.run(.eeyore/test.x)",
+        "cmdrunner.run(.eeyore/test.x)",
         ] )
 
 

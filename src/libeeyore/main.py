@@ -51,12 +51,14 @@ TEMP_DIR = ".eeyore"
 def _temp_dir_file( sys_op, filename ):
     """Create the temp dir if necessary, and return the path to the supplied
     filename in the temp dir."""
+    # TODO: make the dir near the .eeyore file if possible, or in /tmp
+    # otherwise?
     if not sys_op.isdir( TEMP_DIR ):
         sys_op.makedirs( TEMP_DIR )
     return os.path.join( TEMP_DIR, filename )
 
 def _exe_name( in_filename ):
-    doti = in_filename.find( "." )
+    doti = in_filename.rfind( "." )
     if doti == -1:
         return in_filename
     else:
