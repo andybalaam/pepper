@@ -2,22 +2,26 @@
 import LexedParser
 import LexedLexer
 
-from antlr import TokenStream
+import antlr
 
-class EeyoreTokenStreamFromFile( TokenStream ):
+class EeyoreTokenStreamFromFile( antlr.TokenStream ):
     def __init__( self, fl ):
         self.lexed_parser = LexedParser.Parser(
             LexedLexer.Lexer( fl ) )
 
     def nextToken( self ):
-        return self.lexed_parser.line()
+        ln = self.lexed_parser.line()
+        if ln is None:
+            return antlr.CommonToken( type = antlr.Token.EOF_TYPE )
+        else:
+            return ln
 
     def __iter__( self ):
         return self
 
     def next( self ):
         nxt = self.nextToken()
-        if nxt is None:
+        if nxt.getType() == antlr.Token.EOF_TYPE:
             raise StopIteration()
         return nxt
 

@@ -36,17 +36,16 @@ line returns [t]:
     {
         from antlr import CommonToken
         import EeyoreParser
-        t = CommonToken()
+        t = CommonToken(
+            type = EeyoreParser._tokenNames.index( symbol.getText() ) )
         if content is not None:
             t.setText( content.getText()[1:-1] )
-        t.setType( EeyoreParser._tokenNames.index( symbol.getText() ) )
         t.setLine( int( linenum.getText() ) )
         t.setColumn( int( colnum.getText() ) )
     }
 ;
 exception // for rule
     catch [antlr.RecognitionException ex] {
-       return None
+        return None
     }
-
 
