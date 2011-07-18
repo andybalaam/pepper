@@ -9,8 +9,7 @@ from parse import LexedLexer
 from parse import LexedParser
 
 def _parse( tokens ):
-    parser = LexedParser.Parser( Iterable2TokenStream( tokens ) )
-    return parser.program();
+    return LexedParser.Parser( Iterable2TokenStream( tokens ) )
 
 def test_2_lines():
     value = _parse( (
@@ -29,15 +28,18 @@ def test_2_lines():
         make_token( "\n",              LexedLexer.NEWLINE ),
         ) )
 
-    assert_equal( value[0].getText(),   "Hello, world!" )
-    assert_equal( value[0].getType(),   EeyoreLexer.STRING )
-    assert_equal( value[0].getLine(),   2 )
-    assert_equal( value[0].getColumn(), 8 )
+    val = value.line()
+    assert_equal( val.getText(),   "Hello, world!" )
+    assert_equal( val.getType(),   EeyoreLexer.STRING )
+    assert_equal( val.getLine(),   2 )
+    assert_equal( val.getColumn(), 8 )
 
-    assert_equal( value[1].getType(),   EeyoreLexer.RPAREN )
-    assert_equal( value[1].getLine(),   3 )
-    assert_equal( value[1].getColumn(), 1 )
+    val = value.line()
+    assert_equal( val.getType(),   EeyoreLexer.RPAREN )
+    assert_equal( val.getLine(),   3 )
+    assert_equal( val.getColumn(), 1 )
 
-    assert_equal( len( value ), 2 )
+    val = value.line()
+    assert( val is None )
 
 

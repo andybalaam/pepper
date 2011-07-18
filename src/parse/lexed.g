@@ -15,11 +15,11 @@ options
 
 protected DIGIT : '0'..'9';
 
-COLON : ':' { $setType(Token.SKIP); } ;
+COLON : ':' ;
 
-SPACES : ( ' ' )+ { $setType(Token.SKIP); } ;
+SPACES : ( ' ' )+ ;
 
-NEWLINE : '\n' { $newline; $setType(Token.SKIP); };
+NEWLINE : '\n' { $newline; };
 
 NUMBER : ( DIGIT )+ ;
 
@@ -30,23 +30,22 @@ CONTENT : '(' ( ~( ')' ) )* ')';
 
 class LexedParser extends Parser;
 
-line:
+line returns [t]:
     linenum:NUMBER COLON colnum:NUMBER SPACES
     symbol:SYMBOL ( content:CONTENT )? NEWLINE
     {
         from antlr import CommonToken
         import EeyoreParser
-        t = CommonToken()
+        t = CommonToken(
+            type = EeyoreParser._tokenNames.index( symbol.getText() ) )
         if content is not None:
             t.setText( content.getText()[1:-1] )
-        t.setType( EeyoreParser._tokenNames.index( symbol.getText() ) )
         t.setLine( int( linenum.getText() ) )
         t.setColumn( int( colnum.getText() ) )
-        self.eeytkns.append( t )
     }
 ;
-
-program returns [self.eeytkns] { self.eeytkns = [] } :
-    (line)+
-;
+exception // for rule
+    catch [antlr.RecognitionException ex] {
+        return None
+    }
 

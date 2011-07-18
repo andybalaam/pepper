@@ -1,4 +1,6 @@
 
+import os
+import os.path
 import subprocess
 
 import cpp.cmdrunner
@@ -18,10 +20,10 @@ RET_USER_ERROR = 1
 class Executor( object ):
     def __init__( self, sys_op ):
         self.build_steps = [
-            SourceBuildStep(),   # EeyoreOptions.SOURCE     = 0
-            LexBuildStep(),      # EeyoreOptions.LEXED      = 1
-            ParseBuildStep(),    # EeyoreOptions.PARSE_TREE = 2
-            RenderBuildStep(),   # EeyoreOptions.CPP        = 3
+            SourceBuildStep(),   # EeyoreOptions.SOURCE = 0
+            LexBuildStep(),      # EeyoreOptions.LEXED  = 1
+            ParseBuildStep(),    # EeyoreOptions.PARSED = 2
+            RenderBuildStep(),   # EeyoreOptions.CPP    = 3
             ]
         self.cppcompiler = cpp.cppcompiler.CppCompiler( sys_op )
         self.cmdrunner   = cpp.cmdrunner.CmdRunner( sys_op )
@@ -33,8 +35,34 @@ class SystemOperations( object ):
     def open_write( self, filename ):
         return open( filename, "w" )
 
-    def Popen( self, args, stdin = None ):
-        return subprocess.Popen( args, stdin=stdin )
+    def Popen( self, args, stdin = None, stdout = None, stderr = None ):
+        return subprocess.Popen( args, stdin=stdin, stdout=stdout,
+            stderr=stderr )
+
+    def isdir( self, path ):
+        return os.path.isdir( path )
+
+    def makedirs( self, path ):
+        return os.makedirs( path )
+
+
+TEMP_DIR = ".eeyore"
+
+def _temp_dir_file( sys_op, filename ):
+    """Create the temp dir if necessary, and return the path to the supplied
+    filename in the temp dir."""
+    # TODO: make the dir near the .eeyore file if possible, or in /tmp
+    # otherwise?
+    if not sys_op.isdir( TEMP_DIR ):
+        sys_op.makedirs( TEMP_DIR )
+    return os.path.join( TEMP_DIR, filename )
+
+def _exe_name( in_filename ):
+    doti = in_filename.rfind( "." )
+    if doti == -1:
+        return in_filename
+    else:
+        return in_filename[:doti]
 
 def process_options( opts, sys_op, executor ):
 
@@ -57,10 +85,10 @@ def process_options( opts, sys_op, executor ):
         if ouf.filetype == EeyoreOptions.EXE:
             executor.cppcompiler.run( val, ouf.filename )
         elif ouf.filetype == EeyoreOptions.RUN:
-            # TODO: make tmp dir and contruct filename
-            executor.cppcompiler.run( val, "./a.out" )
+            out_fn = _temp_dir_file( sys_op, _exe_name( inf.filename ) )
+            executor.cppcompiler.run( val, out_fn )
              # TODO: pass through argv
-            return executor.cmdrunner.run( "./a.out" )
+            return executor.cmdrunner.run( out_fn )
 
     return RET_SUCCESS
 

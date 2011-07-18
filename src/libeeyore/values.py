@@ -1,3 +1,4 @@
+from abc import ABCMeta, abstractmethod
 
 from all_known import all_known
 from eeyinterface import implements_interface
@@ -6,6 +7,8 @@ from usererrorexception import EeyUserErrorException
 # -- Base class and global methods ---
 
 class EeyValue( object ):
+
+    __metaclass__ = ABCMeta
 
     def render( self, env ):
         return env.render_value( self.evaluate( env ) )
@@ -16,18 +19,34 @@ class EeyValue( object ):
     def evaluate( self, env ):
         return self
 
+    @abstractmethod
+    def construction_args( self ): pass
+
+    def __repr__( self ):
+        return "%s(%s)" % (
+            self.__class__.__name__,
+            ",".join( repr(x) for x in self.construction_args() )
+            )
+
 # --- Specific value types ---
 
 class EeyVariable( EeyValue ):
     def __init__( self, clazz ):
         self.clazz = clazz
 
+    def construction_args( self ):
+        return ( self.clazz, )
+
     def is_known( self, env ):
         return False
+
 
 class EeySymbol( EeyValue ):
     def __init__( self, symbol_name ):
         self.symbol_name = symbol_name
+
+    def construction_args( self ):
+        return ( self.symbol_name, )
 
     def _lookup( self, env ):
         if self.symbol_name not in env.namespace:
@@ -63,6 +82,9 @@ class EeyInt( EeyValue ):
     def __init__( self,  py_int ):
         self.value = py_int
 
+    def construction_args( self ):
+        return ( self.value, )
+
     def plus( self, other ):
         assert other.__class__ == self.__class__
         return EeyInt( self.value + other.value )
@@ -70,6 +92,9 @@ class EeyInt( EeyValue ):
 class EeyString( EeyValue ):
     def __init__( self, py_str ):
         self.value = py_str
+
+    def construction_args( self ):
+        return ( self.value, )
 
     def as_py_str( self ):
         return self.value
@@ -79,6 +104,9 @@ class EeyPlus( EeyValue ):
         # TODO: assert( all( is_plusable, ( left_value, right_value ) )
         self.left_value  = left_value
         self.right_value = right_value
+
+    def construction_args( self ):
+        return ( self.left_value, self.right_value )
 
     def evaluate( self, env ):
         if self.is_known( env ):
@@ -95,6 +123,9 @@ class EeyDefine( EeyValue ):
         self.symbol = symbol
         self.value = value
 
+    def construction_args( self ):
+        return ( self.symbol, self.value )
+
     def evaluate( self, env ):
         name = self.symbol.name()
 
@@ -109,18 +140,25 @@ class EeyDefine( EeyValue ):
 
 class EeyPass( EeyValue ):
     """A statement that does nothing."""
-    pass # Perhaps unsurprisingly?
+
+    def construction_args( self ):
+        return ()
 
 class EeyType( EeyValue ):
     def __init__( self, value ):
         # TODO: check we have been passed a type
         self.value = value
 
+    def construction_args( self ):
+        return ( self.value, )
 
 class EeyArray( EeyValue ):
     def __init__( self, value_type, values ):
         self.value_type = value_type
         self.values = values
+
+    def construction_args( self ):
+        return ( self.value_type, self.values )
 
     def get_index( self, int_index ):
         return self.values[int_index]

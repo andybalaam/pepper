@@ -21,6 +21,9 @@ class EeyFunctionCall( EeyValue ):
         self.func = func
         self.args = args
 
+    def construction_args( self ):
+        return ( self.func, self.args )
+
     def evaluate( self, env ):
         if all_known( self.args, env ):
             fn = self.func.evaluate( env )
@@ -33,6 +36,9 @@ class EeyFunctionCall( EeyValue ):
 class EeyReturn( EeyValue ):
     def __init__( self, value ):
         self.value = value
+
+    def construction_args( self ):
+        return ( self.value, )
 
     def evaluate( self, env ):
         return self.value.evaluate( env )
@@ -56,6 +62,8 @@ class EeyRuntimeUserFunction( EeyValue ):
         self.user_function = user_function
         self.args = args
 
+    def construction_args( self ):
+        return ( self.user_function, self.args )
 
 class EeyUserFunction( EeyFunction ):
     def __init__( self, name, ret_type, arg_types_and_names, body_stmts ):
@@ -64,6 +72,10 @@ class EeyUserFunction( EeyFunction ):
         self.ret_type = ret_type
         self.arg_types_and_names = arg_types_and_names
         self.body_stmts = body_stmts
+
+    def construction_args( self ):
+        return ( self.name, self.ret_type, self.arg_types_and_names,
+            self.body_stmts )
 
     def call( self, env, args ):
         if all_known( args, env ):

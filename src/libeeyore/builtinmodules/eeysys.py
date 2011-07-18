@@ -8,6 +8,10 @@ _copyright = EeyString(
     "Copyright (C) 2011 Andy Balaam and the Eeyore developers" )
 
 class EeySysArgv( EeyValue ):
+
+    def construction_args( self ):
+        return ()
+
     def is_known( self, env ):
         False
 

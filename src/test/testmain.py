@@ -8,10 +8,11 @@ from libeeyore.buildsteps.parsebuildstep import ParseBuildStep
 from libeeyore.buildsteps.renderbuildstep import RenderBuildStep
 from libeeyore.buildsteps.sourcebuildstep import SourceBuildStep
 from libeeyore.eeyoreoptions import EeyoreOptions
-from libeeyore.usererrorexception import EeyUserErrorException
 from libeeyore.functionvalues import *
+from libeeyore.usererrorexception import EeyUserErrorException
 from libeeyore.values import *
 from parse import EeyoreLexer
+
 from tokenutils import Iterable2TokenStream, make_token
 
 import libeeyore.main
@@ -81,6 +82,7 @@ class IdentifiableFakeFile( object ):
 class FakeSystemOperations( object ):
     def __init__( self ):
         self.calls = []
+        self.retisdir = False
 
     def open_read( self, filename ):
         self.calls.append( "open_read(%s)" % filename )
@@ -90,12 +92,19 @@ class FakeSystemOperations( object ):
         self.calls.append( "open_write(%s)" % filename )
         return IdentifiableFakeFile( "w" )
 
+    def isdir( self, path ):
+        self.calls.append( "isdir(%s)" % path )
+        return self.retisdir
+
+    def makedirs( self, path ):
+        self.calls.append( "makedirs(%s)" % path )
+
 
 class FakeOptions( object ):
     def __init__( self, argv ):
         self.infile = FakeObject()
-        self.infile.filetype = EeyoreOptions.PARSE_TREE
-        self.infile.filename = "test.eeyoreparsetree"
+        self.infile.filetype = EeyoreOptions.PARSED
+        self.infile.filename = "test.eeyoreparsed"
         self.outfile = FakeObject()
         self.outfile.filetype = EeyoreOptions.CPP
         self.outfile.filename = "test.cpp"
@@ -111,7 +120,7 @@ def test_process_options_parse_tree_to_cpp():
     fo_calls = file_operations.calls
 
     assert_equal( fo_calls, [
-        "open_read(test.eeyoreparsetree)",
+        "open_read(test.eeyoreparsed)",
         "open_write(test.cpp)"
         ] )
 
@@ -177,11 +186,69 @@ def test_process_options_source_to_lexed():
         ] )
 
 
+def test_process_options_lexed_to_parsed():
+
+    options = FakeOptions( "" )
+    options.infile.filetype = EeyoreOptions.LEXED
+    options.infile.filename = "test.eeyorelexed"
+    options.outfile.filetype = EeyoreOptions.PARSED
+    options.outfile.filename = "test.eeyoreparsed"
+
+    file_operations = FakeSystemOperations()
+    executor = FakeExecutor( None )
+
+    libeeyore.main.process_options( options, file_operations, executor )
+
+    fo_calls = file_operations.calls
+
+    assert_equal( fo_calls, [
+        "open_read(test.eeyorelexed)",
+        "open_write(test.eeyoreparsed)"
+        ] )
+
+    assert_equal( executor.calls, [
+        "Lex.read_from_file(r)",
+        "Parse.process(inp)",
+        "Parse.write_to_file(val,w)",
+        ] )
+
+
+
+def test_process_options_parsed_to_cpp():
+
+    options = FakeOptions( "" )
+    options.infile.filetype = EeyoreOptions.PARSED
+    options.infile.filename = "test.eeyoreparsed"
+    options.outfile.filetype = EeyoreOptions.CPP
+    options.outfile.filename = "test.cpp"
+
+    file_operations = FakeSystemOperations()
+    executor = FakeExecutor( None )
+
+    libeeyore.main.process_options( options, file_operations, executor )
+
+    fo_calls = file_operations.calls
+
+    assert_equal( fo_calls, [
+        "open_read(test.eeyoreparsed)",
+        "open_write(test.cpp)"
+        ] )
+
+    assert_equal( executor.calls, [
+        "Parse.read_from_file(r)",
+        "Render.process(inp)",
+        "Render.write_to_file(val,w)",
+        ] )
+
+
+
+
+
 def test_process_options_source_to_run():
 
     options = FakeOptions( "" )
     options.infile.filetype = EeyoreOptions.SOURCE
-    options.infile.filename = "test.eeyore"
+    options.infile.filename = "test.x.eeyore"
     options.outfile.filetype = EeyoreOptions.RUN
 
     file_operations = FakeSystemOperations()
@@ -192,7 +259,9 @@ def test_process_options_source_to_run():
     fo_calls = file_operations.calls
 
     assert_equal( fo_calls, [
-        "open_read(test.eeyore)",
+        "open_read(test.x.eeyore)",
+        "isdir(.eeyore)",
+        "makedirs(.eeyore)",
         ] )
 
     assert_equal( executor.calls, [
@@ -200,9 +269,42 @@ def test_process_options_source_to_run():
         "Lex.process(inp)",
         "Parse.process(inp)",
         "Render.process(inp)",
-        "cppcompiler.run(./a.out)",
-        "cmdrunner.run(./a.out)",
+        "cppcompiler.run(.eeyore/test.x)",
+        "cmdrunner.run(.eeyore/test.x)",
         ] )
+
+
+def test_process_options_source_to_run_dir_exists():
+
+    options = FakeOptions( "" )
+    options.infile.filetype = EeyoreOptions.SOURCE
+    options.infile.filename = "test.eeyore"
+    options.outfile.filetype = EeyoreOptions.RUN
+
+    file_operations = FakeSystemOperations()
+    file_operations.retisdir = True
+    executor = FakeExecutor( None )
+
+    libeeyore.main.process_options( options, file_operations, executor )
+
+    fo_calls = file_operations.calls
+
+    assert_equal( fo_calls, [
+        "open_read(test.eeyore)",
+        "isdir(.eeyore)",
+        # No makedirs call because it exists
+        ] )
+
+    assert_equal( executor.calls, [
+        "Source.read_from_file(r)",
+        "Lex.process(inp)",
+        "Parse.process(inp)",
+        "Render.process(inp)",
+        "cppcompiler.run(.eeyore/test)",
+        "cmdrunner.run(.eeyore/test)",
+        ] )
+
+
 
 
 
@@ -249,6 +351,39 @@ print( "Hello, world!" ) # comment 2
     value = step.read_from_file( in_fl )
 
     assert_equal( value.getvalue(), prog )
+
+
+
+
+def test_LexBuildStep_read_from_file():
+
+    step = LexBuildStep()
+    values = list( step.read_from_file( StringIO( """0001:0001     SYMBOL(print)
+0001:0006     LPAREN
+0001:0008     STRING(Hello, world!)
+0001:0024     RPAREN
+""" ) ) )
+
+    assert_equal( values[0].getType(),   EeyoreLexer.SYMBOL )
+    assert_equal( values[0].getText(),   "print" )
+    assert_equal( values[0].getLine(),   1 )
+    assert_equal( values[0].getColumn(), 1 )
+
+    assert_equal( values[1].getType(),   EeyoreLexer.LPAREN )
+    assert_equal( values[1].getLine(),   1 )
+    assert_equal( values[1].getColumn(), 6 )
+
+    assert_equal( values[2].getType(),   EeyoreLexer.STRING )
+    assert_equal( values[2].getText(),   "Hello, world!" )
+    assert_equal( values[2].getLine(),   1 )
+    assert_equal( values[2].getColumn(), 8 )
+
+    assert_equal( values[3].getType(),   EeyoreLexer.RPAREN )
+    assert_equal( values[3].getLine(),   1 )
+    assert_equal( values[3].getColumn(), 24 )
+
+    assert_equal( len( values ), 4 )
+
 
 
 
@@ -378,6 +513,31 @@ def test_ParseBuildStep_process():
     hwstr = args[0]
     assert_equal( hwstr.__class__, EeyString )
     assert_equal( hwstr.value, "Hello" )
+
+
+
+
+def test_ParseBuildStep_write_to_file():
+
+    step = ParseBuildStep()
+
+    parsetree = [
+        EeyFunctionCall( EeySymbol( 'print' ), (
+            EeyString( 'Hello,' ),
+            ) ),
+        EeyFunctionCall( EeySymbol( 'print' ), (
+            EeyString( 'world!' ),
+            ) ),
+        ]
+
+    out_fl = StringIO()
+
+    step.write_to_file( parsetree, out_fl )
+
+    assert_equal( out_fl.getvalue(),
+        """EeyFunctionCall(EeySymbol('print'),(EeyString('Hello,'),))
+EeyFunctionCall(EeySymbol('print'),(EeyString('world!'),))
+""" )
 
 
 
