@@ -94,8 +94,12 @@ protected MIDSYMBOLCHAR :
     )
 ;
 
+protected SYMBOL_EL :
+    STARTSYMBOLCHAR ( MIDSYMBOLCHAR )*
+;
+
 SYMBOL :
-    STARTSYMBOLCHAR(MIDSYMBOLCHAR)*
+    SYMBOL_EL ( "." SYMBOL_EL )*
 ;
 
 

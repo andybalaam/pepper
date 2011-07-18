@@ -42,3 +42,19 @@ print()
     assert_equal( len( tokens ), 5 )
 
 
+def test_qualified_token():
+    tokens = _lex( """
+import sys
+print( sys.argv )
+""" )
+
+    _assert_token( tokens[0], "import",   EeyoreLexer.SYMBOL, 2, 1 )
+    _assert_token( tokens[1], "sys",      EeyoreLexer.SYMBOL, 2, 8 )
+    _assert_token( tokens[2], "print",    EeyoreLexer.SYMBOL, 3, 1 )
+    _assert_token( tokens[3], "(",        EeyoreLexer.LPAREN, 3, 6 )
+    _assert_token( tokens[4], "sys.argv", EeyoreLexer.SYMBOL, 3, 8 )
+    _assert_token( tokens[5], ")",        EeyoreLexer.RPAREN, 3, 17 )
+
+    assert_equal( len( tokens ), 6 )
+
+
