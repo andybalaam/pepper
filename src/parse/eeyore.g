@@ -157,10 +157,14 @@ from libeeyore.functionvalues import *
 }
 class EeyoreTreeWalker extends TreeParser;
 
+statement returns [r]
+    : f=functionCall    { r = f }
+    | i=importStatement { r = i }
+;
+
 functionCall returns [r]
     { r = None }
     : #(LPAREN f=function a=arg) { r = EeyFunctionCall( f, (a,) ) }
-    | "import" m:SYMBOL          { r = EeyImport( m.getText() ) }
 ;
 
 function returns [r]
@@ -173,5 +177,9 @@ arg returns [r]
     : s:SYMBOL { r = EeySymbol( s.getText() ) }
     | i:INT    { r = EeyInt(    i.getText() ) }
     | t:STRING { r = EeyString( t.getText() ) }
+;
+
+importStatement returns [r]
+    : "import" m:SYMBOL { r = EeyImport( m.getText() ) }
 ;
 

@@ -16,7 +16,7 @@ def _parse( tokens ):
     parser = EeyoreParser.Parser( Iterable2TokenStream( tokens ) )
     parser.program();
     walker = EeyoreTreeWalker.Walker()
-    return walker.functionCall( parser.getAST() )
+    return walker.statement( parser.getAST() )
 
 def test_hello_world():
     value = _parse( (

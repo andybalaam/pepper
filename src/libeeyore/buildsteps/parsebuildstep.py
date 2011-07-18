@@ -37,7 +37,7 @@ class ParseBuildStep( BuildStep ):
         parser = EeyoreParser.Parser( val )
         parser.program()
         walker = EeyoreTreeWalker.Walker()
-        return [walker.functionCall( parser.getAST() )]
+        return [walker.statement( parser.getAST() )]
 
     def write_to_file( self, val, fl ):
         for v in val:
