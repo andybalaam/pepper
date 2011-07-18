@@ -4,8 +4,9 @@ from nose.tools import *
 
 from tokenutils import Iterable2TokenStream, make_token
 
-from libeeyore.values import *
 from libeeyore.functionvalues import *
+from libeeyore.languagevalues import *
+from libeeyore.values import *
 
 from parse import EeyoreLexer
 from parse import EeyoreParser
@@ -38,4 +39,14 @@ def test_hello_world():
 
     assert_equal( args[0].__class__,   EeyString )
     assert_equal( args[0].value, "Hello, world!" )
+
+def test_import():
+    value = _parse( (
+        make_token( "import", EeyoreLexer.LITERAL_import ),
+        make_token( "sys",    EeyoreLexer.SYMBOL ),
+        ) )
+
+    assert_equal( value.__class__, EeyImport )
+    assert_equal( value.module_name, "sys" )
+
 

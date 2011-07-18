@@ -115,7 +115,8 @@ program :
 ;
 
 statement :
-    functionCall
+      functionCall
+    | importStatement
 ;
 
 functionCall :
@@ -130,6 +131,10 @@ expression :
       SYMBOL
     | INT
     | STRING
+;
+
+importStatement :
+    "import" SYMBOL
 ;
 
 //operator :
@@ -147,6 +152,7 @@ expression :
 
 {
 from libeeyore.values import *
+from libeeyore.languagevalues import *
 from libeeyore.functionvalues import *
 }
 class EeyoreTreeWalker extends TreeParser;
@@ -154,6 +160,7 @@ class EeyoreTreeWalker extends TreeParser;
 functionCall returns [r]
     { r = None }
     : #(LPAREN f=function a=arg) { r = EeyFunctionCall( f, (a,) ) }
+    | "import" m:SYMBOL          { r = EeyImport( m.getText() ) }
 ;
 
 function returns [r]
