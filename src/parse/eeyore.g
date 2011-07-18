@@ -39,20 +39,6 @@ protected QUOTE : // TODO: single quoted strings
       '"'
 ;
 
-//protected LINEFEED :
-//    '\r'
-//;
-//
-//protected CARRIAGERETURN :
-//    '\n'
-//;
-
-//STRING : // TODO: escaped quotes within strings
-//    QUOTE!
-//    ( ~( '"'|'\r'|'\n' ) )* // Terminate string on quote or newline
-//    ( QUOTE! | )            // Fail if there was no " at the end (i.e. newline)
-//;
-
 STRING :
     QUOTE!
     ( ~( '"') )*
@@ -138,19 +124,6 @@ expression :
 importStatement :
     "import"^ SYMBOL
 ;
-
-//operator :
-//      SYMBOL
-//    | expression
-//;
-//
-//operand :
-//            SYMBOL
-//        | INT
-//        | STRING
-//        | expression
-//;
-
 
 {
 from libeeyore.values import *
