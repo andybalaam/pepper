@@ -31,13 +31,13 @@ def test_hello_world():
 
     func = value.func
 
-    assert_equal( func.__class__,   EeySymbol )
+    assert_equal( func.__class__, EeySymbol )
     assert_equal( func.symbol_name, "print" )
 
     args = value.args
     assert_equal( len( args ), 1 )
 
-    assert_equal( args[0].__class__,   EeyString )
+    assert_equal( args[0].__class__, EeyString )
     assert_equal( args[0].value, "Hello, world!" )
 
 def test_import():
