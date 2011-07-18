@@ -16,15 +16,18 @@ def _parse( tokens ):
     parser = EeyoreParser.Parser( Iterable2TokenStream( tokens ) )
     parser.program();
     walker = EeyoreTreeWalker.Walker()
-    return walker.statement( parser.getAST() )
+    return [walker.statement( parser.getAST() )]
 
 def test_hello_world():
-    value = _parse( (
+    values = _parse( (
         make_token( "print",         EeyoreLexer.SYMBOL ),
         make_token( "(",             EeyoreLexer.LPAREN ),
         make_token( "Hello, world!", EeyoreLexer.STRING ),
         make_token( ")",             EeyoreLexer.RPAREN ),
         ) )
+
+    assert_equal( len( values ), 1 )
+    value = values[0]
 
     assert_equal( value.__class__, EeyFunctionCall )
     assert_equal( value.func_name, "print" )
@@ -41,12 +44,16 @@ def test_hello_world():
     assert_equal( args[0].value, "Hello, world!" )
 
 def test_import():
-    value = _parse( (
+    values = _parse( (
         make_token( "import", EeyoreLexer.LITERAL_import ),
         make_token( "sys",    EeyoreLexer.SYMBOL ),
         ) )
 
+    assert_equal( len( values ), 1 )
+    value = values[0]
+
     assert_equal( value.__class__, EeyImport )
     assert_equal( value.module_name, "sys" )
+
 
 
