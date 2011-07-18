@@ -6,7 +6,11 @@ from parse.eeyoretokenstreamfromfile import EeyoreTokenStreamFromFile
 
 
 def _render_text( token ):
-    if token.getType() in ( EeyoreLexer.LPAREN, EeyoreLexer.RPAREN ):
+    if token.getType() in (
+            EeyoreLexer.LPAREN,
+            EeyoreLexer.RPAREN,
+            EeyoreLexer.NEWLINE,
+            ):
         return ""
     else:
         return "(%s)" % token.getText()

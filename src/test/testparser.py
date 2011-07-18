@@ -11,12 +11,10 @@ from libeeyore.values import *
 from parse import EeyoreLexer
 from parse import EeyoreParser
 from parse import EeyoreTreeWalker
+from parse.eeyorestatements import EeyoreStatements
 
 def _parse( tokens ):
-    parser = EeyoreParser.Parser( Iterable2TokenStream( tokens ) )
-    parser.program();
-    walker = EeyoreTreeWalker.Walker()
-    return [walker.statement( parser.getAST() )]
+    return list( EeyoreStatements( Iterable2TokenStream( tokens ) ) )
 
 def test_hello_world():
     values = _parse( (
@@ -24,6 +22,7 @@ def test_hello_world():
         make_token( "(",             EeyoreLexer.LPAREN ),
         make_token( "Hello, world!", EeyoreLexer.STRING ),
         make_token( ")",             EeyoreLexer.RPAREN ),
+        make_token( "\n",            EeyoreLexer.NEWLINE ),
         ) )
 
     assert_equal( len( values ), 1 )
@@ -47,6 +46,7 @@ def test_import():
     values = _parse( (
         make_token( "import", EeyoreLexer.LITERAL_import ),
         make_token( "sys",    EeyoreLexer.SYMBOL ),
+        make_token( "\n",     EeyoreLexer.NEWLINE ),
         ) )
 
     assert_equal( len( values ), 1 )
@@ -54,6 +54,30 @@ def test_import():
 
     assert_equal( value.__class__, EeyImport )
     assert_equal( value.module_name, "sys" )
+
+
+
+
+
+
+def test_multiline():
+    values = _parse( (
+        make_token( "import",  EeyoreLexer.LITERAL_import ),
+        make_token( "sys",     EeyoreLexer.SYMBOL ),
+        make_token( "\n",      EeyoreLexer.NEWLINE ),
+        make_token( "print",   EeyoreLexer.SYMBOL ),
+        make_token( "(",       EeyoreLexer.LPAREN ),
+        make_token( "sys.arg", EeyoreLexer.SYMBOL ),
+        make_token( ")",       EeyoreLexer.RPAREN ),
+        make_token( "\n",      EeyoreLexer.NEWLINE ),
+        ) )
+
+    assert_equal( len( values ), 2 )
+
+    assert_equal( values[0].__class__, EeyImport )
+    assert_equal( values[1].__class__, EeyFunctionCall )
+
+
 
 
 

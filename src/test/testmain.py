@@ -397,25 +397,25 @@ print( "Hello, world!" ) # comment 2
 
     """ ) ) )
 
-    assert_equal( values[0].getType(),   EeyoreLexer.SYMBOL )
-    assert_equal( values[0].getText(),   "print" )
-    assert_equal( values[0].getLine(),   4 )
-    assert_equal( values[0].getColumn(), 1 )
-
-    assert_equal( values[1].getType(),   EeyoreLexer.LPAREN )
-    assert_equal( values[1].getLine(),   4 )
-    assert_equal( values[1].getColumn(), 6 )
-
-    assert_equal( values[2].getType(),   EeyoreLexer.STRING )
-    assert_equal( values[2].getText(),   "Hello, world!" )
-    assert_equal( values[2].getLine(),   4 )
-    assert_equal( values[2].getColumn(), 8 )
-
-    assert_equal( values[3].getType(),   EeyoreLexer.RPAREN )
+    assert_equal( values[3].getType(),   EeyoreLexer.SYMBOL )
+    assert_equal( values[3].getText(),   "print" )
     assert_equal( values[3].getLine(),   4 )
-    assert_equal( values[3].getColumn(), 24 )
+    assert_equal( values[3].getColumn(), 1 )
 
-    assert_equal( len( values ), 4 )
+    assert_equal( values[4].getType(),   EeyoreLexer.LPAREN )
+    assert_equal( values[4].getLine(),   4 )
+    assert_equal( values[4].getColumn(), 6 )
+
+    assert_equal( values[5].getType(),   EeyoreLexer.STRING )
+    assert_equal( values[5].getText(),   "Hello, world!" )
+    assert_equal( values[5].getLine(),   4 )
+    assert_equal( values[5].getColumn(), 8 )
+
+    assert_equal( values[6].getType(),   EeyoreLexer.RPAREN )
+    assert_equal( values[6].getLine(),   4 )
+    assert_equal( values[6].getColumn(), 24 )
+
+    assert_equal( len( values ), 9 )
 
 class FakeToken( object ):
     def __init__( self, tp, text, line, column ):
@@ -496,6 +496,7 @@ def test_ParseBuildStep_process():
         make_token( "(",     EeyoreLexer.LPAREN, 4, 6 ),
         make_token( "Hello", EeyoreLexer.STRING, 4, 8 ),
         make_token( ")",     EeyoreLexer.RPAREN, 4, 15 ),
+        make_token( "\n",    EeyoreLexer.NEWLINE, 4, 16 ),
         ) )
 
     values = list( step.process( tokens ) )

@@ -33,28 +33,33 @@ import a
 print()
 """ )
 
-    _assert_token( tokens[0], "import", EeyoreLexer.SYMBOL, 2, 1 )
-    _assert_token( tokens[1], "a",      EeyoreLexer.SYMBOL, 2, 8 )
-    _assert_token( tokens[2], "print",  EeyoreLexer.SYMBOL, 4, 1 )
-    _assert_token( tokens[3], "(",      EeyoreLexer.LPAREN, 4, 6 )
-    _assert_token( tokens[4], ")",      EeyoreLexer.RPAREN, 4, 7 )
+    _assert_token( tokens[0], "\n",     EeyoreLexer.NEWLINE, 1, 1 )
+    _assert_token( tokens[1], "import", EeyoreLexer.SYMBOL,  2, 1 )
+    _assert_token( tokens[2], "a",      EeyoreLexer.SYMBOL,  2, 8 )
+    _assert_token( tokens[3], "\n",     EeyoreLexer.NEWLINE, 2, 9 )
+    _assert_token( tokens[4], "\n",     EeyoreLexer.NEWLINE, 3, 1 )
+    _assert_token( tokens[5], "print",  EeyoreLexer.SYMBOL,  4, 1 )
+    _assert_token( tokens[6], "(",      EeyoreLexer.LPAREN,  4, 6 )
+    _assert_token( tokens[7], ")",      EeyoreLexer.RPAREN,  4, 7 )
+    _assert_token( tokens[8], "\n",     EeyoreLexer.NEWLINE, 4, 8 )
 
-    assert_equal( len( tokens ), 5 )
+    assert_equal( len( tokens ), 9 )
 
 
 def test_qualified_token():
-    tokens = _lex( """
-import sys
+    tokens = _lex( """import sys
 print( sys.argv )
 """ )
 
-    _assert_token( tokens[0], "import",   EeyoreLexer.SYMBOL, 2, 1 )
-    _assert_token( tokens[1], "sys",      EeyoreLexer.SYMBOL, 2, 8 )
-    _assert_token( tokens[2], "print",    EeyoreLexer.SYMBOL, 3, 1 )
-    _assert_token( tokens[3], "(",        EeyoreLexer.LPAREN, 3, 6 )
-    _assert_token( tokens[4], "sys.argv", EeyoreLexer.SYMBOL, 3, 8 )
-    _assert_token( tokens[5], ")",        EeyoreLexer.RPAREN, 3, 17 )
+    _assert_token( tokens[0], "import",   EeyoreLexer.SYMBOL,  1, 1 )
+    _assert_token( tokens[1], "sys",      EeyoreLexer.SYMBOL,  1, 8 )
+    _assert_token( tokens[2], "\n",       EeyoreLexer.NEWLINE, 1, 11 )
+    _assert_token( tokens[3], "print",    EeyoreLexer.SYMBOL,  2, 1 )
+    _assert_token( tokens[4], "(",        EeyoreLexer.LPAREN,  2, 6 )
+    _assert_token( tokens[5], "sys.argv", EeyoreLexer.SYMBOL,  2, 8 )
+    _assert_token( tokens[6], ")",        EeyoreLexer.RPAREN,  2, 17 )
+    _assert_token( tokens[7], "\n",       EeyoreLexer.NEWLINE, 2, 18 )
 
-    assert_equal( len( tokens ), 6 )
+    assert_equal( len( tokens ), 8 )
 
 

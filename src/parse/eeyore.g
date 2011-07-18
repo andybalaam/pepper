@@ -18,12 +18,6 @@ WHITESPACE :
           ' '
         | '\t'
         | '\f'
-        | (
-              "\r\n"
-            | '\r'
-            | '\n'
-          )
-          { $newline }
     )
     { $setType(Token.SKIP); }
 ;
@@ -102,6 +96,13 @@ SYMBOL :
     SYMBOL_EL ( "." SYMBOL_EL )*
 ;
 
+NEWLINE :
+      "\r\n"
+    | '\r'
+    | '\n'
+        { $newline }
+;
+
 
 class EeyoreParser extends Parser;
 
@@ -111,7 +112,8 @@ options
 }
 
 program :
-    (statement)*
+    ( NEWLINE )*
+    ( statement ( NEWLINE )+ )* EOF
 ;
 
 statement :
@@ -134,7 +136,7 @@ expression :
 ;
 
 importStatement :
-    "import" SYMBOL
+    "import"^ SYMBOL
 ;
 
 //operator :
@@ -158,6 +160,11 @@ from libeeyore.functionvalues import *
 class EeyoreTreeWalker extends TreeParser;
 
 statement returns [r]
+    { sc = None }
+    : ( sc=statementContents )? NEWLINE { r = sc }
+;
+
+statementContents returns [r]
     : f=functionCall    { r = f }
     | i=importStatement { r = i }
 ;
@@ -180,6 +187,6 @@ arg returns [r]
 ;
 
 importStatement returns [r]
-    : "import" m:SYMBOL { r = EeyImport( m.getText() ) }
+    : #("import" m:SYMBOL) { r = EeyImport( m.getText() ) }
 ;
 
