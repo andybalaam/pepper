@@ -25,3 +25,20 @@ def test_hello_world():
 
     assert_equal( len( tokens ), 4 )
 
+
+def test_import():
+    tokens = _lex( """
+import a
+
+print()
+""" )
+
+    _assert_token( tokens[0], "import", EeyoreLexer.SYMBOL, 2, 1 )
+    _assert_token( tokens[1], "a",      EeyoreLexer.SYMBOL, 2, 8 )
+    _assert_token( tokens[2], "print",  EeyoreLexer.SYMBOL, 4, 1 )
+    _assert_token( tokens[3], "(",      EeyoreLexer.LPAREN, 4, 6 )
+    _assert_token( tokens[4], ")",      EeyoreLexer.RPAREN, 4, 7 )
+
+    assert_equal( len( tokens ), 5 )
+
+
