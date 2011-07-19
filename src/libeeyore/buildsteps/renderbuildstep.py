@@ -14,5 +14,6 @@ class RenderBuildStep( BuildStep ):
         return env.render_exe( val )
 
     def write_to_file( self, val, fl ):
-        fl.write( val )
+        for v in val:
+            fl.write( v )
 

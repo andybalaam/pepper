@@ -32,7 +32,7 @@ def test_Known_plus_argv():
     value = EeyFunctionCall( EeySymbol( "print" ), (
         EeyPlus(
             EeyString( "known" ),
-            EeyArrayLookup( EeySysArgv(), EeyInt( 1 ) )
+            EeyArrayLookup( EeySysArgv(), EeyInt( "1" ) )
             ),
         ) )
 
@@ -47,7 +47,7 @@ def test_Known_plus_argv_plus_known():
         EeyPlus(
             EeyString( "known" ),
             EeyPlus(
-                EeyArrayLookup( EeySysArgv(), EeyInt( 1 ) ),
+                EeyArrayLookup( EeySysArgv(), EeyInt( "1" ) ),
                 EeyString( "known2" )
                 )
             ),

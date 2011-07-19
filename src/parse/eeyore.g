@@ -9,7 +9,6 @@ class EeyoreLexer extends Lexer;
 options
 {
     charVocabulary = '\0'..'\377';
-    testLiterals = false;    // don't automatically test for literals
     k = 2;                   // two characters of lookahead
 }
 

@@ -9,7 +9,7 @@ from libeeyore.cpp.cpprenderer import EeyCppRenderer
 def test_Define_and_use_int():
     env = EeyEnvironment( EeyCppRenderer() )
 
-    defstmt = EeyDefine( EeySymbol( "mynum" ), EeyInt( 12 ) )
+    defstmt = EeyDefine( EeySymbol( "mynum" ), EeyInt( "12" ) )
 
     assert_equal( defstmt.render( env ), "" )
 
@@ -28,8 +28,8 @@ def test_Use_an_undefined_symbol_throws():
 @raises( EeyUserErrorException )
 def test_Defining_a_symbol_twice_fails():
     env = EeyEnvironment( EeyCppRenderer() )
-    defstmt1 = EeyDefine( EeySymbol( "mynum" ), EeyInt( 12 ) )
-    defstmt2 = EeyDefine( EeySymbol( "mynum" ), EeyInt( 13 ) )
+    defstmt1 = EeyDefine( EeySymbol( "mynum" ), EeyInt( "12" ) )
+    defstmt2 = EeyDefine( EeySymbol( "mynum" ), EeyInt( "13" ) )
     defstmt1.render( env )
     defstmt2.render( env ) # Should throw
 

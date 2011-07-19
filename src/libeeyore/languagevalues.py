@@ -38,7 +38,8 @@ class EeyArrayLookup( EeyValue ):
         if arr.is_known( env ):
             assert( idx.__class__ == EeyInt )
             assert( implements_interface( arr, EeyArray ) )
-            return arr.get_index( idx.value ).evaluate( env )
+            # TODO: handle large number indices
+            return arr.get_index( int( idx.value ) ).evaluate( env )
         else:
             return self
 

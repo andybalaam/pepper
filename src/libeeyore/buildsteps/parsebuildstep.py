@@ -2,8 +2,8 @@
 from itertools import imap
 
 from buildstep import BuildStep
-from parse import EeyoreParser
-from parse import EeyoreTreeWalker
+
+from parse.eeyorestatements import EeyoreStatements
 
 # We would like to do these imports inside _parse_tree_string_to_values,
 # but Python doesn't like us to do that.
@@ -34,10 +34,7 @@ class ParseBuildStep( BuildStep ):
                 imap( _remove_comments, fl ) ) )
 
     def process( self, val ):
-        parser = EeyoreParser.Parser( val )
-        parser.program()
-        walker = EeyoreTreeWalker.Walker()
-        return [walker.statement( parser.getAST() )]
+        return EeyoreStatements( val )
 
     def write_to_file( self, val, fl ):
         for v in val:

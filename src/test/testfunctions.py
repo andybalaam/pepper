@@ -75,7 +75,7 @@ def test_Define_and_call_fn_to_add_known_numbers():
     assert_equal( fndecl.render( env ), "" )
 
     value = EeyFunctionCall( EeySymbol( "myfunc" ),
-        ( EeyInt( 3 ), EeyInt( 4 ) ) )
+        ( EeyInt( "3" ), EeyInt( "4" ) ) )
 
     assert_equal( value.render( env ), "7" )
 
@@ -101,7 +101,7 @@ def test_Define_and_call_fn_to_add_unknown_numbers():
     assert_equal( fndecl.render( env ), "" )
 
     value = EeyFunctionCall( EeySymbol( "myfunc" ),
-        ( EeyInt( 3 ), EeySymbol( "othernum" ) ) )
+        ( EeyInt( "3" ), EeySymbol( "othernum" ) ) )
 
     assert_equal( value.render( env ), "myfunc( 3, othernum )" )
     assert_equal( env.renderer.functions[0],

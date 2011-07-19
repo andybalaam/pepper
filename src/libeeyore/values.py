@@ -79,15 +79,16 @@ class EeySymbol( EeyValue ):
 
 
 class EeyInt( EeyValue ):
-    def __init__( self,  py_int ):
-        self.value = py_int
+    def __init__( self,  str_int ):
+        self.value = str( str_int )
 
     def construction_args( self ):
         return ( self.value, )
 
     def plus( self, other ):
         assert other.__class__ == self.__class__
-        return EeyInt( self.value + other.value )
+        # TODO: handle large numbers
+        return EeyInt( str( int( self.value ) + int( other.value ) ) )
 
 class EeyString( EeyValue ):
     def __init__( self, py_str ):

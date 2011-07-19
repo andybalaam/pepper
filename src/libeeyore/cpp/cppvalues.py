@@ -93,7 +93,8 @@ def render_EeyReturn( env, value ):
 
 
 def render_EeyArrayLookup( env, value ):
-    return value.array_value.render( env ) + "[%d]" % value.index.value
+    # TODO: handle large numbers
+    return value.array_value.render( env ) + "[%s]" % value.index.value
 
 def render_EeySysArgv( env, value ):
     # TODO: set up a global variable called global_argv and initialise

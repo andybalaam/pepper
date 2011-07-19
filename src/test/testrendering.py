@@ -49,7 +49,7 @@ def test_Echo_arg1():
 #        )
 
     fncall = EeyFunctionCall( EeySymbol( "print" ),
-        ( EeyArrayLookup( EeySymbol( "sys.argv" ), EeyInt( 1 ) ), ) )
+        ( EeyArrayLookup( EeySymbol( "sys.argv" ), EeyInt( "1" ) ), ) )
 
     program = ( impt, fncall )
 
