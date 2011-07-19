@@ -140,10 +140,10 @@ def test_function_with_arraylookup():
 def test_arraylookup_qualified():
     values = _parse( (
         make_token( "a.b", EeyoreLexer.SYMBOL ),
-        make_token( "[",     EeyoreLexer.LSQUBR ),
-        make_token( "3",     EeyoreLexer.INT ),
-        make_token( "]",     EeyoreLexer.RSQUBR ),
-        make_token( "\n",    EeyoreLexer.NEWLINE ),
+        make_token( "[",   EeyoreLexer.LSQUBR ),
+        make_token( "3",   EeyoreLexer.INT ),
+        make_token( "]",   EeyoreLexer.RSQUBR ),
+        make_token( "\n",  EeyoreLexer.NEWLINE ),
         ) )
 
     assert_equal( len( values ), 1 )
