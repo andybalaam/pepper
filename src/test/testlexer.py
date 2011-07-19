@@ -63,3 +63,15 @@ print( sys.argv )
     assert_equal( len( tokens ), 8 )
 
 
+def test_array_lookup():
+    tokens = _lex( """myarr[1]""" )
+
+    _assert_token( tokens[0], "myarr", EeyoreLexer.SYMBOL, 1, 1 )
+    _assert_token( tokens[1], "[",     EeyoreLexer.LSQUBR, 1, 6 )
+    _assert_token( tokens[2], "1",     EeyoreLexer.INT,    1, 7 )
+    _assert_token( tokens[3], "]",     EeyoreLexer.RSQUBR, 1, 8 )
+
+    assert_equal( len( tokens ), 4 )
+
+
+

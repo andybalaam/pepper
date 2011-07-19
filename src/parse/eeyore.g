@@ -53,6 +53,9 @@ RPAREN :
     ')'
 ;
 
+LSQUBR : "[" ;
+RSQUBR : "]" ;
+
 COMMA :
     ','
 ;
@@ -95,6 +98,7 @@ class EeyoreParser extends Parser;
 options
 {
     buildAST = true;
+    k = 2;
 }
 
 program :
@@ -103,22 +107,30 @@ program :
 ;
 
 statement :
-      functionCall
+      expression
     | importStatement
 ;
 
+
+expression :
+      SYMBOL
+    | INT
+    | STRING
+    | functionCall
+    | arrayLookup
+;
+
+
 functionCall :
-    expression
+    SYMBOL
     (LPAREN^)
     (expression)?
     (COMMA! expression)*
     (RPAREN!)
 ;
 
-expression :
-      SYMBOL
-    | INT
-    | STRING
+arrayLookup :
+    SYMBOL (LSQUBR^) expression (RSQUBR!)
 ;
 
 importStatement :
@@ -139,24 +151,31 @@ statement returns [r]
 
 statementContents returns [r]
     : f=functionCall    { r = f }
+    | e=expression      { r = e }
     | i=importStatement { r = i }
 ;
 
 functionCall returns [r]
     { r = None }
-    : #(LPAREN f=function a=arg) { r = EeyFunctionCall( f, (a,) ) }
+    : #(LPAREN f=symbol a=expression) { r = EeyFunctionCall( f, (a,) ) }
 ;
 
-function returns [r]
+expression returns [r]
+    { r = None }
+    : s=symbol { r = s }
+    | i:INT    { r = EeyInt(    i.getText() ) }
+    | t:STRING { r = EeyString( t.getText() ) }
+    | a=arraylookup { r = a }
+;
+
+symbol returns [r]
     { r = None }
     : f:SYMBOL { r = EeySymbol( f.getText() ) }
 ;
 
-arg returns [r]
-    { r = None }
-    : s:SYMBOL { r = EeySymbol( s.getText() ) }
-    | i:INT    { r = EeyInt(    i.getText() ) }
-    | t:STRING { r = EeyString( t.getText() ) }
+arraylookup returns [r]
+    : #(LSQUBR arr=symbol idx=expression)
+        { r = EeyArrayLookup( arr, idx ) }
 ;
 
 importStatement returns [r]
