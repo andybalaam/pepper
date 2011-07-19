@@ -156,12 +156,10 @@ statementContents returns [r]
 ;
 
 functionCall returns [r]
-    { r = None }
     : #(LPAREN f=symbol a=expression) { r = EeyFunctionCall( f, (a,) ) }
 ;
 
 expression returns [r]
-    { r = None }
     : s=symbol { r = s }
     | i:INT    { r = EeyInt(    i.getText() ) }
     | t:STRING { r = EeyString( t.getText() ) }
@@ -169,7 +167,6 @@ expression returns [r]
 ;
 
 symbol returns [r]
-    { r = None }
     : f:SYMBOL { r = EeySymbol( f.getText() ) }
 ;
 
