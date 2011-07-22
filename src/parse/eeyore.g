@@ -91,6 +91,8 @@ NEWLINE :
         { $newline }
 ;
 
+PLUS : '+' ;
+
 
 class EeyoreParser extends Parser;
 
