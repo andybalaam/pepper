@@ -108,10 +108,13 @@ program :
 ;
 
 statement :
-      expression
+      compoundExpression
     | importStatement
 ;
 
+compoundExpression :
+    expression ( PLUS^ compoundExpression )?
+;
 
 expression :
       SYMBOL
@@ -125,13 +128,13 @@ expression :
 functionCall :
     SYMBOL
     (LPAREN^)
-    (expression)?
-    (COMMA! expression)*
+    (compoundExpression)?
+    (COMMA! compoundExpression)*
     (RPAREN!)
 ;
 
 arrayLookup :
-    SYMBOL (LSQUBR^) expression (RSQUBR!)
+    SYMBOL (LSQUBR^) compoundExpression (RSQUBR!)
 ;
 
 importStatement :
@@ -165,6 +168,7 @@ expression returns [r]
     | i:INT    { r = EeyInt(    i.getText() ) }
     | t:STRING { r = EeyString( t.getText() ) }
     | a=arraylookup { r = a }
+    | #(PLUS e1=expression e2=expression) { r = EeyPlus( e1, e2 ) }
 ;
 
 symbol returns [r]

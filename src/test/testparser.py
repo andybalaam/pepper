@@ -161,3 +161,60 @@ def test_arraylookup_qualified():
 
 
 
+def test_operator_plus():
+    values = _parse( (
+        make_token( "a", EeyoreLexer.SYMBOL ),
+        make_token( "+", EeyoreLexer.PLUS ),
+        make_token( "b", EeyoreLexer.SYMBOL ),
+        make_token( "\n", EeyoreLexer.NEWLINE ),
+        ) )
+
+    assert_equal( len( values ), 1 )
+    value = values[0]
+
+    assert_equal( value.__class__, EeyPlus )
+
+    assert_equal( value.left_value.__class__, EeySymbol )
+    assert_equal( value.left_value.symbol_name, "a" )
+
+    assert_equal( value.right_value.__class__, EeySymbol )
+    assert_equal( value.right_value.symbol_name, "b" )
+
+
+
+def test_plus_in_function_call():
+    values = _parse( (
+        make_token( "print", EeyoreLexer.SYMBOL ),
+        make_token( "(",     EeyoreLexer.LPAREN ),
+        make_token( "3",     EeyoreLexer.INT ),
+        make_token( "+",     EeyoreLexer.PLUS ),
+        make_token( "b",     EeyoreLexer.SYMBOL ),
+        make_token( ")",     EeyoreLexer.RPAREN ),
+        make_token( "\n",    EeyoreLexer.NEWLINE ),
+        ) )
+
+    assert_equal( len( values ), 1 )
+    value = values[0]
+
+    assert_equal( value.__class__, EeyFunctionCall )
+
+    func = value.func
+    assert_equal( func.__class__, EeySymbol )
+    assert_equal( func.symbol_name, "print" )
+
+    args = value.args
+    assert_equal( len( args ), 1 )
+
+    plus = args[0]
+    assert_equal( plus.__class__, EeyPlus )
+
+    assert_equal( plus.left_value.__class__, EeyInt )
+    assert_equal( plus.left_value.value, "3" )
+
+    assert_equal( plus.right_value.__class__, EeySymbol )
+    assert_equal( plus.right_value.symbol_name, "b" )
+
+
+
+
+
