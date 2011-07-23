@@ -1,1 +1,0 @@
-EeyFunctionCall( EeySymbol( "print" ), ( EeyPlus( EeyInt( 1 ), EeyInt( 2 ) ), ) )
