@@ -15,8 +15,6 @@ options
 WHITESPACE :
     (
           ' '
-        | '\t'
-        | '\f'
     )
     { $setType(Token.SKIP); }
 ;
