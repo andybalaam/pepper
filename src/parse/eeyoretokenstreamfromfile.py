@@ -1,10 +1,12 @@
 
+import antlr
+
 import LexedParser
 import LexedLexer
 
-import antlr
+from iterablefromtokenstream import IterableFromTokenStream
 
-class EeyoreTokenStreamFromFile( antlr.TokenStream ):
+class EeyoreTokenStreamFromFile( antlr.TokenStream, IterableFromTokenStream ):
     def __init__( self, fl ):
         self.lexed_parser = LexedParser.Parser(
             LexedLexer.Lexer( fl ) )
@@ -15,13 +17,4 @@ class EeyoreTokenStreamFromFile( antlr.TokenStream ):
             return antlr.CommonToken( type = antlr.Token.EOF_TYPE )
         else:
             return ln
-
-    def __iter__( self ):
-        return self
-
-    def next( self ):
-        nxt = self.nextToken()
-        if nxt.getType() == antlr.Token.EOF_TYPE:
-            raise StopIteration()
-        return nxt
 
