@@ -119,4 +119,26 @@ def test_indent_multiline_block():
     # TODO: should dedent at end
 
 
+def test_multiple_layers_of_indent():
+    _assert_indent_dedent_generated(
+        """
+0001:0001  LEADINGSP(    )
+0001:0005     SYMBOL(a)
+0001:0006    NEWLINE
+0002:0001  LEADINGSP(        )
+0002:0009     SYMBOL(b)
+0002:0010    NEWLINE
+""",
+        """
+0001:0001     INDENT
+0001:0005     SYMBOL(a)
+0001:0006    NEWLINE
+0002:0001     INDENT
+0002:0009     SYMBOL(b)
+0002:0010    NEWLINE
+"""
+        )
+    # TODO: should dedent at end
+
+
 
