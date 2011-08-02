@@ -4,7 +4,7 @@ from nose.tools import *
 
 from libeeyore.usererrorexception import EeyUserErrorException
 from parse import EeyoreLexer
-from parse.indentdedenttokenstream import IndentDedentTokenSource
+from parse.indentdedenttokenstream import IndentDedentTokenStream
 from parse.eeyoretokenstreamfromfile import EeyoreTokenStreamFromFile
 from parse.eeyoretokentostring import render_token
 from tokenutils import Iterable2TokenStream, make_token
@@ -13,7 +13,7 @@ def _tokens_2_string( tokens ):
     return "\n" + "\n".join( render_token( token ) for token in tokens ) + "\n"
 
 def _indent_dedent_token_string( before ):
-    return IndentDedentTokenSource( EeyoreTokenStreamFromFile(
+    return IndentDedentTokenStream( EeyoreTokenStreamFromFile(
         StringIO( before.lstrip() ) ) )
 
 def _assert_indent_dedent_generated( before, after ):

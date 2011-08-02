@@ -25,7 +25,7 @@ def _new_dedent( tok ):
     return ret
 
 
-class IndentDedentTokenSource( TokenStream, IterableFromTokenStream ):
+class IndentDedentTokenStream( TokenStream, IterableFromTokenStream ):
     def __init__( self, base_source ):
         self.base_source = base_source
         self.waiting_token_stack = []
