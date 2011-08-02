@@ -216,5 +216,44 @@ def test_plus_in_function_call():
 
 
 
+#def test_single_statement_if():
+#    values = _parse( (
+#        make_token( "if",    EeyoreLexer.LITERAL_if, 1, 1 ),
+#        make_token( "True",  EeyoreLexer.SYMBOL,     1, 4 ),
+#        make_token( ":",     EeyoreLexer.COLON,      1, 8 ),
+#        make_token( "\n",    EeyoreLexer.NEWLINE,    1, 9 ),
+#        make_token( "",      EeyoreLexer.INDENT,     2, 1 ),
+#        make_token( "print", EeyoreLexer.SYMBOL,     2, 5 ),
+#        make_token( "(",     EeyoreLexer.LPAREN,     2, 11 ),
+#        make_token( "3",     EeyoreLexer.INT,        2, 13 ),
+#        make_token( ")",     EeyoreLexer.RPAREN,     2, 15 ),
+#        make_token( "\n",    EeyoreLexer.NEWLINE,    2, 16 ),
+#        make_token( "",      EeyoreLexer.DEDENT,     2, 16 ),
+#        make_token( "\n",    EeyoreLexer.NEWLINE,    3, 1 ),
+#        ) )
+#
+#    assert_equal( len( values ), 1 )
+#    value = values[0]
+#
+#    assert_equal( value.__class__, EeyFunctionCall )
+#
+#    func = value.func
+#    assert_equal( func.__class__, EeySymbol )
+#    assert_equal( func.symbol_name, "print" )
+#
+#    args = value.args
+#    assert_equal( len( args ), 1 )
+#
+#    plus = args[0]
+#    assert_equal( plus.__class__, EeyPlus )
+#
+#    assert_equal( plus.left_value.__class__, EeyInt )
+#    assert_equal( plus.left_value.value, "3" )
+#
+#    assert_equal( plus.right_value.__class__, EeySymbol )
+#    assert_equal( plus.right_value.symbol_name, "b" )
+#
+
+
 
 

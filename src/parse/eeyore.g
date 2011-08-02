@@ -105,6 +105,7 @@ NEWLINE :
 
 PLUS : '+' ;
 
+COLON : ':';
 
 class EeyoreParser extends Parser;
 
@@ -134,6 +135,7 @@ expression :
     | STRING
     | functionCall
     | arrayLookup
+    | ifExpression
 ;
 
 
@@ -147,6 +149,17 @@ functionCall :
 
 arrayLookup :
     SYMBOL (LSQUBR^) compoundExpression (RSQUBR!)
+;
+
+ifExpression :
+    "if"^ expression COLON suite
+;
+
+suite :
+    NEWLINE
+    INDENT
+    ( statement NEWLINE )+
+    DEDENT
 ;
 
 importStatement :
@@ -190,6 +203,14 @@ symbol returns [r]
 arraylookup returns [r]
     : #(LSQUBR arr=symbol idx=expression)
         { r = EeyArrayLookup( arr, idx ) }
+;
+
+ifExpression returns [r]
+    : #("if" pred=expression COLON s=suite) { r = EeyIf( pred, s ) }
+;
+
+suite returns [r]
+    : NEWLINE INDENT s=statement DEDENT { r = EeySuite( s ) }
 ;
 
 importStatement returns [r]
