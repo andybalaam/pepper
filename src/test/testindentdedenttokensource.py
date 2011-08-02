@@ -2,6 +2,7 @@
 from cStringIO import StringIO
 from nose.tools import *
 
+from libeeyore.usererrorexception import EeyUserErrorException
 from parse import EeyoreLexer
 from parse.indentdedenttokensource import IndentDedentTokenSource
 from parse.eeyoretokenstreamfromfile import EeyoreTokenStreamFromFile
@@ -11,13 +12,14 @@ from tokenutils import Iterable2TokenStream, make_token
 def _tokens_2_string( tokens ):
     return "\n" + "\n".join( render_token( token ) for token in tokens ) + "\n"
 
+def _indent_dedent_token_string( before ):
+    return IndentDedentTokenSource( EeyoreTokenStreamFromFile(
+        StringIO( before.lstrip() ) ) )
+
 def _assert_indent_dedent_generated( before, after ):
     assert_equal(
-        _tokens_2_string(
-            IndentDedentTokenSource( EeyoreTokenStreamFromFile(
-                StringIO( before.lstrip() ) ) ) ),
-        after
-        )
+        _tokens_2_string( _indent_dedent_token_string( before ) ),
+        after )
 
 def test_no_indent():
     _assert_indent_dedent_generated(
@@ -66,5 +68,35 @@ def test_strip_comment_lines_not_divisible_by_4():
 0002:0002    NEWLINE
 """
         )
+
+
+
+def test_indent_single_line():
+    _assert_indent_dedent_generated(
+        """
+0001:0001  LEADINGSP(    )
+0001:0005     SYMBOL(a)
+0001:0006    NEWLINE
+""",
+        """
+0001:0001     INDENT
+0001:0005     SYMBOL(a)
+0001:0006    NEWLINE
+"""
+        )
+    # TODO: should dedent at end
+
+@raises( EeyUserErrorException )
+def test_indent_not_divisible_by_4():
+    for x in _indent_dedent_token_string(
+        """
+0001:0001  LEADINGSP(   )
+0001:0005     SYMBOL(a)
+0001:0006    NEWLINE
+"""
+            ):
+        pass
+
+
 
 

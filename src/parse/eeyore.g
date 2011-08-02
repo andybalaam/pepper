@@ -16,6 +16,12 @@ options
     k = 2;
 }
 
+tokens
+{
+    INDENT;
+    DEDENT;
+}
+
 WHITESPACE : { self.getColumn() > 1 }?
     (
           ' '

@@ -7,6 +7,10 @@ def _render_text( token ):
             EeyoreLexer.LPAREN,
             EeyoreLexer.RPAREN,
             EeyoreLexer.NEWLINE,
+            EeyoreLexer.LSQUBR,
+            EeyoreLexer.RSQUBR,
+            EeyoreLexer.INDENT,
+            EeyoreLexer.DEDENT,
             ):
         return ""
     else:
