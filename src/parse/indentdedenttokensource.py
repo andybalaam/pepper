@@ -21,6 +21,7 @@ class IndentDedentTokenSource( TokenStream, IterableFromTokenStream ):
     def __init__( self, base_source ):
         self.base_source = base_source
         self.waiting_token_stack = []
+        self.indents_stack = [1]
 
     def nextToken( self ):
         if len( self.waiting_token_stack ) > 0:
@@ -45,12 +46,15 @@ class IndentDedentTokenSource( TokenStream, IterableFromTokenStream ):
             # but whitespace, just emit the newline (ignore the space)
             return self.nextToken()
 
-        if ( len( tok.getText() ) % 4 ) == 0:
-            self.waiting_token_stack.append( _new_indent( tok ) )
-        else:
+        indent_col = len( tok.getText() )
+        if ( indent_col % 4 ) != 0:
             raise EeyUserErrorException(
                 "Indentation at the beginning of a line must be "
                 + "4 spaces." )
+
+        if indent_col > self.indents_stack[-1]:
+            self.indents_stack.append( indent_col )
+            self.waiting_token_stack.append( _new_indent( tok ) )
 
         return self.nextToken() # TODO: emit an indent or dedent
 

@@ -98,5 +98,25 @@ def test_indent_not_divisible_by_4():
         pass
 
 
+def test_indent_multiline_block():
+    _assert_indent_dedent_generated(
+        """
+0001:0001  LEADINGSP(    )
+0001:0005     SYMBOL(a)
+0001:0006    NEWLINE
+0002:0001  LEADINGSP(    )
+0002:0005     SYMBOL(b)
+0002:0006    NEWLINE
+""",
+        """
+0001:0001     INDENT
+0001:0005     SYMBOL(a)
+0001:0006    NEWLINE
+0002:0005     SYMBOL(b)
+0002:0006    NEWLINE
+"""
+        )
+    # TODO: should dedent at end
+
 
 
