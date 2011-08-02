@@ -82,7 +82,7 @@ def test_indent_single_line():
 0001:0001     INDENT
 0001:0005     SYMBOL(a)
 0001:0006    NEWLINE
-0000:0000     DEDENT
+0001:0006     DEDENT
 """
         )
 
@@ -114,7 +114,7 @@ def test_indent_multiline_block():
 0001:0006    NEWLINE
 0002:0005     SYMBOL(b)
 0002:0006    NEWLINE
-0000:0000     DEDENT
+0002:0006     DEDENT
 """
         )
 
@@ -136,8 +136,8 @@ def test_multiple_layers_of_indent():
 0002:0001     INDENT
 0002:0009     SYMBOL(b)
 0002:0010    NEWLINE
-0000:0000     DEDENT
-0000:0000     DEDENT
+0002:0010     DEDENT
+0002:0010     DEDENT
 """
         )
 

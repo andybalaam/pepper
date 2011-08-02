@@ -30,8 +30,15 @@ class IndentDedentTokenSource( TokenStream, IterableFromTokenStream ):
         self.base_source = base_source
         self.waiting_token_stack = []
         self.indents_stack = [0]
+        self.last_newline = None
 
     def nextToken( self ):
+        ret = self.GetNextToken()
+        if ret.getType() == EeyoreLexer.NEWLINE:
+            self.last_newline = ret
+        return ret
+
+    def GetNextToken( self ):
         if len( self.waiting_token_stack ) > 0:
             return self.waiting_token_stack.pop()
 
@@ -47,6 +54,7 @@ class IndentDedentTokenSource( TokenStream, IterableFromTokenStream ):
     def HandleEof( self, tok ):
         self.waiting_token_stack.append( tok )
         while self.indents_stack[-1] > 0:
+            tok = self.last_newline if self.last_newline is not None else tok
             self.waiting_token_stack.append( _new_dedent( tok ) )
             self.indents_stack.pop()
         return self.nextToken()
