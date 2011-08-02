@@ -17,21 +17,39 @@ def _new_indent( tok ):
     ret.setColumn( tok.getColumn() )
     return ret
 
+def _new_dedent( tok ):
+    ret = CommonToken()
+    ret.setType( EeyoreLexer.DEDENT )
+    ret.setLine( tok.getLine() )
+    ret.setColumn( tok.getColumn() )
+    return ret
+
+
 class IndentDedentTokenSource( TokenStream, IterableFromTokenStream ):
     def __init__( self, base_source ):
         self.base_source = base_source
         self.waiting_token_stack = []
-        self.indents_stack = [1]
+        self.indents_stack = [0]
 
     def nextToken( self ):
         if len( self.waiting_token_stack ) > 0:
             return self.waiting_token_stack.pop()
 
         tok = self.base_source.nextToken()
-        if tok.getType() != EeyoreLexer.LEADINGSP:
+
+        if tok.getType() == EeyoreLexer.EOF:
+            return self.HandleEof( tok )
+        elif tok.getType() == EeyoreLexer.LEADINGSP:
+            return self.HandleLeadingSpace( tok )
+        else:
             return tok
 
-        return self.HandleLeadingSpace( tok )
+    def HandleEof( self, tok ):
+        self.waiting_token_stack.append( tok )
+        while self.indents_stack[-1] > 0:
+            self.waiting_token_stack.append( _new_dedent( tok ) )
+            self.indents_stack.pop()
+        return self.nextToken()
 
     def HandleLeadingSpace( self, tok ):
 

@@ -82,9 +82,9 @@ def test_indent_single_line():
 0001:0001     INDENT
 0001:0005     SYMBOL(a)
 0001:0006    NEWLINE
+0000:0000     DEDENT
 """
         )
-    # TODO: should dedent at end
 
 @raises( EeyUserErrorException )
 def test_indent_not_divisible_by_4():
@@ -114,9 +114,9 @@ def test_indent_multiline_block():
 0001:0006    NEWLINE
 0002:0005     SYMBOL(b)
 0002:0006    NEWLINE
+0000:0000     DEDENT
 """
         )
-    # TODO: should dedent at end
 
 
 def test_multiple_layers_of_indent():
@@ -136,9 +136,10 @@ def test_multiple_layers_of_indent():
 0002:0001     INDENT
 0002:0009     SYMBOL(b)
 0002:0010    NEWLINE
+0000:0000     DEDENT
+0000:0000     DEDENT
 """
         )
-    # TODO: should dedent at end
 
 
 
