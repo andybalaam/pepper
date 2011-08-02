@@ -4,7 +4,7 @@ from parse import EeyoreLexer
 from parse import EeyoreParser
 from parse.eeyoretokenstreamfromfile import EeyoreTokenStreamFromFile
 from parse.eeyoretokentostring import render_token
-from parse.indentdedenttokensource import IndentDedentTokenSource
+from parse.indentdedenttokenstream import IndentDedentTokenSource
 
 class LexBuildStep( BuildStep ):
     def read_from_file( self, fl ):

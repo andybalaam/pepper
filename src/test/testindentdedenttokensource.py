@@ -4,7 +4,7 @@ from nose.tools import *
 
 from libeeyore.usererrorexception import EeyUserErrorException
 from parse import EeyoreLexer
-from parse.indentdedenttokensource import IndentDedentTokenSource
+from parse.indentdedenttokenstream import IndentDedentTokenSource
 from parse.eeyoretokenstreamfromfile import EeyoreTokenStreamFromFile
 from parse.eeyoretokentostring import render_token
 from tokenutils import Iterable2TokenStream, make_token
