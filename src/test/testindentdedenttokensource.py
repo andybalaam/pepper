@@ -143,3 +143,21 @@ def test_multiple_layers_of_indent():
 
 
 
+
+def test_dedent_at_end_even_when_last_line_has_leading_space():
+    _assert_indent_dedent_generated(
+        """
+0001:0001  LEADINGSP(    )
+0001:0005     SYMBOL(a)
+0001:0006    NEWLINE
+0002:0001  LEADINGSP(    )
+""",
+        """
+0001:0001     INDENT
+0001:0005     SYMBOL(a)
+0001:0006    NEWLINE
+0001:0006     DEDENT
+"""
+        )
+
+

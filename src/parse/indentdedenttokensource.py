@@ -62,12 +62,14 @@ class IndentDedentTokenSource( TokenStream, IterableFromTokenStream ):
     def HandleLeadingSpace( self, tok ):
 
         next_tok = self.base_source.nextToken()
+
+        if next_tok.getType() == EeyoreLexer.EOF:
+            # If we are at the end, emit some dedents and stop
+            return self.HandleEof( next_tok )
+
         self.waiting_token_stack.append( next_tok )
 
-        if next_tok.getType() in (
-                EeyoreLexer.NEWLINE,
-                EeyoreLexer.EOF,
-                ):
+        if next_tok.getType() == EeyoreLexer.NEWLINE:
             # If we find a line containing only a comment or nothing
             # but whitespace, just emit the newline (ignore the space)
             return self.nextToken()
