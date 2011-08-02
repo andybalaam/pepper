@@ -1,4 +1,8 @@
 
+// Inspired in places by:
+// http://www.antlr.org/grammar/1200715779785/Python.g
+// Thanks to Terence Parr and Loring Craymer
+
 options
 {
     language = "Python";
@@ -9,14 +13,18 @@ class EeyoreLexer extends Lexer;
 options
 {
     charVocabulary = '\0'..'\377';
-    k = 2;                   // two characters of lookahead
+    k = 2;
 }
 
-WHITESPACE :
+WHITESPACE : { self.getColumn() > 1 }?
     (
           ' '
     )
     { $setType(Token.SKIP); }
+;
+
+LEADINGSP: { self.getColumn() == 1 }
+    ( ' ' )+
 ;
 
 COMMENT :

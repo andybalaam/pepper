@@ -84,3 +84,36 @@ def test_operator():
     assert_equal( len( tokens ), 3 )
 
 
+def test_leading_whitespace():
+    tokens = _lex( """    a""" )
+
+    _assert_token( tokens[0], "    ", EeyoreLexer.LEADINGSP, 1, 1 )
+    _assert_token( tokens[1], "a",    EeyoreLexer.SYMBOL,    1, 5 )
+    assert( len( tokens ) == 2 )
+
+
+def test_double_leading_whitespace():
+    tokens = _lex( "a\n        b" )
+
+    _assert_token( tokens[0], "a",        EeyoreLexer.SYMBOL,    1, 1 )
+    _assert_token( tokens[1], "\n",       EeyoreLexer.NEWLINE,   1, 2 )
+    _assert_token( tokens[2], "        ", EeyoreLexer.LEADINGSP, 2, 1 )
+    _assert_token( tokens[3], "b",        EeyoreLexer.SYMBOL,    2, 9 )
+    assert( len( tokens ) == 4 )
+
+
+def test_comment():
+    tokens = _lex( """# Comment""" )
+    assert( len( tokens ) == 0 )
+
+def test_comment_leading_whitespace():
+    tokens = _lex( """    # Comment""" )
+    _assert_token( tokens[0], "    ", EeyoreLexer.LEADINGSP, 1, 1 )
+    assert( len( tokens ) == 1 )
+
+
+def test_comment_leading_whitespace_not_multiple_of_4():
+    tokens = _lex( """   # Comment""" )
+    _assert_token( tokens[0], "   ", EeyoreLexer.LEADINGSP, 1, 1 )
+    assert( len( tokens ) == 1 )
+

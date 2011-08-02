@@ -37,3 +37,34 @@ def test_no_indent():
 """
         )
 
+def test_strip_comment_lines():
+    _assert_indent_dedent_generated(
+        """
+0001:0001  LEADINGSP(    )
+0001:0025    NEWLINE
+0002:0001     SYMBOL(a)
+0002:0002    NEWLINE
+""",
+        """
+0001:0025    NEWLINE
+0002:0001     SYMBOL(a)
+0002:0002    NEWLINE
+"""
+        )
+
+def test_strip_comment_lines_not_divisible_by_4():
+    _assert_indent_dedent_generated(
+        """
+0001:0001  LEADINGSP(   )
+0001:0025    NEWLINE
+0002:0001     SYMBOL(a)
+0002:0002    NEWLINE
+""",
+        """
+0001:0025    NEWLINE
+0002:0001     SYMBOL(a)
+0002:0002    NEWLINE
+"""
+        )
+
+
