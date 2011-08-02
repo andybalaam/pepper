@@ -161,3 +161,68 @@ def test_dedent_at_end_even_when_last_line_has_leading_space():
         )
 
 
+
+
+def test_dedent_at_end_even_when_last_line_has_no_newline():
+    _assert_indent_dedent_generated(
+        """
+0001:0001  LEADINGSP(    )
+0001:0005     SYMBOL(a)
+""",
+        """
+0001:0001     INDENT
+0001:0005     SYMBOL(a)
+0000:0000     DEDENT
+"""
+        )
+    # Line and column are messed up because there is no newline at end.
+
+
+def test_indent_and_dedent_before_end():
+    _assert_indent_dedent_generated(
+        """
+0001:0001  LEADINGSP(    )
+0001:0005     SYMBOL(a)
+0001:0006    NEWLINE
+0002:0001  LEADINGSP(        )
+0002:0009     SYMBOL(b)
+0002:0010    NEWLINE
+0003:0001  LEADINGSP(    )
+0003:0005     SYMBOL(c)
+0003:0006    NEWLINE
+0004:0001     SYMBOL(d)
+0004:0002    NEWLINE
+""",
+        """
+0001:0001     INDENT
+0001:0005     SYMBOL(a)
+0001:0006    NEWLINE
+0002:0001     INDENT
+0002:0009     SYMBOL(b)
+0002:0010    NEWLINE
+0002:0010     DEDENT
+0003:0005     SYMBOL(c)
+0003:0006    NEWLINE
+0003:0006     DEDENT
+0004:0001     SYMBOL(d)
+0004:0002    NEWLINE
+"""
+        )
+
+
+
+@raises( EeyUserErrorException )
+def test_dedent_to_unknown_indentation():
+    for x in _indent_dedent_token_string(
+        """
+0001:0001  LEADINGSP(        )
+0001:0005     SYMBOL(a)
+0001:0006    NEWLINE
+0002:0001  LEADINGSP(    )
+0002:0009     SYMBOL(b)
+0002:0010    NEWLINE
+"""
+            ):
+        pass
+
+

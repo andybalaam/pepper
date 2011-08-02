@@ -36,7 +36,10 @@ class IndentDedentTokenStream( TokenStream, IterableFromTokenStream ):
         ret = self.GetNextToken()
         if ret.getType() == EeyoreLexer.NEWLINE:
             self.last_newline = ret
+        else:
+            self.last_newline = None
         return ret
+
 
     def GetNextToken( self ):
         if len( self.waiting_token_stack ) > 0:
@@ -45,13 +48,20 @@ class IndentDedentTokenStream( TokenStream, IterableFromTokenStream ):
         tok = self.base_source.nextToken()
 
         if tok.getType() == EeyoreLexer.EOF:
-            return self.HandleEof( tok )
+            # If we're at the end of the file generate some dedents
+            return self.DedentToLeft( tok )
         elif tok.getType() == EeyoreLexer.LEADINGSP:
+            # If we hit some leading spaces, generate indents or dedents
             return self.HandleLeadingSpace( tok )
+        elif self.last_newline is not None:
+            # If we are the beginning a new line but there is no leading
+            # whitespace,we must dedent all the way to the left
+            return self.DedentToLeft( tok )
         else:
             return tok
 
-    def HandleEof( self, tok ):
+
+    def DedentToLeft( self, tok ):
         self.waiting_token_stack.append( tok )
         while self.indents_stack[-1] > 0:
             tok = self.last_newline if self.last_newline is not None else tok
@@ -59,13 +69,14 @@ class IndentDedentTokenStream( TokenStream, IterableFromTokenStream ):
             self.indents_stack.pop()
         return self.nextToken()
 
+
     def HandleLeadingSpace( self, tok ):
 
         next_tok = self.base_source.nextToken()
 
         if next_tok.getType() == EeyoreLexer.EOF:
             # If we are at the end, emit some dedents and stop
-            return self.HandleEof( next_tok )
+            return self.DedentToLeft( next_tok )
 
         self.waiting_token_stack.append( next_tok )
 
@@ -81,8 +92,22 @@ class IndentDedentTokenStream( TokenStream, IterableFromTokenStream ):
                 + "4 spaces." )
 
         if indent_col > self.indents_stack[-1]:
+            # Create an indent if we have moved to the right
             self.indents_stack.append( indent_col )
             self.waiting_token_stack.append( _new_indent( tok ) )
+        else:
+            # Create dedents until we hit a known value
+            while indent_col < self.indents_stack[-1]:
+                self.indents_stack.pop()
+                #  We can't be dedenting unless we just had a newline
+                assert( self.last_newline is not None )
+                self.waiting_token_stack.append( _new_dedent(
+                    self.last_newline ) )
+
+            if indent_col != self.indents_stack[-1]:
+                raise EeyUserErrorException(
+                    "Dedented to a level that does not match a previous "
+                    + "indent level." )
 
         return self.nextToken() # TODO: emit an indent or dedent
 
