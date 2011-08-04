@@ -98,6 +98,11 @@ class EeyInt( EeyValue ):
         # TODO: handle large numbers
         return EeyInt( str( int( self.value ) + int( other.value ) ) )
 
+    def greater_than( self, other ):
+        assert other.__class__ == self.__class__
+        # TODO: handle large numbers
+        return EeyBool( int( self.value ) > int( other.value ) )
+
 class EeyString( EeyValue ):
     def __init__( self, py_str ):
         self.value = py_str
@@ -120,6 +125,25 @@ class EeyPlus( EeyValue ):
     def evaluate( self, env ):
         if self.is_known( env ):
             return self.left_value.evaluate( env ).plus(
+                self.right_value.evaluate( env ) )
+        else:
+            return self
+
+    def is_known( self, env ):
+        return all_known( ( self.left_value, self.right_value ), env )
+
+class EeyGreaterThan( EeyValue ):
+    def __init__( self, left_value, right_value ):
+        # TODO: assert( all( is_gtable, ( left_value, right_value ) )
+        self.left_value  = left_value
+        self.right_value = right_value
+
+    def construction_args( self ):
+        return ( self.left_value, self.right_value )
+
+    def evaluate( self, env ):
+        if self.is_known( env ):
+            return self.left_value.evaluate( env ).greater_than(
                 self.right_value.evaluate( env ) )
         else:
             return self

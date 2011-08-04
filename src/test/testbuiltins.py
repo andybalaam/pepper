@@ -1,0 +1,38 @@
+
+from nose.tools import *
+
+from libeeyore.builtins import *
+from libeeyore.environment import EeyEnvironment
+from libeeyore.values import *
+
+def test_true():
+    env = EeyEnvironment( None )
+    add_builtins( env )
+
+    value = EeySymbol( "True" )
+    ans = value.evaluate( env )
+
+    assert_equal( ans.__class__, EeyBool )
+    assert_equal( ans.value, True )
+
+
+def test_false():
+    env = EeyEnvironment( None )
+    add_builtins( env )
+
+    value = EeySymbol( "False" )
+    ans = value.evaluate( env )
+
+    assert_equal( ans.__class__, EeyBool )
+    assert_equal( ans.value, False )
+
+def test_len():
+    env = EeyEnvironment( None )
+    add_builtins( env )
+
+    value = EeySymbol( "len" )
+    ans = value.evaluate( env )
+
+    assert_equal( ans.__class__, EeyLen )
+
+

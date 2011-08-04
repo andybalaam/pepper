@@ -1,6 +1,7 @@
 
 from libeeyore.eeyinterface import implements_interface
 from libeeyore.values import *
+from libeeyore.builtinmodules.eeysys import EeySysArgv
 
 
 class FormatString( object ):
@@ -63,4 +64,9 @@ def render_EeyRuntimePrint( env, value ):
     ret += " )"
 
     return ret
+
+def render_EeyRuntimeLen( env, value ):
+    arg = value.arg.evaluate( env )
+    assert( arg.__class__ == EeySysArgv ) # TODO other types
+    return "argc"
 

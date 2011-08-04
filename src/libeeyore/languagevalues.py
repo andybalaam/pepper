@@ -2,6 +2,7 @@
 from all_known import all_known
 from eeyinterface import implements_interface
 from values import EeyArray
+from values import EeyBool
 from values import EeyInt
 from values import EeyValue
 
@@ -10,17 +11,23 @@ from usererrorexception import EeyUserErrorException
 class EeyImport( EeyValue ):
     def __init__( self, module_name ):
         self.module_name = module_name
+        self.cached_eval = None
 
     def construction_args( self ):
         return ( self.module_name, )
 
     def evaluate( self, env ):
+        if self.cached_eval is not None:
+            return self.cached_eval
+
         if self.module_name == "sys":
             import builtinmodules.eeysys
             builtinmodules.eeysys.add_names( env )
         else:
             raise EeyUserErrorException( "No module named %s" %
                 self.module_name )
+
+        self.cached_eval = self
         return self
 
 
@@ -57,7 +64,7 @@ class EeyIf( EeyValue ):
     def evaluate( self, env ):
         pred = self.predicate.evaluate( env )
         if pred.is_known( env ):
-            assert( idx.__class__ == EeyBool ) # TODO: other types
+            assert( pred.__class__ == EeyBool ) # TODO: other types
             if pred.value:
                 # TODO: support EeyArray of statements?  As well?
                 ret = None
@@ -65,7 +72,7 @@ class EeyIf( EeyValue ):
                     ret = cmd.evaluate( env )
                 return ret # TODO: should we return all evaluated statements?
             else:
-                return EeyBool( "False" )
+                return ()
         else:
             return self
 

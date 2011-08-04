@@ -12,6 +12,12 @@ def render_EeySymbol( env, value ):
 def render_EeyInt( env, value ):
     return str( value.value )
 
+def render_EeyBool( env, value ):
+    if value.value:
+        return "true"
+    else:
+        return "false"
+
 def render_EeyString( env, value ):
     return '"%s"' % value.value
 
@@ -19,6 +25,20 @@ def render_EeyPlus( env, value ):
     # TODO: assert they are addable and switch on how to add them
     return "(%s + %s)" % (
         value.left_value.render( env ), value.right_value.render( env ) )
+
+
+def render_EeyGreaterThan( env, value ):
+    # TODO: assert they are comparable
+    return "(%s > %s)" % (
+        value.left_value.render( env ), value.right_value.render( env ) )
+
+
+def render_EeyIf( env, value ):
+    # TODO: assert predicate is a bool or function returning one
+    return "if( %s )\n    {\n        %s;\n    }" % (
+        value.predicate.render( env ),
+        value.cmds_if_true.render( env )
+        )
 
 def render_EeyFunction( env, value ):
     raise Exception( "Don't know how to render a function yet" )
@@ -103,15 +123,19 @@ def render_EeySysArgv( env, value ):
 
 type2renderer = {
     EeyArrayLookup          : render_EeyArrayLookup,
+    EeyBool                 : render_EeyBool,
     EeyDefine               : render_EeyDefine,
     EeyFunction             : render_EeyFunction,
     EeyFunctionCall         : render_EeyFunctionCall,
+    EeyGreaterThan          : render_EeyGreaterThan,
+    EeyIf                   : render_EeyIf,
     EeyImport               : render_EeyImport,
     EeyInt                  : render_EeyInt,
     EeyPass                 : render_EeyPass,
     EeyPlus                 : render_EeyPlus,
     EeyPrint                : render_EeyPrint,
     EeyReturn               : render_EeyReturn,
+    EeyRuntimeLen           : render_EeyRuntimeLen,
     EeyRuntimePrint         : render_EeyRuntimePrint,
     EeyRuntimeUserFunction  : render_EeyRuntimeUserFunction,
     EeyString               : render_EeyString,

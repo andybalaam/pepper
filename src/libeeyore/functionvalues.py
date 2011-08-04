@@ -25,13 +25,15 @@ class EeyFunctionCall( EeyValue ):
         return ( self.func, self.args )
 
     def evaluate( self, env ):
-        if all_known( self.args, env ):
+        if self.is_known( env ):
             fn = self.func.evaluate( env )
             assert is_callable( fn )
             return fn.call( env, self.args )
         else:
             return self
 
+    def is_known( self, env ):
+        return all_known( self.args, env )
 
 class EeyReturn( EeyValue ):
     def __init__( self, value ):

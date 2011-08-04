@@ -94,3 +94,13 @@ def test_known_array_lookup():
 
     assert_equal( value.render( env ), "4" )
 
+def test_bool_true():
+    env = EeyEnvironment( EeyCppRenderer() )
+    value = EeyBool( True )
+    assert_equal( value.render( env ), "true" )
+
+def test_bool_false():
+    env = EeyEnvironment( EeyCppRenderer() )
+    value = EeyBool( False )
+    assert_equal( value.render( env ), "false" )
+
