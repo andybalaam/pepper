@@ -14,7 +14,7 @@ class MyClass:
     def(static) string Author( auto self ):
         return "Andy"
 
-auto mycls = MyClass( 2, 3 )
+auto mycls = MyClass.init( 2, 3 )
 mycls.Add( 1 )
 
 print( mycls.Sum() )
