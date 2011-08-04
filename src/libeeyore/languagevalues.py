@@ -46,3 +46,35 @@ class EeyArrayLookup( EeyValue ):
     def is_known( self, env ):
         return all_known( ( self.array_value, self.index ), env )
 
+class EeyIf( EeyValue ):
+    def __init__( self, predicate, cmds_if_true ):
+        self.predicate = predicate
+        self.cmds_if_true = cmds_if_true
+
+    def construction_args( self ):
+        return ( self.predicate, self.cmds_if_true )
+
+    def evaluate( self, env ):
+        pred = self.predicate.evaluate( env )
+        if pred.is_known( env ):
+            assert( idx.__class__ == EeyBool ) # TODO: other types
+            if pred.value:
+                # TODO: support EeyArray of statements?  As well?
+                ret = None
+                for cmd in self.cmds_if_true:
+                    ret = cmd.evaluate( env )
+                return ret # TODO: should we return all evaluated statements?
+            else:
+                return EeyBool( "False" )
+        else:
+            return self
+
+    def is_known( self, env ):
+        pred = self.predicate.evaluate( env )
+        return ( pred.is_known( env ) and (
+                ( pred.value and all_known( self.cmds_if_true ) )
+                or
+                ( not pred.value ) # TODO and elses known)
+                )
+            )
+

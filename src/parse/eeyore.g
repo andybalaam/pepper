@@ -157,7 +157,7 @@ ifExpression :
 
 suite :
     NEWLINE
-    INDENT
+    INDENT^
     ( statement NEWLINE )+
     DEDENT
 ;
@@ -193,6 +193,7 @@ expression returns [r]
     | i:INT    { r = EeyInt(    i.getText() ) }
     | t:STRING { r = EeyString( t.getText() ) }
     | a=arraylookup { r = a }
+    | i=ifExpression { r = i }
     | #(PLUS e1=expression e2=expression) { r = EeyPlus( e1, e2 ) }
 ;
 
@@ -210,7 +211,7 @@ ifExpression returns [r]
 ;
 
 suite returns [r]
-    : NEWLINE INDENT s=statement DEDENT { r = EeySuite( s ) }
+    : #(INDENT NEWLINE s=statement DEDENT) { r = ( s, ) }
 ;
 
 importStatement returns [r]

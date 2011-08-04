@@ -78,6 +78,14 @@ class EeySymbol( EeyValue ):
         return self._lookup( env ).is_known( env )
 
 
+class EeyBool( EeyValue ):
+    def __init__( self, value ):
+        self.value = value
+
+    def construction_args( self ):
+        return ( self.value, )
+
+
 class EeyInt( EeyValue ):
     def __init__( self,  str_int ):
         self.value = str( str_int )
