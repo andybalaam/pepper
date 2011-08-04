@@ -212,6 +212,30 @@ def test_operator_plus():
     assert_equal( value.right_value.symbol_name, "b" )
 
 
+operator_gt_tokens = (
+    make_token( "a", EeyoreLexer.SYMBOL ),
+    make_token( ">", EeyoreLexer.GT ),
+    make_token( "b", EeyoreLexer.SYMBOL ),
+    make_token( "\n", EeyoreLexer.NEWLINE ),
+    )
+
+def test_ast_operator_gt():
+    assert_multiline_equal(
+        _parse_to_ast_string( operator_gt_tokens ),
+        r"""
+[GT:>]
+    [SYMBOL:a]
+    [SYMBOL:b]
+"""
+        )
+
+
+def test_operator_gt():
+    assert_multiline_equal( repr( _parse( operator_gt_tokens ) ),
+        """[EeyGreaterThan(EeySymbol('a'),EeySymbol('b'))]"""
+        )
+
+
 
 def test_plus_in_function_call():
     values = _parse( (
@@ -284,3 +308,107 @@ def test_single_statement_if():
         """[EeyIf(EeySymbol('True'),(EeyFunctionCall(EeySymbol('print'),(EeyInt('3'),)),))]"""
         )
 
+
+def test_if_function_call():
+    assert_multiline_equal( repr( _parse( (
+        make_token( "if",    EeyoreLexer.LITERAL_if, 1, 1 ),
+        make_token( "f",     EeyoreLexer.SYMBOL,     1, 4 ),
+        make_token( "(",     EeyoreLexer.LPAREN,     1, 5 ),
+        make_token( "3",     EeyoreLexer.INT,        1, 7 ),
+        make_token( ")",     EeyoreLexer.RPAREN,     1, 9 ),
+        make_token( ":",     EeyoreLexer.COLON,      1, 10 ),
+        make_token( "\n",    EeyoreLexer.NEWLINE,    1, 11 ),
+        make_token( "",      EeyoreLexer.INDENT,     2, 1 ),
+        make_token( "3",     EeyoreLexer.INT,        2, 5 ),
+        make_token( "\n",    EeyoreLexer.NEWLINE,    2, 6 ),
+        make_token( "",      EeyoreLexer.DEDENT,     2, 6 ),
+        make_token( "\n",    EeyoreLexer.NEWLINE,    3, 1 ),
+        ) ) ),
+        """[EeyIf(EeyFunctionCall(EeySymbol('f'),(EeyInt('3'),)),(EeyInt('3'),))]"""
+        )
+
+
+
+if_operator_tokens = (
+    make_token( "if",    EeyoreLexer.LITERAL_if, 1, 1 ),
+    make_token( "3",     EeyoreLexer.INT,        1, 4 ),
+    make_token( ">",     EeyoreLexer.GT,         1, 6 ),
+    make_token( "4",     EeyoreLexer.INT,        1, 8 ),
+    make_token( ":",     EeyoreLexer.COLON,      1, 9 ),
+    make_token( "\n",    EeyoreLexer.NEWLINE,    1, 10 ),
+    make_token( "",      EeyoreLexer.INDENT,     2, 1 ),
+    make_token( "3",     EeyoreLexer.INT,        2, 5 ),
+    make_token( "\n",    EeyoreLexer.NEWLINE,    2, 6 ),
+    make_token( "",      EeyoreLexer.DEDENT,     2, 6 ),
+    make_token( "\n",    EeyoreLexer.NEWLINE,    3, 1 ),
+    )
+
+def test_ast_if_operator():
+
+    assert_multiline_equal(
+        _parse_to_ast_string( if_operator_tokens ),
+        r"""
+["if":if]
+    [GT:>]
+        [INT:3]
+        [INT:4]
+    [COLON::]
+    [INDENT:]
+        [NEWLINE:\n]
+        [INT:3]
+        [NEWLINE:\n]
+        [DEDENT:]
+"""
+        )
+
+def test_if_operator():
+    assert_multiline_equal( repr( _parse( if_operator_tokens ) ),
+        """[EeyIf(EeyGreaterThan(EeyInt('3'),EeyInt('4')),(EeyInt('3'),))]"""
+        )
+
+
+
+if_op_fn_tokens = (
+    make_token( "if",    EeyoreLexer.LITERAL_if, 1, 1 ),
+    make_token( "f",     EeyoreLexer.SYMBOL,     1, 4 ),
+    make_token( "(",     EeyoreLexer.LPAREN,     1, 5 ),
+    make_token( "a",     EeyoreLexer.SYMBOL,     1, 7 ),
+    make_token( ")",     EeyoreLexer.RPAREN,     1, 9 ),
+    make_token( ">",     EeyoreLexer.GT,         1, 11 ),
+    make_token( "4",     EeyoreLexer.INT,        1, 13 ),
+    make_token( ":",     EeyoreLexer.COLON,      1, 14 ),
+    make_token( "\n",    EeyoreLexer.NEWLINE,    1, 15 ),
+    make_token( "",      EeyoreLexer.INDENT,     2, 1 ),
+    make_token( "3",     EeyoreLexer.INT,        2, 5 ),
+    make_token( "\n",    EeyoreLexer.NEWLINE,    2, 6 ),
+    make_token( "",      EeyoreLexer.DEDENT,     2, 6 ),
+    make_token( "\n",    EeyoreLexer.NEWLINE,    3, 1 ),
+    )
+
+
+def test_ast_if_op_fn():
+
+    assert_multiline_equal(
+        _parse_to_ast_string( if_op_fn_tokens ),
+        r"""
+["if":if]
+    [GT:>]
+        [LPAREN:(]
+            [SYMBOL:f]
+            [SYMBOL:a]
+        [INT:4]
+    [COLON::]
+    [INDENT:]
+        [NEWLINE:\n]
+        [INT:3]
+        [NEWLINE:\n]
+        [DEDENT:]
+"""
+        )
+
+
+
+def test_if_op_fn():
+    assert_multiline_equal( repr( _parse( if_op_fn_tokens ) ),
+        """[EeyIf(EeyGreaterThan(EeyFunctionCall(EeySymbol('f'),(EeySymbol('a'),)),EeyInt('4')),(EeyInt('3'),))]"""
+        )

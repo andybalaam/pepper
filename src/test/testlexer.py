@@ -74,11 +74,21 @@ def test_array_lookup():
     assert_equal( len( tokens ), 4 )
 
 
-def test_operator():
+def test_operator_plus():
     tokens = _lex( """a + b""" )
 
     _assert_token( tokens[0], "a", EeyoreLexer.SYMBOL, 1, 1 )
     _assert_token( tokens[1], "+", EeyoreLexer.PLUS,   1, 3 )
+    _assert_token( tokens[2], "b", EeyoreLexer.SYMBOL, 1, 5 )
+
+    assert_equal( len( tokens ), 3 )
+
+
+def test_operator_gt():
+    tokens = _lex( """a > b""" )
+
+    _assert_token( tokens[0], "a", EeyoreLexer.SYMBOL, 1, 1 )
+    _assert_token( tokens[1], ">", EeyoreLexer.GT,   1, 3 )
     _assert_token( tokens[2], "b", EeyoreLexer.SYMBOL, 1, 5 )
 
     assert_equal( len( tokens ), 3 )

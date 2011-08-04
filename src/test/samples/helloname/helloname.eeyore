@@ -1,29 +1,5 @@
-
 import sys
 
-#TODO: if len( sys.argv ) >= 2:
-
-print( "Hello, " + sys.argv[1] + "!" )
-
-#print( sys.argv[1] )
-
-
-
-
-## With the if:
-
-#EeyImport( "sys" )
-#
-#EeyIf( EeyGreaterThanOrEqual( EeyLen( EeySymbol( "sys.argv" ) ), EeyInt( 2 ) ),
-#	EeyFunctionCall( EeySymbol( "print" ), ( EeyPlus(
-#		EeyPlus(
-#			EeyString( "Hello, " ),
-#			EeyArrayLookup( EeySymbol( "sys.argv" ), EeyInt( 1 ) )
-#			)
-#		EeyString( "!" )
-#		)
-#	), )
-
-
-#EeyFunctionCall( EeySymbol( "print" ), ( EeyPlus( EeyPlus( EeyString( "Hello, " ), EeyArrayLookup( EeySymbol( "sys.argv" ), EeyInt( 1 ) ) ), EeyString( "!" ) ), ), )
+if len( sys.argv ) > 1 :
+    print( "Hello, " + sys.argv[1] + "!" )
 

@@ -37,7 +37,7 @@ def render_EeyIf( env, value ):
     # TODO: assert predicate is a bool or function returning one
     return "if( %s )\n    {\n        %s;\n    }" % (
         value.predicate.render( env ),
-        value.cmds_if_true.render( env )
+        "\n        ".join( c.render(env) for c in value.cmds_if_true )
         )
 
 def render_EeyFunction( env, value ):

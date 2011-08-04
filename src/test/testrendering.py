@@ -93,7 +93,7 @@ def test_single_statement_if():
                             EeyInt( "1" )
                             ),
                         ),
-                    )
+                    ),
             )
         )
 

@@ -105,6 +105,8 @@ NEWLINE :
 
 PLUS : '+' ;
 
+GT : '>' ;
+
 COLON : ':';
 
 class EeyoreParser extends Parser;
@@ -126,7 +128,7 @@ statement :
 ;
 
 compoundExpression :
-    expression ( PLUS^ compoundExpression )?
+    expression ( ( PLUS^ | GT^ ) compoundExpression )?
 ;
 
 expression :
@@ -152,7 +154,7 @@ arrayLookup :
 ;
 
 ifExpression :
-    "if"^ expression COLON suite
+    "if"^ compoundExpression COLON suite
 ;
 
 suite :
@@ -179,8 +181,7 @@ statement returns [r]
 ;
 
 statementContents returns [r]
-    : f=functionCall    { r = f }
-    | e=expression      { r = e }
+    : e=expression      { r = e }
     | i=importStatement { r = i }
 ;
 
@@ -195,6 +196,8 @@ expression returns [r]
     | a=arraylookup { r = a }
     | i=ifExpression { r = i }
     | #(PLUS e1=expression e2=expression) { r = EeyPlus( e1, e2 ) }
+    | #(GT e1=expression e2=expression) { r = EeyGreaterThan( e1, e2 ) }
+    | f=functionCall { r = f }
 ;
 
 symbol returns [r]
