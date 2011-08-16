@@ -129,6 +129,14 @@ statement :
     | importStatement
 ;
 
+initialisationOrExpression :
+    expression ( SYMBOL EQUALS^ expression )?
+;
+
+importStatement :
+    "import"^ SYMBOL
+;
+
 expression :
     simpleExpression ( ( PLUS^ | GT^ ) expression )?
 ;
@@ -165,14 +173,6 @@ suite :
     DEDENT
 ;
 
-initialisationOrExpression :
-    expression ( SYMBOL EQUALS^ expression )?
-;
-
-importStatement :
-    "import"^ SYMBOL
-;
-
 {
 from libeeyore.values import *
 from libeeyore.languagevalues import *
@@ -190,10 +190,6 @@ statementContents returns [r]
     | i=importStatement { r = i }
 ;
 
-functionCall returns [r]
-    : #(LPAREN f=symbol a=expression) { r = EeyFunctionCall( f, (a,) ) }
-;
-
 expression returns [r]
     : s=symbol { r = s }
     | i:INT    { r = EeyInt(    i.getText() ) }
@@ -203,6 +199,10 @@ expression returns [r]
     | #(PLUS e1=expression e2=expression) { r = EeyPlus( e1, e2 ) }
     | #(GT e1=expression e2=expression) { r = EeyGreaterThan( e1, e2 ) }
     | f=functionCall { r = f }
+;
+
+importStatement returns [r]
+    : #("import" m:SYMBOL) { r = EeyImport( m.getText() ) }
 ;
 
 symbol returns [r]
@@ -218,11 +218,11 @@ ifExpression returns [r]
     : #("if" pred=expression COLON s=suite) { r = EeyIf( pred, s ) }
 ;
 
-suite returns [r]
-    : #(INDENT NEWLINE s=statement DEDENT) { r = ( s, ) }
+functionCall returns [r]
+    : #(LPAREN f=symbol a=expression) { r = EeyFunctionCall( f, (a,) ) }
 ;
 
-importStatement returns [r]
-    : #("import" m:SYMBOL) { r = EeyImport( m.getText() ) }
+suite returns [r]
+    : #(INDENT NEWLINE s=statement DEDENT) { r = ( s, ) }
 ;
 
