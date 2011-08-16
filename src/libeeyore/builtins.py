@@ -1,6 +1,5 @@
 
-from values import EeyBool
-from values import EeyValue
+from values import *
 from functionvalues import EeyFunction
 
 class EeyRuntimePrint( EeyValue ):
@@ -48,7 +47,14 @@ class EeyLen( EeyFunction ):
 
 
 def add_builtins( env ):
-    env.namespace["print"] = EeyPrint()
-    env.namespace["len"] = EeyLen()
-    env.namespace["True"] = EeyBool( True )
+    # Values
+    env.namespace["True"]  = EeyBool( True )
     env.namespace["False"] = EeyBool( False )
+
+    # Types
+    env.namespace["int"] = EeyType( EeyInt )
+
+    # Functions
+    env.namespace["print"] = EeyPrint()
+    env.namespace["len"]   = EeyLen()
+

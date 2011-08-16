@@ -35,4 +35,14 @@ def test_len():
 
     assert_equal( ans.__class__, EeyLen )
 
+def test_int():
+    env = EeyEnvironment( None )
+    add_builtins( env )
+
+    value = EeySymbol( "int" )
+    ans = value.evaluate( env )
+
+    assert_equal( ans.__class__, EeyType )
+    assert_equal( ans.value, EeyInt )
+
 
