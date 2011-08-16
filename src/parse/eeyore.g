@@ -145,14 +145,13 @@ simpleExpression :
 
 functionCall :
     SYMBOL
-    (LPAREN^)
-    (expression)?
-    (COMMA! expression)*
-    (RPAREN!)
+    LPAREN^
+    ( expression )? ( COMMA! expression )*
+    RPAREN!
 ;
 
 arrayLookup :
-    SYMBOL (LSQUBR^) expression (RSQUBR!)
+    SYMBOL LSQUBR^ expression RSQUBR!
 ;
 
 ifExpression :
