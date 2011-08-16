@@ -125,15 +125,15 @@ program :
 ;
 
 statement :
-      initialisationOrCompoundExpression
+      initialisationOrExpression
     | importStatement
 ;
 
-compoundExpression :
-    expression ( ( PLUS^ | GT^ ) compoundExpression )?
+expression :
+    simpleExpression ( ( PLUS^ | GT^ ) expression )?
 ;
 
-expression :
+simpleExpression :
       SYMBOL
     | INT
     | STRING
@@ -146,17 +146,17 @@ expression :
 functionCall :
     SYMBOL
     (LPAREN^)
-    (compoundExpression)?
-    (COMMA! compoundExpression)*
+    (expression)?
+    (COMMA! expression)*
     (RPAREN!)
 ;
 
 arrayLookup :
-    SYMBOL (LSQUBR^) compoundExpression (RSQUBR!)
+    SYMBOL (LSQUBR^) expression (RSQUBR!)
 ;
 
 ifExpression :
-    "if"^ compoundExpression COLON suite
+    "if"^ expression COLON suite
 ;
 
 suite :
@@ -166,8 +166,8 @@ suite :
     DEDENT
 ;
 
-initialisationOrCompoundExpression :
-    compoundExpression ( SYMBOL EQUALS^ compoundExpression )?
+initialisationOrExpression :
+    expression ( SYMBOL EQUALS^ expression )?
 ;
 
 importStatement :
