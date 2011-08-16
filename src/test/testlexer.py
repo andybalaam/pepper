@@ -127,3 +127,12 @@ def test_comment_leading_whitespace_not_multiple_of_4():
     _assert_token( tokens[0], "   ", EeyoreLexer.LEADINGSP, 1, 1 )
     assert( len( tokens ) == 1 )
 
+def test_simple_initialisation():
+    tokens = _lex( "int i = 7" )
+
+    _assert_token( tokens[0], "int", EeyoreLexer.SYMBOL, 1, 1 )
+    _assert_token( tokens[1], "i",   EeyoreLexer.SYMBOL, 1, 5 )
+    _assert_token( tokens[2], "=",   EeyoreLexer.EQUALS, 1, 7 )
+    _assert_token( tokens[3], "7",   EeyoreLexer.INT,    1, 9 )
+    assert( len( tokens ) == 4 )
+

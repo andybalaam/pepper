@@ -109,6 +109,8 @@ GT : '>' ;
 
 COLON : ':';
 
+EQUALS : '=';
+
 class EeyoreParser extends Parser;
 
 options
