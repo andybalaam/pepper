@@ -104,3 +104,11 @@ def test_bool_false():
     value = EeyBool( False )
     assert_equal( value.render( env ), "false" )
 
+@raises( EeyInitialisingWithWrongType )
+def test_initialisation_wrong_type():
+    env = EeyEnvironment( None )
+    add_builtins( env )
+    init = EeyInit( EeySymbol( "int" ), EeySymbol( "i" ), EeyString( "foo" ) )
+    init.evaluate( env )
+
+

@@ -4,6 +4,8 @@ from eeyinterface import implements_interface
 from values import EeyArray
 from values import EeyBool
 from values import EeyInt
+from values import EeySymbol
+from values import EeyType
 from values import EeyValue
 
 from usererrorexception import EeyUserErrorException
@@ -86,7 +88,15 @@ class EeyIf( EeyValue ):
             )
 
 
+class EeyInitialisingWithWrongType( EeyUserErrorException ):
+    def __init__( self, decl_type, init_value_type ):
+        EeyUserErrorException.__init__( self, ( "Declared type is %s, but "
+            + "initial value supplied is of type %s." ) % (
+                str( decl_type ), str( init_value_type )
+                ) )
+
 class EeyInit( EeyValue ):
+
     def __init__( self, var_type, var_name, init_value ):
         self.var_type   = var_type
         self.var_name   = var_name
@@ -94,4 +104,20 @@ class EeyInit( EeyValue ):
 
     def construction_args( self ):
         return ( self.var_type, self.var_name, self.init_value )
+
+    def evaluate( self, env ):
+        tp = self.var_type.evaluate( env )
+        nm = self.var_name # Don't evaluate - will need to semi-evaluate in
+                           # order to support symbol( "x" ) here?
+        val = self.init_value.evaluate( env )
+        if tp.value != val.__class__:
+            raise EeyInitialisingWithWrongType(
+                tp, val.__class__ )
+        assert( nm.__class__ == EeySymbol ) # TODO: not assert
+
+        assert( nm.symbol_name not in env.namespace ) # TODO: not assert
+
+        env.namespace[nm.symbol_name] = val
+
+        return self
 
