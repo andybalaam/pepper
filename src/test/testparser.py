@@ -412,3 +412,24 @@ def test_if_op_fn():
     assert_multiline_equal( repr( _parse( if_op_fn_tokens ) ),
         """[EeyIf(EeyGreaterThan(EeyFunctionCall(EeySymbol('f'),(EeySymbol('a'),)),EeyInt('4')),(EeyInt('3'),))]"""
         )
+
+
+simple_initialisation_tokens = (
+    make_token( "int", EeyoreLexer.SYMBOL,  1, 1 ),
+    make_token( "i",   EeyoreLexer.SYMBOL,  1, 5 ),
+    make_token( "=",   EeyoreLexer.EQUALS,  1, 7 ),
+    make_token( "7",   EeyoreLexer.INT,     1, 9 ),
+    make_token( "\n",  EeyoreLexer.NEWLINE, 1, 10 ),
+    )
+
+def test_ast_simple_initialisation():
+    assert_multiline_equal(
+        _parse_to_ast_string( simple_initialisation_tokens ),
+        r"""
+[EQUALS:=]
+    [SYMBOL:int]
+    [SYMBOL:i]
+    [INT:7]
+"""
+        )
+

@@ -125,7 +125,7 @@ program :
 ;
 
 statement :
-      compoundExpression
+      initialisationOrCompoundExpression
     | importStatement
 ;
 
@@ -164,6 +164,10 @@ suite :
     INDENT^
     ( statement NEWLINE )+
     DEDENT
+;
+
+initialisationOrCompoundExpression :
+    compoundExpression ( SYMBOL EQUALS^ compoundExpression )?
 ;
 
 importStatement :
