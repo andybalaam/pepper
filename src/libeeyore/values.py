@@ -57,6 +57,7 @@ class EeySymbol( EeyValue ):
         return env.namespace[self.symbol_name]
 
     def name( self ):
+        # TODO: delete this method, or use it consistently
         return self.symbol_name
 
     def evaluate( self, env ):
