@@ -186,8 +186,13 @@ statement returns [r]
 ;
 
 statementContents returns [r]
-    : e=expression      { r = e }
+    : e=expression { r = e }
+    | i=initialisation { r = i }
     | i=importStatement { r = i }
+;
+
+initialisation returns [r]
+    : #(EQUALS t=expression s=symbol v=expression) { r = EeyInit( t, s, v ) }
 ;
 
 expression returns [r]

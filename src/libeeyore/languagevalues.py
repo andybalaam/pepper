@@ -85,3 +85,13 @@ class EeyIf( EeyValue ):
                 )
             )
 
+
+class EeyInit( EeyValue ):
+    def __init__( self, var_type, var_name, init_value ):
+        self.var_type   = var_type
+        self.var_name   = var_name
+        self.init_value = init_value
+
+    def construction_args( self ):
+        return ( self.var_type, self.var_name, self.init_value )
+

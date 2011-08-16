@@ -433,3 +433,8 @@ def test_ast_simple_initialisation():
 """
         )
 
+def test_simple_initialisation():
+    assert_multiline_equal( repr( _parse( simple_initialisation_tokens ) ),
+        """[EeyInit(EeySymbol('int'),EeySymbol('i'),EeyInt('7'))]"""
+        )
+
