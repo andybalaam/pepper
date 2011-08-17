@@ -112,3 +112,10 @@ def test_initialisation_wrong_type():
     init.evaluate( env )
 
 
+def test_known_initialisation_renders_nothing():
+    env = EeyEnvironment( EeyCppRenderer() )
+    add_builtins( env )
+    init = EeyInit( EeySymbol( "int" ), EeySymbol( "i" ), EeyInt( "4" ) )
+    assert_equal( init.render( env ), "" )
+
+

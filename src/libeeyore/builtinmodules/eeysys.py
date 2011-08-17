@@ -9,14 +9,14 @@ _copyright = EeyString(
 
 class EeySysArgv( EeyValue ):
 
+    def __init__( self ):
+        EeyValue.__init__( self )
+
     def construction_args( self ):
         return ()
 
     def is_known( self, env ):
         False
-
-    def evaluate( self, env ):
-        return self
 
     def lookup( self, env ):
         return self

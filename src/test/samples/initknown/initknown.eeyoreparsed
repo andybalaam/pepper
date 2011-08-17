@@ -1,0 +1,2 @@
+EeyInit(EeySymbol('int'),EeySymbol('i'),EeyInt('6'))
+EeyFunctionCall(EeySymbol('print'),(EeySymbol('i'),))

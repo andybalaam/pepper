@@ -10,6 +10,9 @@ class EeyValue( object ):
 
     __metaclass__ = ABCMeta
 
+    def __init__( self ):
+        self.cached_eval = None
+
     def render( self, env ):
         return env.render_value( self.evaluate( env ) )
 
@@ -17,6 +20,11 @@ class EeyValue( object ):
         return True
 
     def evaluate( self, env ):
+        if self.cached_eval is None:
+            self.cached_eval = self.do_evaluate( env )
+        return self.cached_eval
+
+    def do_evaluate( self, env ):
         return self
 
     @abstractmethod
@@ -32,6 +40,7 @@ class EeyValue( object ):
 
 class EeyVariable( EeyValue ):
     def __init__( self, clazz ):
+        EeyValue.__init__( self )
         self.clazz = clazz
 
     def construction_args( self ):
@@ -43,6 +52,7 @@ class EeyVariable( EeyValue ):
 
 class EeySymbol( EeyValue ):
     def __init__( self, symbol_name ):
+        EeyValue.__init__( self )
         self.symbol_name = symbol_name
 
     def construction_args( self ):
@@ -60,7 +70,7 @@ class EeySymbol( EeyValue ):
         # TODO: delete this method, or use it consistently
         return self.symbol_name
 
-    def evaluate( self, env ):
+    def do_evaluate( self, env ):
         # Look up this symbol in the namespace of our environment
         value = self._lookup( env ).evaluate( env )
 
@@ -81,6 +91,7 @@ class EeySymbol( EeyValue ):
 
 class EeyBool( EeyValue ):
     def __init__( self, value ):
+        EeyValue.__init__( self )
         self.value = value
 
     def construction_args( self ):
@@ -89,6 +100,7 @@ class EeyBool( EeyValue ):
 
 class EeyInt( EeyValue ):
     def __init__( self,  str_int ):
+        EeyValue.__init__( self )
         self.value = str( str_int )
 
     def construction_args( self ):
@@ -106,6 +118,7 @@ class EeyInt( EeyValue ):
 
 class EeyString( EeyValue ):
     def __init__( self, py_str ):
+        EeyValue.__init__( self )
         self.value = py_str
 
     def construction_args( self ):
@@ -116,6 +129,7 @@ class EeyString( EeyValue ):
 
 class EeyPlus( EeyValue ):
     def __init__( self, left_value, right_value ):
+        EeyValue.__init__( self )
         # TODO: assert( all( is_plusable, ( left_value, right_value ) )
         self.left_value  = left_value
         self.right_value = right_value
@@ -123,7 +137,7 @@ class EeyPlus( EeyValue ):
     def construction_args( self ):
         return ( self.left_value, self.right_value )
 
-    def evaluate( self, env ):
+    def do_evaluate( self, env ):
         if self.is_known( env ):
             return self.left_value.evaluate( env ).plus(
                 self.right_value.evaluate( env ) )
@@ -135,6 +149,7 @@ class EeyPlus( EeyValue ):
 
 class EeyGreaterThan( EeyValue ):
     def __init__( self, left_value, right_value ):
+        EeyValue.__init__( self )
         # TODO: assert( all( is_gtable, ( left_value, right_value ) )
         self.left_value  = left_value
         self.right_value = right_value
@@ -142,7 +157,7 @@ class EeyGreaterThan( EeyValue ):
     def construction_args( self ):
         return ( self.left_value, self.right_value )
 
-    def evaluate( self, env ):
+    def do_evaluate( self, env ):
         if self.is_known( env ):
             return self.left_value.evaluate( env ).greater_than(
                 self.right_value.evaluate( env ) )
@@ -154,13 +169,14 @@ class EeyGreaterThan( EeyValue ):
 
 class EeyDefine( EeyValue ):
     def __init__( self, symbol, value ):
+        EeyValue.__init__( self )
         self.symbol = symbol
         self.value = value
 
     def construction_args( self ):
         return ( self.symbol, self.value )
 
-    def evaluate( self, env ):
+    def do_evaluate( self, env ):
         name = self.symbol.name()
 
         if name in env.namespace:
@@ -175,11 +191,15 @@ class EeyDefine( EeyValue ):
 class EeyPass( EeyValue ):
     """A statement that does nothing."""
 
+    def __init__( self ):
+        EeyValue.__init__( self )
+
     def construction_args( self ):
         return ()
 
 class EeyType( EeyValue ):
     def __init__( self, value ):
+        EeyValue.__init__( self )
         # TODO: check we have been passed a type
         self.value = value
 
@@ -188,6 +208,7 @@ class EeyType( EeyValue ):
 
 class EeyArray( EeyValue ):
     def __init__( self, value_type, values ):
+        EeyValue.__init__( self )
         self.value_type = value_type
         self.values = values
 

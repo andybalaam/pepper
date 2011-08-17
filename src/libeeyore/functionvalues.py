@@ -14,6 +14,7 @@ def is_callable( value ):
 
 class EeyFunctionCall( EeyValue ):
     def __init__( self, func, args ):
+        EeyValue.__init__( self )
         assert( func.__class__ == EeySymbol ) # TODO: Might not be?  Handle
                                               #       expressions that eval to
                                               #       a symbol?
@@ -24,7 +25,7 @@ class EeyFunctionCall( EeyValue ):
     def construction_args( self ):
         return ( self.func, self.args )
 
-    def evaluate( self, env ):
+    def do_evaluate( self, env ):
         if self.is_known( env ):
             fn = self.func.evaluate( env )
             assert is_callable( fn )
@@ -37,18 +38,20 @@ class EeyFunctionCall( EeyValue ):
 
 class EeyReturn( EeyValue ):
     def __init__( self, value ):
+        EeyValue.__init__( self )
         self.value = value
 
     def construction_args( self ):
         return ( self.value, )
 
-    def evaluate( self, env ):
+    def do_evaluate( self, env ):
         return self.value.evaluate( env )
 
 class EeyFunction( EeyValue ):
     __metaclass__ = ABCMeta
 
-#    def __init__( self, arg_types_and_names ):
+    def __init__( self ):
+        EeyValue.__init__( self )
 #        self.arg_types_and_names = arg_types_and_names
 
     @abstractmethod
@@ -60,6 +63,7 @@ class EeyFunction( EeyValue ):
 
 class EeyRuntimeUserFunction( EeyValue ):
     def __init__( self, user_function, args ):
+        EeyValue.__init__( self )
         # TODO: check arg types
         self.user_function = user_function
         self.args = args
@@ -69,6 +73,7 @@ class EeyRuntimeUserFunction( EeyValue ):
 
 class EeyUserFunction( EeyFunction ):
     def __init__( self, name, ret_type, arg_types_and_names, body_stmts ):
+        EeyFunction.__init__( self )
         #EeyFunction.__init__( self, arg_types_and_names )
         self.name = name
         self.ret_type = ret_type

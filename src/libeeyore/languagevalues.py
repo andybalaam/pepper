@@ -12,15 +12,13 @@ from usererrorexception import EeyUserErrorException
 
 class EeyImport( EeyValue ):
     def __init__( self, module_name ):
+        EeyValue.__init__( self )
         self.module_name = module_name
-        self.cached_eval = None
 
     def construction_args( self ):
         return ( self.module_name, )
 
-    def evaluate( self, env ):
-        if self.cached_eval is not None:
-            return self.cached_eval
+    def do_evaluate( self, env ):
 
         if self.module_name == "sys":
             import builtinmodules.eeysys
@@ -35,13 +33,14 @@ class EeyImport( EeyValue ):
 
 class EeyArrayLookup( EeyValue ):
     def __init__( self, array_value, index ):
+        EeyValue.__init__( self )
         self.array_value = array_value
         self.index = index
 
     def construction_args( self ):
         return ( self.array_value, self.index )
 
-    def evaluate( self, env ):
+    def do_evaluate( self, env ):
         idx = self.index.evaluate( env )
         arr = self.array_value.evaluate( env )
         if arr.is_known( env ):
@@ -57,13 +56,14 @@ class EeyArrayLookup( EeyValue ):
 
 class EeyIf( EeyValue ):
     def __init__( self, predicate, cmds_if_true ):
+        EeyValue.__init__( self )
         self.predicate = predicate
         self.cmds_if_true = cmds_if_true
 
     def construction_args( self ):
         return ( self.predicate, self.cmds_if_true )
 
-    def evaluate( self, env ):
+    def do_evaluate( self, env ):
         pred = self.predicate.evaluate( env )
         if pred.is_known( env ):
             assert( pred.__class__ == EeyBool ) # TODO: other types
@@ -98,6 +98,7 @@ class EeyInitialisingWithWrongType( EeyUserErrorException ):
 class EeyInit( EeyValue ):
 
     def __init__( self, var_type, var_name, init_value ):
+        EeyValue.__init__( self )
         self.var_type   = var_type
         self.var_name   = var_name
         self.init_value = init_value
@@ -105,7 +106,7 @@ class EeyInit( EeyValue ):
     def construction_args( self ):
         return ( self.var_type, self.var_name, self.init_value )
 
-    def evaluate( self, env ):
+    def do_evaluate( self, env ):
         tp = self.var_type.evaluate( env )
         nm = self.var_name # Don't evaluate - will need to semi-evaluate in
                            # order to support symbol( "x" ) here?

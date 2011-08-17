@@ -4,6 +4,7 @@ from functionvalues import EeyFunction
 
 class EeyRuntimePrint( EeyValue ):
     def __init__( self, args ):
+        EeyValue.__init__( self )
         self.args = args
 
     def construction_args( self ):
@@ -22,6 +23,7 @@ class EeyPrint( EeyFunction ):
 
 class EeyRuntimeLen( EeyValue ):
     def __init__( self, args ):
+        EeyValue.__init__( self )
         if( len( args ) != 1 ):
             raise UserErrorException(
                 "There should only ever be one argument to len()" )
@@ -30,7 +32,7 @@ class EeyRuntimeLen( EeyValue ):
     def construction_args( self ):
         return ( (arg,), )
 
-    def evaluate( self, env ):
+    def do_evaluate( self, env ):
         # TODO: if it's known, do it
         return self
 

@@ -55,6 +55,8 @@ def render_EeyPass( env, value ):
 def render_EeyImport( env, value ):
     return ""
 
+def render_EeyInit( env, value ):
+    return ""
 
 type2string = {
     EeyInt : "int",
@@ -130,6 +132,7 @@ type2renderer = {
     EeyGreaterThan          : render_EeyGreaterThan,
     EeyIf                   : render_EeyIf,
     EeyImport               : render_EeyImport,
+    EeyInit                 : render_EeyInit,
     EeyInt                  : render_EeyInt,
     EeyPass                 : render_EeyPass,
     EeyPlus                 : render_EeyPlus,
