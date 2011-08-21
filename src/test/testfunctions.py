@@ -112,3 +112,9 @@ def test_Define_and_call_fn_to_add_unknown_numbers():
 """ )
 
 
+def test_return_type_of_user_defined():
+    assert_equal(
+        EeyUserFunction( "f", EeyType( EeyInt ), (), () ).return_type(),
+        EeyInt
+        )
+

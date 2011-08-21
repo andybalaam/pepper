@@ -55,4 +55,11 @@ def test_bool():
     assert_equal( ans.__class__, EeyType )
     assert_equal( ans.value, EeyBool )
 
+def test_print_return_type_is_none():
+    assert_equal( EeyPrint().return_type(), EeyNoneType )
+
+def test_len_return_type_is_int():
+    assert_equal( EeyLen().return_type(), EeyInt )
+
+
 

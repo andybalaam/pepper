@@ -57,6 +57,9 @@ class EeyFunction( EeyValue ):
     @abstractmethod
     def call( self, env, args ): pass
 
+    @abstractmethod
+    def return_type( self ): pass
+
     def is_known( self, env ):
         return True
 
@@ -83,6 +86,9 @@ class EeyUserFunction( EeyFunction ):
     def construction_args( self ):
         return ( self.name, self.ret_type, self.arg_types_and_names,
             self.body_stmts )
+
+    def return_type( self ):
+        return self.ret_type.value
 
     def call( self, env, args ):
         if all_known( args, env ):
