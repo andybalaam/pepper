@@ -54,7 +54,8 @@ def add_builtins( env ):
     env.namespace["False"] = EeyBool( False )
 
     # Types
-    env.namespace["int"] = EeyType( EeyInt )
+    env.namespace["int"]  = EeyType( EeyInt )
+    env.namespace["bool"] = EeyType( EeyBool )
 
     # Functions
     env.namespace["print"] = EeyPrint()
