@@ -1,0 +1,6 @@
+
+bool debug = False
+
+if debug:
+    print( "In debug mode" )
+
