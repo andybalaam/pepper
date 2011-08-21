@@ -65,6 +65,8 @@ type2string = {
 def render_EeyType( env, value ):
     return type2string[value.value]
 
+def render_EeyNoneType( env, value ):
+    return ""
 
 
 def render_type_and_name( env, typename ):
@@ -134,6 +136,7 @@ type2renderer = {
     EeyImport               : render_EeyImport,
     EeyInit                 : render_EeyInit,
     EeyInt                  : render_EeyInt,
+    EeyNoneType             : render_EeyNoneType,
     EeyPass                 : render_EeyPass,
     EeyPlus                 : render_EeyPlus,
     EeyPrint                : render_EeyPrint,

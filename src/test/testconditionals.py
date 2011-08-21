@@ -16,5 +16,5 @@ def test_if_true():
 def test_if_false():
     env = EeyEnvironment( None )
     ifv = EeyIf( EeyBool( False ), ( EeyInt( "2" ), ) )
-    assert_equal( ifv.evaluate( env ), () )
+    assert_equal( ifv.evaluate( env ), eey_none )
 

@@ -7,6 +7,7 @@ from values import EeyInt
 from values import EeySymbol
 from values import EeyType
 from values import EeyValue
+from values import eey_none
 
 from usererrorexception import EeyUserErrorException
 
@@ -74,7 +75,7 @@ class EeyIf( EeyValue ):
                     ret = cmd.evaluate( env )
                 return ret # TODO: should we return all evaluated statements?
             else:
-                return ()
+                return eey_none
         else:
             return self
 
