@@ -56,7 +56,14 @@ def render_EeyImport( env, value ):
     return ""
 
 def render_EeyInit( env, value ):
-    return ""
+    if value.is_known( env ):
+        return ""
+    else:
+        return "%s %s = %s" % (
+                value.var_type.render( env ),
+                value.var_name.symbol_name,
+                value.init_value.render( env ),
+            )
 
 type2string = {
     EeyInt : "int",

@@ -118,4 +118,19 @@ def test_known_initialisation_renders_nothing():
     init = EeyInit( EeySymbol( "int" ), EeySymbol( "i" ), EeyInt( "4" ) )
     assert_equal( init.render( env ), "" )
 
+def test_unknown_initialisation_evaluates_to_self():
+    env = EeyEnvironment( EeyCppRenderer() )
+    add_builtins( env )
+    env.namespace["unknown"] = EeyVariable( EeyInt )
+    init = EeyInit( EeySymbol( "int" ), EeySymbol( "i" ),
+        EeySymbol( "unknown" ) )
+    assert_equal( init.evaluate( env ), init )
+
+def test_unknown_initialisation_renders():
+    env = EeyEnvironment( EeyCppRenderer() )
+    add_builtins( env )
+    env.namespace["unknown"] = EeyVariable( EeyInt )
+    init = EeyInit( EeySymbol( "int" ), EeySymbol( "i" ),
+        EeySymbol( "unknown" ) )
+    assert_equal( init.render( env ), "int i = unknown" )
 

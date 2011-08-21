@@ -107,19 +107,33 @@ class EeyInit( EeyValue ):
     def construction_args( self ):
         return ( self.var_type, self.var_name, self.init_value )
 
-    def do_evaluate( self, env ):
+    def _eval_args( self, env ):
         tp = self.var_type.evaluate( env )
+
         nm = self.var_name # Don't evaluate - will need to semi-evaluate in
                            # order to support symbol( "x" ) here?
-        val = self.init_value.evaluate( env )
-        if tp.value != val.__class__:
-            raise EeyInitialisingWithWrongType(
-                tp, val.__class__ )
         assert( nm.__class__ == EeySymbol ) # TODO: not assert
 
-        assert( nm.symbol_name not in env.namespace ) # TODO: not assert
+        val = self.init_value.evaluate( env )
 
-        env.namespace[nm.symbol_name] = val
+        return ( tp, nm, val )
+
+    def do_evaluate( self, env ):
+        ( tp, nm, val ) = self._eval_args( env )
+
+        if all_known( ( tp, val ), env ):
+            if tp.value != val.__class__:
+                raise EeyInitialisingWithWrongType(
+                    tp, val.__class__ )
+
+            assert( nm.symbol_name not in env.namespace ) # TODO: not assert
+
+            env.namespace[nm.symbol_name] = val
 
         return self
+
+    def is_known( self, env ):
+        ( tp, nm, val ) = self._eval_args( env )
+        return all_known( ( tp, val ), env )
+
 
