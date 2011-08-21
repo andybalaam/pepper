@@ -28,7 +28,7 @@ class EeyFunctionCall( EeyValue ):
     def do_evaluate( self, env ):
         if self.is_known( env ):
             fn = self.func.evaluate( env )
-            assert is_callable( fn )
+            assert is_callable( fn ) # TODO: not assert
             return fn.call( env, self.args )
         else:
             return self
