@@ -49,8 +49,8 @@ class FakeCmdRunner( object ):
         self.executor = executor
 
     def run( self, exe_filename, args ):
-        self.executor.calls.append( "cmdrunner.run(%s,[%s])" %
-            ",".join( [ exe_filename ] + args ) )
+        self.executor.calls.append( "cmdrunner.run(%s,[%s])" % ( exe_filename,
+            ",".join( args ) ) )
 
 
 class FakeExecutor( object ):
@@ -272,7 +272,7 @@ def test_process_options_source_to_run():
         "Parse.process(inp)",
         "Render.process(inp)",
         "cppcompiler.run(.eeyore/test.x)",
-        "cmdrunner.run(.eeyore/test.x)",
+        "cmdrunner.run(.eeyore/test.x,[])",
         ] )
 
 
@@ -337,7 +337,7 @@ def test_process_options_source_to_run_dir_exists():
         "Parse.process(inp)",
         "Render.process(inp)",
         "cppcompiler.run(.eeyore/test)",
-        "cmdrunner.run(.eeyore/test)",
+        "cmdrunner.run(.eeyore/test,[])",
         ] )
 
 
