@@ -1,0 +1,4 @@
+$ eeyore ./init_unknown.eeyore a b c
+5
+$ eeyore ./init_unknown.eeyore
+2

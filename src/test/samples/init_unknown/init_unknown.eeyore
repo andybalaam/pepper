@@ -1,0 +1,5 @@
+import sys
+
+int argvlen = len( sys.argv ) + 1
+print( argvlen )
+
