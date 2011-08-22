@@ -14,7 +14,7 @@ class EeyoreOptions( object ):
     EXE    = 4
     RUN    = 5
 
-    USAGE = """%prog input_file output_file"""
+    USAGE = """%prog [options] input_file [arg1 ...]"""
 
     VERSION = "%prog " + version.VERSION
 
@@ -48,15 +48,20 @@ class EeyoreOptions( object ):
             prog = argv[0],
             )
 
+        parser.add_option( "-o", "--outfile", dest="outfile",
+            help="Store the output to the supplied file." )
+
         (options, args) = parser.parse_args( argv[1:] )
 
-        lenargs = len( args )
-        if lenargs == 2:
-            self.infile  = EeyoreOptions.FileDetails( args[0] )
-            self.outfile = EeyoreOptions.FileDetails( args[1] )
-        elif lenargs == 1:
-            self.infile  = EeyoreOptions.FileDetails( args[0] )
-            self.outfile = EeyoreOptions.RunFileDetails()
-        else:
+        if len( args ) < 1:
             raise EeyUserErrorException( parser.get_usage() )
+
+        self.infile  = EeyoreOptions.FileDetails( args[0] )
+
+        if options.outfile:
+            self.outfile = EeyoreOptions.FileDetails( options.outfile )
+        else:
+            self.outfile = EeyoreOptions.RunFileDetails()
+
+        self.args = args[1:]
 

@@ -20,7 +20,7 @@ def test_one_arg():
 
 def test_parse_to_cpp():
     opts = EeyoreOptions(
-        [ "progname", "infile.eeyoreparsed", "outfile.cpp" ] )
+        [ "progname", "-o", "outfile.cpp", "infile.eeyoreparsed" ] )
 
     assert_equal( opts.infile.filetype, EeyoreOptions.PARSED )
     assert_equal( opts.infile.filename, "infile.eeyoreparsed" )
@@ -30,7 +30,7 @@ def test_parse_to_cpp():
 
 def test_eeyore_to_lexed():
     opts = EeyoreOptions(
-        [ "progname", "infile.eeyore", "outfile.eeyorelexed" ] )
+        [ "progname", "--outfile", "outfile.eeyorelexed", "infile.eeyore" ] )
 
     assert_equal( opts.infile.filetype, EeyoreOptions.SOURCE )
     assert_equal( opts.infile.filename, "infile.eeyore" )
@@ -41,11 +41,24 @@ def test_eeyore_to_lexed():
 
 def test_eeyore_to_exe():
     opts = EeyoreOptions(
-        [ "progname", "infile.eeyore", "outfile" ] )
+        [ "progname", "-o", "outfile", "infile.eeyore" ] )
 
     assert_equal( opts.infile.filetype, EeyoreOptions.SOURCE )
     assert_equal( opts.infile.filename, "infile.eeyore" )
 
     assert_equal( opts.outfile.filetype, EeyoreOptions.EXE )
     assert_equal( opts.outfile.filename, "outfile" )
+
+
+def test_run_with_args():
+    opts = EeyoreOptions(
+        [ "progname", "infile.eeyore", "arg1", "arg2" ] )
+
+    assert_equal( opts.infile.filetype, EeyoreOptions.SOURCE )
+    assert_equal( opts.infile.filename, "infile.eeyore" )
+
+    assert_equal( opts.outfile.filetype, EeyoreOptions.RUN )
+
+    assert_equal( opts.args, [ "arg1", "arg2" ] )
+
 

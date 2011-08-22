@@ -110,7 +110,7 @@ class RunEeyoreTest( unittest.TestCase ):
         """
 
         with temp_out_file( "this", ext( self.to_filename ) ) as outfile:
-            args = ( "eeyore", self.from_filename, outfile.name )
+            args = ( "eeyore", "-o", outfile.name, self.from_filename )
             ret, out, err = run_cmd( args, self.path )
             contents = read_file( outfile.name )
 

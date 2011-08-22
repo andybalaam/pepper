@@ -87,7 +87,8 @@ def write_step( output_file, prev_name, thisfl, ext, cwd ):
 	if prev_name is not None and ext != ".output":
 
 		with temp_out_file( "this", ext ) as outfile:
-			ret, out, err = run_cmd( ( "eeyore", prev_name, outfile.name ),
+			ret, out, err = run_cmd(
+				( "eeyore", "-o", outfile.name, prev_name ),
 				cwd )
 			contents = read_file( outfile.name )
 
