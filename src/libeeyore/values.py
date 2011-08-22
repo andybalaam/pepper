@@ -27,6 +27,9 @@ class EeyValue( object ):
     def do_evaluate( self, env ):
         return self
 
+    def evaluated_type( self, env ):
+        return self.__class__
+
     @abstractmethod
     def construction_args( self ): pass
 
@@ -49,6 +52,8 @@ class EeyVariable( EeyValue ):
     def is_known( self, env ):
         return False
 
+    def evaluated_type( self, env ):
+        return self.clazz
 
 class EeySymbol( EeyValue ):
     def __init__( self, symbol_name ):
@@ -88,6 +93,8 @@ class EeySymbol( EeyValue ):
     def is_known( self, env ):
         return self._lookup( env ).is_known( env )
 
+    def evaluated_type( self, env ):
+        return self._lookup( env ).evaluated_type( env )
 
 class EeyBool( EeyValue ):
     def __init__( self, value ):
@@ -149,6 +156,9 @@ class EeyPlus( EeyValue ):
                 self.right_value.evaluate( env ) )
         else:
             return self
+
+    def evaluated_type( self, env ):
+        return self.left_value.evaluated_type( env )
 
     def is_known( self, env ):
         return all_known( ( self.left_value, self.right_value ), env )

@@ -15,10 +15,11 @@ def is_callable( value ):
 class EeyFunctionCall( EeyValue ):
     def __init__( self, func, args ):
         EeyValue.__init__( self )
-        assert( func.__class__ == EeySymbol ) # TODO: Might not be?  Handle
-                                              #       expressions that eval to
-                                              #       a symbol?
-        self.func_name = func.symbol_name
+        if func.__class__ == EeySymbol: # TODO: evaluate first?
+            self.func_name = func.symbol_name
+        else:
+            self.func_name = None
+
         self.func = func
         self.args = args
 
@@ -35,6 +36,9 @@ class EeyFunctionCall( EeyValue ):
 
     def is_known( self, env ):
         return all_known( self.args, env )
+
+    def evaluated_type( self, env ):
+        return self.func.evaluate( env ).return_type()
 
 class EeyReturn( EeyValue ):
     def __init__( self, value ):
