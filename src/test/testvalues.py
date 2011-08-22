@@ -81,6 +81,19 @@ def test_Print_string_renders_as_printf():
     assert_equal( env.renderer.headers, [ "stdio.h" ] )
 
 
+def test_Print_unknown_int_renders_as_percent_d():
+    env = EeyEnvironment( EeyCppRenderer() )
+    builtins.add_builtins( env )
+
+    init = EeyInit( EeyType( EeyInt ), EeySymbol( "i" ), EeyVariable( EeyInt ) )
+    init.evaluate( env )
+
+    value = EeyFunctionCall( EeySymbol( "print" ),
+        ( EeySymbol( "i" ), ) )
+
+    assert_equal( value.render( env ), 'printf( "%d\\n", i )' )
+
+
 def test_known_array_lookup():
     env = EeyEnvironment( EeyCppRenderer() )
 

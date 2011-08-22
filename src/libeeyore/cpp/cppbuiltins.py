@@ -26,15 +26,23 @@ class FormatArgs( object ):
 
 
 def append_print_arg( fmtstr, fmtargs, env, value ):
-    if value.__class__ is EeyString:
-        # We don't call render, because we add our own quotes here
-        fmtstr.append( value.as_py_str() )
-    elif value.__class__ is EeyInt:
-        fmtstr.append( "%d" )
-        fmtargs.append( value.render( env ) )
-    elif value.__class__ is EeyPlus:
+
+    if value.__class__ is EeyPlus: # TODO: and if an arg is a string
         append_print_arg( fmtstr, fmtargs, env, value.left_value )
         append_print_arg( fmtstr, fmtargs, env, value.right_value )
+        return
+
+    if value.is_known( env ):
+        cls = value.__class__
+    else:
+        cls = value.evaluated_type( env )
+
+    if cls is EeyString:
+        # We don't call render, because we add our own quotes here
+        fmtstr.append( value.as_py_str() )
+    elif cls is EeyInt:
+        fmtstr.append( "%d" )
+        fmtargs.append( value.render( env ) )
     elif implements_interface( value, EeyString ):
         fmtstr.append( "%s" )
         fmtargs.append( value.render( env ) )
