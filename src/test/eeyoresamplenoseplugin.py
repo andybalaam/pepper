@@ -67,6 +67,40 @@ def cmd_desc( args, repl = None ):
             for i, a in enumerate( args ) )
     return "$ %s" % " ".join( args )
 
+
+
+class iterate_commands( object ):
+    def __init__( self, fl ):
+        self.fl = fl
+        self.cached_line = None
+
+    def __iter__( self ):
+        return self
+
+    def next( self ):
+
+        if self.cached_line is None:
+            cmd_line = self.fl.next()
+        else:
+            cmd_line = self.cached_line
+
+        expected_output = ""
+
+        while True:
+            try:
+                ln = self.fl.next()
+            except StopIteration:
+                self.cached_line = None
+                return cmd_line, expected_output
+
+            if ln.startswith( "$" ):
+                self.cached_line = ln
+                return cmd_line, expected_output
+            else:
+                expected_output += ln
+
+
+
 class RunEeyoreTest( unittest.TestCase ):
     def __init__( self, path, from_filename, to_filename ):
 
@@ -80,19 +114,22 @@ class RunEeyoreTest( unittest.TestCase ):
         self.from_filename = from_filename
         self.to_filename   = to_filename
 
+
     def runProgram( self ):
         """Check that running the supplied program with eeyore prints the
         expected results.
         """
 
         with open( os.path.join( self.path, self.to_filename ), "r" ) as fl:
-            first_line = fl.readline()
-            expected_output = fl.read()
+            for cmd_line, expected_output in iterate_commands( fl ):
+                self.runSingleProgram( cmd_line, expected_output )
 
-        assert first_line.startswith( "$" )
-        first_line = first_line[1:].strip()
 
-        args = shlex.split( first_line )
+    def runSingleProgram( self, cmd_line, expected_output ):
+        assert cmd_line.startswith( "$" )
+        cmd_line = cmd_line[1:].strip()
+
+        args = shlex.split( cmd_line )
         ret, out, err = run_cmd( args, self.path )
 
         assert ret == 0, ( '"%s" should return 0 but returned %d' % (
