@@ -7,6 +7,7 @@ from values import EeyInt
 from values import EeySymbol
 from values import EeyType
 from values import EeyValue
+from values import EeyVariable
 from values import eey_none
 
 from usererrorexception import EeyUserErrorException
@@ -121,14 +122,19 @@ class EeyInit( EeyValue ):
     def do_evaluate( self, env ):
         ( tp, nm, val ) = self._eval_args( env )
 
-        if all_known( ( tp, val ), env ):
+        assert( nm.symbol_name not in env.namespace ) # TODO: not assert
+
+        if self.is_known( env ):
             if tp.value != val.__class__:
                 raise EeyInitialisingWithWrongType(
                     tp, val.__class__ )
 
-            assert( nm.symbol_name not in env.namespace ) # TODO: not assert
-
             env.namespace[nm.symbol_name] = val
+        else:
+            if tp.value != val.evaluated_type( env ):
+                raise EeyInitialisingWithWrongType(
+                    tp, val.evaluated_type( env ) )
+            env.namespace[nm.symbol_name] = EeyVariable( tp.value )
 
         return self
 

@@ -33,13 +33,13 @@ def test_Known_Symbol_evaluated_type():
     assert_equal( EeySymbol( "x" ).evaluated_type( env ), EeyBool )
 
 
-#def test_Unknown_Symbol_evaluated_type():
-#    env = EeyEnvironment( None )
-#    init = EeyInit( EeyType( EeyString ), EeySymbol( "x" ), EeyVariable(
-#        EeyString ) )
-#    init.evaluate( env )
-#
-#    assert_equal( EeySymbol( "x" ).evaluated_type( env ), EeyString )
+def test_Unknown_Symbol_evaluated_type():
+    env = EeyEnvironment( None )
+    init = EeyInit( EeyType( EeyString ), EeySymbol( "x" ), EeyVariable(
+        EeyString ) )
+    init.evaluate( env )
+
+    assert_equal( EeySymbol( "x" ).evaluated_type( env ), EeyString )
 
 
 
