@@ -48,8 +48,9 @@ class FakeCmdRunner( object ):
     def __init__( self, executor ):
         self.executor = executor
 
-    def run( self, exe_filename ):
-        self.executor.calls.append( "cmdrunner.run(%s)" % exe_filename )
+    def run( self, exe_filename, args ):
+        self.executor.calls.append( "cmdrunner.run(%s,[%s])" %
+            ",".join( [ exe_filename ] + args ) )
 
 
 class FakeExecutor( object ):
@@ -108,6 +109,7 @@ class FakeOptions( object ):
         self.outfile = FakeObject()
         self.outfile.filetype = EeyoreOptions.CPP
         self.outfile.filename = "test.cpp"
+        self.args = []
 
 def test_process_options_parse_tree_to_cpp():
 
@@ -272,6 +274,40 @@ def test_process_options_source_to_run():
         "cppcompiler.run(.eeyore/test.x)",
         "cmdrunner.run(.eeyore/test.x)",
         ] )
+
+
+
+
+def test_process_options_source_to_run_args():
+
+    options = FakeOptions( "" )
+    options.infile.filetype = EeyoreOptions.SOURCE
+    options.infile.filename = "test.x.eeyore"
+    options.outfile.filetype = EeyoreOptions.RUN
+    options.args = [ "arg1", "arg2" ]
+
+    file_operations = FakeSystemOperations()
+    executor = FakeExecutor( None )
+
+    libeeyore.main.process_options( options, file_operations, executor )
+
+    fo_calls = file_operations.calls
+
+    assert_equal( fo_calls, [
+        "open_read(test.x.eeyore)",
+        "isdir(.eeyore)",
+        "makedirs(.eeyore)",
+        ] )
+
+    assert_equal( executor.calls, [
+        "Source.read_from_file(r)",
+        "Lex.process(inp)",
+        "Parse.process(inp)",
+        "Render.process(inp)",
+        "cppcompiler.run(.eeyore/test.x)",
+        "cmdrunner.run(.eeyore/test.x,[arg1,arg2])",
+        ] )
+
 
 
 def test_process_options_source_to_run_dir_exists():

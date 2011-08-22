@@ -52,10 +52,10 @@ def test_CppCompiler_failure():
 def test_CmdRunner():
     fs = FakeSystemOperations( 3 )
     r = CmdRunner( fs )
-    retcode = r.run( "exename" )
+    retcode = r.run( "exename", [ "arg1", "arg2" ] )
 
     assert_equal( fs.calls, [
-        "Popen(exename)",
+        "Popen(exename,arg1,arg2)",
         "communicate()",
         ] )
 

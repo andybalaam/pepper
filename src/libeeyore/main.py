@@ -87,8 +87,7 @@ def process_options( opts, sys_op, executor ):
         elif ouf.filetype == EeyoreOptions.RUN:
             out_fn = _temp_dir_file( sys_op, _exe_name( inf.filename ) )
             executor.cppcompiler.run( val, out_fn )
-             # TODO: pass through argv
-            return executor.cmdrunner.run( out_fn )
+            return executor.cmdrunner.run( out_fn, opts.args )
 
     return RET_SUCCESS
 
