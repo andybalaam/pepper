@@ -439,7 +439,7 @@ def test_simple_initialisation():
         )
 
 
-define_function_tokens = (
+define_function_noargs_tokens = (
     make_token( "def",    EeyoreLexer.LITERAL_def,    1, 1 ),
     make_token( "int",    EeyoreLexer.SYMBOL,         1, 5 ),
     make_token( "myfn",   EeyoreLexer.SYMBOL,         1, 9 ),
@@ -456,9 +456,9 @@ define_function_tokens = (
     )
 
 
-def test_ast_define_function():
+def test_ast_define_function_noargs():
     assert_multiline_equal(
-        _parse_to_ast_string( define_function_tokens ),
+        _parse_to_ast_string( define_function_noargs_tokens ),
         r"""
 ["def":def]
     [SYMBOL:int]
@@ -468,9 +468,15 @@ def test_ast_define_function():
     [INDENT:]
         [NEWLINE:\n]
         ["return":return]
-        [INT:1]
+            [INT:1]
         [NEWLINE:\n]
         [DEDENT:]
 """
+        )
+
+
+def test_define_function_noargs():
+    assert_multiline_equal( repr( _parse( define_function_noargs_tokens ) ),
+        """[EeyDef(EeySymbol('int'),EeySymbol('myfn'),(),(EeyReturn(EeyInt('1')),))]"""
         )
 

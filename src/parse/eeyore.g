@@ -185,7 +185,7 @@ suite :
 ;
 
 returnStatement :
-    "return" expression
+    "return"^ expression
 ;
 
 {
@@ -203,11 +203,8 @@ statement returns [r]
 statementContents returns [r]
     : e=expression { r = e }
     | i=initialisation { r = i }
+    | f=functionDefinition { r = f }
     | i=importStatement { r = i }
-;
-
-initialisation returns [r]
-    : #(EQUALS t=expression s=symbol v=expression) { r = EeyInit( t, s, v ) }
 ;
 
 expression returns [r]
@@ -219,6 +216,15 @@ expression returns [r]
     | #(PLUS e1=expression e2=expression) { r = EeyPlus( e1, e2 ) }
     | #(GT e1=expression e2=expression) { r = EeyGreaterThan( e1, e2 ) }
     | f=functionCall { r = f }
+;
+
+initialisation returns [r]
+    : #(EQUALS t=expression s=symbol v=expression) { r = EeyInit( t, s, v ) }
+;
+
+functionDefinition returns [r]
+    : #("def" t=expression n=symbol LPAREN COLON s=suite)
+        { r = EeyDef( t, n, (), s ) }
 ;
 
 importStatement returns [r]
@@ -243,6 +249,11 @@ functionCall returns [r]
 ;
 
 suite returns [r]
-    : #(INDENT NEWLINE s=statement DEDENT) { r = ( s, ) }
+    : #(INDENT NEWLINE s=statementOrReturnStatement DEDENT) { r = ( s, ) }
+;
+
+statementOrReturnStatement returns [r]
+    : s=statement { r = s }
+    | #("return" e=expression) NEWLINE { r = EeyReturn( e ) }
 ;
 

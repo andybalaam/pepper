@@ -133,3 +133,14 @@ class EeyUserFunction( EeyFunction ):
 
         return newenv
 
+class EeyDef( EeyValue ):
+    def __init__( self, ret_type, name, arg_types_and_names, body_stmts ):
+        self.ret_type = ret_type
+        self.name = name
+        self.arg_types_and_names = arg_types_and_names
+        self.body_stmts = body_stmts
+
+    def construction_args( self ):
+        return ( self.ret_type, self.name, self.arg_types_and_names,
+            self.body_stmts )
+
