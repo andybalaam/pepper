@@ -126,11 +126,16 @@ program :
 
 statement :
       initialisationOrExpression
+    | functionDefinition
     | importStatement
 ;
 
 initialisationOrExpression :
     expression ( SYMBOL EQUALS^ expression )?
+;
+
+functionDefinition :
+    "def"^ expression SYMBOL typedArgumentsList COLON suite
 ;
 
 importStatement :
@@ -139,6 +144,12 @@ importStatement :
 
 expression :
     simpleExpression ( ( PLUS^ | GT^ ) expression )?
+;
+
+typedArgumentsList :
+    LPAREN^
+//    ( expression expression )? ( COMMA! expression expression )*
+    RPAREN!
 ;
 
 simpleExpression :
@@ -169,8 +180,12 @@ ifExpression :
 suite :
     NEWLINE
     INDENT^
-    ( statement NEWLINE )+
+    ( ( statement | returnStatement ) NEWLINE )+
     DEDENT
+;
+
+returnStatement :
+    "return" expression
 ;
 
 {

@@ -438,3 +438,39 @@ def test_simple_initialisation():
         """[EeyInit(EeySymbol('int'),EeySymbol('i'),EeyInt('7'))]"""
         )
 
+
+define_function_tokens = (
+    make_token( "def",    EeyoreLexer.LITERAL_def,    1, 1 ),
+    make_token( "int",    EeyoreLexer.SYMBOL,         1, 5 ),
+    make_token( "myfn",   EeyoreLexer.SYMBOL,         1, 9 ),
+    make_token( "(",      EeyoreLexer.LPAREN,         1, 13 ),
+    make_token( ")",      EeyoreLexer.RPAREN,         1, 14 ),
+    make_token( ":",      EeyoreLexer.COLON,          1, 15 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        1, 16 ),
+    make_token( "",       EeyoreLexer.INDENT,         2, 1 ),
+    make_token( "return", EeyoreLexer.LITERAL_return, 2, 4 ),
+    make_token( "1",      EeyoreLexer.INT,            2, 11 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        2, 12 ),
+    make_token( "",       EeyoreLexer.DEDENT,         2, 13 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        2, 14 ),
+    )
+
+
+def test_ast_define_function():
+    assert_multiline_equal(
+        _parse_to_ast_string( define_function_tokens ),
+        r"""
+["def":def]
+    [SYMBOL:int]
+    [SYMBOL:myfn]
+    [LPAREN:(]
+    [COLON::]
+    [INDENT:]
+        [NEWLINE:\n]
+        ["return":return]
+        [INT:1]
+        [NEWLINE:\n]
+        [DEDENT:]
+"""
+        )
+
