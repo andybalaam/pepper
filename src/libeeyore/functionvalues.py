@@ -135,6 +135,7 @@ class EeyUserFunction( EeyFunction ):
 
 class EeyDef( EeyValue ):
     def __init__( self, ret_type, name, arg_types_and_names, body_stmts ):
+        EeyValue.__init__( self )
         self.ret_type = ret_type
         self.name = name
         self.arg_types_and_names = arg_types_and_names
@@ -143,4 +144,16 @@ class EeyDef( EeyValue ):
     def construction_args( self ):
         return ( self.ret_type, self.name, self.arg_types_and_names,
             self.body_stmts )
+
+    def do_evaluate( self, env ):
+        nm = self.name.name()
+
+        if nm in env.namespace:
+            raise EeyUserErrorException( "The symbol '%s' is already defined." %
+                nm )
+            # TODO: line, column, filename
+
+        env.namespace[nm] = EeyUserFunction( nm, self.ret_type,
+            self.arg_types_and_names, self.body_stmts )
+        return self
 

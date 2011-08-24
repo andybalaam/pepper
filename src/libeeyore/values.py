@@ -183,26 +183,6 @@ class EeyGreaterThan( EeyValue ):
     def is_known( self, env ):
         return all_known( ( self.left_value, self.right_value ), env )
 
-class EeyDefine( EeyValue ):
-    def __init__( self, symbol, value ):
-        EeyValue.__init__( self )
-        self.symbol = symbol
-        self.value = value
-
-    def construction_args( self ):
-        return ( self.symbol, self.value )
-
-    def do_evaluate( self, env ):
-        name = self.symbol.name()
-
-        if name in env.namespace:
-            raise EeyUserErrorException( "The symbol '%s' is already defined." %
-                name )
-            # TODO: line, column, filename
-
-        env.namespace[name] = self.value
-        return self
-
 
 class EeyPass( EeyValue ):
     """A statement that does nothing."""

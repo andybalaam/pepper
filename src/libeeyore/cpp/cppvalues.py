@@ -46,7 +46,7 @@ def render_EeyFunction( env, value ):
 def render_EeyPrint( env, value ):
     return render_EeyFunction( env, value )
 
-def render_EeyDefine( env, value ):
+def render_EeyDef( env, value ):
     return ""
 
 def render_EeyPass( env, value ):
@@ -135,7 +135,7 @@ def render_EeySysArgv( env, value ):
 type2renderer = {
     EeyArrayLookup          : render_EeyArrayLookup,
     EeyBool                 : render_EeyBool,
-    EeyDefine               : render_EeyDefine,
+    EeyDef                  : render_EeyDef,
     EeyFunction             : render_EeyFunction,
     EeyFunctionCall         : render_EeyFunctionCall,
     EeyGreaterThan          : render_EeyGreaterThan,

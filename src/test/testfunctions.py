@@ -11,16 +11,14 @@ from libeeyore.cpp.cpprenderer import EeyCppRenderer
 def test_Call_fn_with_wrong_num_args():
     env = EeyEnvironment( EeyCppRenderer() )
 
-    fndecl = EeyDefine( EeySymbol( "myfunc" ),
-        EeyUserFunction(
-            "myfunc",
-            EeyType( EeyInt ),
-            (
-                ( EeyType( EeyInt ), EeySymbol( "x" ) ),
-                ),
-            (
-                EeyPass(),
-                )
+    fndecl = EeyDef(
+        EeyType( EeyInt ),
+        EeySymbol( "myfunc" ),
+        (
+            ( EeyType( EeyInt ), EeySymbol( "x" ) ),
+            ),
+        (
+            EeyPass(),
             )
         )
 
@@ -35,16 +33,14 @@ def test_Call_fn_with_wrong_num_args():
 def test_Call_fn_with_wrong_arg_type():
     env = EeyEnvironment( EeyCppRenderer() )
 
-    fndecl = EeyDefine( EeySymbol( "myfunc" ),
-        EeyUserFunction(
-            "myfunc",
-            EeyType( EeyInt ),
-            (
-                ( EeyType( EeyInt ), EeySymbol( "x" ) ),
-                ),
-            (
-                EeyPass(),
-                )
+    fndecl = EeyDef(
+        EeyType( EeyInt ),
+        EeySymbol( "myfunc" ),
+        (
+            ( EeyType( EeyInt ), EeySymbol( "x" ) ),
+            ),
+        (
+            EeyPass(),
             )
         )
 
@@ -58,17 +54,15 @@ def test_Call_fn_with_wrong_arg_type():
 def test_Define_and_call_fn_to_add_known_numbers():
     env = EeyEnvironment( EeyCppRenderer() )
 
-    fndecl = EeyDefine( EeySymbol( "myfunc" ),
-        EeyUserFunction(
-            "myfunc",
-            EeyType( EeyInt ),
-            (
-                ( EeyType( EeyInt ), EeySymbol( "x" ) ),
-                ( EeyType( EeyInt ), EeySymbol( "y" ) )
-                ),
-            (
-                EeyReturn( EeyPlus( EeySymbol( "x" ), EeySymbol( "y" ) ) ),
-                )
+    fndecl = EeyDef(
+        EeyType( EeyInt ),
+        EeySymbol( "myfunc" ),
+        (
+            ( EeyType( EeyInt ), EeySymbol( "x" ) ),
+            ( EeyType( EeyInt ), EeySymbol( "y" ) )
+            ),
+        (
+            EeyReturn( EeyPlus( EeySymbol( "x" ), EeySymbol( "y" ) ) ),
             )
         )
 
@@ -84,17 +78,15 @@ def test_Define_and_call_fn_to_add_unknown_numbers():
     env = EeyEnvironment( EeyCppRenderer() )
     env.namespace["othernum"] = EeyVariable( EeyInt )
 
-    fndecl = EeyDefine( EeySymbol( "myfunc" ),
-        EeyUserFunction(
-            "myfunc",
-            EeyType( EeyInt ),
-            (
-                ( EeyType( EeyInt ), EeySymbol( "x" ) ),
-                ( EeyType( EeyInt ), EeySymbol( "y" ) )
-                ),
-            (
-                EeyReturn( EeyPlus( EeySymbol( "x" ), EeySymbol( "y" ) ) ),
-                )
+    fndecl = EeyDef(
+        EeyType( EeyInt ),
+        EeySymbol( "myfunc" ),
+        (
+            ( EeyType( EeyInt ), EeySymbol( "x" ) ),
+            ( EeyType( EeyInt ), EeySymbol( "y" ) )
+            ),
+        (
+            EeyReturn( EeyPlus( EeySymbol( "x" ), EeySymbol( "y" ) ) ),
             )
         )
 
