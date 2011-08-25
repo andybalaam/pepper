@@ -128,7 +128,7 @@ class EeyUserFunction( EeyFunction ):
             if known:
                 val = val.evaluate( env )
             else:
-                val = EeyVariable( tp.value )
+                val = EeyVariable( tp.evaluate( env ).value )
             newenv.namespace[name.name()] = val
 
         return newenv

@@ -1,6 +1,7 @@
 
 from nose.tools import *
 
+from libeeyore.builtins import add_builtins
 from libeeyore.environment import EeyEnvironment
 from libeeyore.cpp.cppvalues import *
 from libeeyore.cpp.cpprenderer import EeyCppRenderer
@@ -133,17 +134,19 @@ def test_Define_and_call_fn_returning_void_known():
 
 def test_Define_and_call_fn_returning_void_unknown():
     env = EeyEnvironment( EeyCppRenderer() )
+    add_builtins( env )
+
     env.namespace["othernum"] = EeyVariable( EeyInt )
 
     fndecl = EeyDef(
-        EeyType( EeyVoid ),
+        EeySymbol( "void" ),
         EeySymbol( "myfunc" ),
         (
-            ( EeyType( EeyInt ), EeySymbol( "x" ) ),
-            ( EeyType( EeyInt ), EeySymbol( "y" ) )
+            ( EeySymbol( "int" ), EeySymbol( "x" ) ),
+            ( EeySymbol( "int" ), EeySymbol( "y" ) )
             ),
         (
-            EeyPass(),
+            EeySymbol( "pass" ),
             )
         )
 

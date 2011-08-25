@@ -79,7 +79,7 @@ def render_EeyNoneType( env, value ):
 
 
 def render_type_and_name( env, typename ):
-    return "%s %s" % ( render_EeyType( env, typename[0] ),
+    return "%s %s" % ( render_EeyType( env, typename[0].evaluate( env ) ),
         typename[1].symbol_name )
 
 def render_EeyUserFunction_body( env, func_call ):
@@ -99,9 +99,10 @@ def render_EeyUserFunction_body( env, func_call ):
 
     # TODO: not every statement should be a return
     for body_stmt in fn.body_stmts:
-        if body_stmt.__class__ == EeyPass:
+        st = body_stmt.evaluate( newenv )
+        if st.__class__ == EeyPass:
             continue
-        ret += "    return %s;\n" % body_stmt.render( newenv )
+        ret += "    return %s;\n" % st.render( newenv )
 
     ret += "}\n"
 
