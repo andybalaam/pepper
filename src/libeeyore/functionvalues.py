@@ -6,6 +6,7 @@ from environment import EeyEnvironment
 from values import EeySymbol
 from values import EeyValue
 from values import EeyVariable
+from values import EeyPass
 from values import all_known
 from usererrorexception import EeyUserErrorException
 
@@ -47,9 +48,6 @@ class EeyReturn( EeyValue ):
 
     def construction_args( self ):
         return ( self.value, )
-
-    def do_evaluate( self, env ):
-        return self.value.evaluate( env )
 
 class EeyFunction( EeyValue ):
     __metaclass__ = ABCMeta
@@ -117,7 +115,11 @@ class EeyUserFunction( EeyFunction ):
             newenv = self.execution_environment( env, args, True )
 
             # TODO: not just the first statement
-            return self.body_stmts[0].evaluate( newenv )
+            last_stmt = self.body_stmts[0].evaluate( newenv )
+            if last_stmt.__class__ == EeyReturn:
+                return last_stmt.value.evaluate( newenv )
+            else:
+                return EeyPass()
         else:
             return EeyRuntimeUserFunction( self, args )
 

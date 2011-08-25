@@ -107,7 +107,7 @@ def render_EeyUserFunction_body( env, func_call ):
         st = body_stmt.evaluate( newenv )
         if st.__class__ == EeyPass:
             continue
-        ret += "    return %s;\n" % st.render( newenv )
+        ret += "    %s;\n" % st.render( newenv )
 
     ret += "}\n"
 
