@@ -72,6 +72,11 @@ type2string = {
     }
 
 def render_EeyType( env, value ):
+    if not value.is_known( env ):
+        raise EeyUserErrorException( v + " should be known!  "
+            + "Eeyore can't (currently) support types that are unknown at "
+            + "compile time." )
+        # TODO: ensure error message properly displays the unknown thing
     return type2string[value.value]
 
 def render_EeyNoneType( env, value ):
