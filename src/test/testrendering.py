@@ -115,7 +115,7 @@ int main( int argc, char* argv[] )
 
 def test_user_defined_function():
     env = EeyEnvironment( EeyCppRenderer() )
-    env.renderer.functions.append( "void myfn()\n{\n}" )
+    env.renderer.functions.append( "void myfn()\n{\n}\n" )
 
     assert_multiline_equal( env.render_exe( () ), """
 void myfn()

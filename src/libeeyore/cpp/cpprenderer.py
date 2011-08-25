@@ -39,7 +39,6 @@ class EeyCppRenderer( object ):
         if len( self.functions ) > 0:
             for fn in self.functions:
                 ret += fn
-                ret += "\n"
             ret += "\n"
         ret += "int main( int argc, char* argv[] )\n{\n"
 
