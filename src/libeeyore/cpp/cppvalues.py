@@ -66,7 +66,9 @@ def render_EeyInit( env, value ):
             )
 
 type2string = {
-    EeyInt : "int",
+    EeyBool : "bool",
+    EeyInt  : "int",
+    EeyVoid : "void",
     }
 
 def render_EeyType( env, value ):

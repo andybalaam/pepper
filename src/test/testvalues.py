@@ -161,3 +161,11 @@ def test_unknown_initialisation_makes_symbol_valid():
     assert_equal( EeySymbol( "i" ).render( env ), "i" )
 
 
+def test_render_simple_types():
+    env = EeyEnvironment( EeyCppRenderer() )
+    assert_equals( EeyType( EeyInt ).render( env ), "int" )
+    assert_equals( EeyType( EeyBool ).render( env ), "bool" )
+    assert_equals( EeyType( EeyVoid ).render( env ), "void" )
+
+
+
