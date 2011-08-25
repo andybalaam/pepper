@@ -1,6 +1,12 @@
+import sys
 
 def int give_me_five():
     return 5
 
+def void print_this( int num ):
+    print( num )
+
 print( give_me_five() )
+
+print_this( len( sys.argv ) )
 
