@@ -129,6 +129,12 @@ class EeyNoneType( EeyValue ):
 
 eey_none = EeyNoneType()
 
+
+class EeyVoid( EeyValue ):
+    def construction_args( self ):
+        return ()
+
+
 class EeyString( EeyValue ):
     def __init__( self, py_str ):
         EeyValue.__init__( self )

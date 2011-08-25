@@ -62,4 +62,13 @@ def test_len_return_type_is_int():
     assert_equal( EeyLen().return_type(), EeyInt )
 
 
+def test_void():
+    env = EeyEnvironment( None )
+    add_builtins( env )
+
+    value = EeySymbol( "void" )
+    ans = value.evaluate( env )
+
+    assert_equal( ans.__class__, EeyType )
+    assert_equal( ans.value, EeyVoid )
 

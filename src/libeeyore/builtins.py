@@ -55,14 +55,15 @@ class EeyLen( EeyFunction ):
 
 def add_builtins( env ):
     # Values
-    env.namespace["True"]  = EeyBool( True )
     env.namespace["False"] = EeyBool( False )
+    env.namespace["True"]  = EeyBool( True )
 
     # Types
-    env.namespace["int"]  = EeyType( EeyInt )
     env.namespace["bool"] = EeyType( EeyBool )
+    env.namespace["int"]  = EeyType( EeyInt )
+    env.namespace["void"] = EeyType( EeyVoid )
 
     # Functions
-    env.namespace["print"] = EeyPrint()
     env.namespace["len"]   = EeyLen()
+    env.namespace["print"] = EeyPrint()
 
