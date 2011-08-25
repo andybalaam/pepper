@@ -129,3 +129,25 @@ int main( int argc, char* argv[] )
 }
 """ )
 
+
+def test_Two_prints():
+    env = EeyEnvironment( EeyCppRenderer() )
+    builtins.add_builtins( env )
+
+    value1 = EeyFunctionCall( EeySymbol( "print" ),
+        ( EeyString( "Hello," ), ) )
+    value2 = EeyFunctionCall( EeySymbol( "print" ),
+        ( EeyString( "World!" ), ) )
+
+    assert_equal( env.render_exe( ( value1, value2 ) ), """#include <stdio.h>
+
+int main( int argc, char* argv[] )
+{
+    printf( "Hello,\\n" );
+    printf( "World!\\n" );
+
+    return 0;
+}
+""" )
+
+

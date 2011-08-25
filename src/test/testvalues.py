@@ -78,7 +78,7 @@ def test_Print_string_renders_as_printf():
         ( EeyString( "hello" ), ) )
 
     assert_equal( value.render( env ), 'printf( "hello\\n" )' )
-    assert_equal( env.renderer.headers, [ "stdio.h" ] )
+    assert_equal( env.renderer._headers, [ "stdio.h" ] )
 
 
 def test_Print_unknown_int_renders_as_percent_d():

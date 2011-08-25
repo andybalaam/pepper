@@ -19,8 +19,12 @@ def _render_with_semicolon( value, env ):
 
 class EeyCppRenderer( object ):
     def __init__( self ):
-        self.headers = []
+        self._headers = []
         self.functions = []
+
+    def add_header( self, header ):
+        if header not in self._headers:
+            self._headers.append( header )
 
     def value_renderer( self, value ):
         return cppvalues.type2renderer[ value.__class__ ]
@@ -29,7 +33,7 @@ class EeyCppRenderer( object ):
         rendered_lines = [ _render_with_semicolon( value, env )
             for value in values ]
         ret = ""
-        for h in self.headers:
+        for h in self._headers:
             ret += "#include <%s>\n" % h
         ret += "\n"
         if len( self.functions ) > 0:

@@ -56,7 +56,7 @@ def render_EeyRuntimePrint( env, value ):
     arg0 = value.args[0]
     #assert( arg0.__class__ is EeyString ) # TODO: not assert, less specific?
 
-    env.renderer.headers.append( "stdio.h" )
+    env.renderer.add_header( "stdio.h" )
 
     arg0 = arg0.evaluate( env )
 
