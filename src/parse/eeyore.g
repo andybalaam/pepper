@@ -165,7 +165,7 @@ simpleExpression :
 functionCall :
     SYMBOL
     LPAREN^
-    ( expression )? ( COMMA! expression )*
+    argumentsList
     RPAREN!
 ;
 
@@ -175,6 +175,10 @@ arrayLookup :
 
 ifExpression :
     "if"^ expression COLON suite
+;
+
+argumentsList:
+    ( expression ( COMMA expression )* )?
 ;
 
 suite :
@@ -245,11 +249,19 @@ ifExpression returns [r]
 ;
 
 functionCall returns [r]
-    : #(LPAREN f=symbol a=expression) { r = EeyFunctionCall( f, (a,) ) }
+    : #(LPAREN f=symbol a=argumentsList) { r = EeyFunctionCall( f, a ) }
 ;
 
 suite returns [r]
     : #(INDENT NEWLINE s=statementOrReturnStatement DEDENT) { r = ( s, ) }
+;
+
+argumentsList returns [r]
+    { r = () }
+    : (
+        e=expression { r = (e,) }
+        ( COMMA e=expression { r += (e,) } )*
+    )?
 ;
 
 statementOrReturnStatement returns [r]

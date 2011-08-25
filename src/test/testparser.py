@@ -480,3 +480,58 @@ def test_define_function_noargs():
         """[EeyDef(EeySymbol('int'),EeySymbol('myfn'),(),(EeyReturn(EeyInt('1')),))]"""
         )
 
+call_function_noargs_tokens = (
+    make_token( "f",  EeyoreLexer.SYMBOL,  1, 1 ),
+    make_token( "(",  EeyoreLexer.LPAREN,  1, 2 ),
+    make_token( ")",  EeyoreLexer.RPAREN,  1, 3 ),
+    make_token( "\n", EeyoreLexer.NEWLINE, 1, 4 ),
+    )
+
+def test_ast_call_function_noargs():
+    assert_multiline_equal(
+        _parse_to_ast_string( call_function_noargs_tokens ),
+        r"""
+[LPAREN:(]
+    [SYMBOL:f]
+"""
+        )
+
+def test_call_function_noargs():
+    assert_multiline_equal( repr( _parse( call_function_noargs_tokens ) ),
+        """[EeyFunctionCall(EeySymbol('f'),())]"""
+        )
+
+
+
+call_function_threeargs_tokens = (
+    make_token( "f",  EeyoreLexer.SYMBOL,  1, 1 ),
+    make_token( "(",  EeyoreLexer.LPAREN,  1, 2 ),
+    make_token( "1",  EeyoreLexer.INT,     1, 4 ),
+    make_token( ",",  EeyoreLexer.COMMA,   1, 5 ),
+    make_token( "2",  EeyoreLexer.INT,     1, 7 ),
+    make_token( ",",  EeyoreLexer.COMMA,   1, 5 ),
+    make_token( "3",  EeyoreLexer.INT,     1, 7 ),
+    make_token( ")",  EeyoreLexer.RPAREN,  1, 9 ),
+    make_token( "\n", EeyoreLexer.NEWLINE, 1, 10 ),
+    )
+
+def test_ast_call_function_threeargs():
+    assert_multiline_equal(
+        _parse_to_ast_string( call_function_threeargs_tokens ),
+        r"""
+[LPAREN:(]
+    [SYMBOL:f]
+    [INT:1]
+    [COMMA:,]
+    [INT:2]
+    [COMMA:,]
+    [INT:3]
+"""
+        )
+
+
+def test_call_function_threeargs():
+    assert_multiline_equal( repr( _parse( call_function_threeargs_tokens ) ),
+        """[EeyFunctionCall(EeySymbol('f'),(EeyInt('1'), EeyInt('2'), EeyInt('3')))]"""
+        )
+
