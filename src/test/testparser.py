@@ -480,6 +480,63 @@ def test_define_function_noargs():
         """[EeyDef(EeySymbol('int'),EeySymbol('myfn'),(),(EeyReturn(EeyInt('1')),))]"""
         )
 
+
+define_function_threeargs_tokens = (
+    make_token( "def",    EeyoreLexer.LITERAL_def,    1, 1 ),
+    make_token( "void",   EeyoreLexer.SYMBOL,         1, 5 ),
+    make_token( "myfn",   EeyoreLexer.SYMBOL,         1, 9 ),
+    make_token( "(",      EeyoreLexer.LPAREN,         1, 13 ),
+    make_token( "int",    EeyoreLexer.SYMBOL,         1, 15 ),
+    make_token( "x",      EeyoreLexer.SYMBOL,         1, 19 ),
+    make_token( ",",      EeyoreLexer.COMMA,          1, 20 ),
+    make_token( "bool",   EeyoreLexer.SYMBOL,         1, 22 ),
+    make_token( "y",      EeyoreLexer.SYMBOL,         1, 27 ),
+    make_token( ",",      EeyoreLexer.COMMA,          1, 28 ),
+    make_token( "int",    EeyoreLexer.SYMBOL,         1, 30 ),
+    make_token( "z",      EeyoreLexer.SYMBOL,         1, 34 ),
+    make_token( ")",      EeyoreLexer.RPAREN,         1, 36 ),
+    make_token( ":",      EeyoreLexer.COLON,          1, 37 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        1, 38 ),
+    make_token( "",       EeyoreLexer.INDENT,         2, 1 ),
+    make_token( "pass",   EeyoreLexer.SYMBOL,         2, 4 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        2, 12 ),
+    make_token( "",       EeyoreLexer.DEDENT,         2, 13 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        2, 14 ),
+    )
+
+
+def test_ast_define_function_noargs():
+    assert_multiline_equal(
+        _parse_to_ast_string( define_function_threeargs_tokens ),
+        r"""
+["def":def]
+    [SYMBOL:void]
+    [SYMBOL:myfn]
+    [LPAREN:(]
+        [SYMBOL:int]
+        [SYMBOL:x]
+        [COMMA:,]
+        [SYMBOL:bool]
+        [SYMBOL:y]
+        [COMMA:,]
+        [SYMBOL:int]
+        [SYMBOL:z]
+    [COLON::]
+    [INDENT:]
+        [NEWLINE:\n]
+        [SYMBOL:pass]
+        [NEWLINE:\n]
+        [DEDENT:]
+"""
+        )
+
+
+def test_define_function_noargs():
+    assert_multiline_equal( repr( _parse( define_function_threeargs_tokens ) ),
+        """[EeyDef(EeySymbol('void'),EeySymbol('myfn'),((EeySymbol('int'), EeySymbol('x')), (EeySymbol('bool'), EeySymbol('y')), (EeySymbol('int'), EeySymbol('z'))),(EeySymbol('pass'),))]"""
+        )
+
+
 call_function_noargs_tokens = (
     make_token( "f",  EeyoreLexer.SYMBOL,  1, 1 ),
     make_token( "(",  EeyoreLexer.LPAREN,  1, 2 ),

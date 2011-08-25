@@ -148,7 +148,7 @@ expression :
 
 typedArgumentsList :
     LPAREN^
-//    ( expression expression )? ( COMMA! expression expression )*
+    ( expression SYMBOL ( COMMA expression SYMBOL )* )?
     RPAREN!
 ;
 
@@ -227,8 +227,8 @@ initialisation returns [r]
 ;
 
 functionDefinition returns [r]
-    : #("def" t=expression n=symbol LPAREN COLON s=suite)
-        { r = EeyDef( t, n, (), s ) }
+    : #("def" t=expression n=symbol a=typedArgumentsList COLON s=suite)
+        { r = EeyDef( t, n, a, s ) }
 ;
 
 importStatement returns [r]
@@ -250,6 +250,14 @@ ifExpression returns [r]
 
 functionCall returns [r]
     : #(LPAREN f=symbol a=argumentsList) { r = EeyFunctionCall( f, a ) }
+;
+
+typedArgumentsList returns [r]
+    { r = () }
+    : #(LPAREN (
+        e=expression s=symbol { r = ( (e,s), ) }
+        ( COMMA e=expression s=symbol { r += ( (e,s), ) } )*
+    )? )
 ;
 
 suite returns [r]
