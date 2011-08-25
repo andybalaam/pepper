@@ -28,8 +28,16 @@ class EeyCppRenderer( object ):
     def render_exe( self, values, env ):
         rendered_lines = [ _render_with_semicolon( value, env )
             for value in values ]
-        ret = "\n".join( "#include <%s>" % h for h in self.headers )
-        ret += "\n\nint main( int argc, char* argv[] )\n{\n"
+        ret = ""
+        for h in self.headers:
+            ret += "#include <%s>\n" % h
+        ret += "\n"
+        if len( self.functions ) > 0:
+            for fn in self.functions:
+                ret += fn
+                ret += "\n"
+            ret += "\n"
+        ret += "int main( int argc, char* argv[] )\n{\n"
 
         for ln in filter( lambda x: len( x ) != 0, rendered_lines ):
             ret += "    "
