@@ -99,6 +99,8 @@ def render_EeyUserFunction_body( env, func_call ):
 
     # TODO: not every statement should be a return
     for body_stmt in fn.body_stmts:
+        if body_stmt.__class__ == EeyPass:
+            continue
         ret += "    return %s;\n" % body_stmt.render( newenv )
 
     ret += "}\n"
