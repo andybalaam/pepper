@@ -54,6 +54,9 @@ class EeyLen( EeyFunction ):
         return EeyInt
 
 def add_builtins( env ):
+    # Statements
+    env.namespace["pass"] = EeyPass()
+
     # Values
     env.namespace["False"] = EeyBool( False )
     env.namespace["True"]  = EeyBool( True )

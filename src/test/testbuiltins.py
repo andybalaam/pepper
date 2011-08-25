@@ -72,3 +72,15 @@ def test_void():
     assert_equal( ans.__class__, EeyType )
     assert_equal( ans.value, EeyVoid )
 
+
+
+def test_pass():
+    env = EeyEnvironment( None )
+    add_builtins( env )
+
+    value = EeySymbol( "pass" )
+    ans = value.evaluate( env )
+
+    assert_equal( ans.__class__, EeyPass )
+
+
