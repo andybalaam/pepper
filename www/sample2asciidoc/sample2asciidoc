@@ -10,7 +10,7 @@ output_ext = ".asciidoc"
 input_exts = (
 	".eeyore",
 	".eeyorelexed",
-	".eeyoreparsetree",
+	".eeyoreparsed",
 	".cpp",
 	".output",
 	)
@@ -18,7 +18,7 @@ input_exts = (
 formatters = {
 	".eeyore"          : "python",
 	".cpp"             : "cpp",
-	".eeyoreparsetree" : "python"
+	".eeyoreparsed" : "python"
 	}
 
 def ext_matches( filename, exts ):
