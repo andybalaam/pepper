@@ -1,0 +1,10 @@
+
+def auto make_plusn( int n ):
+    def int toreturn( int i ):
+        return n + i
+    return toreturn
+
+auto plus6 = make_plusn( 6 )
+
+print( plus6( 5 ) )
+

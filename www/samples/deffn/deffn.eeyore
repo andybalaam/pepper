@@ -1,0 +1,6 @@
+
+def int plus1( int i ):
+    return i + 1
+
+print( plus1( 2 ) )
+

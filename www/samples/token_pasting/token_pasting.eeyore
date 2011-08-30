@@ -1,0 +1,7 @@
+
+
+def string symbol( "poo" + "h" )():
+    return "winnie"
+
+print( pooh() )
+

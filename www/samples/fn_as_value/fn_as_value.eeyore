@@ -1,0 +1,9 @@
+
+def int plus1( int i ):
+    return i + 1
+
+def int apply_twice( function( int, ( int, ) ) fn, x ):
+    return fn( fn( x ) )
+
+print( appy_twice( plus1, 2 ) )
+

@@ -1,0 +1,14 @@
+
+def auto make_sort_pair( type T ):
+    def ( T, T ) sort_pair( T x, T y ):
+        if x > y:
+            return ( y, x )
+        else:
+            return ( x, y )
+    return sort_pair
+
+sort_ints = make_sort_pair( int )
+
+print( sort_ints( 4, 3 ) )
+
+

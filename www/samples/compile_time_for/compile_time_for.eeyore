@@ -1,0 +1,8 @@
+
+for int i in range( 4 ):
+    def int symbol( "minus" + str( i ) )( int z ):
+        return z - i
+
+assert_equal( minus2( 7 ), 5 )
+assert_equal( minus3( 6 ), 3 )
+

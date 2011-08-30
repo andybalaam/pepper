@@ -1,0 +1,22 @@
+
+class MyClass:
+    def auto __init__( auto self, int x, int y ):
+        vars:
+            int self.sum = x + y
+        print( "Creating new MyClass" )
+
+    def(const) int Sum( auto self ):
+        return self.sum
+
+    def void Add( auto self, int toadd ):
+        self.sum += toadd
+
+    def(static) string Author( auto self ):
+        return "Andy"
+
+auto mycls = MyClass( 2, 3 )
+mycls.Add( 1 )
+
+print( mycls.Sum() )
+print( MyClass.Author() )
+

@@ -4,7 +4,22 @@ ASCIIDOC_OPTS = -f layout.conf
 #-a toc
 SAMPLE2ASCIIDOC = sample2asciidoc/sample2asciidoc
 
-SAMPLES = samples/hello/hello.asciidoc samples/poohsticks/poohsticks.asciidoc  samples/addatcompiletime/addatcompiletime.asciidoc
+SAMPLES = \
+	samples/poohsticks/poohsticks.asciidoc \
+	samples/classes/classes.asciidoc \
+	samples/closure/closure.asciidoc \
+	samples/compile_time_for/compile_time_for.asciidoc \
+	samples/deffn/deffn.asciidoc \
+	samples/fn_as_value/fn_as_value.asciidoc \
+	samples/meta_fn/meta_fn.asciidoc \
+	samples/pure_fn/pure_fn.asciidoc \
+	samples/template_nontypes/template_nontypes.asciidoc \
+	samples/templates/templates.asciidoc \
+	samples/token_pasting/token_pasting.asciidoc \
+
+
+#samples/hello/hello.asciidoc
+#samples/addatcompiletime/addatcompiletime.asciidoc
 
 HTMLS=html/index.html html/explicitownership.html html/examples.html
 

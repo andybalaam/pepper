@@ -1,0 +1,8 @@
+
+template( type T, int i ):
+    def T addI( T x ):
+        return x + i
+
+print( addI( float, 3 )( 2.8 ) )
+print( addI( int,   3 )( 4 ) )
+

@@ -1,0 +1,8 @@
+
+def(pure) int cubed( int i ):
+    return i * i * i
+
+answers = [ cubed( n ) for n in range( 1, 4 ) ] # could execute in parallel
+
+print( answers )
+
