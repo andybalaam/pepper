@@ -505,7 +505,7 @@ define_function_threeargs_tokens = (
     )
 
 
-def test_ast_define_function_noargs():
+def test_ast_define_function_threeargs():
     assert_multiline_equal(
         _parse_to_ast_string( define_function_threeargs_tokens ),
         r"""
@@ -531,7 +531,7 @@ def test_ast_define_function_noargs():
         )
 
 
-def test_define_function_noargs():
+def test_define_function_threeargs():
     assert_multiline_equal( repr( _parse( define_function_threeargs_tokens ) ),
         """[EeyDef(EeySymbol('void'),EeySymbol('myfn'),((EeySymbol('int'), EeySymbol('x')), (EeySymbol('bool'), EeySymbol('y')), (EeySymbol('int'), EeySymbol('z'))),(EeySymbol('pass'),))]"""
         )
