@@ -45,7 +45,7 @@ def test_Unknown_Symbol_evaluated_type():
 
 def test_FunctionCall_evaluated_type():
     env = EeyEnvironment( None )
-    func = EeyUserFunction( "myfunc", EeyType( EeyBool ), (), () )
+    func = EeyUserFunction( "myfunc", EeyType( EeyBool ), (), ( EeyPass(), ) )
     assert_equal( EeyFunctionCall( func, () ).evaluated_type( env ),
         EeyBool )
 

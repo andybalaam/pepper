@@ -84,6 +84,7 @@ class EeyUserFunction( EeyFunction ):
         self.ret_type = ret_type
         self.arg_types_and_names = arg_types_and_names
         self.body_stmts = body_stmts
+        assert( len( self.body_stmts ) > 0 ) # TODO: not just assert
 
     def construction_args( self ):
         return ( self.name, self.ret_type, self.arg_types_and_names,
@@ -114,12 +115,11 @@ class EeyUserFunction( EeyFunction ):
 
             newenv = self.execution_environment( env, args, True )
 
-            # TODO: not just the first statement
-            last_stmt = self.body_stmts[0].evaluate( newenv )
-            if last_stmt.__class__ == EeyReturn:
-                return last_stmt.value.evaluate( newenv )
-            else:
-                return EeyPass()
+            for stmt in self.body_stmts:
+                ev_st = stmt.evaluate( newenv )
+                if ev_st.__class__ == EeyReturn:
+                    return ev_st.value.evaluate( newenv )
+            return EeyPass()
         else:
             return EeyRuntimeUserFunction( self, args )
 

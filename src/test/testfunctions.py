@@ -107,7 +107,8 @@ def test_Define_and_call_fn_to_add_unknown_numbers():
 
 def test_return_type_of_user_defined():
     assert_equal(
-        EeyUserFunction( "f", EeyType( EeyInt ), (), () ).return_type(),
+        EeyUserFunction( "f", EeyType( EeyInt ), (), ( EeyPass(), )
+            ).return_type(),
         EeyInt
         )
 
@@ -161,4 +162,30 @@ def test_Define_and_call_fn_returning_void_unknown():
 {
 }
 """ )
+
+
+def test_Define_and_call_multiline_known_fn():
+    env = EeyEnvironment( EeyCppRenderer() )
+
+    fndecl = EeyDef(
+        EeyType( EeyInt ),
+        EeySymbol( "myfunc" ),
+        (
+            ( EeyType( EeyInt ), EeySymbol( "x" ) ),
+            ( EeyType( EeyInt ), EeySymbol( "y" ) )
+            ),
+        (
+            EeyInit( EeyType( EeyInt ), EeySymbol( "a" ), EeySymbol( "x" ) ),
+            EeyReturn( EeyPlus( EeySymbol( "a" ), EeySymbol( "y" ) ) ),
+            )
+        )
+
+    assert_equal( fndecl.render( env ), "" )
+
+    value = EeyFunctionCall( EeySymbol( "myfunc" ),
+        ( EeyInt( "2" ), EeyInt( "8" ) ) )
+
+    assert_equal( value.render( env ), "10" )
+
+
 
