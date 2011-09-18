@@ -189,3 +189,36 @@ def test_Define_and_call_multiline_known_fn():
 
 
 
+def test_Define_and_call_multiline_unknown_fn():
+    env = EeyEnvironment( EeyCppRenderer() )
+
+    env.namespace["othernum"] = EeyVariable( EeyInt )
+
+    fndecl = EeyDef(
+        EeyType( EeyInt ),
+        EeySymbol( "myfunc" ),
+        (
+            ( EeyType( EeyInt ), EeySymbol( "x" ) ),
+            ( EeyType( EeyInt ), EeySymbol( "y" ) )
+            ),
+        (
+            EeyInit( EeyType( EeyInt ), EeySymbol( "a" ), EeySymbol( "x" ) ),
+            EeyReturn( EeyPlus( EeySymbol( "a" ), EeySymbol( "y" ) ) ),
+            )
+        )
+
+    assert_equal( fndecl.render( env ), "" )
+
+    value = EeyFunctionCall( EeySymbol( "myfunc" ),
+        ( EeyInt( "2" ), EeySymbol( "othernum" ) ) )
+
+    assert_equal( value.render( env ), "myfunc( 2, othernum )" )
+    assert_equal( env.renderer.functions[0],
+"""int myfunc( int x, int y )
+{
+    int a = x;
+    return (a + y);
+}
+""" )
+
+
