@@ -261,7 +261,7 @@ typedArgumentsList returns [r]
 ;
 
 suite returns [r]
-    : #(INDENT NEWLINE s=statementOrReturnStatement DEDENT) { r = ( s, ) }
+    : #(INDENT NEWLINE s=statementsList DEDENT) { r = s }
 ;
 
 argumentsList returns [r]
@@ -270,6 +270,12 @@ argumentsList returns [r]
         e=expression { r = (e,) }
         ( COMMA e=expression { r += (e,) } )*
     )?
+;
+
+statementsList returns [r]
+    { r = () }
+    : s=statementOrReturnStatement { r = (s,) }
+      ( s=statementOrReturnStatement { r += (s,) } )*
 ;
 
 statementOrReturnStatement returns [r]
