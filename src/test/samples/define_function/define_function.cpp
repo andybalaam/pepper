@@ -2,7 +2,8 @@
 
 void print_this( int num )
 {
-    printf( "%d\n", num );
+    int x = num;
+    printf( "%d\n", x );
 }
 
 int main( int argc, char* argv[] )
