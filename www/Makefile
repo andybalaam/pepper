@@ -8,6 +8,7 @@ SAMPLES = \
 	samples/poohsticks/poohsticks.asciidoc \
 	samples/classes/classes.asciidoc \
 	samples/closure/closure.asciidoc \
+	samples/compile_time_fibonacci/compile_time_fibonacci.asciidoc \
 	samples/compile_time_for/compile_time_for.asciidoc \
 	samples/deffn/deffn.asciidoc \
 	samples/fn_as_value/fn_as_value.asciidoc \
@@ -15,6 +16,7 @@ SAMPLES = \
 	samples/pure_fn/pure_fn.asciidoc \
 	samples/template_nontypes/template_nontypes.asciidoc \
 	samples/templates/templates.asciidoc \
+	samples/implicit_templates/implicit_templates.asciidoc \
 	samples/token_pasting/token_pasting.asciidoc \
 
 

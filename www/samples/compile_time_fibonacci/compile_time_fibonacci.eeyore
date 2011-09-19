@@ -1,0 +1,30 @@
+
+def int next_fib( uint k_minus_1, uint k_minus_2 ):
+    return k_minus_1 + k_minus_2
+
+
+template( size_t how_many ):
+    def array(uint,how_many) calc_fibs():
+        array(uint,how_many) ret = array(uint,how_many).init( 0 )
+        if how_many < 1:
+            return ret
+        ret[0] .= 1
+        if how_many < 2:
+            return ret
+        ret[1] .= 1
+        for i in range( 2, how_many ):
+            ret[i] .= next_fib( how_many[i-1], how_many[i-2] )
+        return ret
+
+uint MAX_FIB = 20
+
+fibs = calc_fibs( MAX_FIB )
+
+for arg in argv[1:]:
+    n = to_int( arg )
+    if n >= MAX_FIB:
+        print( "Only numbers up to %d are supported - %s is too big" % (
+            MAX_FIB, n ) )
+    else:
+        print( "fib( %d ) = %d" % ( n, fibs[n] ) )
+

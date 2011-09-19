@@ -1,0 +1,55 @@
+
+import random
+import sys
+
+def index_t partition( implements(IIndexable) list, index_t start, index_t end,
+        index_t pi ):
+    # Swap the pivot to the end for now
+    index_t last = end - 1
+    list_swap( list, pi, last )
+    value_type(list)* pivot_item = list[last]
+
+    # Compare each value to the pivot and if smaller, put it at the beginning
+    index_t counter = start
+    for index_t idx, value_type(list)* item in enumerate(
+            list[start:end-1], start ):
+        if item < pivot_item:
+            list_swap( list, idx, counter )
+            ++counter
+
+    # Put the pivot back in the middle
+    list_swap( list, last, counter )
+
+    # Return where the pivot ended up
+    return counter
+
+
+
+def index_t choose_pivot_index( index_t start, index_t end ):
+    return random.randrange( start, end )
+
+
+# This function is "templated" i.e. different code is generated depending on
+# what types you call it with, but there is no need to say "template" in
+# its definition: the fact that list's type is unknown here, but when we
+# call the function it is known, means that we generate a version of this
+# function for that known type.
+def void quick_sort( implements(IIndexable) list, index_t start, index_t end ):
+    if end - start <= 1:
+        return
+    pi = choose_pivot_index( start, end )
+    new_pi = partition( list, start, end, pi )
+    quick_sort( list, start, new_pi )
+    quick_sort( list, new_pi + 1, end )
+
+
+def void sort( implements(IIndexable) list ):
+    quick_sort( list, 0, len( list ) )
+
+vector(int) nums = [ convert_to(int)( arg ) for arg in argv[1:] ]
+
+# This line causes a "vector(int)" version of sort to be created
+sort( nums )
+
+print( nums )
+

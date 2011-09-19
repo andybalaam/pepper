@@ -49,8 +49,13 @@ include::../samples/template_nontypes/template_nontypes.asciidoc[]
 == Templates ==
 
 include::../samples/templates/templates.asciidoc[]
+include::../samples/implicit_templates/implicit_templates.asciidoc[]
 
 == "Token pasting" ==
 
 include::../samples/token_pasting/token_pasting.asciidoc[]
+
+== Precalulating a lookup table ==
+
+include::../samples/compile_time_fibonacci/compile_time_fibonacci.asciidoc[]
 

@@ -1,0 +1,2 @@
+$ ./compile_time_fibonacci.eeyore 4
+5
