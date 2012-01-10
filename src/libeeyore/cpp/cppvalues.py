@@ -73,7 +73,7 @@ def render_EeyInit( env, value ):
 type2string = {
     EeyBool  : "bool",
     EeyFloat : "double",
-    EeyInt   : "int",
+    EeyInt   : "int", # Maybe should be intptr_t - I just can't bring myself
     EeyVoid  : "void",
     }
 
