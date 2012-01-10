@@ -439,6 +439,26 @@ def test_simple_initialisation():
         )
 
 
+
+float_initialisation_tokens = (
+    make_token( "float", EeyoreLexer.SYMBOL,  1, 1 ),
+    make_token( "f",     EeyoreLexer.SYMBOL,  1, 7 ),
+    make_token( "=",     EeyoreLexer.EQUALS,  1, 9 ),
+    make_token( "7.4",   EeyoreLexer.FLOAT,   1, 11 ),
+    make_token( "\n",    EeyoreLexer.NEWLINE, 1, 12 ),
+    )
+
+def test_ast_simple_initialisation():
+    assert_multiline_equal(
+        _parse_to_ast_string( float_initialisation_tokens ),
+        r"""
+[EQUALS:=]
+    [SYMBOL:float]
+    [SYMBOL:f]
+    [FLOAT:7.4]
+"""
+        )
+
 define_function_noargs_tokens = (
     make_token( "def",    EeyoreLexer.LITERAL_def,    1, 1 ),
     make_token( "int",    EeyoreLexer.SYMBOL,         1, 5 ),

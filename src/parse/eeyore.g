@@ -170,6 +170,7 @@ typedArgumentsList :
 simpleExpression :
       SYMBOL
     | INT
+    | FLOAT
     | STRING
     | functionCall
     | arrayLookup
