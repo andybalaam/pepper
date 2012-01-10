@@ -14,6 +14,9 @@ all: genparse
 test: genparse
 	python test/eeyorenosetests.py --with-eeyoresamplenoseplugin
 
+quick-test:
+	nosetests
+
 parsetests: genparse
 	python scheme.py parse/test.eeyore
 
