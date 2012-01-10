@@ -123,6 +123,16 @@ class EeyInt( EeyValue ):
         # TODO: handle large numbers
         return EeyBool( int( self.value ) > int( other.value ) )
 
+
+class EeyFloat( EeyValue ):
+    def __init__( self,  str_float ):
+        EeyValue.__init__( self )
+        self.value = str( str_float )
+
+    def construction_args( self ):
+        return ( self.value, )
+
+
 class EeyNoneType( EeyValue ):
     def construction_args( self ):
         return ()

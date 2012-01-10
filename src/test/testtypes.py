@@ -8,11 +8,15 @@ from libeeyore.cpp.cpprenderer import EeyCppRenderer
 
 def test_Int_evaluated_type():
     env = EeyEnvironment( None )
-    assert_equal( EeyInt( 3 ).evaluated_type( env ), EeyInt )
+    assert_equal( EeyInt( '3' ).evaluated_type( env ), EeyInt )
+
+def test_Float_evaluated_type():
+    env = EeyEnvironment( None )
+    assert_equal( EeyFloat( '3.0' ).evaluated_type( env ), EeyFloat )
 
 def test_Bool_evaluated_type():
     env = EeyEnvironment( None )
-    assert_equal( EeyInt( 3 ).evaluated_type( env ), EeyInt )
+    assert_equal( EeyBool( True ).evaluated_type( env ), EeyBool )
 
 def test_Variable_evaluated_type():
     env = EeyEnvironment( None )

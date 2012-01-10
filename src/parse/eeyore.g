@@ -230,6 +230,7 @@ statementContents returns [r]
 expression returns [r]
     : s=symbol { r = s }
     | i:INT    { r = EeyInt(    i.getText() ) }
+    | d:FLOAT  { r = EeyFloat(  d.getText() ) }
     | t:STRING { r = EeyString( t.getText() ) }
     | a=arraylookup { r = a }
     | i=ifExpression { r = i }

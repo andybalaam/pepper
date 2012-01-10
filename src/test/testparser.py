@@ -459,6 +459,12 @@ def test_ast_simple_initialisation():
 """
         )
 
+def test_simple_initialisation():
+    assert_multiline_equal( repr( _parse( float_initialisation_tokens ) ),
+        """[EeyInit(EeySymbol('float'),EeySymbol('f'),EeyFloat('7.4'))]"""
+        )
+
+
 define_function_noargs_tokens = (
     make_token( "def",    EeyoreLexer.LITERAL_def,    1, 1 ),
     make_token( "int",    EeyoreLexer.SYMBOL,         1, 5 ),
