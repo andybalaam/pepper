@@ -1,4 +1,6 @@
 
+import sys
+
 from cppbuiltins import *
 from libeeyore.builtins import *
 from libeeyore.functionvalues import *
@@ -146,30 +148,6 @@ def render_EeySysArgv( env, value ):
     #       it at the beginning of main
     return "argv"
 
-type2renderer = {
-    EeyArrayLookup          : render_EeyArrayLookup,
-    EeyBool                 : render_EeyBool,
-    EeyDef                  : render_EeyDef,
-    EeyFloat                : render_EeyFloat,
-    EeyFunction             : render_EeyFunction,
-    EeyFunctionCall         : render_EeyFunctionCall,
-    EeyGreaterThan          : render_EeyGreaterThan,
-    EeyIf                   : render_EeyIf,
-    EeyImport               : render_EeyImport,
-    EeyInit                 : render_EeyInit,
-    EeyInt                  : render_EeyInt,
-    EeyNoneType             : render_EeyNoneType,
-    EeyPass                 : render_EeyPass,
-    EeyPlus                 : render_EeyPlus,
-    EeyPrint                : render_EeyPrint,
-    EeyReturn               : render_EeyReturn,
-    EeyRuntimeLen           : render_EeyRuntimeLen,
-    EeyRuntimePrint         : render_EeyRuntimePrint,
-    EeyRuntimeUserFunction  : render_EeyRuntimeUserFunction,
-    EeyString               : render_EeyString,
-    EeySymbol               : render_EeySymbol,
-    EeySysArgv              : render_EeySysArgv,
-    EeyType                 : render_EeyType,
-    }
-
+def type2renderer( tp ):
+    return sys.modules[__name__].__dict__[ 'render_' + tp.__name__ ]
 

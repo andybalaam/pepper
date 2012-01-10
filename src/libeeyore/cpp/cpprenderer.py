@@ -27,7 +27,7 @@ class EeyCppRenderer( object ):
             self._headers.append( header )
 
     def value_renderer( self, value ):
-        return cppvalues.type2renderer[ value.__class__ ]
+        return cppvalues.type2renderer( value.__class__ )
 
     def render_exe( self, values, env ):
         rendered_lines = [ _render_with_semicolon( value, env )
