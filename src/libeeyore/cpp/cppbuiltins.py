@@ -43,6 +43,9 @@ def append_print_arg( fmtstr, fmtargs, env, value ):
     elif cls is EeyInt:
         fmtstr.append( "%d" )
         fmtargs.append( value.render( env ) )
+    elif cls is EeyFloat:
+        fmtstr.append( "%f" )
+        fmtargs.append( value.render( env ) )
     elif implements_interface( value, EeyString ):
         fmtstr.append( "%s" )
         fmtargs.append( value.render( env ) )

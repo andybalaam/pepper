@@ -12,6 +12,13 @@ def test_Const_int_value_renders_as_a_number():
 
     assert_equal( value.render( env ), "23" )
 
+def test_Const_float_value_renders_as_a_number():
+    env = EeyEnvironment( EeyCppRenderer() )
+    value = EeyFloat( "23.65" )
+
+    assert_equal( value.render( env ), "23.65" )
+
+
 
 def test_Const_string_value_renders_as_a_string():
     env = EeyEnvironment( EeyCppRenderer() )
@@ -33,6 +40,13 @@ def test_Add_two_known_ints_renders_calculated_sum():
     value = EeyPlus( EeyInt( "2" ), EeyInt( "3" ) )
 
     assert_equal( value.render( env ), "5" )
+
+def test_Add_two_known_floats_renders_calculated_sum():
+    env = EeyEnvironment( EeyCppRenderer() )
+    value = EeyPlus( EeyFloat( "2.9" ), EeyFloat( "3.1" ) )
+
+    assert_equal( value.render( env ), "6.0" )
+
 
 def test_Unknown_variable_renders_as_symbol():
     env = EeyEnvironment( EeyCppRenderer() )
@@ -92,6 +106,21 @@ def test_Print_unknown_int_renders_as_percent_d():
         ( EeySymbol( "i" ), ) )
 
     assert_equal( value.render( env ), 'printf( "%d\\n", i )' )
+
+
+def test_Print_unknown_float_renders_as_percent_f():
+    env = EeyEnvironment( EeyCppRenderer() )
+    builtins.add_builtins( env )
+
+    init = EeyInit(
+        EeyType( EeyFloat ), EeySymbol( "f" ), EeyVariable( EeyFloat ) )
+    init.evaluate( env )
+
+    value = EeyFunctionCall( EeySymbol( "print" ),
+        ( EeySymbol( "f" ), ) )
+
+    assert_equal( value.render( env ), 'printf( "%f\\n", f )' )
+
 
 
 def test_known_array_lookup():
@@ -163,9 +192,10 @@ def test_unknown_initialisation_makes_symbol_valid():
 
 def test_render_simple_types():
     env = EeyEnvironment( EeyCppRenderer() )
-    assert_equals( EeyType( EeyInt ).render( env ), "int" )
-    assert_equals( EeyType( EeyBool ).render( env ), "bool" )
-    assert_equals( EeyType( EeyVoid ).render( env ), "void" )
+    assert_equals( EeyType( EeyInt   ).render( env ), "int" )
+    assert_equals( EeyType( EeyFloat ).render( env ), "double" )
+    assert_equals( EeyType( EeyBool  ).render( env ), "bool" )
+    assert_equals( EeyType( EeyVoid  ).render( env ), "void" )
 
 
 

@@ -12,6 +12,9 @@ def render_EeySymbol( env, value ):
 def render_EeyInt( env, value ):
     return str( value.value )
 
+def render_EeyFloat( env, value ):
+    return str( value.value )
+
 def render_EeyBool( env, value ):
     if value.value:
         return "true"
@@ -66,9 +69,10 @@ def render_EeyInit( env, value ):
             )
 
 type2string = {
-    EeyBool : "bool",
-    EeyInt  : "int",
-    EeyVoid : "void",
+    EeyBool  : "bool",
+    EeyFloat : "double",
+    EeyInt   : "int",
+    EeyVoid  : "void",
     }
 
 def render_EeyType( env, value ):
@@ -146,6 +150,7 @@ type2renderer = {
     EeyArrayLookup          : render_EeyArrayLookup,
     EeyBool                 : render_EeyBool,
     EeyDef                  : render_EeyDef,
+    EeyFloat                : render_EeyFloat,
     EeyFunction             : render_EeyFunction,
     EeyFunctionCall         : render_EeyFunctionCall,
     EeyGreaterThan          : render_EeyGreaterThan,

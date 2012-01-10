@@ -132,6 +132,16 @@ class EeyFloat( EeyValue ):
     def construction_args( self ):
         return ( self.value, )
 
+    def plus( self, other ):
+        assert other.__class__ == self.__class__
+        # TODO: handle arbitrary numbers
+        return EeyFloat( str( float( self.value ) + float( other.value ) ) )
+
+    def greater_than( self, other ):
+        assert other.__class__ == self.__class__
+        # TODO: handle arbitrary numbers
+        return EeyBool( float( self.value ) > float( other.value ) )
+
 
 class EeyNoneType( EeyValue ):
     def construction_args( self ):
