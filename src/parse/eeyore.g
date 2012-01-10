@@ -42,8 +42,23 @@ protected DIGIT :
     '0'..'9'
 ;
 
-INT :
-    (DIGIT)+
+protected DIGITS
+    : ( DIGIT )+
+;
+
+protected INT
+    : DIGITS
+;
+
+protected FLOAT
+    : '.' DIGITS
+    | DIGITS '.' ( DIGITS )?
+;
+
+INT_OR_FLOAT
+    : ( INT '.' ) => FLOAT { $setType(FLOAT) }
+    | ( '.' )     => FLOAT { $setType(FLOAT) }
+    | INT                  { $setType(INT) }
 ;
 
 protected QUOTE : // TODO: single quoted strings

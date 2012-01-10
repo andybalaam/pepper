@@ -136,3 +136,15 @@ def test_simple_initialisation():
     _assert_token( tokens[3], "7",   EeyoreLexer.INT,    1, 9 )
     assert( len( tokens ) == 4 )
 
+def test_int_literal():
+    tokens = _lex( "354" )
+    _assert_token( tokens[0], "354", EeyoreLexer.INT )
+    assert( len( tokens ) == 1 )
+
+def test_float_literal():
+    tokens = _lex( "354.078 65. .45" )
+    _assert_token( tokens[0], "354.078", EeyoreLexer.FLOAT )
+    _assert_token( tokens[1], "65.",     EeyoreLexer.FLOAT )
+    _assert_token( tokens[2], ".45",     EeyoreLexer.FLOAT )
+    assert( len( tokens ) == 3 )
+
