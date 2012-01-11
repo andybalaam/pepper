@@ -4,6 +4,7 @@ from itertools import izip
 
 from environment import EeyEnvironment
 from values import EeySymbol
+from values import EeyType
 from values import EeyValue
 from values import EeyVariable
 from values import EeyPass
@@ -101,17 +102,24 @@ class EeyUserFunction( EeyFunction ):
                 # TODO: function name
                 # TODO: line, col, file
 
-            for arg, (reqtype, reqname) in izip( args,
-                    self.arg_types_and_names ):
-                #while arg.__class__
-                if arg.__class__ is not reqtype.value:
+            for argnum, ( arg, (reqtype, reqname) ) in enumerate( izip( args,
+                    self.arg_types_and_names ) ):
+                reqtype = reqtype.evaluate( env )
+                #import sys
+                #sys.exit()
+                if arg.__class__ is not reqtype.evaluate( env ).value:
                     raise EeyUserErrorException(
-                        ( "Incorrect argument type: '%s' should be a %s, but "
-                            + "it is a %s" ) % (
-                            reqname.symbol_name, reqtype.value,
-                            arg.__class__
-                            )
+                        ( "For function '{fn_name}', argument " +
+                            "'{argname}' should be {reqtype}, " +
+                            "not {supplied_type}."
+                        ).format(
+                            fn_name       = self.name,
+                            reqtype       = env.pretty_type_name( reqtype ),
+                            argname       = reqname.symbol_name,
+                            supplied_type = env.pretty_type_name(
+                                EeyType( arg.__class__ ) ),
                         )
+                    )
 
             newenv = self.execution_environment( env, args, True )
 

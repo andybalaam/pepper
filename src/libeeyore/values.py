@@ -228,6 +228,12 @@ class EeyType( EeyValue ):
     def construction_args( self ):
         return ( self.value, )
 
+    def __eq__( self, other ):
+        return (
+            self.__class__ == other.__class__ and
+            self.value == other.value
+        )
+
 class EeyArray( EeyValue ):
     def __init__( self, value_type, values ):
         EeyValue.__init__( self )

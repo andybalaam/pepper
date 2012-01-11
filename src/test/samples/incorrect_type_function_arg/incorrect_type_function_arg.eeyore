@@ -1,0 +1,10 @@
+
+def void takes_float( float f ):
+    return 2.0 + f
+
+takes_float( 2 )
+
+# TODO: output should be:
+#[retval=1]
+#[stderr]Error: incorrect_type_function.eeyore:5 - For function 'takes_float', argument 'f' should be float, not int.
+

@@ -26,5 +26,9 @@ class EeyNamespace( object ):
         else:
             return None
 
-
+    def key_for_value( self, value ):
+        for k, v in self.thedict.items():
+            if value == v:
+                return k
+        return None
 

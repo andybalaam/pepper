@@ -1,5 +1,6 @@
 
 import os
+import re
 import shlex
 import subprocess
 import tempfile
@@ -84,24 +85,28 @@ class iterate_commands( object ):
         else:
             cmd_line = self.cached_line
 
-        expected_output = ""
+        expected_stdout = ""
 
         while True:
             try:
                 ln = self.fl.next()
             except StopIteration:
                 self.cached_line = None
-                return cmd_line, expected_output
+                return cmd_line, expected_stdout
 
             if ln.startswith( "$" ):
                 self.cached_line = ln
-                return cmd_line, expected_output
+                return cmd_line, expected_stdout
             else:
-                expected_output += ln
+                expected_stdout += ln
 
 
 
 class RunEeyoreTest( unittest.TestCase ):
+
+    retval_re = re.compile( r"\s*\[\s*retval\s*=\s*(\d+)\s*\]\s*\n(.*)" )
+    stderr_re = re.compile( r"\s*\[\s*stderr\s*\](.*)" )
+
     def __init__( self, path, from_filename, to_filename ):
 
         if to_filename.endswith( ".output" ):
@@ -121,25 +126,37 @@ class RunEeyoreTest( unittest.TestCase ):
         """
 
         with open( os.path.join( self.path, self.to_filename ), "r" ) as fl:
-            for cmd_line, expected_output in iterate_commands( fl ):
-                self.runSingleProgram( cmd_line, expected_output )
+            for cmd_line, expected_stdout in iterate_commands( fl ):
+                self.runSingleProgram( cmd_line, expected_stdout )
 
 
-    def runSingleProgram( self, cmd_line, expected_output ):
+    def runSingleProgram( self, cmd_line, expected_stdout ):
+        expected_retval, expected_stdout, expected_stderr = (
+            self.extractExpected( expected_stdout ) )
+
         assert cmd_line.startswith( "$" )
         cmd_line = cmd_line[1:].strip()
 
         args = shlex.split( cmd_line )
         ret, out, err = run_cmd( args, self.path )
 
-        assert ret == 0, ( '"%s" should return 0 but returned %d' % (
-            cmd_desc( args ), ret ) )
+        assert ret == expected_retval, (
+            '"%s" should return %s but returned %d' % (
+                cmd_desc( args ), expected_retval, ret ) )
 
-        assert out == expected_output, ( '"%s" should print:\n%s' +
-                '\nbut instead it printed:\n%s' ) % (
-                    cmd_desc( args ),
-                    expected_output,
-                    out )
+        assert out.strip() == expected_stdout.strip(), (
+            '"%s" should print:\n%s' +
+            '\nbut instead it printed:\n%s' ) % (
+                cmd_desc( args ),
+                expected_stdout,
+                out )
+
+        assert err.strip() == expected_stderr.strip(), (
+            '"%s" should print:\n%s' +
+            '\nto stderr but instead it printed:\n%s' ) % (
+                cmd_desc( args ),
+                expected_stderr,
+                err )
 
 
     def generateFile( self ):
@@ -163,6 +180,30 @@ class RunEeyoreTest( unittest.TestCase ):
                     cmd_desc( args, repl = ( 2, self.to_filename ) ),
                     expected_contents,
                     contents )
+
+    def extractExpected( self, expected_stdout ):
+        expected_retval = 0
+        m = RunEeyoreTest.retval_re.match( expected_stdout )
+        if m:
+            expected_retval = int( m.group( 1 ) )
+            expected_stdout = m.group( 2 )
+
+        expected_stdout, expected_stderr = self.extractStdErrLines(
+            expected_stdout )
+
+        return ( expected_retval, expected_stdout, expected_stderr )
+
+    def extractStdErrLines( self, expected_stdout ):
+        out_lines = []
+        err_lines = []
+        for ln in expected_stdout.split( '\n' ):
+            m = RunEeyoreTest.stderr_re.match( ln )
+            if m:
+                err_lines.append( m.group( 1 ) )
+            else:
+                out_lines.append( ln )
+        return '\n'.join( out_lines ), '\n'.join( err_lines )
+
 
 
 class EeyoreSampleNosePlugin( Plugin ):

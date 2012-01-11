@@ -143,7 +143,7 @@ def test_parse_and_process_options_arguments_wrong():
     ret = libeeyore.main.parse_and_process_options( [],
         AlwaysThrowUserErrorOptions, FakeObject, FakeObject, stderr )
 
-    assert_equal( stderr.getvalue(), "usage: blah\n" )
+    assert_equal( stderr.getvalue(), "Error: usage: blah\n" )
     assert_equal( ret, 1 )
 
 

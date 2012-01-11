@@ -104,7 +104,7 @@ def parse_and_process_options( argv, options_Class, sysops_Class, exec_Class,
         return process_options( options, sys_operations, executor )
 
     except EeyUserErrorException, e:
-        stderr.write( str( e ) + "\n" )
+        stderr.write( "Error: " + str( e ) + "\n" )
         return RET_USER_ERROR
 
 def main( argv, stderr ):

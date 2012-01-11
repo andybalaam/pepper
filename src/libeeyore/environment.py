@@ -21,5 +21,10 @@ class EeyEnvironment( object ):
 
         return EeyEnvironment( self.renderer, EeyNamespace( self.namespace ) )
 
+    def pretty_type_name( self, tp ):
+        ret = self.namespace.key_for_value( tp )
+        if ret is None:
+            ret = str( tp.value )
+        return ret
 
 
