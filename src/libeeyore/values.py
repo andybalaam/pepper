@@ -234,6 +234,9 @@ class EeyType( EeyValue ):
             self.value == other.value
         )
 
+    def __ne__( self, other ):
+        return not self.__eq__( other )
+
 class EeyArray( EeyValue ):
     def __init__( self, value_type, values ):
         EeyValue.__init__( self )
