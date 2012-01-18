@@ -31,23 +31,17 @@ all: html
 
 html: $(SAMPLES) $(REAL_SAMPLES) $(HTMLS)
 
-samples/%.asciidoc: \
-        $(wildcard $*.eeyore) \
-        $(wildcard $*.eeyorelexed) \
-        $(wildcard $*.cpp) \
-        $(wildcard $*.eeyoreparsetree) \
-        $(wildcard $*.output) \
-        $(SAMPLE2ASCIIDOC)
+# TODO: make this depend on all existing files in the list
+#       .eeyore .eeyorelexed .cpp .eeyoreparsetree .output
+$(SAMPLES): samples/%.asciidoc: $(SAMPLE2ASCIIDOC) samples/%.eeyore
 	$(SAMPLE2ASCIIDOC) $@
 
-real_samples/%.asciidoc: \
-        $(wildcard ../src/test/$*.eeyore) \
-        $(wildcard ../src/test/$*.eeyorelexed) \
-        $(wildcard ../src/test/$*.cpp) \
-        $(wildcard ../src/test/$*.eeyoreparsetree) \
-        $(wildcard ../src/test/$*.output) \
-        $(SAMPLE2ASCIIDOC)
+# TODO: make this depend on all existing files in the list
+#       .eeyore .eeyorelexed .cpp .eeyoreparsetree .output
+$(REAL_SAMPLES): real_samples/%.asciidoc: $(SAMPLE2ASCIIDOC) \
+		../src/test/%.eeyore
 	$(SAMPLE2ASCIIDOC) $@
+
 
 html/%.html: asciidoc/%.asciidoc layout.conf layout.css $(SAMPLES)
 	mkdir -p html
