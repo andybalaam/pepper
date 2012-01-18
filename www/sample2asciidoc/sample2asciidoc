@@ -142,7 +142,7 @@ $ eeyore -o {this_name} {prev_name}
 		).format(
 			formatter = get_formatter( ext ),
 			title     = get_title( ext, this_name, passed ),
-			text      = this_cont,
+			text      = this_cont.strip(),
 		) )
 
 
