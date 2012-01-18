@@ -20,15 +20,16 @@ SAMPLES = \
 	samples/implicit_templates/implicit_templates.asciidoc \
 	samples/token_pasting/token_pasting.asciidoc \
 
+REAL_SAMPLES = \
+	real_samples/samples/hello/hello.asciidoc \
+	real_samples/samples/addatcompiletime/addatcompiletime.asciidoc \
 
-#samples/hello/hello.asciidoc
-#samples/addatcompiletime/addatcompiletime.asciidoc
 
 HTMLS=html/index.html html/explicitownership.html html/examples.html
 
 all: html
 
-html: $(SAMPLES) $(HTMLS)
+html: $(SAMPLES) $(REAL_SAMPLES) $(HTMLS)
 
 samples/%.asciidoc: \
         $(wildcard $*.eeyore) \
@@ -36,6 +37,15 @@ samples/%.asciidoc: \
         $(wildcard $*.cpp) \
         $(wildcard $*.eeyoreparsetree) \
         $(wildcard $*.output) \
+        $(SAMPLE2ASCIIDOC)
+	$(SAMPLE2ASCIIDOC) $@
+
+real_samples/%.asciidoc: \
+        $(wildcard ../src/test/$*.eeyore) \
+        $(wildcard ../src/test/$*.eeyorelexed) \
+        $(wildcard ../src/test/$*.cpp) \
+        $(wildcard ../src/test/$*.eeyoreparsetree) \
+        $(wildcard ../src/test/$*.output) \
         $(SAMPLE2ASCIIDOC)
 	$(SAMPLE2ASCIIDOC) $@
 

@@ -1,5 +1,6 @@
 *~
 www/samples/*/*.asciidoc
+www/real_samples/samples/*/*.asciidoc
 *.pyc
 www/html
 *.marks

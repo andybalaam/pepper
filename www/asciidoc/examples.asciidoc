@@ -4,11 +4,11 @@
 
 == Hello, world! ==
 
-include::../samples/hello/hello.asciidoc[]
+include::../real_samples/samples/hello/hello.asciidoc[]
 
 == Add at compile time ==
 
-include::../samples/addatcompiletime/addatcompiletime.asciidoc[]
+include::../real_samples/samples/addatcompiletime/addatcompiletime.asciidoc[]
 
 == Defining functions ==
 
