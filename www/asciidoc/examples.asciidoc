@@ -42,10 +42,6 @@ include::../samples/compile_time_for/compile_time_for.asciidoc[]
 
 include::../samples/meta_fn/meta_fn.asciidoc[]
 
-== Pure Functions ==
-
-include::../samples/pure_fn/pure_fn.asciidoc[]
-
 == Templating on ordinary (non-type) values ==
 
 include::../samples/template_nontypes/template_nontypes.asciidoc[]
