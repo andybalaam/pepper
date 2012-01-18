@@ -57,24 +57,23 @@ class EeyArrayLookup( EeyValue ):
         return all_known( ( self.array_value, self.index ), env )
 
 class EeyIf( EeyValue ):
-    def __init__( self, predicate, cmds_if_true ):
+    def __init__( self, predicate, cmds_if_true, cmds_if_false ):
         EeyValue.__init__( self )
         self.predicate = predicate
         self.cmds_if_true = cmds_if_true
+        self.cmds_if_false = cmds_if_false
 
     def construction_args( self ):
-        return ( self.predicate, self.cmds_if_true )
+        return ( self.predicate, self.cmds_if_true, self.cmds_if_false )
 
     def do_evaluate( self, env ):
         pred = self.predicate.evaluate( env )
         if pred.is_known( env ):
             assert( pred.__class__ == EeyBool ) # TODO: other types
             if pred.value:
-                # TODO: support EeyArray of statements?  As well?
-                ret = None
-                for cmd in self.cmds_if_true:
-                    ret = cmd.evaluate( env )
-                return ret # TODO: should we return all evaluated statements?
+                return self._run_commands( self.cmds_if_true, env )
+            elif self.cmds_if_false is not None:
+                return self._run_commands( self.cmds_if_false, env )
             else:
                 return eey_none
         else:
@@ -89,6 +88,12 @@ class EeyIf( EeyValue ):
                 )
             )
 
+    def _run_commands( self, cmds, env ):
+        # TODO: support EeyArray of statements?  As well?
+        ret = None
+        for cmd in cmds:
+            ret = cmd.evaluate( env )
+        return ret # TODO: should we return all evaluated statements?
 
 class EeyInitialisingWithWrongType( EeyUserErrorException ):
     def __init__( self, decl_type, init_value_type ):

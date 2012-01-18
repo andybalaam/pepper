@@ -94,7 +94,8 @@ def test_single_statement_if():
                             ),
                         ),
                     ),
-            )
+            ),
+            None
         )
 
     program = ( impt, ifstmt )

@@ -190,7 +190,11 @@ arrayLookup :
 ;
 
 ifExpression :
-    "if"^ expression COLON suite
+    "if"^ expression COLON suite elseExpression
+;
+
+elseExpression :
+    ( "else" COLON suite )?
 ;
 
 argumentsList:
@@ -262,7 +266,13 @@ arraylookup returns [r]
 ;
 
 ifExpression returns [r]
-    : #("if" pred=expression COLON s=suite) { r = EeyIf( pred, s ) }
+    : #("if" pred=expression COLON s=suite es=elseExpression )
+        { r = EeyIf( pred, s, es ) }
+;
+
+elseExpression returns [r]
+    { r = None }
+    : ( "else" COLON s=suite { r = s } )?
 ;
 
 functionCall returns [r]

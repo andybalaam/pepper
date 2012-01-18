@@ -305,7 +305,7 @@ def test_ast_single_statement_if():
 
 def test_single_statement_if():
     assert_multiline_equal( repr( _parse( single_statement_if_tokens ) ),
-        """[EeyIf(EeySymbol('True'),(EeyFunctionCall(EeySymbol('print'),(EeyInt('3'),)),))]"""
+        """[EeyIf(EeySymbol('True'),(EeyFunctionCall(EeySymbol('print'),(EeyInt('3'),)),),None)]"""
         )
 
 
@@ -324,7 +324,7 @@ def test_if_function_call():
         make_token( "",      EeyoreLexer.DEDENT,     2, 6 ),
         make_token( "\n",    EeyoreLexer.NEWLINE,    3, 1 ),
         ) ) ),
-        """[EeyIf(EeyFunctionCall(EeySymbol('f'),(EeyInt('3'),)),(EeyInt('3'),))]"""
+        """[EeyIf(EeyFunctionCall(EeySymbol('f'),(EeyInt('3'),)),(EeyInt('3'),),None)]"""
         )
 
 
@@ -363,7 +363,7 @@ def test_ast_if_operator():
 
 def test_if_operator():
     assert_multiline_equal( repr( _parse( if_operator_tokens ) ),
-        """[EeyIf(EeyGreaterThan(EeyInt('3'),EeyInt('4')),(EeyInt('3'),))]"""
+        """[EeyIf(EeyGreaterThan(EeyInt('3'),EeyInt('4')),(EeyInt('3'),),None)]"""
         )
 
 
@@ -410,7 +410,58 @@ def test_ast_if_op_fn():
 
 def test_if_op_fn():
     assert_multiline_equal( repr( _parse( if_op_fn_tokens ) ),
-        """[EeyIf(EeyGreaterThan(EeyFunctionCall(EeySymbol('f'),(EeySymbol('a'),)),EeyInt('4')),(EeyInt('3'),))]"""
+        """[EeyIf(EeyGreaterThan(EeyFunctionCall(EeySymbol('f'),(EeySymbol('a'),)),EeyInt('4')),(EeyInt('3'),),None)]"""
+        )
+
+
+if_else_fn_tokens = (
+    make_token( "if",    EeyoreLexer.LITERAL_if   ),
+    make_token( "True",  EeyoreLexer.SYMBOL       ),
+    make_token( ":",     EeyoreLexer.COLON        ),
+    make_token( "\n",    EeyoreLexer.NEWLINE      ),
+    make_token( "",      EeyoreLexer.INDENT       ),
+    make_token( "1",     EeyoreLexer.INT          ),
+    make_token( "\n",    EeyoreLexer.NEWLINE      ),
+    make_token( "",      EeyoreLexer.DEDENT       ),
+    make_token( "else",  EeyoreLexer.LITERAL_else ),
+    make_token( ":",     EeyoreLexer.COLON        ),
+    make_token( "\n",    EeyoreLexer.NEWLINE      ),
+    make_token( "",      EeyoreLexer.INDENT       ),
+    make_token( "0",     EeyoreLexer.INT          ),
+    make_token( "\n",    EeyoreLexer.NEWLINE      ),
+    make_token( "",      EeyoreLexer.DEDENT       ),
+    make_token( "\n",    EeyoreLexer.NEWLINE      ),
+    )
+
+
+def test_ast_if_else_fn():
+
+    assert_multiline_equal(
+        _parse_to_ast_string( if_else_fn_tokens ),
+        r"""
+["if":if]
+    [SYMBOL:True]
+    [COLON::]
+    [INDENT:]
+        [NEWLINE:\n]
+        [INT:1]
+        [NEWLINE:\n]
+        [DEDENT:]
+    ["else":else]
+    [COLON::]
+    [INDENT:]
+        [NEWLINE:\n]
+        [INT:0]
+        [NEWLINE:\n]
+        [DEDENT:]
+"""
+        )
+
+
+
+def test_if_else_fn():
+    assert_multiline_equal( repr( _parse( if_else_fn_tokens ) ),
+        """[EeyIf(EeySymbol('True'),(EeyInt('1'),),(EeyInt('0'),))]"""
         )
 
 
