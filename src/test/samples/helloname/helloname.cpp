@@ -6,6 +6,10 @@ int main( int argc, char* argv[] )
     {
         printf( "Hello, %s!\n", argv[1] );
     }
+    else
+    {
+        printf( "Hmm.  Who are you?\n" );
+    }
 
     return 0;
 }

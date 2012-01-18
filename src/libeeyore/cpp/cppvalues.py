@@ -38,11 +38,29 @@ def render_EeyGreaterThan( env, value ):
         value.left_value.render( env ), value.right_value.render( env ) )
 
 
+def _render_cmds( cmds, env ):
+    return "\n        ".join( c.render(env) for c in cmds )
+
 def render_EeyIf( env, value ):
     # TODO: assert predicate is a bool or function returning one
-    return "if( %s )\n    {\n        %s;\n    }" % (
-        value.predicate.render( env ),
-        "\n        ".join( c.render(env) for c in value.cmds_if_true )
+
+    else_block = ""
+    if value.cmds_if_false is not None:
+        else_block = """
+    else
+    {{
+        {cmds_if_false};
+    }}""".format(
+            cmds_if_false = _render_cmds( value.cmds_if_false, env )
+            )
+
+    return """if( {predicate} )
+    {{
+        {cmds_if_true};
+    }}{else_block}""".format(
+        predicate = value.predicate.render( env ),
+        cmds_if_true = _render_cmds( value.cmds_if_true,  env ),
+        else_block = else_block
         )
 
 def render_EeyFunction( env, value ):
@@ -108,7 +126,6 @@ def render_EeyUserFunction_body( env, func_call ):
 
     newenv = fn.execution_environment( env, func_call.args, False )
 
-    # TODO: not every statement should be a return
     for body_stmt in fn.body_stmts:
         st = body_stmt.evaluate( newenv )
         if st.__class__ == EeyPass:

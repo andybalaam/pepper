@@ -1,0 +1,6 @@
+$ eeyore ./helloname.eeyore
+Hmm.  Who are you?
+
+$ eeyore ./helloname.eeyore Boyd
+Hello, Boyd!
+
