@@ -7,6 +7,7 @@ SAMPLE2ASCIIDOC = sample2asciidoc/sample2asciidoc
 SAMPLES = \
 	samples/poohsticks/poohsticks.asciidoc \
 	samples/classes/classes.asciidoc \
+	samples/if_expression/if_expression.asciidoc \
 	samples/closure/closure.asciidoc \
 	samples/compile_time_fibonacci/compile_time_fibonacci.asciidoc \
 	samples/compile_time_for/compile_time_for.asciidoc \

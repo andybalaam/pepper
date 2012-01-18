@@ -1,0 +1,10 @@
+$ eeyore ./if_expression.eeyore Andy
+My name!
+My name!
+My name!
+
+$ eeyore ./if_expression.eeyore Percival
+Not my name!
+Not my name!
+Not my name!
+

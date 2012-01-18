@@ -22,6 +22,10 @@ include::../samples/fn_as_value/fn_as_value.asciidoc[]
 
 include::../samples/pure_fn/pure_fn.asciidoc[]
 
+== If expressions ==
+
+include::../samples/if_expression/if_expression.asciidoc[]
+
 == Classes ==
 
 include::../samples/classes/classes.asciidoc[]

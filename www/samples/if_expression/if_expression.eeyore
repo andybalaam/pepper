@@ -1,0 +1,30 @@
+
+import sys
+
+def string respond_to_name_1( string name ):
+    return if name == "Andy":
+        "My name!"
+    else:
+        "Not my name!"
+
+def string respond_to_name_2( string name ):
+    return (
+        if name == "Andy":
+            "My name!"
+        else:
+            "Not my name!"
+        )
+
+def string respond_to_name_3( string name ):
+    # Maybe this way too?
+    return:
+        if name == "Andy":
+            "My name!"
+        else:
+            "Not my name!"
+
+print( respond_to_name_1( sys.argv[1] ) )
+print( respond_to_name_2( sys.argv[1] ) )
+print( respond_to_name_3( sys.argv[1] ) )
+
+
