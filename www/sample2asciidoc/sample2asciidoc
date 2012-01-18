@@ -5,6 +5,10 @@ import tempfile
 import subprocess
 import sys
 
+sys.path.append( os.path.abspath( "../src/test" ) )
+
+from eeyoresamplenoseplugin import RunEeyoreTest
+
 output_ext = ".asciidoc"
 
 input_exts = (
@@ -53,9 +57,9 @@ def get_formatter( ext ):
 		return "[source,%s]" % formatters[ext]
 	return ""
 
-def get_title( ext, filename ):
+def get_title( ext, filename, passed ):
 	if ext == ".output":
-		return "(fiction)"
+		return "(fact)" if passed else "(fiction)"
 	else:
 		return filename
 
@@ -113,6 +117,21 @@ $ eeyore -o {this_name} {prev_name}
 				this_name       = this_name,
 			) )
 
+	passed = True
+	if ext == ".output":
+
+		try:
+			RunEeyoreTest( cwd, None, this_name ).runProgram()
+		except AssertionError, e:
+			passed = False
+		except OSError, e:
+			passed = False
+
+		if passed:
+			print "fact " + this_name
+		else:
+			print "fiction " + this_name
+
 	output_file.write( ( """
 {formatter}
 .{title}
@@ -122,7 +141,7 @@ $ eeyore -o {this_name} {prev_name}
 """
 		).format(
 			formatter = get_formatter( ext ),
-			title     = get_title( ext, this_name ),
+			title     = get_title( ext, this_name, passed ),
 			text      = this_cont,
 		) )
 
