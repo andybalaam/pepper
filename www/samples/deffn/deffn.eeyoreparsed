@@ -1,2 +1,2 @@
-EeyDefine(EeySymbol("plus1"),EeyUserFunction("plus1",EeyType(EeyInt),((EeyType(EeyInt),EeySymbol("i")),),(EeyReturn(EeyPlus(EeyInt("1"),EeySymbol("i"))),)))
-EeyFunctionCall(EeySymbol("print"),(EeyFunctionCall(EeySymbol("plus1"),(EeyInt("1"),)),))
+EeyDef(EeySymbol('int'),EeySymbol('plus1'),((EeySymbol('int'), EeySymbol('i')),),(EeyReturn(EeyPlus(EeySymbol('i'),EeyInt('1'))),))
+EeyFunctionCall(EeySymbol('print'),(EeyFunctionCall(EeySymbol('plus1'),(EeyInt('2'),)),))
