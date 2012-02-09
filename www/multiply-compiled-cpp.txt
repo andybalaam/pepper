@@ -1,0 +1,59 @@
+
+C++:   5 + 5
+Lisp: (+ 5 5)
+new: 5 + 5
+
+output: 10
+
+--------------------
+
+C++:   IntegerClass( 5 ).ToString() + "z"
+Lisp: 
+new:  5.tostring() + "z"
+new1:  IntegerClass(5).ToString() + "z"
+
+
+template< class T1, T2 >
+SOMETHING operator+( T1 lhs, T2 rhs );
+
+template<>
+string operator+<string, int>( string lhs, int rhs )
+{
+    return lhs.append( IntegerClass( rhs ).ToString() );
+}
+
+
+We convert all int n to IntegerClass( n ), but then strip it out again if no methods are called on it?
+
+
+
+
+What do we like?
+
+- Native machine code as output (C++)
+- Can create our own language with no limitations (Lisp)
+
+Define abitrary compile-time rewrite rules based on TYPE and USAGE of objects
+
+One rule might be:
+
+(define 5 IntegerClass( 5 ) )
+
+This would early in the translation layers.
+
+Another might be
+
+(when IntegerClass has no methods called on it, fall back into integer itself.)
+
+This would come later.
+
+Allow only immutable objects?
+
+
+
+
+
+
+
+
+
