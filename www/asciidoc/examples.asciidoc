@@ -59,3 +59,17 @@ include::../samples/token_pasting/token_pasting.asciidoc[]
 
 include::../samples/compile_time_fibonacci/compile_time_fibonacci.asciidoc[]
 
+== Quoting ==
+
+include::../samples/quoting/quoting.asciidoc[]
+
+== Inline C++ ==
+
+include::../samples/inline_cpp/inline_cpp.asciidoc[]
+
+== Inline Python ==
+
+include::../samples/inline_python/inline_python.asciidoc[]
+
+
+
