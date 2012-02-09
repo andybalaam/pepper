@@ -1,0 +1,14 @@
+
+def int my_fn():
+
+    x = 1
+
+    lang( "c++" ) {{{
+        ++x;
+    }}}.execute( x=x )
+
+    return x
+
+print( my_fn() )
+
+

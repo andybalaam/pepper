@@ -1,0 +1,8 @@
+
+
+snippet = {{{
+    x + y
+}}}
+
+print( snippet.execute( x=3, y=4 ) )
+

@@ -1,0 +1,8 @@
+
+pysnippet = lang( "python" ) {{{
+    s.format( foo="bar" )
+}}}
+
+print( pysnippet.execute( s="foo baz" ) )
+
+
