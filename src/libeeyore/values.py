@@ -176,10 +176,10 @@ class EeyString( EeyValue ):
     def as_py_str( self ):
         return self.value
 
-class EeyPlus( EeyValue ):
+class EeyBinaryOp( EeyValue ):
     def __init__( self, left_value, right_value ):
         EeyValue.__init__( self )
-        # TODO: assert( all( is_plusable, ( left_value, right_value ) )
+        # TODO: assert( all( self.is_applicable, ( left_value, right_value ) )
         self.left_value  = left_value
         self.right_value = right_value
 
@@ -188,8 +188,9 @@ class EeyPlus( EeyValue ):
 
     def do_evaluate( self, env ):
         if self.is_known( env ):
-            return self.left_value.evaluate( env ).plus(
-                self.right_value.evaluate( env ) )
+            lv = self.left_value.evaluate( env )
+            rv = self.right_value.evaluate( env )
+            return self.operator( lv, rv )
         else:
             return self
 
@@ -200,49 +201,17 @@ class EeyPlus( EeyValue ):
         return all_known( ( self.left_value, self.right_value ), env )
 
 
-class EeyTimes( EeyValue ):
-    def __init__( self, left_value, right_value ):
-        EeyValue.__init__( self )
-        # TODO: assert( all( is_timesable, ( left_value, right_value ) )
-        self.left_value  = left_value
-        self.right_value = right_value
+class EeyPlus( EeyBinaryOp ):
+    def operator( self, lv, rv ):
+        return lv.plus( rv )
 
-    def construction_args( self ):
-        return ( self.left_value, self.right_value )
+class EeyTimes( EeyBinaryOp ):
+    def operator( self, lv, rv ):
+        return lv.times( rv )
 
-    def do_evaluate( self, env ):
-        if self.is_known( env ):
-            return self.left_value.evaluate( env ).times(
-                self.right_value.evaluate( env ) )
-        else:
-            return self
-
-    def evaluated_type( self, env ):
-        return self.left_value.evaluated_type( env )
-
-    def is_known( self, env ):
-        return all_known( ( self.left_value, self.right_value ), env )
-
-
-class EeyGreaterThan( EeyValue ):
-    def __init__( self, left_value, right_value ):
-        EeyValue.__init__( self )
-        # TODO: assert( all( is_gtable, ( left_value, right_value ) )
-        self.left_value  = left_value
-        self.right_value = right_value
-
-    def construction_args( self ):
-        return ( self.left_value, self.right_value )
-
-    def do_evaluate( self, env ):
-        if self.is_known( env ):
-            return self.left_value.evaluate( env ).greater_than(
-                self.right_value.evaluate( env ) )
-        else:
-            return self
-
-    def is_known( self, env ):
-        return all_known( ( self.left_value, self.right_value ), env )
+class EeyGreaterThan( EeyBinaryOp ):
+    def operator( self, lv, rv ):
+        return lv.greater_than( rv )
 
 
 class EeyPass( EeyValue ):
