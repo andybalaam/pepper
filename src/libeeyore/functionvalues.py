@@ -77,8 +77,8 @@ class EeyFunctionOverloadList( EeyValue ):
     def construction_args( self ):
         return ()
 
-#    def append( self, fn ):
-#        self._list.append( fn )
+    def append( self, fn ):
+        self._list.append( fn )
 
     def call( self, env, args ):
         assert( len( self._list ) > 0 )
@@ -92,8 +92,7 @@ class EeyFunctionOverloadList( EeyValue ):
             # Special error if there was only one overload
             self.args_dont_match_error( self._list[0], env, args )
         else:
-            assert False, "Overloads not implemented yet."
-#            self.no_match_error( env, args )
+            self.no_match_error( env, args )
 
     def args_dont_match_error( self, fn, env, args ):
         if len( args ) != len( fn.arg_types_and_names ):
@@ -127,31 +126,38 @@ class EeyFunctionOverloadList( EeyValue ):
 
         assert False, "args_dont_match_error called when the args do match!"
 
-#    def no_match_error( self, env, args ):
-#        def type_plus_arg( arg ):
-#            return arg.__class__ + " " + arg
-#
-#        supplied_args = "(%s)" % (
-#            ", ".join( type_plus_arg( arg ) for arg in args )
-#            )
-#
-#        overloads = ( "\n".join(
-#                ", ".join(
-#                    tn[0] + " " + tn[1] for tn in fn.arg_types_and_names ) )
-#            for fn in self._list )
-#
-#        msg = (
-#            "No overload of function {function_name} matches " +
-#            "the supplied arguments.  Arguments supplied " +
-#            "were: \n{supplied_args}\nbut the only overloads are:\n" +
-#            "{overloads}\n".format(
-#                function_name = self._list[0].name, # Names will all be same
-#                supplied_args = supplied_args,
-#                overloads = overloads,
-#                )
-#            )
-#
-#        raise EeyUserErrorException( msg )
+    def no_match_error( self, env, args ):
+        def type_plus_arg( arg ):
+            assert "value" in arg.__dict__, (
+                "We don't support rendering unusual values nicely yet" ) #TODO
+
+            return (
+                env.pretty_type_name( EeyType( arg.__class__ ) ) +
+                " " + arg.value ) # TODO: render value nicely e.g. quoted
+
+        supplied_args = "(%s)" % (
+            ", ".join( type_plus_arg( arg ) for arg in args )
+            )
+
+        overloads = ( "\n".join(
+                "(" + ", ".join(
+                    ( env.pretty_type_name( tn[0].evaluate( env ) ) + " " +
+                            tn[1].symbol_name )
+                        for tn in fn.arg_types_and_names ) + ")"
+            for fn in self._list ) )
+
+        msg = (
+            ( "No overload of function {function_name} matches " +
+            "the supplied arguments.  You supplied:" +
+            "\n{supplied_args}\nbut the only allowed argument " +
+            "lists are:\n{overloads}\n" ).format(
+                function_name = self._list[0].name, # Names will all be same
+                supplied_args = supplied_args,
+                overloads = overloads,
+                )
+            )
+
+        raise EeyUserErrorException( msg )
 
 
 
@@ -233,17 +239,29 @@ class EeyDef( EeyValue ):
             self.body_stmts )
 
     def do_evaluate( self, env ):
-        nm = self.name.name()
+        # TODO: should overloads only be allowed if we explicitly say
+        #       def(overload)?
+        # TODO: is it an error to overload with exactly the same type?
+        # TODO: is it an error to overload with a different number of args?
 
-        if nm in env.namespace:
-            raise EeyUserErrorException( "The symbol '%s' is already defined." %
-                nm )
-            # TODO: line, column, filename
+        nm = self.name.name()
 
         fn = EeyUserFunction(
             nm, self.ret_type, self.arg_types_and_names, self.body_stmts )
 
-        env.namespace[nm] = EeyFunctionOverloadList( fn )
+        if nm in env.namespace:
+            val = env.namespace[nm]
+
+            if val.__class__ is not EeyFunctionOverloadList:
+                raise EeyUserErrorException(
+                    "The symbol '%s' is already defined." % nm
+                )
+                # TODO: line, column, filename
+
+            val.append( fn )
+
+        else:
+            env.namespace[nm] = EeyFunctionOverloadList( fn )
 
         return self
 

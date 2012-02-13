@@ -8,7 +8,7 @@ from libeeyore.cpp.cpprenderer import EeyCppRenderer
 
 
 
-@raises( EeyUserErrorException )
+@raises( EeyUserErrorException ) # TODO: specific exception?
 def test_Call_fn_with_wrong_num_args():
     env = EeyEnvironment( EeyCppRenderer() )
 
@@ -30,7 +30,7 @@ def test_Call_fn_with_wrong_num_args():
     value.render( env ) # should throw
 
 
-@raises( EeyUserErrorException )
+@raises( EeyUserErrorException ) # TODO: specific exception?
 def test_Call_fn_with_wrong_arg_type():
     env = EeyEnvironment( EeyCppRenderer() )
 
@@ -220,5 +220,174 @@ def test_Define_and_call_multiline_unknown_fn():
     return (a + y);
 }
 """ )
+
+
+
+def test_Can_define_2_fns_with_same_name():
+    env = EeyEnvironment( EeyCppRenderer() )
+
+    fndecl1 = EeyDef(
+        EeyType( EeyVoid ),
+        EeySymbol( "myfunc" ),
+            (
+                ( EeyType( EeyInt ), EeySymbol( "x" ) ),
+            ),
+            (
+                EeyPass(),
+            )
+        )
+
+    fndecl2 = EeyDef(
+        EeyType( EeyVoid ),
+        EeySymbol( "myfunc" ),
+            (
+                ( EeyType( EeyFloat ), EeySymbol( "x" ) ),
+            ),
+            (
+                EeyPass(),
+            )
+        )
+
+    fndecl1.render( env )
+
+     # This should not throw - we are allowed to declare a second function
+     # with the same name.
+    fndecl2.render( env )
+
+
+@raises( EeyUserErrorException ) # TODO: specific exception?
+def test_Call_overloaded_fn_with_wrong_arg_type():
+    env = EeyEnvironment( EeyCppRenderer() )
+
+    fndecl1 = EeyDef( EeyType( EeyVoid ), EeySymbol( "myfunc" ),
+            (
+                ( EeyType( EeyInt ), EeySymbol( "x" ) ),
+            ),
+            (
+                EeyPass(),
+            )
+        )
+
+    fndecl2 = EeyDef( EeyType( EeyVoid ), EeySymbol( "myfunc" ),
+            (
+                ( EeyType( EeyFloat ), EeySymbol( "x" ) ),
+            ),
+            (
+                EeyPass(),
+            )
+        )
+
+    fndecl1.render( env )
+    fndecl2.render( env )
+
+    value = EeyFunctionCall( EeySymbol( "myfunc" ), ( EeyString( "foo" ), ) )
+
+    value.render( env ) # Should throw as String is not allowed
+
+
+
+@raises( EeyUserErrorException ) # TODO: specific exception?
+def test_Call_overloaded_fn_with_wrong_num_args():
+    env = EeyEnvironment( EeyCppRenderer() )
+
+    fndecl1 = EeyDef( EeyType( EeyVoid ), EeySymbol( "myfunc" ),
+            (
+                ( EeyType( EeyInt ), EeySymbol( "x" ) ),
+            ),
+            (
+                EeyPass(),
+            )
+        )
+
+    fndecl2 = EeyDef( EeyType( EeyVoid ), EeySymbol( "myfunc" ),
+            (
+                ( EeyType( EeyFloat ), EeySymbol( "x" ) ),
+                ( EeyType( EeyFloat ), EeySymbol( "y" ) ),
+            ),
+            (
+                EeyPass(),
+            )
+        )
+
+    fndecl1.render( env )
+    fndecl2.render( env )
+
+    value = EeyFunctionCall( EeySymbol( "myfunc" ), () )
+
+    value.render( env ) # Should throw as no args supplied
+
+
+
+def test_Choose_overload_by_arg_type():
+    env = EeyEnvironment( EeyCppRenderer() )
+
+    fndecl1 = EeyDef( EeyType( EeyString ), EeySymbol( "myfunc" ),
+            (
+                ( EeyType( EeyString ), EeySymbol( "z" ) ),
+                ( EeyType( EeyInt ), EeySymbol( "x" ) ),
+            ),
+            (
+                EeyReturn( EeyString( "String,Int" ) ),
+            )
+        )
+
+    fndecl2 = EeyDef( EeyType( EeyString ), EeySymbol( "myfunc" ),
+            (
+                ( EeyType( EeyString ), EeySymbol( "z" ) ),
+                ( EeyType( EeyFloat ), EeySymbol( "x" ) ),
+            ),
+            (
+                EeyReturn( EeyString( "String,Float" ) ),
+            )
+        )
+
+    fndecl1.render( env )
+    fndecl2.render( env )
+
+    intvalue = EeyFunctionCall( EeySymbol( "myfunc" ),
+        ( EeyString( "foo" ), EeyInt( "3" ) ) )
+
+    floatvalue = EeyFunctionCall( EeySymbol( "myfunc" ),
+        ( EeyString( "foo" ), EeyFloat( "3.2" ) ) )
+
+    assert_equal( intvalue.render( env ), '"String,Int"' )
+    assert_equal( floatvalue.render( env ), '"String,Float"' )
+
+
+
+
+def test_Choose_overload_by_num_args():
+    env = EeyEnvironment( EeyCppRenderer() )
+
+    fndecl1 = EeyDef( EeyType( EeyString ), EeySymbol( "myfunc" ),
+            (
+                ( EeyType( EeyString ), EeySymbol( "z" ) ),
+                ( EeyType( EeyInt ), EeySymbol( "x" ) ),
+            ),
+            (
+                EeyReturn( EeyString( "String,Int" ) ),
+            )
+        )
+
+    fndecl2 = EeyDef( EeyType( EeyFloat ), EeySymbol( "myfunc" ),
+            (
+                ( EeyType( EeyString ), EeySymbol( "z" ) ),
+            ),
+            (
+                EeyReturn( EeyString( "String" ) ),
+            )
+        )
+
+    fndecl1.render( env )
+    fndecl2.render( env )
+
+    value1 = EeyFunctionCall( EeySymbol( "myfunc" ),
+        ( EeyString( "foo" ), EeyInt( "3" ) ) )
+
+    value2 = EeyFunctionCall( EeySymbol( "myfunc" ), ( EeyString( "foo" ), ) )
+
+    assert_equal( value1.render( env ), '"String,Int"' )
+    assert_equal( value2.render( env ), '"String"' )
+
 
 
