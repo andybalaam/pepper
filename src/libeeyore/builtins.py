@@ -24,6 +24,10 @@ class EeyPrint( EeyFunction ):
     def return_type( self ):
         return EeyNoneType
 
+    def args_match( self, args ):
+        return True # Print accepts anything
+
+
 class EeyRuntimeLen( EeyValue ):
     def __init__( self, args ):
         EeyValue.__init__( self )
@@ -52,6 +56,10 @@ class EeyLen( EeyFunction ):
 
     def return_type( self ):
         return EeyInt
+
+    def args_match( self, args ):
+        return True # TODO
+
 
 def add_builtins( env ):
     # Statements

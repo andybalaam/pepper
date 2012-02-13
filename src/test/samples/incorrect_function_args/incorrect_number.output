@@ -1,0 +1,3 @@
+$ eeyore incorrect_number.eeyore
+[retval=1]
+[stderr]Error: Wrong number of arguments to function takes_2.  You supplied 1, but there should be 2.

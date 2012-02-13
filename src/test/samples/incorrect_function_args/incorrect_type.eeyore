@@ -1,5 +1,5 @@
 
-def void takes_float( float f ):
+def float takes_float( float f ):
     return 2.0 + f
 
 takes_float( 2 )

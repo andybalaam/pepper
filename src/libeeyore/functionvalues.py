@@ -63,8 +63,96 @@ class EeyFunction( EeyValue ):
     @abstractmethod
     def return_type( self ): pass
 
+    @abstractmethod
+    def args_match( self, args ): pass
+
     def is_known( self, env ):
         return True
+
+class EeyFunctionOverloadList( EeyValue ):
+    def __init__( self, first_fn ):
+        EeyValue.__init__( self )
+        self._list = [first_fn]
+
+    def construction_args( self ):
+        return ()
+
+#    def append( self, fn ):
+#        self._list.append( fn )
+
+    def call( self, env, args ):
+        assert( len( self._list ) > 0 )
+
+        for fn in reversed( self._list ):
+            if fn.args_match( env, args ):
+                return fn.call( env, args )
+
+        # If we got here, no overload matched
+        if len( self._list ) == 1:
+            # Special error if there was only one overload
+            self.args_dont_match_error( self._list[0], env, args )
+        else:
+            assert False, "Overloads not implemented yet."
+#            self.no_match_error( env, args )
+
+    def args_dont_match_error( self, fn, env, args ):
+        if len( args ) != len( fn.arg_types_and_names ):
+            raise EeyUserErrorException(
+                ( "Wrong number of arguments to function {fn_name}.  " +
+                    "You supplied {supplied}, but there should be {required}."
+                ).format(
+                    fn_name = fn.name,
+                    supplied = len( args ),
+                    required = len( fn.arg_types_and_names ),
+                )
+            )
+            # TODO: line, col, file
+
+        for argnum, ( arg, (reqtype, reqname) ) in enumerate( izip( args,
+                fn.arg_types_and_names ) ):
+            reqtype = reqtype.evaluate( env )
+            if arg.__class__ is not reqtype.evaluate( env ).value:
+                raise EeyUserErrorException(
+                    ( "For function '{fn_name}', argument " +
+                        "'{argname}' should be {reqtype}, " +
+                        "not {supplied_type}."
+                    ).format(
+                        fn_name       = fn.name,
+                        reqtype       = env.pretty_type_name( reqtype ),
+                        argname       = reqname.symbol_name,
+                        supplied_type = env.pretty_type_name(
+                            EeyType( arg.__class__ ) ),
+                    )
+                )
+
+        assert False, "args_dont_match_error called when the args do match!"
+
+#    def no_match_error( self, env, args ):
+#        def type_plus_arg( arg ):
+#            return arg.__class__ + " " + arg
+#
+#        supplied_args = "(%s)" % (
+#            ", ".join( type_plus_arg( arg ) for arg in args )
+#            )
+#
+#        overloads = ( "\n".join(
+#                ", ".join(
+#                    tn[0] + " " + tn[1] for tn in fn.arg_types_and_names ) )
+#            for fn in self._list )
+#
+#        msg = (
+#            "No overload of function {function_name} matches " +
+#            "the supplied arguments.  Arguments supplied " +
+#            "were: \n{supplied_args}\nbut the only overloads are:\n" +
+#            "{overloads}\n".format(
+#                function_name = self._list[0].name, # Names will all be same
+#                supplied_args = supplied_args,
+#                overloads = overloads,
+#                )
+#            )
+#
+#        raise EeyUserErrorException( msg )
+
 
 
 class EeyRuntimeUserFunction( EeyValue ):
@@ -94,32 +182,21 @@ class EeyUserFunction( EeyFunction ):
     def return_type( self ):
         return self.ret_type.value
 
-    def call( self, env, args ):
-        if all_known( args, env ):
-            if len( args ) != len( self.arg_types_and_names ):
-                raise EeyUserErrorException(
-                    "Wrong number of arguments to function." )
-                # TODO: function name
-                # TODO: line, col, file
+    def args_match( self, env, args ):
+        if len( args ) != len( self.arg_types_and_names ):
+            return False
+        for arg, (reqtype, reqname) in izip( args, self.arg_types_and_names ):
+            evald_req = reqtype.evaluate( env )
+            if (
+                    arg.is_known( env ) and
+                    arg.__class__ is not evald_req.value ):
+                return False
+        return True
 
-            for argnum, ( arg, (reqtype, reqname) ) in enumerate( izip( args,
-                    self.arg_types_and_names ) ):
-                reqtype = reqtype.evaluate( env )
-                #import sys
-                #sys.exit()
-                if arg.__class__ is not reqtype.evaluate( env ).value:
-                    raise EeyUserErrorException(
-                        ( "For function '{fn_name}', argument " +
-                            "'{argname}' should be {reqtype}, " +
-                            "not {supplied_type}."
-                        ).format(
-                            fn_name       = self.name,
-                            reqtype       = env.pretty_type_name( reqtype ),
-                            argname       = reqname.symbol_name,
-                            supplied_type = env.pretty_type_name(
-                                EeyType( arg.__class__ ) ),
-                        )
-                    )
+    def call( self, env, args ):
+        """You  must call args_match first and only call this if the return
+        value was True"""
+        if all_known( args, env ):
 
             newenv = self.execution_environment( env, args, True )
 
@@ -163,7 +240,10 @@ class EeyDef( EeyValue ):
                 nm )
             # TODO: line, column, filename
 
-        env.namespace[nm] = EeyUserFunction( nm, self.ret_type,
-            self.arg_types_and_names, self.body_stmts )
+        fn = EeyUserFunction(
+            nm, self.ret_type, self.arg_types_and_names, self.body_stmts )
+
+        env.namespace[nm] = EeyFunctionOverloadList( fn )
+
         return self
 
