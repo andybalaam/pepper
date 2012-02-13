@@ -1,0 +1,9 @@
+
+def int double( int x ):
+    return x * 2
+
+def float double( float x ):
+    return x * 2.0
+
+print( double( "6" ) )
+

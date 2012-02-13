@@ -1,0 +1,8 @@
+$ eeyore overload_wrong_args.eeyore
+[retval=1]
+[stderr]Error: No overload of function double matches the supplied arguments.  You supplied:
+[stderr](string 6)
+[stderr]but the only allowed argument lists are:
+[stderr](int x)
+[stderr](float x)
+

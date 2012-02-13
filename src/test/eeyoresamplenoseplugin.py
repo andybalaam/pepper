@@ -104,7 +104,8 @@ class iterate_commands( object ):
 
 class RunEeyoreTest( unittest.TestCase ):
 
-    retval_re = re.compile( r"\s*\[\s*retval\s*=\s*(\d+)\s*\]\s*\n(.*)" )
+    retval_re = re.compile( r"\s*\[\s*retval\s*=\s*(\d+)\s*\]\s*\n(.*)",
+        re.DOTALL )
     stderr_re = re.compile( r"\s*\[\s*stderr\s*\](.*)" )
 
     def __init__( self, path, from_filename, to_filename ):
