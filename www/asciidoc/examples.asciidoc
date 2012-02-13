@@ -14,6 +14,10 @@ include::../real_samples/samples/addatcompiletime/addatcompiletime.asciidoc[]
 
 include::../samples/deffn/deffn.asciidoc[]
 
+== Overloading functions ==
+
+include::../real_samples/samples/overload_function/overload_function.asciidoc[]
+
 == Functions as values ==
 
 include::../samples/fn_as_value/fn_as_value.asciidoc[]
