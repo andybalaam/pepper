@@ -59,3 +59,6 @@ upload: all
 
 report: clean
 	make | egrep "^fact|fiction"
+
+view: html
+	firefox $(PWD)/html/index.html
