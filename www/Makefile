@@ -52,7 +52,7 @@ html/%.html: asciidoc/%.asciidoc layout.conf layout.css $(SAMPLES)
 	$(ASCIIDOC) $(ASCIIDOC_OPTS) --out-file $@ $<
 
 clean:
-	rm -f $(HTMLS) $(SAMPLES)
+	rm -f $(HTMLS) $(SAMPLES) $(REAL_SAMPLES)
 
 upload: all
 	rsync -azii --delete html/ artificialworlds.net:www/eeyore/
