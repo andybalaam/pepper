@@ -19,6 +19,9 @@ SAMPLES = \
 	samples/templates/templates.asciidoc \
 	samples/implicit_templates/implicit_templates.asciidoc \
 	samples/token_pasting/token_pasting.asciidoc \
+	samples/quoting/quoting.asciidoc \
+	samples/inline_cpp/inline_cpp.asciidoc \
+	samples/inline_python/inline_python.asciidoc \
 
 REAL_SAMPLES = \
 	real_samples/samples/hello/hello.asciidoc \
