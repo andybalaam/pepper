@@ -46,6 +46,7 @@ def append_print_arg( fmtstr, fmtargs, env, value ):
     elif cls is EeyFloat:
         fmtstr.append( "%f" )
         fmtargs.append( value.render( env ) )
+        # TODO: format float output better
     elif implements_interface( value, EeyString ):
         fmtstr.append( "%s" )
         fmtargs.append( value.render( env ) )
