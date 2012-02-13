@@ -73,6 +73,7 @@ def add_builtins( env ):
     env.namespace["bool"]  = EeyType( EeyBool )
     env.namespace["float"] = EeyType( EeyFloat )
     env.namespace["int"]   = EeyType( EeyInt )
+    env.namespace["string"]= EeyType( EeyString )
     env.namespace["void"]  = EeyType( EeyVoid )
 
     # Functions

@@ -57,6 +57,17 @@ def test_float():
     assert_equal( ans.value, EeyFloat )
 
 
+def test_string():
+    env = EeyEnvironment( None )
+    add_builtins( env )
+
+    value = EeySymbol( "string" )
+    ans = value.evaluate( env )
+
+    assert_equal( ans.__class__, EeyType )
+    assert_equal( ans.value, EeyString )
+
+
 def test_bool():
     env = EeyEnvironment( None )
     add_builtins( env )
