@@ -212,6 +212,28 @@ def test_operator_plus():
     assert_equal( value.right_value.symbol_name, "b" )
 
 
+def test_operator_times():
+    values = _parse( (
+        make_token( "a", EeyoreLexer.SYMBOL ),
+        make_token( "*", EeyoreLexer.TIMES ),
+        make_token( "b", EeyoreLexer.SYMBOL ),
+        make_token( "\n", EeyoreLexer.NEWLINE ),
+        ) )
+
+    assert_equal( len( values ), 1 )
+    value = values[0]
+
+    assert_equal( value.__class__, EeyTimes )
+
+    assert_equal( value.left_value.__class__, EeySymbol )
+    assert_equal( value.left_value.symbol_name, "a" )
+
+    assert_equal( value.right_value.__class__, EeySymbol )
+    assert_equal( value.right_value.symbol_name, "b" )
+
+
+
+
 operator_gt_tokens = (
     make_token( "a", EeyoreLexer.SYMBOL ),
     make_token( ">", EeyoreLexer.GT ),

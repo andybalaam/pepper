@@ -119,6 +119,7 @@ NEWLINE :
 ;
 
 PLUS : '+' ;
+TIMES : '*' ;
 
 GT : '>' ;
 
@@ -158,7 +159,7 @@ importStatement :
 ;
 
 expression :
-    simpleExpression ( ( PLUS^ | GT^ ) expression )?
+    simpleExpression ( ( PLUS^ | TIMES^ | GT^ ) expression )?
 ;
 
 typedArgumentsList :
@@ -239,6 +240,7 @@ expression returns [r]
     | a=arraylookup { r = a }
     | i=ifExpression { r = i }
     | #(PLUS e1=expression e2=expression) { r = EeyPlus( e1, e2 ) }
+    | #(TIMES e1=expression e2=expression) { r = EeyTimes( e1, e2 ) }
     | #(GT e1=expression e2=expression) { r = EeyGreaterThan( e1, e2 ) }
     | f=functionCall { r = f }
 ;

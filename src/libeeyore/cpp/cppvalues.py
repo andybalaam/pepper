@@ -31,6 +31,10 @@ def render_EeyPlus( env, value ):
     return "(%s + %s)" % (
         value.left_value.render( env ), value.right_value.render( env ) )
 
+def render_EeyTimes( env, value ):
+    # TODO: assert they are timesable and switch on how to multiply them
+    return "(%s * %s)" % (
+        value.left_value.render( env ), value.right_value.render( env ) )
 
 def render_EeyGreaterThan( env, value ):
     # TODO: assert they are comparable

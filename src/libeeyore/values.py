@@ -118,6 +118,11 @@ class EeyInt( EeyValue ):
         # TODO: handle large numbers
         return EeyInt( str( int( self.value ) + int( other.value ) ) )
 
+    def times( self, other ):
+        assert other.__class__ == self.__class__
+        # TODO: handle large numbers
+        return EeyInt( str( int( self.value ) * int( other.value ) ) )
+
     def greater_than( self, other ):
         assert other.__class__ == self.__class__
         # TODO: handle large numbers
@@ -136,6 +141,11 @@ class EeyFloat( EeyValue ):
         assert other.__class__ == self.__class__
         # TODO: handle arbitrary numbers
         return EeyFloat( str( float( self.value ) + float( other.value ) ) )
+
+    def times( self, other ):
+        assert other.__class__ == self.__class__
+        # TODO: handle arbitrary numbers
+        return EeyFloat( str( float( self.value ) * float( other.value ) ) )
 
     def greater_than( self, other ):
         assert other.__class__ == self.__class__
@@ -188,6 +198,31 @@ class EeyPlus( EeyValue ):
 
     def is_known( self, env ):
         return all_known( ( self.left_value, self.right_value ), env )
+
+
+class EeyTimes( EeyValue ):
+    def __init__( self, left_value, right_value ):
+        EeyValue.__init__( self )
+        # TODO: assert( all( is_timesable, ( left_value, right_value ) )
+        self.left_value  = left_value
+        self.right_value = right_value
+
+    def construction_args( self ):
+        return ( self.left_value, self.right_value )
+
+    def do_evaluate( self, env ):
+        if self.is_known( env ):
+            return self.left_value.evaluate( env ).times(
+                self.right_value.evaluate( env ) )
+        else:
+            return self
+
+    def evaluated_type( self, env ):
+        return self.left_value.evaluated_type( env )
+
+    def is_known( self, env ):
+        return all_known( ( self.left_value, self.right_value ), env )
+
 
 class EeyGreaterThan( EeyValue ):
     def __init__( self, left_value, right_value ):

@@ -29,6 +29,13 @@ def test_Plus_evaluated_type():
     assert_equal( plus.evaluated_type( env ), EeyInt )
 
 
+def test_Times_evaluated_type():
+    env = EeyEnvironment( None )
+    times = EeyTimes( EeyInt( "1" ), EeyInt( "2" ) )
+    assert_equal( times.evaluated_type( env ), EeyInt )
+
+
+
 def test_Known_Symbol_evaluated_type():
     env = EeyEnvironment( None )
     init = EeyInit( EeyType( EeyBool ), EeySymbol( "x" ), EeyBool( True ) )
