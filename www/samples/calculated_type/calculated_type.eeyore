@@ -1,0 +1,18 @@
+
+config_setting = "fast"
+
+def get_number_type( cfg ):
+    if cfg == "fast":
+        return native_int
+    elif cfg = "scientific":
+        return big_int
+    else:
+        return int
+
+# The type of the parameter is calculated by calling a function
+def triple( get_number_type(config_setting) x ):
+    return x * 3
+
+
+print( triple( 4 ) )
+

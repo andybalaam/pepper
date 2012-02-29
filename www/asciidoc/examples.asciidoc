@@ -75,5 +75,9 @@ include::../samples/inline_cpp/inline_cpp.asciidoc[]
 
 include::../samples/inline_python/inline_python.asciidoc[]
 
+== Calculated Types ==
+
+include::../samples/calculated_type/calculated_type.asciidoc[]
+
 
 

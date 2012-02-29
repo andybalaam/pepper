@@ -22,6 +22,7 @@ SAMPLES = \
 	samples/quoting/quoting.asciidoc \
 	samples/inline_cpp/inline_cpp.asciidoc \
 	samples/inline_python/inline_python.asciidoc \
+	samples/calculated_type/calculated_type.asciidoc \
 
 REAL_SAMPLES = \
 	real_samples/samples/hello/hello.asciidoc \
