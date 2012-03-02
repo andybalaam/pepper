@@ -115,6 +115,16 @@ def render_type_and_name( env, typename ):
     return "%s %s" % ( render_EeyType( env, typename[0].evaluate( env ) ),
         typename[1].symbol_name )
 
+def _render_bracketed_list( items ):
+    items_list = list( items )
+    ret = "("
+    if len( items_list ) > 0:
+        ret += " "
+        ret += ", ".join( items_list )
+        ret += " "
+    ret += ")"
+    return ret
+
 def render_EeyUserFunction_body( env, func_call ):
     fn = func_call.user_function.evaluate( env )
 
@@ -123,10 +133,9 @@ def render_EeyUserFunction_body( env, func_call ):
     ret = fn.ret_type.render( env )
     ret += " "
     ret += fn.name
-    ret += "( "
-    ret += ", ".join( render_type_and_name( env, typename ) for typename
-        in fn.arg_types_and_names )
-    ret += " )\n{\n"
+    ret += _render_bracketed_list( render_type_and_name( env, typename ) for
+        typename in fn.arg_types_and_names )
+    ret += "\n{\n"
 
     newenv = fn.execution_environment( env, func_call.args, False )
 
@@ -144,9 +153,8 @@ def render_EeyRuntimeUserFunction( env, value ):
     env.renderer.functions.append( render_EeyUserFunction_body(
         env, value ) )
 
-    return ( value.user_function.name + "( " +
-        ", ".join( arg.render( env ) for arg in value.args )
-        + " )" )
+    return ( value.user_function.name +
+        _render_bracketed_list( arg.render( env ) for arg in value.args ) )
 
 def render_EeyFunctionCall( env, value ):
 

@@ -152,3 +152,29 @@ int main( int argc, char* argv[] )
 """ )
 
 
+
+def test_function_with_no_args():
+    env = EeyEnvironment( EeyCppRenderer() )
+
+    fn = EeyUserFunction( "myfn", EeyType( EeyVoid ), (), ( EeyPass(), ) )
+    rtfn = EeyRuntimeUserFunction( fn, () )
+
+    ans = env.renderer.render_exe( [rtfn], env )
+
+    assert_multiline_equal( ans, """
+void myfn()
+{
+}
+
+int main( int argc, char* argv[] )
+{
+    myfn();
+
+    return 0;
+}
+""" )
+
+
+
+
+
