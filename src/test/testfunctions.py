@@ -97,7 +97,7 @@ def test_Define_and_call_fn_to_add_unknown_numbers():
         ( EeyInt( "3" ), EeySymbol( "othernum" ) ) )
 
     assert_equal( value.render( env ), "myfunc( 3, othernum )" )
-    assert_equal( env.renderer.functions[0],
+    assert_equal( env.renderer._functions["myfunc"],
 """int myfunc( int x, int y )
 {
     return (x + y);
@@ -157,7 +157,7 @@ def test_Define_and_call_fn_returning_void_unknown():
         ( EeyInt( "3" ), EeySymbol( "othernum" ) ) )
 
     assert_equal( value.render( env ), "myfunc( 3, othernum )" )
-    assert_equal( env.renderer.functions[0],
+    assert_equal( env.renderer._functions["myfunc"],
 """void myfunc( int x, int y )
 {
 }
@@ -213,7 +213,7 @@ def test_Define_and_call_multiline_unknown_fn():
         ( EeyInt( "2" ), EeySymbol( "othernum" ) ) )
 
     assert_equal( value.render( env ), "myfunc( 2, othernum )" )
-    assert_equal( env.renderer.functions[0],
+    assert_equal( env.renderer._functions["myfunc"],
 """int myfunc( int x, int y )
 {
     int a = x;

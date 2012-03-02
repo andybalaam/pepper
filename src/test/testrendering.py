@@ -114,22 +114,6 @@ int main( int argc, char* argv[] )
 """ )
 
 
-def test_user_defined_function():
-    env = EeyEnvironment( EeyCppRenderer() )
-    env.renderer.functions.append( "void myfn()\n{\n}\n" )
-
-    assert_multiline_equal( env.render_exe( () ), """
-void myfn()
-{
-}
-
-int main( int argc, char* argv[] )
-{
-
-    return 0;
-}
-""" )
-
 
 def test_Two_prints():
     env = EeyEnvironment( EeyCppRenderer() )
@@ -175,6 +159,34 @@ int main( int argc, char* argv[] )
 """ )
 
 
+
+def test_function_called_twice_same_args():
+    env = EeyEnvironment( EeyCppRenderer() )
+
+    fn = EeyUserFunction( "myfn", EeyType( EeyVoid ), (), ( EeyPass(), ) )
+    rtfn1 = EeyRuntimeUserFunction( fn, () )
+    rtfn2 = EeyRuntimeUserFunction( fn, () )
+
+    ans = env.renderer.render_exe( [rtfn1, rtfn2], env )
+
+    assert_multiline_equal( ans, """
+void myfn()
+{
+}
+
+int main( int argc, char* argv[] )
+{
+    myfn();
+    myfn();
+
+    return 0;
+}
+""" )
+
+# TODO: test_function_called_twice_different_args_same_effect
+# TODO: test_function_called_twice_different_args_different_effect i.e. in one
+#       call more args are known so you see different code rendered?  If not,
+#       should fix the environment that gets passed into function body renderer.
 
 
 

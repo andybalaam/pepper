@@ -150,8 +150,7 @@ def render_EeyUserFunction_body( env, func_call ):
     return ret
 
 def render_EeyRuntimeUserFunction( env, value ):
-    env.renderer.functions.append( render_EeyUserFunction_body(
-        env, value ) )
+    env.renderer.add_function( env, value )
 
     return ( value.user_function.name +
         _render_bracketed_list( arg.render( env ) for arg in value.args ) )
