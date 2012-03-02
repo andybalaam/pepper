@@ -1,0 +1,5 @@
+$ eeyore ./overload_runtime.eeyore foo bar
+bool: true
+int: 3
+int: 3
+bool: false
