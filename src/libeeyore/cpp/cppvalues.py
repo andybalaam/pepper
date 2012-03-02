@@ -125,14 +125,14 @@ def _render_bracketed_list( items ):
     ret += ")"
     return ret
 
-def render_EeyUserFunction_body( env, func_call ):
+def render_EeyUserFunction_body( env, name, func_call ):
     fn = func_call.user_function.evaluate( env )
 
     assert( fn.__class__ == EeyUserFunction ) # TODO: handle other types
 
     ret = fn.ret_type.render( env )
     ret += " "
-    ret += fn.name
+    ret += name
     ret += _render_bracketed_list( render_type_and_name( env, typename ) for
         typename in fn.arg_types_and_names )
     ret += "\n{\n"
@@ -145,14 +145,14 @@ def render_EeyUserFunction_body( env, func_call ):
             continue
         ret += "    %s;\n" % st.render( newenv )
 
-    ret += "}\n"
+    ret += "}\n\n"
 
     return ret
 
 def render_EeyRuntimeUserFunction( env, value ):
-    env.renderer.add_function( env, value )
+    name = env.renderer.add_function( env, value )
 
-    return ( value.user_function.name +
+    return ( name +
         _render_bracketed_list( arg.render( env ) for arg in value.args ) )
 
 def render_EeyFunctionCall( env, value ):

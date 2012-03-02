@@ -17,18 +17,47 @@ def _render_with_semicolon( value, env ):
         ret += ";"
     return ret
 
+def _function_signature_string( env, user_function ):
+    ret = user_function.name
+    ret += "_eey_s_eey_"
+    ret += "_eey_s_eey_".join(
+        str( tn[0].evaluate( env ).value.__name__ ) for
+            tn in user_function.arg_types_and_names )
+    return ret
+
+def _overload_name( name, num_overloads ):
+    return "%s_eey_%d" % ( name, num_overloads )
+
 class EeyCppRenderer( object ):
     def __init__( self ):
         self._headers = []
-        self._functions = {}
+        self._functions = {} # name -> signature -> rendered body
 
     def add_header( self, header ):
         if header not in self._headers:
             self._headers.append( header )
 
-    def add_function( self, env, function ):
-        rend_body = cppvalues.render_EeyUserFunction_body( env, function )
-        self._functions[ function.user_function.name ] = rend_body
+    def add_function( self, env, runtime_function ):
+        signature = _function_signature_string(
+            env, runtime_function.user_function )
+
+        name = runtime_function.user_function.name
+        if name not in self._functions:
+            self._functions[name] = {}
+
+        overloads = self._functions[name]
+
+        # If we have't rendered this function already, do it now
+        if signature not in overloads:
+
+            num_overloads = len( overloads )
+            if num_overloads > 0:
+                name = _overload_name( name, num_overloads )
+
+            overloads[signature] = cppvalues.render_EeyUserFunction_body(
+                env, name, runtime_function )
+
+        return name
 
     def value_renderer( self, value ):
         return cppvalues.type2renderer( value.__class__ )
@@ -40,10 +69,9 @@ class EeyCppRenderer( object ):
         for h in self._headers:
             ret += "#include <%s>\n" % h
         ret += "\n"
-        if len( self._functions ) > 0:
-            for fn in self._functions.values():
-                ret += fn
-            ret += "\n"
+        for overloads in self._functions.values():
+            for rendered_fn in sorted( overloads.values() ):
+                ret += rendered_fn
         ret += "int main( int argc, char* argv[] )\n{\n"
 
         for ln in filter( lambda x: len( x ) != 0, rendered_lines ):

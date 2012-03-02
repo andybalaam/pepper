@@ -190,3 +190,46 @@ int main( int argc, char* argv[] )
 
 
 
+def test_overloaded_functions():
+    env = EeyEnvironment( EeyCppRenderer() )
+
+    fnint = EeyUserFunction(
+        "myfn",
+        EeyType( EeyVoid ),
+        ( ( EeyType( EeyInt ), EeySymbol( "x" ) ), ),
+        ( EeyPass(), )
+    )
+
+    fnflt = EeyUserFunction(
+        "myfn",
+        EeyType( EeyVoid ),
+        ( ( EeyType( EeyFloat ), EeySymbol( "f" ) ), ),
+        ( EeyPass(), )
+    )
+
+    rtfn1 = EeyRuntimeUserFunction( fnflt, ( EeyFloat( "3.0" ), ) )
+    rtfn2 = EeyRuntimeUserFunction( fnint, ( EeyInt( "3" ), ) )
+
+    ans = env.renderer.render_exe( [rtfn1, rtfn2], env )
+
+    assert_multiline_equal( ans, """
+void myfn( double f )
+{
+}
+
+void myfn_eey_1( int x )
+{
+}
+
+int main( int argc, char* argv[] )
+{
+    myfn( 3.0 );
+    myfn_eey_1( 3 );
+
+    return 0;
+}
+""" )
+
+
+
+
