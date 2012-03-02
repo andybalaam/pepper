@@ -47,6 +47,9 @@ def append_print_arg( fmtstr, fmtargs, env, value ):
         fmtstr.append( "%f" )
         fmtargs.append( value.render( env ) )
         # TODO: format float output better
+    elif cls is EeyBool:
+        fmtstr.append( "%s" )
+        fmtargs.append( '(%s ? "true" : "false")' % value.render( env ) )
     elif implements_interface( value, EeyString ):
         fmtstr.append( "%s" )
         fmtargs.append( value.render( env ) )

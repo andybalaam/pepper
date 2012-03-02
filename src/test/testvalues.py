@@ -123,6 +123,24 @@ def test_Print_unknown_float_renders_as_percent_f():
 
 
 
+def test_Print_unknown_bool_renders_as_percent_s_colon_op():
+    env = EeyEnvironment( EeyCppRenderer() )
+    builtins.add_builtins( env )
+
+    init = EeyInit(
+        EeyType( EeyBool ), EeySymbol( "b" ), EeyVariable( EeyBool ) )
+    init.evaluate( env )
+
+    value = EeyFunctionCall( EeySymbol( "print" ),
+        ( EeySymbol( "b" ), ) )
+
+    assert_equal(
+        value.render( env ),
+        'printf( "%s\\n", (b ? "true" : "false") )' )
+
+
+
+
 def test_known_array_lookup():
     env = EeyEnvironment( EeyCppRenderer() )
 
