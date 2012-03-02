@@ -191,12 +191,17 @@ class EeyUserFunction( EeyFunction ):
     def args_match( self, env, args ):
         if len( args ) != len( self.arg_types_and_names ):
             return False
+
         for arg, (reqtype, reqname) in izip( args, self.arg_types_and_names ):
             evald_req = reqtype.evaluate( env )
-            if (
-                    arg.is_known( env ) and
-                    arg.__class__ is not evald_req.value ):
-                return False
+
+            if arg.is_known( env ):
+                if arg.__class__ != evald_req.value:
+                    return False
+            else:
+                if arg.evaluated_type( env ) != evald_req.value:
+                    return False
+
         return True
 
     def call( self, env, args ):

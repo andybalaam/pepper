@@ -236,4 +236,31 @@ int main( int argc, char* argv[] )
 
 
 
+def test_Choose_runtime_overload_by_evaluated_type():
+
+    env = EeyEnvironment( EeyCppRenderer() )
+
+    fnint = EeyUserFunction(
+        "myfn",
+        EeyType( EeyVoid ),
+        ( ( EeyType( EeyInt ), EeySymbol( "x" ) ), ),
+        ( EeyPass(), )
+    )
+
+    fnbool = EeyUserFunction(
+        "myfn",
+        EeyType( EeyVoid ),
+        ( ( EeyType( EeyBool ), EeySymbol( "b" ) ), ),
+        ( EeyPass(), )
+    )
+
+    rtfn1 = EeyRuntimeUserFunction( fnint, ( EeyInt( "3" ), ) )
+    rtfn2 = EeyRuntimeUserFunction( fnbool, (
+        EeyGreaterThan( EeyVariable( EeyInt ), EeyVariable( EeyInt ) ), ) )
+
+    assert_equal( env.renderer.add_function( env, rtfn1 ), "myfn" )
+    assert_equal( env.renderer.add_function( env, rtfn2 ), "myfn_eey_1" )
+
+
+
 
