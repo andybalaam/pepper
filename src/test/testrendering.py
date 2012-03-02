@@ -209,8 +209,10 @@ def test_overloaded_functions():
 
     rtfn1 = EeyRuntimeUserFunction( fnflt, ( EeyFloat( "3.0" ), ) )
     rtfn2 = EeyRuntimeUserFunction( fnint, ( EeyInt( "3" ), ) )
+    rtfn3 = EeyRuntimeUserFunction( fnint, ( EeyInt( "4" ), ) )
+    rtfn4 = EeyRuntimeUserFunction( fnflt, ( EeyFloat( "5.1" ), ) )
 
-    ans = env.renderer.render_exe( [rtfn1, rtfn2], env )
+    ans = env.renderer.render_exe( [rtfn1, rtfn2, rtfn3, rtfn4], env )
 
     assert_multiline_equal( ans, """
 void myfn( double f )
@@ -225,6 +227,8 @@ int main( int argc, char* argv[] )
 {
     myfn( 3.0 );
     myfn_eey_1( 3 );
+    myfn_eey_1( 4 );
+    myfn( 5.1 );
 
     return 0;
 }

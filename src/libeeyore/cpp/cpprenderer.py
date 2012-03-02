@@ -31,7 +31,7 @@ def _overload_name( name, num_overloads ):
 class EeyCppRenderer( object ):
     def __init__( self ):
         self._headers = []
-        self._functions = {} # name -> signature -> rendered body
+        self._functions = {} # name -> signature -> ( name, rendered body )
 
     def add_header( self, header ):
         if header not in self._headers:
@@ -48,14 +48,18 @@ class EeyCppRenderer( object ):
         overloads = self._functions[name]
 
         # If we have't rendered this function already, do it now
-        if signature not in overloads:
+        if signature in overloads:
+            name = overloads[signature][0]
+        else:
 
             num_overloads = len( overloads )
             if num_overloads > 0:
                 name = _overload_name( name, num_overloads )
 
-            overloads[signature] = cppvalues.render_EeyUserFunction_body(
+            rendered = cppvalues.render_EeyUserFunction_body(
                 env, name, runtime_function )
+
+            overloads[signature] = ( name, rendered )
 
         return name
 
@@ -70,7 +74,7 @@ class EeyCppRenderer( object ):
             ret += "#include <%s>\n" % h
         ret += "\n"
         for overloads in self._functions.values():
-            for rendered_fn in sorted( overloads.values() ):
+            for name, rendered_fn in sorted( overloads.values() ):
                 ret += rendered_fn
         ret += "int main( int argc, char* argv[] )\n{\n"
 
