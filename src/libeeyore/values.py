@@ -213,6 +213,9 @@ class EeyGreaterThan( EeyBinaryOp ):
     def operator( self, lv, rv ):
         return lv.greater_than( rv )
 
+    def evaluated_type( self, env ):
+        return EeyBool
+
 
 class EeyPass( EeyValue ):
     """A statement that does nothing."""

@@ -62,4 +62,12 @@ def test_FunctionCall_evaluated_type():
 
 
 
+def test_GreaterThan_evaluated_type():
+    env = EeyEnvironment( None )
+    value = EeyGreaterThan( EeyInt( "4" ), EeyInt( "5" ) )
+    assert_equal( value.evaluated_type( env ), EeyBool )
+
+
+
+
 
