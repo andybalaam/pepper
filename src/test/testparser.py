@@ -797,7 +797,7 @@ double_dedent_tokens = (
 
 def test_ast_double_dedent():
     assert_multiline_equal(
-        _parse_to_ast_string( define_function_calc_type_tokens ),
+        _parse_to_ast_string( double_dedent_tokens ),
         r"""
 ["def":def]
     [SYMBOL:type]
@@ -819,6 +819,81 @@ def test_ast_double_dedent():
                     [SYMBOL:int]
 """
         )
+
+
+
+
+
+calc_type_tokens = (
+    make_token( "def",    EeyoreLexer.LITERAL_def,     1,  1 ),
+    make_token( "int",    EeyoreLexer.SYMBOL,          2,  2 ),
+    make_token( "myfn",   EeyoreLexer.SYMBOL,          3,  3 ),
+    make_token( "(",      EeyoreLexer.LPAREN,          4,  4 ),
+    make_token( "fn2",    EeyoreLexer.SYMBOL,          5,  5 ),
+    make_token( "(",      EeyoreLexer.LPAREN,          6,  6 ),
+    make_token( "a",      EeyoreLexer.SYMBOL,          7,  7 ),
+    make_token( ",",      EeyoreLexer.COMMA,           8,  8 ),
+    make_token( "b",      EeyoreLexer.SYMBOL,          9,  9 ),
+    make_token( ")",      EeyoreLexer.RPAREN,         10, 10 ),
+    make_token( "cfg",    EeyoreLexer.SYMBOL,         11, 11 ),
+    make_token( ")",      EeyoreLexer.RPAREN,         12, 12 ),
+    make_token( ":",      EeyoreLexer.COLON,          13, 13 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        14, 14 ),
+    make_token( "",       EeyoreLexer.INDENT,         15, 15 ),
+    make_token( "pass",   EeyoreLexer.SYMBOL,         16, 16 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        17, 17 ),
+    make_token( "",       EeyoreLexer.DEDENT,         18, 18 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        19, 19 ),
+    )
+
+
+
+def test_ast_calc_type():
+    assert_multiline_equal(
+        _parse_to_ast_string( calc_type_tokens ),
+        r"""
+["def":def]
+    [SYMBOL:int]
+    [SYMBOL:myfn]
+    [LPAREN:(]
+        [LPAREN:(]
+            [SYMBOL:fn2]
+            [SYMBOL:a]
+            [COMMA:,]
+            [SYMBOL:b]
+        [SYMBOL:cfg]
+    [COLON::]
+        [SYMBOL:pass]
+"""
+        )
+
+
+
+def test_calc_type():
+    assert_multiline_equal( repr( _parse( calc_type_tokens ) ),
+        "[" +
+            "EeyDef(" +
+                "EeySymbol('int')," +
+                "EeySymbol('myfn')," +
+                "("+
+                    "(" +
+                        "EeyFunctionCall(" +
+                            "EeySymbol('fn2')," +
+                            "(" +
+                                "EeySymbol('a'), " +
+                                "EeySymbol('b')" +
+                            ")" +
+                        "), " +
+                        "EeySymbol('cfg')" +
+                    ")," +
+                ")," +
+                "(" +
+                    "EeySymbol('pass')," +
+                ")" +
+            ")" +
+        "]"
+        )
+
 
 
 
