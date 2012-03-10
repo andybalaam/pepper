@@ -9,6 +9,8 @@ from parse.eeyoretokenstreamfromfile import EeyoreTokenStreamFromFile
 from parse.eeyoretokentostring import render_token
 from tokenutils import Iterable2TokenStream, make_token
 
+from eeyasserts import assert_multiline_equal
+
 def _tokens_2_string( tokens ):
     return "\n" + "\n".join( render_token( token ) for token in tokens ) + "\n"
 
@@ -17,7 +19,7 @@ def _indent_dedent_token_string( before ):
         StringIO( before.lstrip() ) ) )
 
 def _assert_indent_dedent_generated( before, after ):
-    assert_equal(
+    assert_multiline_equal(
         _tokens_2_string( _indent_dedent_token_string( before ) ),
         after )
 
@@ -83,6 +85,7 @@ def test_indent_single_line():
 0001:0005     SYMBOL(a)
 0001:0006    NEWLINE
 0001:0006     DEDENT
+0001:0006    NEWLINE
 """
         )
 
@@ -115,6 +118,7 @@ def test_indent_multiline_block():
 0002:0005     SYMBOL(b)
 0002:0006    NEWLINE
 0002:0006     DEDENT
+0002:0006    NEWLINE
 """
         )
 
@@ -137,7 +141,9 @@ def test_multiple_layers_of_indent():
 0002:0009     SYMBOL(b)
 0002:0010    NEWLINE
 0002:0010     DEDENT
+0002:0010    NEWLINE
 0002:0010     DEDENT
+0002:0010    NEWLINE
 """
         )
 
@@ -157,6 +163,7 @@ def test_dedent_at_end_even_when_last_line_has_leading_space():
 0001:0005     SYMBOL(a)
 0001:0006    NEWLINE
 0001:0006     DEDENT
+0001:0006    NEWLINE
 """
         )
 
@@ -173,6 +180,7 @@ def test_dedent_at_end_even_when_last_line_has_no_newline():
 0001:0001     INDENT
 0001:0005     SYMBOL(a)
 0000:0000     DEDENT
+0000:0000    NEWLINE
 """
         )
     # Line and column are messed up because there is no newline at end.
@@ -201,9 +209,11 @@ def test_indent_and_dedent_before_end():
 0002:0009     SYMBOL(b)
 0002:0010    NEWLINE
 0002:0010     DEDENT
+0002:0010    NEWLINE
 0003:0005     SYMBOL(c)
 0003:0006    NEWLINE
 0003:0006     DEDENT
+0003:0006    NEWLINE
 0004:0001     SYMBOL(d)
 0004:0002    NEWLINE
 """

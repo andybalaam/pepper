@@ -45,16 +45,29 @@ def _parse_to_ast_string( tokens ):
     return "\n" + _ast_to_string( parser.getAST() )
 
 
+hello_world_tokens = (
+    make_token( "\n",            EeyoreLexer.NEWLINE ),
+    make_token( "print",         EeyoreLexer.SYMBOL ),
+    make_token( "(",             EeyoreLexer.LPAREN ),
+    make_token( "Hello, world!", EeyoreLexer.STRING ),
+    make_token( ")",             EeyoreLexer.RPAREN ),
+    make_token( "\n",            EeyoreLexer.NEWLINE ),
+    make_token( "\n",            EeyoreLexer.NEWLINE ),
+    )
 
+def test_ast_hello_world():
+
+    assert_multiline_equal(
+        _parse_to_ast_string( hello_world_tokens ),
+        r"""
+[LPAREN:(]
+    [SYMBOL:print]
+    [STRING:Hello, world!]
+"""
+        )
 
 def test_hello_world():
-    values = _parse( (
-        make_token( "print",         EeyoreLexer.SYMBOL ),
-        make_token( "(",             EeyoreLexer.LPAREN ),
-        make_token( "Hello, world!", EeyoreLexer.STRING ),
-        make_token( ")",             EeyoreLexer.RPAREN ),
-        make_token( "\n",            EeyoreLexer.NEWLINE ),
-        ) )
+    values = _parse( hello_world_tokens )
 
     assert_equal( len( values ), 1 )
     value = values[0]
@@ -73,12 +86,26 @@ def test_hello_world():
     assert_equal( args[0].__class__, EeyString )
     assert_equal( args[0].value, "Hello, world!" )
 
+
+
+import_tokens = (
+    make_token( "import", EeyoreLexer.LITERAL_import ),
+    make_token( "sys",    EeyoreLexer.SYMBOL ),
+    make_token( "\n",     EeyoreLexer.NEWLINE ),
+    )
+
+def test_ast_import():
+
+    assert_multiline_equal(
+        _parse_to_ast_string( import_tokens ),
+        r"""
+["import":import]
+    [SYMBOL:sys]
+"""
+    )
+
 def test_import():
-    values = _parse( (
-        make_token( "import", EeyoreLexer.LITERAL_import ),
-        make_token( "sys",    EeyoreLexer.SYMBOL ),
-        make_token( "\n",     EeyoreLexer.NEWLINE ),
-        ) )
+    values = _parse( import_tokens )
 
     assert_equal( len( values ), 1 )
     value = values[0]
@@ -304,6 +331,7 @@ single_statement_if_tokens = (
     make_token( ")",     EeyoreLexer.RPAREN,     2, 15 ),
     make_token( "\n",    EeyoreLexer.NEWLINE,    2, 16 ),
     make_token( "",      EeyoreLexer.DEDENT,     2, 16 ),
+    make_token( "\n",    EeyoreLexer.NEWLINE,    2, 16 ),
     make_token( "\n",    EeyoreLexer.NEWLINE,    3, 1 ),
     )
 
@@ -314,13 +342,9 @@ def test_ast_single_statement_if():
 ["if":if]
     [SYMBOL:True]
     [COLON::]
-    [INDENT:]
-        [NEWLINE:\n]
         [LPAREN:(]
             [SYMBOL:print]
             [INT:3]
-        [NEWLINE:\n]
-        [DEDENT:]
 """
         )
 
@@ -344,6 +368,7 @@ def test_if_function_call():
         make_token( "3",     EeyoreLexer.INT,        2, 5 ),
         make_token( "\n",    EeyoreLexer.NEWLINE,    2, 6 ),
         make_token( "",      EeyoreLexer.DEDENT,     2, 6 ),
+        make_token( "\n",    EeyoreLexer.NEWLINE,    2, 6 ),
         make_token( "\n",    EeyoreLexer.NEWLINE,    3, 1 ),
         ) ) ),
         """[EeyIf(EeyFunctionCall(EeySymbol('f'),(EeyInt('3'),)),(EeyInt('3'),),None)]"""
@@ -362,6 +387,7 @@ if_operator_tokens = (
     make_token( "3",     EeyoreLexer.INT,        2, 5 ),
     make_token( "\n",    EeyoreLexer.NEWLINE,    2, 6 ),
     make_token( "",      EeyoreLexer.DEDENT,     2, 6 ),
+    make_token( "\n",    EeyoreLexer.NEWLINE,    2, 6 ),
     make_token( "\n",    EeyoreLexer.NEWLINE,    3, 1 ),
     )
 
@@ -375,11 +401,7 @@ def test_ast_if_operator():
         [INT:3]
         [INT:4]
     [COLON::]
-    [INDENT:]
-        [NEWLINE:\n]
         [INT:3]
-        [NEWLINE:\n]
-        [DEDENT:]
 """
         )
 
@@ -404,6 +426,7 @@ if_op_fn_tokens = (
     make_token( "3",     EeyoreLexer.INT,        2, 5 ),
     make_token( "\n",    EeyoreLexer.NEWLINE,    2, 6 ),
     make_token( "",      EeyoreLexer.DEDENT,     2, 6 ),
+    make_token( "\n",    EeyoreLexer.NEWLINE,    2, 6 ),
     make_token( "\n",    EeyoreLexer.NEWLINE,    3, 1 ),
     )
 
@@ -420,11 +443,7 @@ def test_ast_if_op_fn():
             [SYMBOL:a]
         [INT:4]
     [COLON::]
-    [INDENT:]
-        [NEWLINE:\n]
         [INT:3]
-        [NEWLINE:\n]
-        [DEDENT:]
 """
         )
 
@@ -445,6 +464,7 @@ if_else_fn_tokens = (
     make_token( "1",     EeyoreLexer.INT          ),
     make_token( "\n",    EeyoreLexer.NEWLINE      ),
     make_token( "",      EeyoreLexer.DEDENT       ),
+    make_token( "\n",    EeyoreLexer.NEWLINE      ),
     make_token( "else",  EeyoreLexer.LITERAL_else ),
     make_token( ":",     EeyoreLexer.COLON        ),
     make_token( "\n",    EeyoreLexer.NEWLINE      ),
@@ -452,6 +472,7 @@ if_else_fn_tokens = (
     make_token( "0",     EeyoreLexer.INT          ),
     make_token( "\n",    EeyoreLexer.NEWLINE      ),
     make_token( "",      EeyoreLexer.DEDENT       ),
+    make_token( "\n",    EeyoreLexer.NEWLINE      ),
     make_token( "\n",    EeyoreLexer.NEWLINE      ),
     )
 
@@ -464,18 +485,10 @@ def test_ast_if_else_fn():
 ["if":if]
     [SYMBOL:True]
     [COLON::]
-    [INDENT:]
-        [NEWLINE:\n]
         [INT:1]
-        [NEWLINE:\n]
-        [DEDENT:]
     ["else":else]
     [COLON::]
-    [INDENT:]
-        [NEWLINE:\n]
         [INT:0]
-        [NEWLINE:\n]
-        [DEDENT:]
 """
         )
 
@@ -550,7 +563,8 @@ define_function_noargs_tokens = (
     make_token( "return", EeyoreLexer.LITERAL_return, 2, 4 ),
     make_token( "1",      EeyoreLexer.INT,            2, 11 ),
     make_token( "\n",     EeyoreLexer.NEWLINE,        2, 12 ),
-    make_token( "",       EeyoreLexer.DEDENT,         2, 13 ),
+    make_token( "",       EeyoreLexer.DEDENT,         2, 12 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        2, 12 ),
     make_token( "\n",     EeyoreLexer.NEWLINE,        2, 14 ),
     )
 
@@ -564,12 +578,8 @@ def test_ast_define_function_noargs():
     [SYMBOL:myfn]
     [LPAREN:(]
     [COLON::]
-    [INDENT:]
-        [NEWLINE:\n]
         ["return":return]
             [INT:1]
-        [NEWLINE:\n]
-        [DEDENT:]
 """
         )
 
@@ -599,7 +609,8 @@ define_function_threeargs_tokens = (
     make_token( "",       EeyoreLexer.INDENT,         2, 1 ),
     make_token( "pass",   EeyoreLexer.SYMBOL,         2, 4 ),
     make_token( "\n",     EeyoreLexer.NEWLINE,        2, 12 ),
-    make_token( "",       EeyoreLexer.DEDENT,         2, 13 ),
+    make_token( "",       EeyoreLexer.DEDENT,         2, 12 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        2, 12 ),
     make_token( "\n",     EeyoreLexer.NEWLINE,        2, 14 ),
     )
 
@@ -621,11 +632,7 @@ def test_ast_define_function_threeargs():
         [SYMBOL:int]
         [SYMBOL:z]
     [COLON::]
-    [INDENT:]
-        [NEWLINE:\n]
         [SYMBOL:pass]
-        [NEWLINE:\n]
-        [DEDENT:]
 """
         )
 
@@ -709,7 +716,8 @@ define_function_twolines_tokens = (
     make_token( "return", EeyoreLexer.LITERAL_return, 3, 4 ),
     make_token( "a",      EeyoreLexer.SYMBOL,         3, 11 ),
     make_token( "\n",     EeyoreLexer.NEWLINE,        3, 12 ),
-    make_token( "",       EeyoreLexer.DEDENT,         4, 13 ),
+    make_token( "",       EeyoreLexer.DEDENT,         4, 12 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        3, 12 ),
     make_token( "\n",     EeyoreLexer.NEWLINE,        4, 14 ),
     )
 
@@ -723,17 +731,12 @@ def test_ast_define_function_twolines():
     [SYMBOL:myfn]
     [LPAREN:(]
     [COLON::]
-    [INDENT:]
-        [NEWLINE:\n]
         [EQUALS:=]
             [SYMBOL:int]
             [SYMBOL:a]
             [INT:7]
-        [NEWLINE:\n]
         ["return":return]
             [SYMBOL:a]
-        [NEWLINE:\n]
-        [DEDENT:]
 """
         )
 
@@ -749,5 +752,73 @@ def test_define_function_twolines():
                 " EeyReturn(EeySymbol('a'))" +
             "))]"
         )
+
+
+
+double_dedent_tokens = (
+    make_token( "def",    EeyoreLexer.LITERAL_def,     1,  1 ),
+    make_token( "type",   EeyoreLexer.SYMBOL,          2,  2 ),
+    make_token( "myfn",   EeyoreLexer.SYMBOL,          3,  3 ),
+    make_token( "(",      EeyoreLexer.LPAREN,          4,  4 ),
+    make_token( "int",    EeyoreLexer.SYMBOL,          5,  5 ),
+    make_token( "cfg",    EeyoreLexer.SYMBOL,          6,  6 ),
+    make_token( ")",      EeyoreLexer.RPAREN,          7,  7 ),
+    make_token( ":",      EeyoreLexer.COLON,           8,  8 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,         9,  9 ),
+    make_token( "",       EeyoreLexer.INDENT,         10, 10 ),
+    make_token( "if",     EeyoreLexer.LITERAL_if,     11, 11 ),
+    make_token( "cfg",    EeyoreLexer.SYMBOL,         12, 12 ),
+    make_token( ">",      EeyoreLexer.GT,             13, 13 ),
+    make_token( "0",      EeyoreLexer.INT,            14, 14 ),
+    make_token( ":",      EeyoreLexer.COLON,          15, 15 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        16, 16 ),
+    make_token( "",       EeyoreLexer.INDENT,         17, 17 ),
+    make_token( "return", EeyoreLexer.LITERAL_return, 18, 18 ),
+    make_token( "int",    EeyoreLexer.SYMBOL,         19, 19 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        20, 20 ),
+    make_token( "",       EeyoreLexer.DEDENT,         20, 20 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        20, 20 ),
+    make_token( "else",   EeyoreLexer.LITERAL_else,   22, 22 ),
+    make_token( ":",      EeyoreLexer.COLON,          23, 23 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        24, 24 ),
+    make_token( "",       EeyoreLexer.INDENT,         25, 25 ),
+    make_token( "return", EeyoreLexer.LITERAL_return, 26, 26 ),
+    make_token( "int",    EeyoreLexer.SYMBOL,         27, 27 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        28, 28 ),
+    make_token( "",       EeyoreLexer.DEDENT,         28, 28 ),
+        # Note:newlines like this are inserted by the post-lex dedent
+        # calculation
+    make_token( "\n",     EeyoreLexer.NEWLINE,        28, 28 ),
+    make_token( "",       EeyoreLexer.DEDENT,         31, 31 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        31, 31 ),
+    make_token( "\n",     EeyoreLexer.NEWLINE,        32, 32 ),
+    )
+
+
+def test_ast_double_dedent():
+    assert_multiline_equal(
+        _parse_to_ast_string( define_function_calc_type_tokens ),
+        r"""
+["def":def]
+    [SYMBOL:type]
+    [SYMBOL:myfn]
+    [LPAREN:(]
+        [SYMBOL:int]
+        [SYMBOL:cfg]
+    [COLON::]
+        ["if":if]
+            [GT:>]
+                [SYMBOL:cfg]
+                [INT:0]
+            [COLON::]
+                ["return":return]
+                    [SYMBOL:int]
+            ["else":else]
+            [COLON::]
+                ["return":return]
+                    [SYMBOL:int]
+"""
+        )
+
 
 

@@ -24,6 +24,13 @@ def _new_dedent( tok ):
     ret.setColumn( tok.getColumn() )
     return ret
 
+def _new_newline( tok ):
+    ret = CommonToken()
+    ret.setType( EeyoreLexer.NEWLINE )
+    ret.setLine( tok.getLine() )
+    ret.setColumn( tok.getColumn() )
+    return ret
+
 
 class IndentDedentTokenStream( TokenStream, IterableFromTokenStream ):
     def __init__( self, base_source ):
@@ -65,6 +72,7 @@ class IndentDedentTokenStream( TokenStream, IterableFromTokenStream ):
         self.waiting_token_stack.append( tok )
         while self.indents_stack[-1] > 0:
             tok = self.last_newline if self.last_newline is not None else tok
+            self.waiting_token_stack.append( _new_newline( tok ) )
             self.waiting_token_stack.append( _new_dedent( tok ) )
             self.indents_stack.pop()
         return self.nextToken()
@@ -101,6 +109,8 @@ class IndentDedentTokenStream( TokenStream, IterableFromTokenStream ):
                 self.indents_stack.pop()
                 #  We can't be dedenting unless we just had a newline
                 assert( self.last_newline is not None )
+                self.waiting_token_stack.append( _new_newline(
+                    self.last_newline ) )
                 self.waiting_token_stack.append( _new_dedent(
                     self.last_newline ) )
 

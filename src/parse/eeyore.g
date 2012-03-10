@@ -136,8 +136,9 @@ options
 }
 
 program :
-    ( NEWLINE )*
-    ( statement ( NEWLINE )+ )* EOF
+    ( NEWLINE! )*
+    ( statement ( NEWLINE! )* )*
+    EOF
 ;
 
 statement :
@@ -147,15 +148,15 @@ statement :
 ;
 
 initialisationOrExpression :
-    expression ( SYMBOL EQUALS^ expression )?
+    expression ( SYMBOL EQUALS^ expression )? NEWLINE!
 ;
 
 functionDefinition :
-    "def"^ expression SYMBOL typedArgumentsList COLON suite
+    "def"^ expression SYMBOL typedArgumentsList suite
 ;
 
 importStatement :
-    "import"^ SYMBOL
+    "import"^ SYMBOL NEWLINE!
 ;
 
 expression :
@@ -191,11 +192,7 @@ arrayLookup :
 ;
 
 ifExpression :
-    "if"^ expression COLON suite elseExpression
-;
-
-elseExpression :
-    ( "else" COLON suite )?
+    "if"^ expression suite ( NEWLINE! "else" suite )?
 ;
 
 argumentsList:
@@ -203,14 +200,15 @@ argumentsList:
 ;
 
 suite :
-    NEWLINE
-    INDENT^
-    ( ( statement | returnStatement ) NEWLINE )+
-    DEDENT
+    COLON^
+    NEWLINE!
+    INDENT!
+    ( statement | returnStatement )+
+    DEDENT!
 ;
 
 returnStatement :
-    "return"^ expression
+    "return"^ expression NEWLINE!
 ;
 
 {
@@ -221,11 +219,6 @@ from libeeyore.functionvalues import *
 class EeyoreTreeWalker extends TreeParser;
 
 statement returns [r]
-    { sc = None }
-    : ( sc=statementContents )? NEWLINE { r = sc }
-;
-
-statementContents returns [r]
     : e=expression { r = e }
     | i=initialisation { r = i }
     | f=functionDefinition { r = f }
@@ -246,11 +239,12 @@ expression returns [r]
 ;
 
 initialisation returns [r]
-    : #(EQUALS t=expression s=symbol v=expression) { r = EeyInit( t, s, v ) }
+    : #(EQUALS t=expression s=symbol v=expression)
+        { r = EeyInit( t, s, v ) }
 ;
 
 functionDefinition returns [r]
-    : #("def" t=expression n=symbol a=typedArgumentsList COLON s=suite)
+    : #("def" t=expression n=symbol a=typedArgumentsList s=suite)
         { r = EeyDef( t, n, a, s ) }
 ;
 
@@ -268,13 +262,13 @@ arraylookup returns [r]
 ;
 
 ifExpression returns [r]
-    : #("if" pred=expression COLON s=suite es=elseExpression )
+    : #("if" pred=expression s=suite es=elseExpression )
         { r = EeyIf( pred, s, es ) }
 ;
 
 elseExpression returns [r]
     { r = None }
-    : ( "else" COLON s=suite { r = s } )?
+    : ( "else" s=suite { r = s } )?
 ;
 
 functionCall returns [r]
@@ -290,7 +284,7 @@ typedArgumentsList returns [r]
 ;
 
 suite returns [r]
-    : #(INDENT NEWLINE s=statementsList DEDENT) { r = s }
+    : #(COLON s=statementsList) { r = s }
 ;
 
 argumentsList returns [r]
@@ -309,6 +303,6 @@ statementsList returns [r]
 
 statementOrReturnStatement returns [r]
     : s=statement { r = s }
-    | #("return" e=expression) NEWLINE { r = EeyReturn( e ) }
+    | #("return" e=expression) { r = EeyReturn( e ) }
 ;
 
