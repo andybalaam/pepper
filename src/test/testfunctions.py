@@ -394,3 +394,63 @@ def test_Choose_overload_by_num_args():
 
 
 
+def test_args_match_for_calculated_type():
+
+    env = EeyEnvironment( EeyCppRenderer() )
+
+    env.namespace["a"] = EeyInt( "3" )
+    env.namespace["b"] = EeyString( "foo" )
+
+    fndecl = EeyUserFunction(
+        "myfunc",
+        EeyType( EeyVoid ),
+        (
+            ( EeyType( EeyInt ), EeySymbol( "x" ) ),
+        ),
+        (
+            EeyPass(),
+        )
+    )
+
+    assert_true( fndecl.args_match( env,
+        (
+            EeySymbol( "a" ),
+        )
+    ) )
+
+    assert_false( fndecl.args_match( env,
+        (
+            EeySymbol( "b" ),
+        )
+    ) )
+
+
+@raises( AssertionError )
+def test_args_dont_match_error_when_they_do():
+    env = EeyEnvironment( EeyCppRenderer() )
+
+    env.namespace["a"] = EeyInt( "3" )
+
+    fndecl = EeyUserFunction(
+        "myfunc",
+        EeyType( EeyVoid ),
+        (
+            ( EeyType( EeyInt ), EeySymbol( "x" ) ),
+        ),
+        (
+            EeyPass(),
+        )
+    )
+
+    overload = EeyFunctionOverloadList( fndecl )
+
+    # Should throw since the args do match!
+    overload.args_dont_match_error(
+        fndecl,
+        env,
+        (
+            EeySymbol( "a" ),
+        )
+    )
+
+

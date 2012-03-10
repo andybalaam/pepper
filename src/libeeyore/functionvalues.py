@@ -110,7 +110,8 @@ class EeyFunctionOverloadList( EeyValue ):
         for argnum, ( arg, (reqtype, reqname) ) in enumerate( izip( args,
                 fn.arg_types_and_names ) ):
             reqtype = reqtype.evaluate( env )
-            if arg.__class__ is not reqtype.evaluate( env ).value:
+            evarg = arg.evaluate( env )
+            if evarg.__class__ is not reqtype.evaluate( env ).value:
                 raise EeyUserErrorException(
                     ( "For function '{fn_name}', argument " +
                         "'{argname}' should be {reqtype}, " +
@@ -120,7 +121,7 @@ class EeyFunctionOverloadList( EeyValue ):
                         reqtype       = env.pretty_type_name( reqtype ),
                         argname       = reqname.symbol_name,
                         supplied_type = env.pretty_type_name(
-                            EeyType( arg.__class__ ) ),
+                            EeyType( evarg.__class__ ) ),
                     )
                 )
 
@@ -194,12 +195,13 @@ class EeyUserFunction( EeyFunction ):
 
         for arg, (reqtype, reqname) in izip( args, self.arg_types_and_names ):
             evald_req = reqtype.evaluate( env )
+            evald_arg = arg.evaluate( env )
 
-            if arg.is_known( env ):
-                if arg.__class__ != evald_req.value:
+            if evald_arg.is_known( env ):
+                if evald_arg.__class__ != evald_req.value:
                     return False
             else:
-                if arg.evaluated_type( env ) != evald_req.value:
+                if evald_arg.evaluated_type( env ) != evald_req.value:
                     return False
 
         return True
