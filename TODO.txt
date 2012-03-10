@@ -8,6 +8,9 @@
     different names
   - More test cases with different and same arg lists
 
+- Find out why if I call gt3 twice in calculated_type.eeyore it returns
+  the same answer each time.
+
 - Enforce not allowed string "_eey_" in any identifier
 
 

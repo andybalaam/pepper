@@ -22,13 +22,13 @@ SAMPLES = \
 	samples/quoting/quoting.asciidoc \
 	samples/inline_cpp/inline_cpp.asciidoc \
 	samples/inline_python/inline_python.asciidoc \
-	samples/calculated_type/calculated_type.asciidoc \
 
 REAL_SAMPLES = \
 	real_samples/samples/hello/hello.asciidoc \
 	real_samples/samples/addatcompiletime/addatcompiletime.asciidoc \
 	real_samples/samples/overload_function/overload_function.asciidoc \
 	real_samples/samples/overload_runtime/overload_runtime.asciidoc \
+	real_samples/samples/calculated_type/calculated_type.asciidoc \
 
 
 HTMLS=html/index.html html/explicitownership.html html/examples.html
