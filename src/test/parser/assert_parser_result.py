@@ -9,8 +9,6 @@ from parse.eeyoretokenstreamfromfile import EeyoreTokenStreamFromFile
 
 from test.eeyasserts import assert_multiline_equal
 
-NEWLINE_SPACE_RE = re.compile( "\n\\s*" )
-
 def _ast_node_children_to_string( ast, indent ):
     ret = ""
     child = ast.getFirstChild()
@@ -30,6 +28,11 @@ def _ast_node_to_string( ast, indent ):
 def _ast_to_string( ast ):
     return '\n' + _ast_node_to_string( ast, 0 )
 
+# Strip out newlines followed by spaces or a closing bracket
+UNPRETTY_RE = re.compile( "\n(\\s+|([)]))" )
+def _unprettify( expr ):
+    return UNPRETTY_RE.sub( lambda m: m.group(2), expr )
+
 def assert_parser_result( lexed_input, expected_ast, expected_parsed ):
 
     tokens = EeyoreTokenStreamFromFile( StringIO( lexed_input.lstrip() ) )
@@ -41,10 +44,11 @@ def assert_parser_result( lexed_input, expected_ast, expected_parsed ):
     assert_multiline_equal( expected_ast, actual_ast )
 
     tokens = EeyoreTokenStreamFromFile( StringIO( lexed_input.lstrip() ) )
-    actual_parsed = repr( list( EeyoreStatements( tokens ) ) )
+    actual_parsed = "\n".join( repr( s ) for s in EeyoreStatements( tokens ) )
+    actual_parsed += "\n"
 
     # TODO: format actual nicely, instead of expected nastily
     assert_multiline_equal(
-        NEWLINE_SPACE_RE.sub( "", expected_parsed ),
-        actual_parsed )
+        _unprettify( expected_parsed ).strip(),
+        actual_parsed.strip() )
 

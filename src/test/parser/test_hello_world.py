@@ -18,13 +18,11 @@ def test_hello_world():
     [STRING:Hello, world!]
 """,
         r"""
-[
-    EeyFunctionCall(
-        EeySymbol('print'),
-        (
-            EeyString('Hello, world!'),
-        )
+EeyFunctionCall(
+    EeySymbol('print'),
+    (
+        EeyString('Hello, world!'),
     )
-]
+)
 """ )
 
