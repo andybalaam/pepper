@@ -14,6 +14,7 @@ options
 {
     charVocabulary = '\0'..'\377';
     k = 2;
+    defaultErrorHandler=false;
 }
 
 tokens
@@ -133,6 +134,7 @@ options
 {
     buildAST = true;
     k = 2;
+    defaultErrorHandler=false;
 }
 
 program :
