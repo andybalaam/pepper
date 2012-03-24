@@ -11,6 +11,7 @@ options
     charVocabulary = '\0'..'\377';
     testLiterals = false;    // don't automatically test for literals
     k = 2;
+    defaultErrorHandler=false;
 }
 
 protected DIGIT : '0'..'9';
@@ -25,14 +26,28 @@ NUMBER : ( DIGIT )+ ;
 
 SYMBOL : ( 'A'..'Z' )+ ;
 
+QUOTED_LITERAL  : '"' ( 'a' .. 'z' | '_' )+ '"' ;
+
 CONTENT : '(' ( ~( ')' ) )* ')';
 
 
 class LexedParser extends Parser;
 
+options
+{
+    defaultErrorHandler=false;
+}
+
+protected tokenName returns [t]:
+    (
+        s:SYMBOL         { t=s }
+      | l:QUOTED_LITERAL { t=l }
+    )
+;
+
 line returns [t]:
     linenum:NUMBER COLON colnum:NUMBER SPACES
-    symbol:SYMBOL ( content:CONTENT )? NEWLINE
+    symbol=tokenName ( content:CONTENT )? NEWLINE
     {
         from antlr import CommonToken
         import EeyoreParser

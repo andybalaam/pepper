@@ -32,4 +32,10 @@ def test_hello_world():
 
     assert_equal( len( tokens ), 13 )
 
+def test_quoted():
+    tokens = _lex( """0001:0008   "import"(import)
+""" )
+
+    _assert_token( tokens[4], ( '"import"', LexedLexer.QUOTED_LITERAL ) )
+
 
