@@ -897,3 +897,46 @@ def test_calc_type():
 
 
 
+class_keyword_tokens = (
+    make_token( "class",   EeyoreLexer.LITERAL_class, 1, 1 ),
+    make_token( "MyClass", EeyoreLexer.SYMBOL,        2, 2 ),
+    make_token( ":",       EeyoreLexer.COLON,         3, 3 ),
+    make_token( "\n",      EeyoreLexer.NEWLINE,       4, 4 ),
+    make_token( "",        EeyoreLexer.INDENT,        5, 5 ),
+    make_token( "pass",    EeyoreLexer.SYMBOL,        6, 6 ),
+    make_token( "\n",      EeyoreLexer.NEWLINE,       7, 7 ),
+    make_token( "",        EeyoreLexer.DEDENT,        8, 8 ),
+    make_token( "\n",      EeyoreLexer.NEWLINE,       9, 9 ),
+    )
+
+
+
+def test_ast_class_keyword():
+    assert_multiline_equal(
+        _parse_to_ast_string( class_keyword_tokens ),
+        r"""
+["class":class]
+    [SYMBOL:MyClass]
+    [COLON::]
+        [SYMBOL:pass]
+"""
+        )
+
+
+
+def test_class_keyword():
+    assert_multiline_equal( repr( _parse( class_keyword_tokens ) ),
+        "[" +
+            "EeyClass(" +
+                "EeySymbol('MyClass')," +
+                "()," +
+                "(" +
+                    "EeySymbol('pass')," +
+                ")" +
+            ")" +
+        "]"
+        )
+
+
+
+

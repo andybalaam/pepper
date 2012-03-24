@@ -144,6 +144,7 @@ program :
 statement :
       initialisationOrExpression
     | functionDefinition
+    | classDefinition
     | importStatement
 ;
 
@@ -153,6 +154,10 @@ initialisationOrExpression :
 
 functionDefinition :
     "def"^ expression SYMBOL typedArgumentsList suite
+;
+
+classDefinition :
+    "class"^ SYMBOL suite
 ;
 
 importStatement :
@@ -213,6 +218,7 @@ returnStatement :
 
 {
 from libeeyore.values import *
+from libeeyore.classvalues import *
 from libeeyore.languagevalues import *
 from libeeyore.functionvalues import *
 }
@@ -222,6 +228,7 @@ statement returns [r]
     : e=expression { r = e }
     | i=initialisation { r = i }
     | f=functionDefinition { r = f }
+    | c=classDefinition { r = c }
     | i=importStatement { r = i }
 ;
 
@@ -246,6 +253,11 @@ initialisation returns [r]
 functionDefinition returns [r]
     : #("def" t=expression n=symbol a=typedArgumentsList s=suite)
         { r = EeyDef( t, n, a, s ) }
+;
+
+classDefinition returns [r]
+    : #("class" n=symbol s=suite)
+        { r = EeyClass( n, (), s ) }
 ;
 
 importStatement returns [r]
