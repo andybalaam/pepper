@@ -45,49 +45,6 @@ def _parse_to_ast_string( tokens ):
     return "\n" + _ast_to_string( parser.getAST() )
 
 
-hello_world_tokens = (
-    make_token( "\n",            EeyoreLexer.NEWLINE ),
-    make_token( "print",         EeyoreLexer.SYMBOL ),
-    make_token( "(",             EeyoreLexer.LPAREN ),
-    make_token( "Hello, world!", EeyoreLexer.STRING ),
-    make_token( ")",             EeyoreLexer.RPAREN ),
-    make_token( "\n",            EeyoreLexer.NEWLINE ),
-    make_token( "\n",            EeyoreLexer.NEWLINE ),
-    )
-
-def test_ast_hello_world():
-
-    assert_multiline_equal(
-        _parse_to_ast_string( hello_world_tokens ),
-        r"""
-[LPAREN:(]
-    [SYMBOL:print]
-    [STRING:Hello, world!]
-"""
-        )
-
-def test_hello_world():
-    values = _parse( hello_world_tokens )
-
-    assert_equal( len( values ), 1 )
-    value = values[0]
-
-    assert_equal( value.__class__, EeyFunctionCall )
-    assert_equal( value.func_name, "print" )
-
-    func = value.func
-
-    assert_equal( func.__class__, EeySymbol )
-    assert_equal( func.symbol_name, "print" )
-
-    args = value.args
-    assert_equal( len( args ), 1 )
-
-    assert_equal( args[0].__class__, EeyString )
-    assert_equal( args[0].value, "Hello, world!" )
-
-
-
 import_tokens = (
     make_token( "import", EeyoreLexer.LITERAL_import ),
     make_token( "sys",    EeyoreLexer.SYMBOL ),
