@@ -1,0 +1,12 @@
+
+class MyClass:
+    def __init__( auto self, int a, float b ):
+        var:
+            int self.a = a
+            float self.b = b
+
+MyClass mc = MyClass.init( 3, 1.5 )
+
+print( mc.a )
+print( mc.b )
+
