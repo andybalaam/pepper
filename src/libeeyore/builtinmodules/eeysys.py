@@ -2,10 +2,6 @@
 from libeeyore.values import EeyString
 from libeeyore.values import EeyValue
 
-_module_prefix = "sys."
-
-_copyright = EeyString(
-    "Copyright (C) 2011 Andy Balaam and the Eeyore developers" )
 
 class EeySysArgv( EeyValue ):
 
@@ -21,12 +17,18 @@ class EeySysArgv( EeyValue ):
     def lookup( self, env ):
         return self
 
-_argv = EeySysArgv()
 
-def _add_name( env, name, value ):
-    env.namespace[_module_prefix + name] = value
+class EeySys( EeyValue ):
+    def __init__( self ):
+        EeyValue.__init__( self )
 
-def add_names( env ):
-    _add_name( env, "argv",      _argv )
-    _add_name( env, "copyright", _copyright )
+        self.namespace = {
+            "argv"     : EeySysArgv(),
+            "copyright": EeyString(
+                "Copyright (C) 2011 Andy Balaam and the Eeyore developers" ),
+        }
+
+    def construction_args( self ):
+        return ()
+
 

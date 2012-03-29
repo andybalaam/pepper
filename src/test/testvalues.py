@@ -3,6 +3,7 @@ from nose.tools import *
 
 from libeeyore import builtins
 from libeeyore.environment import EeyEnvironment
+from libeeyore.namespace import EeyNamespace
 from libeeyore.cpp.cppvalues import *
 from libeeyore.cpp.cpprenderer import EeyCppRenderer
 
@@ -34,6 +35,61 @@ def test_Variable_referring_to_known_int_renders_like_an_int():
     value = EeySymbol( "myvariable" )
 
     assert_equal( value.render( env ), "23" )
+
+
+def test_Variable_in_subnamespace_is_found():
+
+    # Something with a "namespace" member.  In real life, this would
+    # be an EeyUserClass or similar.
+    class NsHolder( EeyValue ):
+        def __init__( self ):
+            EeyValue.__init__( self )
+            self.namespace = EeyNamespace()
+        def construction_args( self ):
+            return ()
+
+    nsholder = NsHolder()
+
+    basens = EeyNamespace()
+    basens["MyHolder"] = nsholder
+
+    env = EeyEnvironment( EeyCppRenderer(), basens )
+
+    nsholder.namespace["myheld"] = EeyInt( "355" )
+
+    value = EeySymbol( "MyHolder.myheld" )
+
+    assert_equal( value.render( env ), "355" )
+
+
+
+def test_Subnamespace_referred_by_symbol_is_found():
+
+    # Something with a "namespace" member.  In real life, this would
+    # be an EeyUserClass or similar.
+    class NsHolder( EeyValue ):
+        def __init__( self ):
+            EeyValue.__init__( self )
+            self.namespace = EeyNamespace()
+
+        def construction_args( self ):
+            return ()
+
+    nsholder = NsHolder()
+
+    basens = EeyNamespace()
+    basens["MyHolder"] = nsholder
+    basens["RefHolder"] = EeySymbol( "MyHolder" )
+
+    env = EeyEnvironment( EeyCppRenderer(), basens )
+
+    nsholder.namespace["myheld"] = EeyInt( "356" )
+
+    value = EeySymbol( "RefHolder.myheld" )
+
+    assert_equal( value.render( env ), "356" )
+
+
 
 def test_Add_two_known_ints_renders_calculated_sum():
     env = EeyEnvironment( EeyCppRenderer() )

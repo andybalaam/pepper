@@ -24,7 +24,7 @@ class EeyImport( EeyValue ):
 
         if self.module_name == "sys":
             import builtinmodules.eeysys
-            builtinmodules.eeysys.add_names( env )
+            env.namespace["sys"] = builtinmodules.eeysys.EeySys()
         else:
             raise EeyUserErrorException( "No module named %s" %
                 self.module_name )

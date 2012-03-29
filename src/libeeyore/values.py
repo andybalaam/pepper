@@ -63,13 +63,35 @@ class EeySymbol( EeyValue ):
     def construction_args( self ):
         return ( self.symbol_name, )
 
-    def _lookup( self, namespace ):
-        if self.symbol_name not in namespace:
+    def _lookup( self, env ):
+        return self._do_lookup( self.symbol_name, env, env.namespace )
+
+    def _do_lookup( self, sym, env, namespace ):
+
+        spl = sym.split( '.', 1 )
+
+        this_ns_sym = spl[0]
+
+        if this_ns_sym not in namespace:
             raise EeyUserErrorException( "The symbol '%s' is not defined." %
-                self.symbol_name )
+                this_ns_sym )
             # TODO: line, column, filename
 
-        return namespace[self.symbol_name]
+        found_value = namespace[this_ns_sym]
+
+        if len( spl ) == 1: # No more dotted elements in the name, return
+            return found_value
+        else:
+            evald_value = found_value.evaluate( env )
+            if "namespace" not in evald_value.__dict__:
+                raise EeyUserErrorException(
+                    (
+                        "The value at '%s' is not a " +
+                        "class or module, so you can't look up values in it " +
+                        "as in the expression '%s'"
+                    ) % ( this_ns_sym, sym )
+                )
+            return self._do_lookup( spl[1], env, evald_value.namespace )
 
     def name( self ):
         # TODO: delete this method, or use it consistently
@@ -77,7 +99,7 @@ class EeySymbol( EeyValue ):
 
     def do_evaluate( self, env ):
         # Look up this symbol in the namespace of our environment
-        value = self._lookup( env.namespace ).evaluate( env )
+        value = self._lookup( env ).evaluate( env )
 
         if value.is_known( env ):
             # Pass back what we looked up
@@ -91,10 +113,10 @@ class EeySymbol( EeyValue ):
             return self
 
     def is_known( self, env ):
-        return self._lookup( env.namespace ).is_known( env )
+        return self._lookup( env ).is_known( env )
 
     def evaluated_type( self, env ):
-        return self._lookup( env.namespace ).evaluated_type( env )
+        return self._lookup( env ).evaluated_type( env )
 
 class EeyBool( EeyValue ):
     def __init__( self, value ):
