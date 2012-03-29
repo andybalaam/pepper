@@ -63,13 +63,13 @@ class EeySymbol( EeyValue ):
     def construction_args( self ):
         return ( self.symbol_name, )
 
-    def _lookup( self, env ):
-        if self.symbol_name not in env.namespace:
+    def _lookup( self, namespace ):
+        if self.symbol_name not in namespace:
             raise EeyUserErrorException( "The symbol '%s' is not defined." %
                 self.symbol_name )
             # TODO: line, column, filename
 
-        return env.namespace[self.symbol_name]
+        return namespace[self.symbol_name]
 
     def name( self ):
         # TODO: delete this method, or use it consistently
@@ -77,7 +77,7 @@ class EeySymbol( EeyValue ):
 
     def do_evaluate( self, env ):
         # Look up this symbol in the namespace of our environment
-        value = self._lookup( env ).evaluate( env )
+        value = self._lookup( env.namespace ).evaluate( env )
 
         if value.is_known( env ):
             # Pass back what we looked up
@@ -91,10 +91,10 @@ class EeySymbol( EeyValue ):
             return self
 
     def is_known( self, env ):
-        return self._lookup( env ).is_known( env )
+        return self._lookup( env.namespace ).is_known( env )
 
     def evaluated_type( self, env ):
-        return self._lookup( env ).evaluated_type( env )
+        return self._lookup( env.namespace ).evaluated_type( env )
 
 class EeyBool( EeyValue ):
     def __init__( self, value ):
