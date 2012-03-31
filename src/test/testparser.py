@@ -46,62 +46,6 @@ def _parse_to_ast_string( tokens ):
 
 
 
-define_function_twolines_tokens = (
-    make_token( "def",    EeyoreLexer.LITERAL_def,    1, 1 ),
-    make_token( "void",   EeyoreLexer.SYMBOL,         1, 5 ),
-    make_token( "myfn",   EeyoreLexer.SYMBOL,         1, 9 ),
-    make_token( "(",      EeyoreLexer.LPAREN,         1, 13 ),
-    make_token( ")",      EeyoreLexer.RPAREN,         1, 36 ),
-    make_token( ":",      EeyoreLexer.COLON,          1, 37 ),
-    make_token( "\n",     EeyoreLexer.NEWLINE,        1, 38 ),
-    make_token( "",       EeyoreLexer.INDENT,         2, 1 ),
-    make_token( "int",    EeyoreLexer.SYMBOL,         2, 4 ),
-    make_token( "a",      EeyoreLexer.SYMBOL,         2, 7 ),
-    make_token( "=",      EeyoreLexer.EQUALS,         2, 9 ),
-    make_token( "7",      EeyoreLexer.INT,            2, 11 ),
-    make_token( "\n",     EeyoreLexer.NEWLINE,        2, 12 ),
-    make_token( "return", EeyoreLexer.LITERAL_return, 3, 4 ),
-    make_token( "a",      EeyoreLexer.SYMBOL,         3, 11 ),
-    make_token( "\n",     EeyoreLexer.NEWLINE,        3, 12 ),
-    make_token( "",       EeyoreLexer.DEDENT,         4, 12 ),
-    make_token( "\n",     EeyoreLexer.NEWLINE,        3, 12 ),
-    make_token( "\n",     EeyoreLexer.NEWLINE,        4, 14 ),
-    )
-
-
-def test_ast_define_function_twolines():
-    assert_multiline_equal(
-        _parse_to_ast_string( define_function_twolines_tokens ),
-        r"""
-["def":def]
-    [SYMBOL:void]
-    [SYMBOL:myfn]
-    [LPAREN:(]
-    [COLON::]
-        [EQUALS:=]
-            [SYMBOL:int]
-            [SYMBOL:a]
-            [INT:7]
-        ["return":return]
-            [SYMBOL:a]
-"""
-        )
-
-
-def test_define_function_twolines():
-    assert_multiline_equal( repr( _parse( define_function_twolines_tokens ) ),
-        "[EeyDef(" +
-            "EeySymbol('void')," +
-            "EeySymbol('myfn')," +
-            "()," +
-            "(" +
-                "EeyInit(EeySymbol('int'),EeySymbol('a'),EeyInt('7'))," +
-                " EeyReturn(EeySymbol('a'))" +
-            "))]"
-        )
-
-
-
 double_dedent_tokens = (
     make_token( "def",    EeyoreLexer.LITERAL_def,     1,  1 ),
     make_token( "type",   EeyoreLexer.SYMBOL,          2,  2 ),

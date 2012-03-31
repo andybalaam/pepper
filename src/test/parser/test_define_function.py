@@ -97,3 +97,61 @@ EeyDef(
 )
 """ )
 
+
+def test_define_function_two_lines():
+    assert_parser_result(
+        r"""
+0001:0001      "def"(def)
+0001:0005     SYMBOL(void)
+0001:0010     SYMBOL(myfn)
+0001:0014     LPAREN
+0001:0015     RPAREN
+0001:0016      COLON(:)
+0001:0017    NEWLINE
+0002:0001     INDENT
+0002:0005     SYMBOL(int)
+0002:0009     SYMBOL(a)
+0002:0011     EQUALS(=)
+0002:0013        INT(7)
+0002:0014    NEWLINE
+0003:0005   "return"(return)
+0003:0012     SYMBOL(a)
+0003:0013    NEWLINE
+0003:0013     DEDENT
+0003:0013    NEWLINE
+0004:0001    NEWLINE
+""",
+        r"""
+["def":def]
+    [SYMBOL:void]
+    [SYMBOL:myfn]
+    [LPAREN:]
+    [COLON::]
+        [EQUALS:=]
+            [SYMBOL:int]
+            [SYMBOL:a]
+            [INT:7]
+        ["return":return]
+            [SYMBOL:a]
+""",
+        """
+EeyDef(
+    EeySymbol('void'),
+    EeySymbol('myfn'),
+    (),
+    (
+        EeyInit(
+            EeySymbol('int'),
+            EeySymbol('a'),
+            EeyInt('7')
+        ), 
+        EeyReturn(
+            EeySymbol('a')
+        )
+    )
+)
+""" )
+
+
+
+
