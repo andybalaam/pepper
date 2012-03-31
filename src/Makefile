@@ -30,3 +30,5 @@ parse/Lexed%.py: $(LGRAMMAR)
 
 clean:
 	rm $(EGENS)
+	find ./ -name "*.pyc" -delete
+
