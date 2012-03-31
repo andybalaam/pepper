@@ -3,11 +3,9 @@ from cStringIO import StringIO
 from nose.tools import *
 
 from libeeyore.usererrorexception import EeyUserErrorException
-from parse import EeyoreLexer
 from parse.indentdedenttokenstream import IndentDedentTokenStream
 from parse.eeyoretokenstreamfromfile import EeyoreTokenStreamFromFile
 from parse.eeyoretokentostring import render_token
-from tokenutils import Iterable2TokenStream, make_token
 
 from eeyasserts import assert_multiline_equal
 
