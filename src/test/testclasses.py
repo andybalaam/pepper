@@ -26,3 +26,50 @@ def test_Static_variable_can_be_read():
 
     assert_equal( value.render( env ), "7" )
 
+
+def test_Member_function_can_be_executed():
+    """
+    Note this test may turn out to be incorrect.  Python would respond with:
+        TypeError: unbound method myfunc() must be called with X instance as
+        first argument (got int instance instead)
+    """
+
+    env = EeyEnvironment( EeyCppRenderer() )
+
+    decl = EeyClass(
+        name=EeySymbol( "MyClass" ),
+        base_classes=(),
+        body_stmts=(
+            EeyDef(
+                EeyType( EeyInt ),
+                EeySymbol( "myfunc" ),
+                (
+                    ( EeyType( EeyInt ), EeySymbol( "x" ) ),
+                ),
+                (
+                    EeyReturn( EeySymbol( "x" ) ),
+                )
+            ),
+        )
+    )
+
+    assert_equal( decl.render( env ), "" )
+
+    value3 = EeyFunctionCall(
+        EeySymbol( "MyClass.myfunc" ),
+        (
+            EeyInt( "3" ),
+        )
+    )
+
+    value5 = EeyFunctionCall(
+        EeySymbol( "MyClass.myfunc" ),
+        (
+            EeyInt( "5" ),
+        )
+    )
+
+    assert_equal( value5.render( env ), "5" )
+
+
+
