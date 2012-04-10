@@ -150,16 +150,28 @@ statement :
     | importStatement
 ;
 
+classStatement :
+      initialisationOrExpression
+    | functionDefinition
+    | initFunctionDefinition
+    | classDefinition
+    | importStatement
+;
+
 initialisationOrExpression :
     expression ( SYMBOL EQUALS^ expression )? NEWLINE!
 ;
 
 functionDefinition :
-    "def"^ expression SYMBOL typedArgumentsList suite
+    "def"^ expression SYMBOL typedArgumentsList suite NEWLINE!
+;
+
+initFunctionDefinition :
+    "def_init"^ typedArgumentsList suite NEWLINE!
 ;
 
 classDefinition :
-    "class"^ SYMBOL suite
+    "class"^ SYMBOL classSuite NEWLINE!
 ;
 
 importStatement :
@@ -214,6 +226,14 @@ suite :
     DEDENT!
 ;
 
+classSuite :
+    COLON^
+    NEWLINE!
+    INDENT!
+    ( classStatement )+
+    DEDENT!
+;
+
 returnStatement :
     "return"^ expression NEWLINE!
 ;
@@ -230,6 +250,15 @@ statement returns [r]
     : e=expression { r = e }
     | i=initialisation { r = i }
     | f=functionDefinition { r = f }
+    | c=classDefinition { r = c }
+    | i=importStatement { r = i }
+;
+
+classStatement returns [r]
+    : e=expression { r = e }
+    | i=initialisation { r = i }
+    | f=functionDefinition { r = f }
+    | f=initFunctionDefinition { r = f }
     | c=classDefinition { r = c }
     | i=importStatement { r = i }
 ;
@@ -257,8 +286,13 @@ functionDefinition returns [r]
         { r = EeyDef( t, n, a, s ) }
 ;
 
+initFunctionDefinition returns [r]
+    : #("def_init" a=typedArgumentsList s=suite)
+        { r = EeyDefInit( a, s ) }
+;
+
 classDefinition returns [r]
-    : #("class" n=symbol s=suite)
+    : #("class" n=symbol s=classSuite)
         { r = EeyClass( n, (), s ) }
 ;
 
@@ -301,6 +335,10 @@ suite returns [r]
     : #(COLON s=statementsList) { r = s }
 ;
 
+classSuite returns [r]
+    : #(COLON s=classStatementsList) { r = s }
+;
+
 argumentsList returns [r]
     { r = () }
     : (
@@ -314,6 +352,13 @@ statementsList returns [r]
     : s=statementOrReturnStatement { r = (s,) }
       ( s=statementOrReturnStatement { r += (s,) } )*
 ;
+
+classStatementsList returns [r]
+    { r = () }
+    : s=classStatement { r = (s,) }
+      ( s=classStatement { r += (s,) } )*
+;
+
 
 statementOrReturnStatement returns [r]
     : s=statement { r = s }

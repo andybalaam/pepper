@@ -272,3 +272,17 @@ class EeyDef( EeyValue ):
 
         return self
 
+class EeyDefInit( EeyDef ):
+    def __init__( self, arg_types_and_names, body_stmts ):
+        EeyDef.__init__(
+            self,
+            None,
+            EeySymbol( "__init__" ),
+            arg_types_and_names,
+            body_stmts
+        )
+
+    def construction_args( self ):
+        return ( self.arg_types_and_names, self.body_stmts )
+
+

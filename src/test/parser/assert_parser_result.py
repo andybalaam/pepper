@@ -33,12 +33,15 @@ UNPRETTY_RE = re.compile( "\n(\\s+|([)]))" )
 def _unprettify( expr ):
     return UNPRETTY_RE.sub( lambda m: m.group(2), expr )
 
-def assert_parser_result( lexed_input, expected_ast, expected_parsed ):
-
+def parse( lexed_input ):
     tokens = EeyoreTokenStreamFromFile( StringIO( lexed_input.lstrip() ) )
-
     parser = EeyoreParser.Parser( tokens )
     parser.program()
+    return parser
+
+def assert_parser_result( lexed_input, expected_ast, expected_parsed ):
+
+    parser = parse( lexed_input )
     actual_ast = _ast_to_string( parser.getAST() )
 
     assert_multiline_equal( expected_ast, actual_ast )
