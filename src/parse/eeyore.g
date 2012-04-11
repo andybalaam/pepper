@@ -167,7 +167,7 @@ functionDefinition :
 ;
 
 initFunctionDefinition :
-    "def_init"^ typedArgumentsList suite NEWLINE!
+    "def_init"^ typedArgumentsList initFunctionSuite NEWLINE!
 ;
 
 classDefinition :
@@ -234,6 +234,33 @@ classSuite :
     DEDENT!
 ;
 
+initFunctionSuite :
+    COLON^
+    NEWLINE!
+    INDENT!
+    (
+          ( varStatement ( statement )* )
+        | ( statement )+
+    )
+    DEDENT!
+;
+
+varSuite :
+    COLON^
+    NEWLINE!
+    INDENT!
+    ( initialisation )+
+    DEDENT!
+;
+
+initialisation :
+    expression SYMBOL EQUALS^ expression NEWLINE!
+;
+
+varStatement :
+    "var"^ varSuite NEWLINE!
+;
+
 returnStatement :
     "return"^ expression NEWLINE!
 ;
@@ -287,7 +314,7 @@ functionDefinition returns [r]
 ;
 
 initFunctionDefinition returns [r]
-    : #("def_init" a=typedArgumentsList s=suite)
+    : #("def_init" a=typedArgumentsList s=initFunctionSuite)
         { r = EeyDefInit( a, s ) }
 ;
 
@@ -339,6 +366,14 @@ classSuite returns [r]
     : #(COLON s=classStatementsList) { r = s }
 ;
 
+initFunctionSuite returns [r]
+    : #(COLON s=initFunctionStatementsList) { r = s }
+;
+
+varSuite returns [r]
+    : #(COLON s=initialisationsList) { r = s }
+;
+
 argumentsList returns [r]
     { r = () }
     : (
@@ -359,6 +394,25 @@ classStatementsList returns [r]
       ( s=classStatement { r += (s,) } )*
 ;
 
+initFunctionStatementsList returns [r]
+    { r = () }
+    : (
+          v=varStatement { r = (v,) }
+        | s=statement { r = (s,) }
+      )
+      ( s=statement { r += (s,) } )*
+;
+
+initialisationsList returns [r]
+    { r = () }
+    : i=initialisation { r = (i,) }
+      ( i=initialisation { r += (i,) } )*
+;
+
+
+varStatement returns [r]
+    : #("var" s=varSuite ) { r = EeyVar( s ) }
+;
 
 statementOrReturnStatement returns [r]
     : s=statement { r = s }

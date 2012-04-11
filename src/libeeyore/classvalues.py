@@ -56,3 +56,9 @@ class EeyClass( EeyValue ):
 
         return self
 
+class EeyVar( EeyValue ):
+    def __init__( self, body_stmts ):
+        self.body_stmts = body_stmts
+
+    def construction_args( self ):
+        return ( self.body_stmts, )
