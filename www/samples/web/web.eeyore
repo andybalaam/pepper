@@ -1,0 +1,12 @@
+
+import web
+
+class HelloHandler:
+    def GET( self ):
+        return "Hello, world!"
+
+# We can build either as a standalone web server (for testing, probably based
+# on http://www.pion.org/projects/pion-network-library) or as a fastcgi exe
+# (and possibly other ways too).
+web.application( ( ".*", "HelloHandler" ) ).run()
+

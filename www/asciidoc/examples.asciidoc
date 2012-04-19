@@ -84,5 +84,7 @@ include::../samples/inline_python/inline_python.asciidoc[]
 
 include::../real_samples/samples/calculated_type/calculated_type.asciidoc[]
 
+== Web ==
 
+include::../samples/web/web.asciidoc[]
 
