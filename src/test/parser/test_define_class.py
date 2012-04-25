@@ -1,7 +1,8 @@
 from nose.tools import *
 
 from assert_parser_result import assert_parser_result
-from assert_parser_result import parse
+from assert_parser_result import assert_parser_result_from_code
+from assert_parser_result import parse_string
 
 import antlr
 
@@ -134,7 +135,7 @@ EeyClass(
 
 @raises( antlr.MismatchedTokenException )
 def test_def_init_outside_class_is_an_error():
-    parse( r"""
+    parse_string( r"""
 0001:0001 "def_init"(def_init)
 0001:0010     LPAREN
 0001:0012     SYMBOL(int)
@@ -206,42 +207,19 @@ EeyClass(
 """ )
 
 def test_var_block_in_def_init():
-    assert_parser_result(
+    assert_parser_result_from_code(
         r"""
-0001:0001    "class"(class)
-0001:0007     SYMBOL(MyClass)
-0001:0014      COLON(:)
-0001:0015    NEWLINE
-0002:0001     INDENT
-0002:0005 "def_init"(def_init)
-0002:0014     LPAREN
-0002:0015     RPAREN
-0002:0016      COLON(:)
-0002:0017    NEWLINE
-0003:0001     INDENT
-0003:0009      "var"(var)
-0003:0012      COLON(:)
-0003:0013    NEWLINE
-0004:0001     INDENT
-0004:0013     SYMBOL(int)
-0004:0017     SYMBOL(self.x)
-0004:0024     EQUALS(=)
-0004:0026        INT(3)
-0004:0027    NEWLINE
-0004:0027     DEDENT
-0004:0027    NEWLINE
-0004:0027     DEDENT
-0004:0027    NEWLINE
-0004:0027     DEDENT
-0004:0027    NEWLINE
-0005:0001    NEWLINE
+class MyClass:
+    def_init():
+        var:
+            int self.x = 3
 """,
         r"""
 ["class":class]
     [SYMBOL:MyClass]
     [COLON::]
         ["def_init":def_init]
-            [LPAREN:]
+            [LPAREN:(]
             [COLON::]
                 ["var":var]
                     [COLON::]
