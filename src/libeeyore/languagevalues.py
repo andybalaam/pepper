@@ -116,35 +116,36 @@ class EeyInit( EeyValue ):
     def _eval_args( self, env ):
         tp = self.var_type.evaluate( env )
 
-        nm = self.var_name # Don't evaluate - will need to semi-evaluate in
-                           # order to support symbol( "x" ) here?
-        assert( nm.__class__ == EeySymbol ) # TODO: not assert
+        # Don't evaluate - will need to semi-evaluate in
+        # order to support symbol( "x" ) here?
+        assert( self.var_name.__class__ == EeySymbol ) # TODO: not assert
+        (namespace, name, base_sym) = self.var_name.find_namespace_and_name(
+            env )
 
         val = self.init_value.evaluate( env )
 
-        return ( tp, nm, val )
+        return ( tp, namespace, name, val )
 
     def do_evaluate( self, env ):
-        ( tp, nm, val ) = self._eval_args( env )
+        ( tp, ns, nm, val ) = self._eval_args( env )
 
-        assert( nm.symbol_name not in env.namespace ) # TODO: not assert
+        assert( nm not in ns ) # TODO: not assert
 
         if self.is_known( env ):
-            if tp.value != val.__class__:
+            if not tp.matches( val ):
                 raise EeyInitialisingWithWrongType(
                     tp, val.__class__ )
-
-            env.namespace[nm.symbol_name] = val
+            ns[nm] = val
         else:
             if tp.value != val.evaluated_type( env ):
                 raise EeyInitialisingWithWrongType(
                     tp, val.evaluated_type( env ) )
-            env.namespace[nm.symbol_name] = EeyVariable( tp.value )
+            ns[nm] = EeyVariable( tp.value )
 
         return self
 
     def is_known( self, env ):
-        ( tp, nm, val ) = self._eval_args( env )
+        ( tp, ns, nm, val ) = self._eval_args( env )
         return all_known( ( tp, val ), env )
 
 

@@ -2,10 +2,10 @@
 class MyClass:
     def_init ( MyClass self, int a, float b ):
         var:
-            int self.a = a
+            int   self.a = a
             float self.b = b
 
-MyClass mc = MyClass.init( 3, 1.5 )
+MyClass mc = MyClass.init( 3, 1.5 ) # TODO: print without trailing zeroes
 
 print( mc.a )
 print( mc.b )

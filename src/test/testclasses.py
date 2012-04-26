@@ -72,4 +72,72 @@ def test_Member_function_can_be_executed():
     assert_equal( value5.render( env ), "5" )
 
 
+def test_Init_returns_a_new_instance():
+
+    env = EeyEnvironment( EeyCppRenderer() )
+
+    decl = EeyClass(
+        name=EeySymbol( "MyClass" ),
+        base_classes=(),
+        body_stmts=(
+            EeyPass(),
+        )
+    )
+
+    assert_equal( decl.render( env ), "" )
+
+    value = EeyFunctionCall( EeySymbol( "MyClass.init" ), () )
+    ev_value = value.evaluate( env )
+
+    assert_equal( ev_value.__class__, EeyInstance )
+    assert_equal( ev_value.get_class_name(), "MyClass" )
+
+
+def test_Init_with_arg_returns_new_instance_constructed_with_arg():
+    env = EeyEnvironment( EeyCppRenderer() )
+    add_builtins( env )
+
+    decl = EeyClass(
+        name=EeySymbol( "MyClass" ),
+        base_classes=(),
+        body_stmts=(
+            EeyDefInit(
+                (
+                    ( EeySymbol( "MyClass" ), EeySymbol( 'self' ) ),
+                    ( EeySymbol( "int" ), EeySymbol( 'a' ) ),
+                ),
+                (
+                    (
+                        EeyVar(
+                            (
+                                EeyInit(
+                                    EeySymbol( "int" ),
+                                    EeySymbol( "self.x" ),
+                                    EeySymbol( "a" )
+                                ),
+                            )
+                        ),
+                    )
+                ),
+            ),
+        )
+    )
+
+    assert_equal( "", decl.render( env ) )
+
+    make_instance = EeyInit(
+        EeySymbol( "MyClass" ),
+        EeySymbol( "my_instance" ),
+        EeyFunctionCall(
+            EeySymbol( "MyClass.init" ), ( EeyInt( "3" ), )
+        )
+    )
+
+    assert_equal( "", make_instance.render( env ) )
+
+    value = EeySymbol( "my_instance.x" )
+
+    assert_equal( "3", value.render( env ) )
+
+
 

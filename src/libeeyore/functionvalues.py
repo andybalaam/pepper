@@ -111,7 +111,7 @@ class EeyFunctionOverloadList( EeyValue ):
                 fn.arg_types_and_names ) ):
             reqtype = reqtype.evaluate( env )
             evarg = arg.evaluate( env )
-            if evarg.__class__ is not reqtype.evaluate( env ).value:
+            if not reqtype.evaluate( env ).matches( evarg ):
                 raise EeyUserErrorException(
                     ( "For function '{fn_name}', argument " +
                         "'{argname}' should be {reqtype}, " +
@@ -122,6 +122,7 @@ class EeyFunctionOverloadList( EeyValue ):
                         argname       = reqname.symbol_name,
                         supplied_type = env.pretty_type_name(
                             EeyType( evarg.__class__ ) ),
+                        # TODO add EeyValue.get_type() to use instead of class
                     )
                 )
 
@@ -198,7 +199,7 @@ class EeyUserFunction( EeyFunction ):
             evald_arg = arg.evaluate( env )
 
             if evald_arg.is_known( env ):
-                if evald_arg.__class__ != evald_req.value:
+                if not evald_req.matches( evald_arg ):
                     return False
             else:
                 if evald_arg.evaluated_type( env ) != evald_req.value:
@@ -271,18 +272,5 @@ class EeyDef( EeyValue ):
             env.namespace[nm] = EeyFunctionOverloadList( fn )
 
         return self
-
-class EeyDefInit( EeyDef ):
-    def __init__( self, arg_types_and_names, body_stmts ):
-        EeyDef.__init__(
-            self,
-            None,
-            EeySymbol( "__init__" ),
-            arg_types_and_names,
-            body_stmts
-        )
-
-    def construction_args( self ):
-        return ( self.arg_types_and_names, self.body_stmts )
 
 

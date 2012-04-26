@@ -1,5 +1,6 @@
 
 from assert_parser_result import assert_parser_result
+from assert_parser_result import assert_parser_result_from_code
 
 def test_simple_initialisation():
     assert_parser_result(
@@ -47,4 +48,25 @@ EeyInit(
     EeyFloat('7.4')
 )
 """ )
+
+
+def test_multipart_name():
+    assert_parser_result_from_code(
+        r"""
+int self.x = 4
+""",
+        r"""
+[EQUALS:=]
+    [SYMBOL:int]
+    [SYMBOL:self.x]
+    [INT:4]
+""",
+        r"""
+EeyInit(
+    EeySymbol('int'),
+    EeySymbol('self.x'),
+    EeyInt('4')
+)
+""" )
+
 

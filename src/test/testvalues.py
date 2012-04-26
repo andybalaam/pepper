@@ -272,4 +272,27 @@ def test_render_simple_types():
     assert_equals( EeyType( EeyVoid  ).render( env ), "void" )
 
 
+def test_symbol_find_namespace_and_name():
+
+    class MyNsHolder( object ):
+        def __init__( self ):
+            self.namespace = EeyNamespace()
+
+        def evaluate( self, env ):
+            return self
+
+    env = EeyEnvironment( EeyCppRenderer() )
+
+    a = MyNsHolder()
+    env.namespace["a"] = a
+    b = MyNsHolder()
+    a.namespace["b"] = b
+
+    (namespace, name, base_sym) = EeySymbol( "a.b.c" ).find_namespace_and_name(
+        env )
+
+    assert_equals( b.namespace, namespace )
+    assert_equals( "c", name )
+    assert_equals( "a.b", base_sym )
+
 

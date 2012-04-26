@@ -63,35 +63,60 @@ class EeySymbol( EeyValue ):
     def construction_args( self ):
         return ( self.symbol_name, )
 
-    def _lookup( self, env ):
-        return self._do_lookup( self.symbol_name, env, env.namespace )
+    def _check_contains( self, namespace, name, base_sym ):
+        if name not in namespace:
+            raise EeyUserErrorException(
+                ( "The symbol '%s' is not defined in '%s'." % (
+                    name, base_sym ) )
+            )
+            # TODO: line, column, filename
+            # TODO: say where we were looking
 
-    def _do_lookup( self, sym, env, namespace ):
+
+    def _do_find_namespace_and_name( self, sym, base_sym, env, namespace ):
+        """
+        @return (namespace, name, base_name) where:
+                    namespace is the namespace in which this symbol is found
+                    name      is the string name of it
+                    base_sym  is the qualified name of the object in which
+                              it is found
+        """
 
         spl = sym.split( '.', 1 )
 
-        this_ns_sym = spl[0]
-
-        if this_ns_sym not in namespace:
-            raise EeyUserErrorException( "The symbol '%s' is not defined." %
-                this_ns_sym )
-            # TODO: line, column, filename
-
-        found_value = namespace[this_ns_sym]
+        this_ns_name = spl[0]
 
         if len( spl ) == 1: # No more dotted elements in the name, return
-            return found_value
+            return ( namespace, this_ns_name, base_sym )
         else:
-            evald_value = found_value.evaluate( env )
-            if "namespace" not in evald_value.__dict__:
+            if base_sym != "":
+                base_sym += "."
+            base_sym += this_ns_name
+            self._check_contains( namespace, this_ns_name, base_sym )
+
+            new_ns_holder = namespace[this_ns_name].evaluate( env )
+
+            if "namespace" not in new_ns_holder.__dict__:
                 raise EeyUserErrorException(
                     (
                         "The value at '%s' is not a " +
-                        "class or module, so you can't look up values in it " +
-                        "as in the expression '%s'"
-                    ) % ( this_ns_sym, sym )
+                        "class, object or module, so you can't look up " +
+                        "values in it as in the expression '%s'"
+                    ) % ( this_ns_name, sym )
                 )
-            return self._do_lookup( spl[1], env, evald_value.namespace )
+            return self._do_find_namespace_and_name(
+                spl[1], base_sym, env, new_ns_holder.namespace )
+
+    def _lookup( self, env ):
+        (namespace, name, base_sym) = self._do_find_namespace_and_name(
+            self.symbol_name, "", env, env.namespace )
+
+        self._check_contains( namespace, name, base_sym )
+        return namespace[name]
+
+    def find_namespace_and_name( self, env ):
+        return self._do_find_namespace_and_name(
+            self.symbol_name, "", env, env.namespace )
 
     def name( self ):
         # TODO: delete this method, or use it consistently
@@ -248,11 +273,31 @@ class EeyPass( EeyValue ):
     def construction_args( self ):
         return ()
 
-class EeyType( EeyValue ):
+class EeyAbstractType( EeyValue ):
+    __metaclass__ = ABCMeta
+
+    def __init__( self ):
+        EeyValue.__init__( self )
+
+    @abstractmethod
+    def matches( self, value ):
+        """
+        @return True if the supplied value is of this type.
+        """
+        pass
+
+class EeyType( EeyAbstractType ):
+    """
+    A type which is directly representable as a Python class e.g. EeyInt
+    """
+
     def __init__( self, value ):
         EeyValue.__init__( self )
         # TODO: check we have been passed a type
         self.value = value
+
+    def matches( self, value ):
+        return self.value == value.__class__
 
     def construction_args( self ):
         return ( self.value, )
