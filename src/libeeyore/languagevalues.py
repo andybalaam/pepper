@@ -131,16 +131,20 @@ class EeyInit( EeyValue ):
 
         assert( nm not in ns ) # TODO: not assert
 
-        if self.is_known( env ):
-            if not tp.matches( val ):
-                raise EeyInitialisingWithWrongType(
-                    tp, val.__class__ )
-            ns[nm] = val
-        else:
-            if tp.value != val.evaluated_type( env ):
-                raise EeyInitialisingWithWrongType(
-                    tp, val.evaluated_type( env ) )
-            ns[nm] = EeyVariable( tp.value )
+        val_type = val.evaluated_type( env )
+        if not tp.matches( val_type ):
+            raise EeyInitialisingWithWrongType( tp, val_type )
+
+        def make_value():
+            if val.is_known( env ):
+                return val
+            else:
+                if isinstance( tp, EeyType ):
+                    return EeyVariable( tp.value )
+                else:
+                    return tp
+
+        ns[nm] = make_value()
 
         return self
 

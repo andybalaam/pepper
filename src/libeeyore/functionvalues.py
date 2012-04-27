@@ -109,20 +109,19 @@ class EeyFunctionOverloadList( EeyValue ):
 
         for argnum, ( arg, (reqtype, reqname) ) in enumerate( izip( args,
                 fn.arg_types_and_names ) ):
-            reqtype = reqtype.evaluate( env )
-            evarg = arg.evaluate( env )
-            if not reqtype.evaluate( env ).matches( evarg ):
+            ev_reqtype = reqtype.evaluate( env )
+            arg_type = arg.evaluated_type( env )
+
+            if not ev_reqtype.matches( arg_type ):
                 raise EeyUserErrorException(
                     ( "For function '{fn_name}', argument " +
                         "'{argname}' should be {reqtype}, " +
                         "not {supplied_type}."
                     ).format(
                         fn_name       = fn.name,
-                        reqtype       = env.pretty_type_name( reqtype ),
+                        reqtype       = env.pretty_name( ev_reqtype ),
                         argname       = reqname.symbol_name,
-                        supplied_type = env.pretty_type_name(
-                            EeyType( evarg.__class__ ) ),
-                        # TODO add EeyValue.get_type() to use instead of class
+                        supplied_type = env.pretty_name( arg_type ),
                     )
                 )
 
@@ -134,19 +133,29 @@ class EeyFunctionOverloadList( EeyValue ):
                 "We don't support rendering unusual values nicely yet" ) #TODO
 
             return (
-                env.pretty_type_name( EeyType( arg.__class__ ) ) +
+                env.pretty_name( arg.evaluated_type( env ) ) +
                 " " + arg.value ) # TODO: render value nicely e.g. quoted
 
         supplied_args = "(%s)" % (
             ", ".join( type_plus_arg( arg ) for arg in args )
             )
 
-        overloads = ( "\n".join(
-                "(" + ", ".join(
-                    ( env.pretty_type_name( tn[0].evaluate( env ) ) + " " +
-                            tn[1].symbol_name )
-                        for tn in fn.arg_types_and_names ) + ")"
-            for fn in self._list ) )
+        def type_and_arg( type_and_name ):
+            return (
+                env.pretty_name( type_and_name[0].evaluate( env ) ) +
+                " " +
+                type_and_name[1].symbol_name
+            )
+
+        def types_and_args( arg_types_and_names ):
+            return ", ".join( type_and_arg( tn ) for tn in arg_types_and_names )
+
+        overloads = (
+            "\n".join(
+                "(" + types_and_args( fn.arg_types_and_names ) + ")"
+                    for fn in self._list
+            )
+        )
 
         msg = (
             ( "No overload of function {function_name} matches " +
@@ -196,14 +205,10 @@ class EeyUserFunction( EeyFunction ):
 
         for arg, (reqtype, reqname) in izip( args, self.arg_types_and_names ):
             evald_req = reqtype.evaluate( env )
-            evald_arg = arg.evaluate( env )
+            arg_type = arg.evaluated_type( env )
 
-            if evald_arg.is_known( env ):
-                if not evald_req.matches( evald_arg ):
-                    return False
-            else:
-                if evald_arg.evaluated_type( env ) != evald_req.value:
-                    return False
+            if not evald_req.matches( arg_type ):
+                return False
 
         return True
 

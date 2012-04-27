@@ -273,20 +273,17 @@ class EeyPass( EeyValue ):
     def construction_args( self ):
         return ()
 
-class EeyAbstractType( EeyValue ):
+class EeyTypeMatcher():
     __metaclass__ = ABCMeta
 
-    def __init__( self ):
-        EeyValue.__init__( self )
-
     @abstractmethod
-    def matches( self, value ):
+    def matches( self, value_type ):
         """
-        @return True if the supplied value is of this type.
+        @return True if the supplied value_type matches this matcher
         """
         pass
 
-class EeyType( EeyAbstractType ):
+class EeyType( EeyValue, EeyTypeMatcher ):
     """
     A type which is directly representable as a Python class e.g. EeyInt
     """
@@ -296,8 +293,8 @@ class EeyType( EeyAbstractType ):
         # TODO: check we have been passed a type
         self.value = value
 
-    def matches( self, value ):
-        return self.value == value.__class__
+    def matches( self, value_type ):
+        return self.value == value_type
 
     def construction_args( self ):
         return ( self.value, )

@@ -8,7 +8,6 @@ from libeeyore.cpp.cpprenderer import EeyCppRenderer
 
 from eeyasserts import assert_multiline_equal
 
-@raises( EeyUserErrorException ) # TODO: specific exception?
 def test_Call_fn_with_wrong_num_args():
     env = EeyEnvironment( EeyCppRenderer() )
 
@@ -27,12 +26,19 @@ def test_Call_fn_with_wrong_num_args():
 
     value = EeyFunctionCall( EeySymbol( "myfunc" ), () )
 
-    value.render( env ) # should throw
+    expected_error = r"""Wrong number of arguments to function myfunc.  You supplied 0, but there should be 1."""
+
+        # This is what we are testing: should throw as no args supplied
+    assert_raises_regexp(
+        EeyUserErrorException,
+        expected_error,
+        lambda: value.render( env )
+    )
 
 
-@raises( EeyUserErrorException ) # TODO: specific exception?
 def test_Call_fn_with_wrong_arg_type():
     env = EeyEnvironment( EeyCppRenderer() )
+    add_builtins( env )
 
     fndecl = EeyDef(
         EeyType( EeyInt ),
@@ -49,7 +55,15 @@ def test_Call_fn_with_wrong_arg_type():
 
     value = EeyFunctionCall( EeySymbol( "myfunc" ), ( EeyString( "zzz" ), ) )
 
-    value.render( env ) # should throw
+    expected_error = (
+        r"""For function 'myfunc', argument 'x' should be int, not string.""" )
+
+        # This is what we are testing: should throw as no args supplied
+    assert_raises_regexp(
+        EeyUserErrorException,
+        expected_error,
+        lambda: value.render( env )
+    )
 
 
 def test_Define_and_call_fn_to_add_known_numbers():
@@ -258,9 +272,9 @@ def test_Can_define_2_fns_with_same_name():
     fndecl2.render( env )
 
 
-@raises( EeyUserErrorException ) # TODO: specific exception?
 def test_Call_overloaded_fn_with_wrong_arg_type():
     env = EeyEnvironment( EeyCppRenderer() )
+    add_builtins( env )
 
     fndecl1 = EeyDef( EeyType( EeyVoid ), EeySymbol( "myfunc" ),
             (
@@ -285,13 +299,25 @@ def test_Call_overloaded_fn_with_wrong_arg_type():
 
     value = EeyFunctionCall( EeySymbol( "myfunc" ), ( EeyString( "foo" ), ) )
 
-    value.render( env ) # Should throw as String is not allowed
+    expected_error = r"""No overload of function myfunc matches the supplied arguments.  You supplied:
+\(string foo\)
+but the only allowed argument lists are:
+\(int x\)
+\(float x\)
+"""
+
+        # This is what we are testing: should throw as String is not allowed
+    assert_raises_regexp(
+        EeyUserErrorException,
+        expected_error,
+        lambda: value.render( env )
+    )
 
 
 
-@raises( EeyUserErrorException ) # TODO: specific exception?
 def test_Call_overloaded_fn_with_wrong_num_args():
     env = EeyEnvironment( EeyCppRenderer() )
+    add_builtins( env )
 
     fndecl1 = EeyDef( EeyType( EeyVoid ), EeySymbol( "myfunc" ),
             (
@@ -317,8 +343,19 @@ def test_Call_overloaded_fn_with_wrong_num_args():
 
     value = EeyFunctionCall( EeySymbol( "myfunc" ), () )
 
-    value.render( env ) # Should throw as no args supplied
+    expected_error = r"""No overload of function myfunc matches the supplied arguments.  You supplied:
+\(\)
+but the only allowed argument lists are:
+\(int x\)
+\(float x, float y\)
+"""
 
+        # This is what we are testing: should throw as no args supplied
+    assert_raises_regexp(
+        EeyUserErrorException,
+        expected_error,
+        lambda: value.render( env )
+    )
 
 
 def test_Choose_overload_by_arg_type():

@@ -2,6 +2,8 @@ from itertools import izip
 
 from namespace import EeyNamespace
 
+from values import EeyType
+
 class EeyEnvironment( object ):
     def __init__( self, renderer, namespace = None ):
         self.renderer = renderer
@@ -21,10 +23,16 @@ class EeyEnvironment( object ):
 
         return EeyEnvironment( self.renderer, EeyNamespace( self.namespace ) )
 
-    def pretty_type_name( self, tp ):
-        ret = self.namespace.key_for_value( tp )
+    def pretty_name( self, value ):
+        ret = self.namespace.key_for_value( value )
         if ret is None:
-            ret = str( tp.value )
+            ret = self.namespace.key_for_value( EeyType( value ) )
+
+        assert ret is not None, (
+            "Could not find " + str( value ) + " in namespace " +
+            str( self.namespace.thedict )
+        )
+
         return ret
 
 

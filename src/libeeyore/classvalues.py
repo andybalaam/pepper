@@ -1,7 +1,7 @@
 
 from libeeyore.environment import EeyEnvironment
 from libeeyore.namespace import EeyNamespace
-from values import EeyAbstractType
+from values import EeyTypeMatcher
 from values import EeySymbol
 from values import EeyValue
 from functionvalues import EeyFunction
@@ -10,14 +10,6 @@ from usererrorexception import EeyUserErrorException
 
 INIT_METHOD_NAME = "init"
 INIT_IMPL_NAME = "__init__"
-
-class EeyAbstractClass( EeyAbstractType ):
-
-    def __init__( self ):
-        EeyValue.__init__( self )
-
-    def is_known( self, env ):
-        return True
 
 
 class EeyDefInit( EeyDef ):
@@ -45,11 +37,12 @@ class EeyInstance( EeyValue ):
     def construction_args( self ):
         return ( self.clazz, )
 
+    def evaluated_type( self, env ):
+        return self.clazz
 
 class FakeInstance( EeyInstance ):
     def __init__( self, clazz ):
         self.clazz = clazz
-
 
 class EeyInitMethod( EeyFunction ):
     def __init__( self, user_class ):
@@ -64,7 +57,7 @@ class EeyInitMethod( EeyFunction ):
         return ret
 
     def return_type( self ):
-        return user_class
+        return self.user_class
 
     def args_match( self, args ):
         if INIT_IMPL_NAME not in self.user_class.namespace:
@@ -83,14 +76,17 @@ class EeyInitMethod( EeyFunction ):
     def construction_args( self ):
         return ( self.user_class, )
 
-class EeyUserClass( EeyAbstractClass ):
+class EeyUserClass( EeyValue, EeyTypeMatcher ):
     def __init__( self, name, base_classes, body_stmts ):
-        EeyAbstractClass.__init__( self )
+        EeyValue.__init__( self )
         self.name = name
         self.base_classes = base_classes
         self.body_stmts = body_stmts
         assert( len( self.body_stmts ) > 0 ) # TODO: not just assert
         self.namespace = None
+
+    def is_known( self, env ):
+        return True # TODO - not always known
 
     def do_evaluate( self, env ):
         self.namespace = EeyNamespace( env.namespace )
@@ -114,15 +110,11 @@ class EeyUserClass( EeyAbstractClass ):
     def create_instance( self ):
         return EeyInstance( self )
 
-    def matches( self, value ):
+    def matches( self, value_type ):
         """
-        @return True if the value supplied is an instance of this class.
+        @return True if the value_type supplied is this class.
         """
-
-        return (
-            isinstance( value, EeyInstance ) and
-            value.clazz == self
-        )
+        return ( value_type == self )
 
 
 class EeyClass( EeyValue ):
