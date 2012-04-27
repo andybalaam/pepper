@@ -1,0 +1,31 @@
+#include <stdio.h>
+
+struct MyClass
+{
+    int a;
+    float b;
+}
+
+void MyClass_eey___init__( MyClass *const self, int a, float b )
+{
+    self.a = a;
+    self.b = b;
+}
+
+MyClass mc = MyClass.init( 3, 1.5 ) # TODO: print without trailing zeroes
+
+print( mc.a )
+print( mc.b )
+
+
+
+int main( int argc, char* argv[] )
+{
+    MyClass mc;
+    MyClass_eey___init__( &mc, argc, 1.5 );
+
+    printf( "%d\n", mc.a );
+    printf( "%f\n", mc.b );
+
+    return 0;
+}
