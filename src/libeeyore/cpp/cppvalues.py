@@ -170,6 +170,12 @@ def render_EeyReturn( env, value ):
 def render_EeyClass( env, value ):
     return ""
 
+def render_EeyUserClass( env, value ):
+    return ""
+
+def render_EeyInstance( env, value ):
+    return ""
+
 def render_EeyArrayLookup( env, value ):
     # TODO: handle large numbers
     return value.array_value.render( env ) + "[%s]" % value.index.value
