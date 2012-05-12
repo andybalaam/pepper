@@ -139,10 +139,7 @@ class EeyInit( EeyValue ):
             if val.is_known( env ):
                 return val
             else:
-                if isinstance( tp, EeyType ):
-                    return EeyVariable( tp.value )
-                else:
-                    return tp
+                return EeyVariable( tp )
 
         ns[nm] = make_value()
 

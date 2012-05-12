@@ -10,7 +10,7 @@ from libeeyore.builtinmodules.eeysys import EeySysArgv
 
 #def test_Known_plus_string():
 #    env = EeyEnvironment( EeyCppRenderer() )
-#    env.namespace["input"] = EeyVariable( EeyString )
+#    env.namespace["input"] = EeyVariable( EeyType( EeyString ) )
 #
 #    value = EeyPlus( EeyString( "known" ), EeySymbol( "input" ) )
 #
@@ -19,7 +19,7 @@ from libeeyore.builtinmodules.eeysys import EeySysArgv
 #
 #def test_Known_plus_string_inside_print():
 #    env = EeyEnvironment( EeyCppRenderer() )
-#    env.namespace["input"] = EeyVariable( EeyString )
+#    env.namespace["input"] = EeyVariable( EeyType( EeyString ) )
 #
 #    value = EeyPrint( EeyPlus( EeyString( "known" ), EeySymbol( "input" ) ) )
 #

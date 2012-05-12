@@ -22,7 +22,7 @@ class EeyPrint( EeyFunction ):
         return EeyRuntimePrint( args )
 
     def return_type( self ):
-        return EeyNoneType
+        return EeyType( EeyNoneType )
 
     def args_match( self, args ):
         return True # Print accepts anything
@@ -55,7 +55,7 @@ class EeyLen( EeyFunction ):
         return EeyRuntimeLen( args )
 
     def return_type( self ):
-        return EeyInt
+        return EeyType( EeyInt )
 
     def args_match( self, args ):
         return True # TODO

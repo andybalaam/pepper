@@ -13,7 +13,7 @@ def test_Add_known():
 
 def test_Add_unknown():
     env = EeyEnvironment( EeyCppRenderer() )
-    env.namespace["x"] = EeyVariable( EeyInt )
+    env.namespace["x"] = EeyVariable( EeyType( EeyInt ) )
     value = EeyPlus( EeySymbol( "x" ), EeyInt( "17" ) )
     assert_equal( value.render( env ), "(x + 17)" )
 
@@ -24,7 +24,7 @@ def test_Multiply_known():
 
 def test_Multiply_unknown():
     env = EeyEnvironment( EeyCppRenderer() )
-    env.namespace["x"] = EeyVariable( EeyInt )
+    env.namespace["x"] = EeyVariable( EeyType( EeyInt ) )
     value = EeyTimes( EeySymbol( "x" ), EeyInt( "17" ) )
     assert_equal( value.render( env ), "(x * 17)" )
 

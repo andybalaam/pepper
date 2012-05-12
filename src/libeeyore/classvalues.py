@@ -1,11 +1,16 @@
 
 from libeeyore.environment import EeyEnvironment
 from libeeyore.namespace import EeyNamespace
+from values import EeyType
 from values import EeyTypeMatcher
 from values import EeySymbol
+from values import EeyString
 from values import EeyValue
-from functionvalues import EeyFunction
+from values import EeyVoid
+from values import all_known
 from functionvalues import EeyDef
+from functionvalues import EeyFunction
+from functionvalues import EeyRuntimeUserFunction
 from usererrorexception import EeyUserErrorException
 
 INIT_METHOD_NAME = "init"
@@ -16,7 +21,7 @@ class EeyDefInit( EeyDef ):
     def __init__( self, arg_types_and_names, body_stmts ):
         EeyDef.__init__(
             self,
-            None,
+            EeyType( EeyVoid ),
             EeySymbol( INIT_IMPL_NAME ),
             arg_types_and_names,
             body_stmts
@@ -40,6 +45,19 @@ class EeyInstance( EeyValue ):
     def evaluated_type( self, env ):
         return self.clazz
 
+
+class EeyRuntimeInstance( EeyValue ):
+    def __init__( self, instance, args, init_fn ):
+        EeyValue.__init__( self )
+        # TODO: check arg types
+        self.instance = instance
+        self.args = args
+        self.init_fn = init_fn
+
+    def construction_args( self ):
+        return ( self.instance, self.args, self.init_fn )
+
+
 class FakeInstance( EeyInstance ):
     def __init__( self, clazz ):
         self.clazz = clazz
@@ -50,11 +68,21 @@ class EeyInitMethod( EeyFunction ):
         self.user_class = user_class
 
     def call( self, env, args ):
-        ret = self.user_class.create_instance()
-        if INIT_IMPL_NAME in self.user_class.namespace:
-            self.user_class.namespace[INIT_IMPL_NAME].call(
-                env, (ret,) + args )
-        return ret
+        if all_known( args, env ):
+            ret = self.user_class.create_instance()
+            if INIT_IMPL_NAME in self.user_class.namespace:
+                self.user_class.namespace[INIT_IMPL_NAME].call(
+                    env, (ret,) + args )
+            # TODO: else default constructor
+            return ret
+        else:
+            inst = self.user_class.create_instance()
+            return EeyRuntimeInstance(
+                inst,
+                args,
+                self.user_class.namespace[INIT_IMPL_NAME].call(
+                    env, (inst,) + args )
+            )
 
     def return_type( self ):
         return self.user_class
@@ -110,12 +138,17 @@ class EeyUserClass( EeyValue, EeyTypeMatcher ):
     def create_instance( self ):
         return EeyInstance( self )
 
-    def matches( self, value_type ):
+    def matches( self, other ):
         """
-        @return True if the value_type supplied is this class.
+        @return True if other is this class.
         """
-        return ( value_type == self )
+        return ( other == self )
 
+    def get_name( self ):
+        return self.name
+
+    def underlying_class( self ):
+        return self
 
 class EeyClass( EeyValue ):
     def __init__( self, name, base_classes, body_stmts ):

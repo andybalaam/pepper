@@ -25,8 +25,6 @@ class EeyEnvironment( object ):
 
     def pretty_name( self, value ):
         ret = self.namespace.key_for_value( value )
-        if ret is None:
-            ret = self.namespace.key_for_value( EeyType( value ) )
 
         assert ret is not None, (
             "Could not find " + str( value ) + " in namespace " +

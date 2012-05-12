@@ -3,6 +3,7 @@ import sys
 
 from cppbuiltins import *
 from libeeyore.builtins import *
+from libeeyore.classvalues import *
 from libeeyore.functionvalues import *
 from libeeyore.languagevalues import *
 from libeeyore.values import *
@@ -86,11 +87,25 @@ def render_EeyInit( env, value ):
     if value.is_known( env ):
         return ""
     else:
-        return "%s %s = %s" % (
-                value.var_type.render( env ),
-                value.var_name.symbol_name,
-                value.init_value.render( env ),
-            )
+        ev_var_type = value.var_type.evaluate( env )
+
+        # TODO: avoid use of isinstance?
+        if isinstance( ev_var_type, EeyUserClass ):
+            # Remember the variable name in the renderer - we will use it
+            # in render_EeyRuntimeInstance, which needs to know it even
+            # though it shouldn't, because the init function is converted
+            # from a normal one to one that passes the instance as its
+            # first argument.
+            env.renderer.init_variable_name = value.var_name.symbol_name
+            subs = "%s %s; %s"
+        else:
+            subs = "%s %s = %s"
+
+        return subs % (
+            value.var_type.render( env ),
+            value.var_name.symbol_name,
+            value.init_value.render( env ),
+        )
 
 type2string = {
     EeyBool  : "bool",
@@ -112,8 +127,10 @@ def render_EeyNoneType( env, value ):
 
 
 def render_type_and_name( env, typename ):
-    return "%s %s" % ( render_EeyType( env, typename[0].evaluate( env ) ),
-        typename[1].symbol_name )
+    return "%s %s" % (
+        typename[0].render( env ),
+        typename[1].symbol_name
+    )
 
 def _render_bracketed_list( items ):
     items_list = list( items )
@@ -123,6 +140,12 @@ def _render_bracketed_list( items ):
         ret += ", ".join( items_list )
         ret += " "
     ret += ")"
+    return ret
+
+def render_EeyUserClass_body( env, name, clazz ):
+    ret = "struct %s\n{\n" % name
+    # TODO: member variables
+    ret += "};\n\n"
     return ret
 
 def render_EeyUserFunction_body( env, name, func_call ):
@@ -155,6 +178,18 @@ def render_EeyRuntimeUserFunction( env, value ):
     return ( name +
         _render_bracketed_list( arg.render( env ) for arg in value.args ) )
 
+def render_EeyRuntimeInstance( env, value ):
+    env.renderer.add_class( env, value.instance.clazz )
+    name = env.renderer.add_def_init( env, value )
+
+    # Use the variable name we remembered in render_EeyInit
+    return ( name +
+        _render_bracketed_list(
+            ("&" + env.renderer.init_variable_name,) + tuple(
+                arg.render( env ) for arg in value.args )
+        )
+    )
+
 def render_EeyFunctionCall( env, value ):
 
     fn = value.func.evaluate( env )
@@ -171,7 +206,7 @@ def render_EeyClass( env, value ):
     return ""
 
 def render_EeyUserClass( env, value ):
-    return ""
+    return value.name
 
 def render_EeyInstance( env, value ):
     return ""

@@ -256,7 +256,11 @@ def test_Choose_runtime_overload_by_evaluated_type():
 
     rtfn1 = EeyRuntimeUserFunction( fnint, ( EeyInt( "3" ), ) )
     rtfn2 = EeyRuntimeUserFunction( fnbool, (
-        EeyGreaterThan( EeyVariable( EeyInt ), EeyVariable( EeyInt ) ), ) )
+        EeyGreaterThan(
+            EeyVariable( EeyType( EeyInt ) ),
+            EeyVariable( EeyType( EeyInt ) )
+        ),
+    ) )
 
     assert_equal( env.renderer.add_function( env, rtfn1 ), "myfn" )
     assert_equal( env.renderer.add_function( env, rtfn2 ), "myfn_eey_1" )

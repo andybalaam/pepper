@@ -35,7 +35,7 @@ def append_print_arg( fmtstr, fmtargs, env, value ):
     if value.is_known( env ):
         cls = value.__class__
     else:
-        cls = value.evaluated_type( env )
+        cls = value.evaluated_type( env ).underlying_class()
 
     if cls is EeyString:
         # We don't call render, because we add our own quotes here

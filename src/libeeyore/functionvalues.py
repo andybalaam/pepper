@@ -197,7 +197,7 @@ class EeyUserFunction( EeyFunction ):
             self.body_stmts )
 
     def return_type( self ):
-        return self.ret_type.value
+        return self.ret_type
 
     def args_match( self, env, args ):
         if len( args ) != len( self.arg_types_and_names ):
@@ -234,7 +234,7 @@ class EeyUserFunction( EeyFunction ):
             if known:
                 val = val.evaluate( env )
             else:
-                val = EeyVariable( tp.evaluate( env ).value )
+                val = EeyVariable( tp.evaluate( env ) )
             newenv.namespace[name.name()] = val
 
         return newenv

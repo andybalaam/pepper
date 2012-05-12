@@ -91,7 +91,7 @@ def test_Define_and_call_fn_to_add_known_numbers():
 
 def test_Define_and_call_fn_to_add_unknown_numbers():
     env = EeyEnvironment( EeyCppRenderer() )
-    env.namespace["othernum"] = EeyVariable( EeyInt )
+    env.namespace["othernum"] = EeyVariable( EeyType( EeyInt ) )
 
     fndecl = EeyDef(
         EeyType( EeyInt ),
@@ -124,7 +124,7 @@ def test_return_type_of_user_defined():
     assert_equal(
         EeyUserFunction( "f", EeyType( EeyInt ), (), ( EeyPass(), )
             ).return_type(),
-        EeyInt
+        EeyType( EeyInt )
         )
 
 
@@ -152,7 +152,7 @@ def test_Define_and_call_fn_returning_void_unknown():
     env = EeyEnvironment( EeyCppRenderer() )
     add_builtins( env )
 
-    env.namespace["othernum"] = EeyVariable( EeyInt )
+    env.namespace["othernum"] = EeyVariable( EeyType( EeyInt ) )
 
     fndecl = EeyDef(
         EeySymbol( "void" ),
@@ -208,7 +208,7 @@ def test_Define_and_call_multiline_known_fn():
 def test_Define_and_call_multiline_unknown_fn():
     env = EeyEnvironment( EeyCppRenderer() )
 
-    env.namespace["othernum"] = EeyVariable( EeyInt )
+    env.namespace["othernum"] = EeyVariable( EeyType( EeyInt ) )
 
     fndecl = EeyDef(
         EeyType( EeyInt ),

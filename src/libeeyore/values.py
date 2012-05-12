@@ -28,7 +28,7 @@ class EeyValue( object ):
         return self
 
     def evaluated_type( self, env ):
-        return self.__class__
+        return EeyType( self.__class__ )
 
     @abstractmethod
     def construction_args( self ): pass
@@ -261,7 +261,7 @@ class EeyGreaterThan( EeyBinaryOp ):
         return lv.greater_than( rv )
 
     def evaluated_type( self, env ):
-        return EeyBool
+        return EeyType( EeyBool )
 
 
 class EeyPass( EeyValue ):
@@ -283,6 +283,16 @@ class EeyTypeMatcher():
         """
         pass
 
+    @abstractmethod
+    def get_name( self ):
+        """
+        @return a string representation of this type
+        """
+        pass
+
+    @abstractmethod
+    def underlying_class( self ): pass
+
 class EeyType( EeyValue, EeyTypeMatcher ):
     """
     A type which is directly representable as a Python class e.g. EeyInt
@@ -293,11 +303,17 @@ class EeyType( EeyValue, EeyTypeMatcher ):
         # TODO: check we have been passed a type
         self.value = value
 
-    def matches( self, value_type ):
-        return self.value == value_type
+    def matches( self, other ):
+        return ( self == other )
+
+    def get_name( self ):
+        return self.value.__name__
 
     def construction_args( self ):
         return ( self.value, )
+
+    def underlying_class( self ):
+        return self.value
 
     def __eq__( self, other ):
         return (

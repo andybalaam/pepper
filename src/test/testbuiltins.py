@@ -79,10 +79,10 @@ def test_bool():
     assert_equal( ans.value, EeyBool )
 
 def test_print_return_type_is_none():
-    assert_equal( EeyPrint().return_type(), EeyNoneType )
+    assert_equal( EeyPrint().return_type(), EeyType( EeyNoneType ) )
 
 def test_len_return_type_is_int():
-    assert_equal( EeyLen().return_type(), EeyInt )
+    assert_equal( EeyLen().return_type(), EeyType( EeyInt ) )
 
 
 def test_void():
