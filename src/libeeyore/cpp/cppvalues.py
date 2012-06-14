@@ -144,9 +144,29 @@ def _render_bracketed_list( items ):
 
 def render_EeyUserClass_body( env, name, clazz ):
     ret = "struct %s\n{\n" % name
-    # TODO: member variables
+
+    memberVars = clazz.get_member_variables( env )
+
+    for mem in memberVars:
+        ret += "    %s %s;\n" % ( mem[0].render( env ), mem[1] )
+
     ret += "};\n\n"
     return ret
+
+def render_statements( statements, env, indent ):
+    ret = ""
+    for stmt in statements:
+        st = stmt.evaluate( env )
+        if st.__class__ == EeyPass:
+            continue
+        ret += "%s%s;\n" % ( indent, st.render( env ) )
+    return ret
+
+def indent_if_needed( line ):
+    if len( line ) == 0 or line[0] == " ":
+        return line
+    else:
+        return "    %s;\n" % line
 
 def render_EeyUserFunction_body( env, name, func_call ):
     fn = func_call.user_function.evaluate( env )
@@ -166,11 +186,22 @@ def render_EeyUserFunction_body( env, name, func_call ):
         st = body_stmt.evaluate( newenv )
         if st.__class__ == EeyPass:
             continue
-        ret += "    %s;\n" % st.render( newenv )
+        ret += indent_if_needed( st.render( newenv ) )
 
     ret += "}\n\n"
 
     return ret
+
+def render_EeyVar( env, value ):
+    ret = ""
+
+    for stmt in value.body_stmts:
+        assert( stmt.__class__ == EeyInit )
+        ret += "    %s = %s;\n" % (
+            stmt.var_name.symbol_name, stmt.init_value.render( env ) )
+
+    return ret
+
 
 def render_EeyRuntimeUserFunction( env, value ):
     name = env.renderer.add_function( env, value )
@@ -185,7 +216,7 @@ def render_EeyRuntimeInstance( env, value ):
     # Use the variable name we remembered in render_EeyInit
     return ( name +
         _render_bracketed_list(
-            ("&" + env.renderer.init_variable_name,) + tuple(
+            ( env.renderer.init_variable_name, ) + tuple(
                 arg.render( env ) for arg in value.args )
         )
     )

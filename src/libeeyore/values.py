@@ -55,6 +55,28 @@ class EeyVariable( EeyValue ):
     def evaluated_type( self, env ):
         return self.clazz
 
+class EeyVariablesNamespace( object ):
+
+    def __contains__( self, key ):
+        return False
+
+    def __getitem__( self, key ):
+        return None
+
+    def __setitem__( self, key, value ):
+        pass
+
+    def key_for_value( self, value ):
+        return None
+
+def get_namespace( obj ):
+    if obj.__class__ == EeyVariable:
+        return EeyVariablesNamespace() # TODO: handle checking via variable type
+    elif "namespace" in obj.__dict__:
+        return obj.namespace
+    else:
+        return None
+
 class EeySymbol( EeyValue ):
     def __init__( self, symbol_name ):
         EeyValue.__init__( self )
@@ -96,16 +118,18 @@ class EeySymbol( EeyValue ):
 
             new_ns_holder = namespace[this_ns_name].evaluate( env )
 
-            if "namespace" not in new_ns_holder.__dict__:
+            new_ns = get_namespace( new_ns_holder )
+
+            if new_ns is None:
                 raise EeyUserErrorException(
                     (
-                        "The value at '%s' is not a " +
+                        "The value %s at '%s' is not a " +
                         "class, object or module, so you can't look up " +
                         "values in it as in the expression '%s'"
-                    ) % ( this_ns_name, sym )
+                    ) % ( new_ns_holder.__class__, this_ns_name, sym )
                 )
             return self._do_find_namespace_and_name(
-                spl[1], base_sym, env, new_ns_holder.namespace )
+                spl[1], base_sym, env, new_ns )
 
     def _lookup( self, env ):
         (namespace, name, base_sym) = self._do_find_namespace_and_name(

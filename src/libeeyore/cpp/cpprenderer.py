@@ -82,7 +82,7 @@ class EeyCppRenderer( object ):
                 return ( self.value )
 
             def get_name( self ):
-                return self.value.name + " *const"
+                return self.value.name + "&"
 
             def render( self, env ):
                 return self.get_name()

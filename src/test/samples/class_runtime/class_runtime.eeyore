@@ -2,19 +2,18 @@ import sys
 
 class MyClass:
     def_init ( MyClass self, int a, float b ):
-        pass
-# TODO: providing member variables
-#        var:
-#            int   self.a = a
-#            float self.b = b
+        var:
+            int   self.a = a
+            float self.b = b
 
 MyClass mc = MyClass.init( len( sys.argv ), 1.5 )
-
-# TODO: unit tests for this functionality
 
 # TODO - accessing member variables
 #print( mc.a )
 #print( mc.b )
+
+# TODO - checking whether namespace members are available, and of the right type
+# TODO - multiple def_inits
 
 #Expected output:
 #

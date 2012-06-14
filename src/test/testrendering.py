@@ -267,4 +267,75 @@ def test_Choose_runtime_overload_by_evaluated_type():
 
 
 
+def test_Render_runtime_class():
+    env = EeyEnvironment( EeyCppRenderer() )
+    add_builtins( env )
+
+    env.namespace['a'] = EeyVariable( EeyType( EeyInt ) )
+
+    cls = EeyClass(
+        EeySymbol( 'MyClass' ),
+        (),
+        (
+            EeyDefInit(
+                (
+                    ( EeySymbol('MyClass'), EeySymbol('self') ),
+                    ( EeySymbol('int'), EeySymbol('a') ),
+                    ( EeySymbol('float'), EeySymbol('b') )
+                ),
+                (
+                    EeyVar(
+                        (
+                            EeyInit(
+                                EeySymbol('int'),
+                                EeySymbol('self.a'),
+                                EeySymbol('a')
+                            ),
+                            EeyInit(
+                                EeySymbol('float'),
+                                EeySymbol('self.b'),
+                                EeySymbol('b')
+                            )
+                        )
+                    ),
+                )
+            ),
+        )
+    )
+
+    init = EeyInit(
+        EeySymbol( 'MyClass' ),
+        EeySymbol( 'mc' ),
+        EeyFunctionCall(
+            EeySymbol( 'MyClass.init' ),
+            ( EeySymbol( 'a' ), EeyFloat('1.5') )
+        )
+    )
+
+    ans = env.renderer.render_exe( [ cls, init ], env )
+
+    assert_equal(
+        """
+struct MyClass
+{
+    int a;
+    double b;
+};
+
+void MyClass_eey_c_eey___init__( MyClass& self, int a, double b )
+{
+    self.a = a;
+    self.b = b;
+}
+
+int main( int argc, char* argv[] )
+{
+    MyClass mc; MyClass_eey_c_eey___init__( mc, a, 1.5 );
+
+    return 0;
+}
+""",
+        ans
+    )
+
 

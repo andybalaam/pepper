@@ -1,6 +1,9 @@
 
+from itertools import ifilter
+
 from libeeyore.environment import EeyEnvironment
 from libeeyore.namespace import EeyNamespace
+from languagevalues import EeyInit
 from values import EeyType
 from values import EeyTypeMatcher
 from values import EeySymbol
@@ -26,9 +29,47 @@ class EeyDefInit( EeyDef ):
             arg_types_and_names,
             body_stmts
         )
+        # TODO: check there is at least one arg
+        # TODO: check first arg accepts this class?
 
     def construction_args( self ):
         return ( self.arg_types_and_names, self.body_stmts )
+
+    def get_member_variables( self, env ):
+        ret = []
+
+        is_var = lambda stmt: stmt.__class__ == EeyVar
+        for var_stmt in ifilter( is_var, self.body_stmts ):
+            for init_stmt in var_stmt.body_stmts:
+                if init_stmt.__class__ != EeyInit:
+                    # Should not happen since this is defined in the syntax
+                    # (but might change one day?)
+                    raise EeyUserErrorException(
+                        "Var blocks may only contain initialisation statements"
+                    )
+                # TODO: handle expressions that evaluate to symbols
+                nm = init_stmt.var_name.name()
+                selfdot = self.self_var_name() + "."
+                if not nm.startswith( selfdot ):
+                    raise EeyUserErrorException(
+                        "Only members of this class should be initialised in " +
+                        "var blocks.  '" + nm + "' does not start with '" +
+                        selfdot + "', but it should."
+                    )
+                nm = nm[ len(selfdot): ]
+
+                if len( nm ) == 0:
+                    raise EeyUserErrorException(
+                        "You must provide a variable name, not just '" +
+                        selfdot + "'."
+                    )
+
+                ret.append( ( init_stmt.var_type, nm ) )
+
+        return ret
+
+    def self_var_name( self ):
+        return self.arg_types_and_names[0][1].name()
 
 class EeyInstance( EeyValue ):
     def __init__( self, clazz ):
@@ -132,6 +173,20 @@ class EeyUserClass( EeyValue, EeyTypeMatcher ):
 
         return self
 
+    def get_member_variables( self, env ):
+        ret = []
+
+        first_def_init = True
+        is_def_init = lambda stmt: stmt.__class__ == EeyDefInit
+        for stmt in ifilter( is_def_init, self.body_stmts ):
+            if first_def_init:
+                ret = stmt.get_member_variables( env )
+            else:
+                self.check_init_matches( ret )
+            first_def_init = False
+
+        return ret
+
     def construction_args( self ):
         return ( self.name, self.base_classes, self.body_stmts )
 
@@ -174,6 +229,9 @@ class EeyClass( EeyValue ):
 
         return self
 
+    def check_init_matches( self, var_names ):
+        pass # TODO: ensure later def_inits match the first one
+
 class EeyVar( EeyValue ):
     def __init__( self, body_stmts ):
         EeyValue.__init__( self )
@@ -185,4 +243,5 @@ class EeyVar( EeyValue ):
     def do_evaluate( self, env ):
         for stmt in self.body_stmts:
             stmt.evaluate( env )
+        return self
 
