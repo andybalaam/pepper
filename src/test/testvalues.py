@@ -47,6 +47,8 @@ def test_Variable_in_subnamespace_is_found():
             self.namespace = EeyNamespace()
         def construction_args( self ):
             return ()
+        def get_namespace( self ):
+            return self.namespace
 
     nsholder = NsHolder()
 
@@ -71,6 +73,8 @@ def test_Subnamespace_referred_by_symbol_is_found():
         def __init__( self ):
             EeyValue.__init__( self )
             self.namespace = EeyNamespace()
+        def get_namespace( self ):
+            return self.namespace
 
         def construction_args( self ):
             return ()
@@ -288,6 +292,9 @@ def test_symbol_find_namespace_and_name():
 
         def evaluate( self, env ):
             return self
+
+        def get_namespace( self ):
+            return self.namespace
 
     env = EeyEnvironment( EeyCppRenderer() )
 

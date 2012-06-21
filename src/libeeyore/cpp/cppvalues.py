@@ -145,9 +145,7 @@ def _render_bracketed_list( items ):
 def render_EeyUserClass_body( env, name, clazz ):
     ret = "struct %s\n{\n" % name
 
-    memberVars = clazz.get_member_variables( env )
-
-    for mem in memberVars:
+    for mem in clazz.member_variables:
         ret += "    %s %s;\n" % ( mem[0].render( env ), mem[1] )
 
     ret += "};\n\n"

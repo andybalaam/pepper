@@ -1,18 +1,27 @@
 
 
-+ Overloading at compile time
-
 - Overloading at runtime
   + Only one definition of function rendered when called multiple times
   - Multiple calls with different types mean multiple fns rendered, with
     different names
   - More test cases with different and same arg lists
 
-- Find out why if I call gt3 twice in calculated_type.eeyore it returns
-  the same answer each time.
+- Overloads on different user-defined types
+
+
+- Find out why if I call gt3 twice in calculated_type.eeyore it returns the
+  same answer each time.
+
+- Line and column number of errors
+
+- Calling methods on class instances
+- Spaces in class bodies
+- Checking whether class members are available, and of the right type
+- Multiple def_inits in a class must agree on properties
 
 - Enforce not allowed string "_eey_" in any identifier
 
+- Modifying values
 
-- Overloads on different user-defined types
+- Quoting
 

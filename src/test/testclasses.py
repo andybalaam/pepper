@@ -168,14 +168,14 @@ def test_Can_get_names_of_member_variables_from_def_init():
                 ),
             )
         ),
-    )
+    ).evaluate( env )
 
     assert_equal(
         str( [
             ( EeySymbol( "int" ),   "member_one" ),
             ( EeySymbol( "float" ), "member_two" )
         ] ),
-        str( definit.get_member_variables( env ) )
+        str( definit.get_member_variables() )
     )
 
 
@@ -203,7 +203,7 @@ def test_Not_allowed_non_self_inits_in_var():
 
     exception_caught = False
     try:
-        definit.get_member_variables( env )
+        definit.get_member_variables()
     except EeyUserErrorException, e:
         exception_caught = True
         assert_contains( str( e ), "'my_var' does not start with 'barself.'" )
@@ -235,7 +235,7 @@ def test_Must_provide_nonempty_variable_name_in_var():
 
     exception_caught = False
     try:
-        definit.get_member_variables( env )
+        definit.get_member_variables()
     except EeyUserErrorException, e:
         exception_caught = True
         assert_contains(
@@ -278,15 +278,73 @@ def test_Can_get_names_of_member_variables_from_class():
                 ),
             ),
         )
-    )
+    ).evaluate( env )
 
     assert_equal(
         str( [
             ( EeySymbol( "int" ),   "member_one" ),
             ( EeySymbol( "float" ), "member_two" )
         ] ),
-        str( cls.get_member_variables( env ) )
+        str( cls.member_variables )
     )
 
+
+
+def test_Class_reports_methods_available():
+
+    env = EeyEnvironment( EeyCppRenderer() )
+    add_builtins( env )
+
+    cls = EeyUserClass(
+        name="MyClass",
+        base_classes=(),
+        body_stmts=(
+            EeyDef(
+                EeyType( EeyInt ),
+                EeySymbol( "myfunc" ),
+                (
+                    ( EeySymbol( "MyClass" ), EeySymbol( "self" ) ),
+                ),
+                (
+                    EeyReturn( EeyInt( "3" ) ),
+                )
+            ),
+        )
+    ).evaluate( env )
+
+    assert_true( "myfunc"  in cls.get_namespace() )
+    assert_true( "foo" not in cls.get_namespace() )
+
+
+def test_Class_reports_properties_available():
+
+    env = EeyEnvironment( EeyCppRenderer() )
+    add_builtins( env )
+
+    cls = EeyUserClass(
+        name="MyClass",
+        base_classes=(),
+        body_stmts=(
+            EeyDefInit(
+                ( ( EeySymbol( "MyClass" ), EeySymbol( 'self' ) ), ),
+                (
+                    (
+                        EeyVar(
+                            (
+                                EeyInit(
+                                    EeySymbol( "int" ),
+                                    EeySymbol( "self.myprop" ),
+                                    EeyInt( 0 )
+                                ),
+                            )
+                        ),
+                    )
+                ),
+            ),
+        )
+    ).evaluate( env )
+
+    assert_true( "myprop"  in cls.get_namespace() )
+    assert_true( "foo" not in cls.get_namespace() )
 
 

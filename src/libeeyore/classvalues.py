@@ -9,6 +9,7 @@ from values import EeyTypeMatcher
 from values import EeySymbol
 from values import EeyString
 from values import EeyValue
+from values import EeyVariable
 from values import EeyVoid
 from values import all_known
 from functionvalues import EeyDef
@@ -35,7 +36,7 @@ class EeyDefInit( EeyDef ):
     def construction_args( self ):
         return ( self.arg_types_and_names, self.body_stmts )
 
-    def get_member_variables( self, env ):
+    def get_member_variables( self ):
         ret = []
 
         is_var = lambda stmt: stmt.__class__ == EeyVar
@@ -85,6 +86,9 @@ class EeyInstance( EeyValue ):
 
     def evaluated_type( self, env ):
         return self.clazz
+
+    def get_namespace( self ):
+        return self.namespace
 
 
 class EeyRuntimeInstance( EeyValue ):
@@ -171,16 +175,21 @@ class EeyUserClass( EeyValue, EeyTypeMatcher ):
 
         self.namespace[INIT_METHOD_NAME] = EeyInitMethod( self )
 
+        self.member_variables = self._find_member_variables()
+
+        for var_type, var_name in self.member_variables:
+            self.namespace[var_name] = EeyVariable( var_type )
+
         return self
 
-    def get_member_variables( self, env ):
+    def _find_member_variables( self ):
         ret = []
 
         first_def_init = True
         is_def_init = lambda stmt: stmt.__class__ == EeyDefInit
         for stmt in ifilter( is_def_init, self.body_stmts ):
             if first_def_init:
-                ret = stmt.get_member_variables( env )
+                ret = stmt.get_member_variables()
             else:
                 self.check_init_matches( ret )
             first_def_init = False
@@ -204,6 +213,10 @@ class EeyUserClass( EeyValue, EeyTypeMatcher ):
 
     def underlying_class( self ):
         return self
+
+    def get_namespace( self ):
+        return self.namespace
+
 
 class EeyClass( EeyValue ):
     def __init__( self, name, base_classes, body_stmts ):

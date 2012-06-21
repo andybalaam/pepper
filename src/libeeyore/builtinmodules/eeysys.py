@@ -31,4 +31,7 @@ class EeySys( EeyValue ):
     def construction_args( self ):
         return ()
 
+    def get_namespace( self ):
+        return self.namespace
+
 

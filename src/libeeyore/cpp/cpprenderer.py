@@ -3,6 +3,7 @@ from libeeyore.languagevalues import EeyIf
 from libeeyore.classvalues import INIT_IMPL_NAME
 from libeeyore.functionvalues import EeyRuntimeUserFunction
 from libeeyore.functionvalues import EeyUserFunction
+from libeeyore.namespace import EeyNamespace
 from libeeyore.values import EeySymbol
 from libeeyore.values import EeyTypeMatcher
 from libeeyore.values import EeyValue
@@ -86,6 +87,9 @@ class EeyCppRenderer( object ):
 
             def render( self, env ):
                 return self.get_name()
+
+            def get_namespace( self ):
+                return EeyNamespace()
 
         fn = runtime_instance.init_fn.user_function
 

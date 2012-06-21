@@ -53,29 +53,11 @@ class EeyVariable( EeyValue ):
         return False
 
     def evaluated_type( self, env ):
-        return self.clazz
+        return self.clazz.evaluate( env )
 
-class EeyVariablesNamespace( object ):
+    def get_namespace( self ):
+        return self.clazz.get_namespace()
 
-    def __contains__( self, key ):
-        return False
-
-    def __getitem__( self, key ):
-        return None
-
-    def __setitem__( self, key, value ):
-        pass
-
-    def key_for_value( self, value ):
-        return None
-
-def get_namespace( obj ):
-    if obj.__class__ == EeyVariable:
-        return EeyVariablesNamespace() # TODO: handle checking via variable type
-    elif "namespace" in obj.__dict__:
-        return obj.namespace
-    else:
-        return None
 
 class EeySymbol( EeyValue ):
     def __init__( self, symbol_name ):
@@ -118,9 +100,7 @@ class EeySymbol( EeyValue ):
 
             new_ns_holder = namespace[this_ns_name].evaluate( env )
 
-            new_ns = get_namespace( new_ns_holder )
-
-            if new_ns is None:
+            if not hasattr( new_ns_holder.__class__, "get_namespace" ):
                 raise EeyUserErrorException(
                     (
                         "The value %s at '%s' is not a " +
@@ -128,6 +108,9 @@ class EeySymbol( EeyValue ):
                         "values in it as in the expression '%s'"
                     ) % ( new_ns_holder.__class__, this_ns_name, sym )
                 )
+
+            new_ns = new_ns_holder.get_namespace()
+
             return self._do_find_namespace_and_name(
                 spl[1], base_sym, env, new_ns )
 
@@ -317,6 +300,29 @@ class EeyTypeMatcher():
     @abstractmethod
     def underlying_class( self ): pass
 
+    @abstractmethod
+    def get_namespace( self ):
+        """
+        @return a namespace representing the allowed properties and method
+                names in this type
+        """
+        pass
+
+
+class EeyEmptyNamespace( object ):
+
+    def __contains__( self, key ):
+        return False
+
+    def __getitem__( self, key ):
+        return None
+
+    def __setitem__( self, key, value ):
+        pass
+
+    def key_for_value( self, value ):
+        return None
+
 class EeyType( EeyValue, EeyTypeMatcher ):
     """
     A type which is directly representable as a Python class e.g. EeyInt
@@ -338,6 +344,9 @@ class EeyType( EeyValue, EeyTypeMatcher ):
 
     def underlying_class( self ):
         return self.value
+
+    def get_namespace( self ):
+        return EeyEmptyNamespace()
 
     def __eq__( self, other ):
         return (

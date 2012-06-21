@@ -5,46 +5,12 @@ class MyClass:
         var:
             int   self.a = a
             float self.b = b
+#    def int meth( MyClass self ):
+#        return self.a + 1
 
 MyClass mc = MyClass.init( len( sys.argv ), 1.5 )
 
-# TODO - accessing member variables
-#print( mc.a )
-#print( mc.b )
-
-# TODO - checking whether namespace members are available, and of the right type
-# TODO - multiple def_inits
-
-#Expected output:
-#
-#$ eeyore class_runtime.eeyore
-#3
-#1.500000
-
-
-# Expected final cpp:
-#
-##include <stdio.h>
-#
-#struct MyClass
-#{
-#    int a;
-#    double b;
-#}
-#
-#void MyClass_eey___init__( MyClass *const self, int a, double b )
-#{
-#    self.a = a;
-#    self.b = b;
-#}
-#
-#int main( int argc, char* argv[] )
-#{
-#    MyClass mc; MyClass_eey_c_eey___init__( &mc, argc, 1.5 );
-#
-#    printf( "%d\n", mc.a );
-#    printf( "%f\n", mc.b );
-#
-#    return 0;
-#}
+print( mc.a )
+print( mc.b )
+#print( mc.meth() )
 
