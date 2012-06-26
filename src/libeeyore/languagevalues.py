@@ -129,7 +129,9 @@ class EeyInit( EeyValue ):
     def do_evaluate( self, env ):
         ( tp, ns, nm, val ) = self._eval_args( env )
 
-        assert( nm not in ns ) # TODO: not assert
+        if nm in ns:
+            raise EeyUserErrorException(
+                "Namespace already contains the name '" + nm + "'." )
 
         val_type = val.evaluated_type( env )
         if not tp.matches( val_type ):

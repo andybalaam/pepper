@@ -50,7 +50,11 @@ class EeyReturn( EeyValue ):
     def construction_args( self ):
         return ( self.value, )
 
-class EeyFunction( EeyValue ):
+class EeyCallable( EeyValue ):
+    @abstractmethod
+    def call( self, env, args ): pass
+
+class EeyFunction( EeyCallable ):
     __metaclass__ = ABCMeta
 
     def __init__( self ):
@@ -58,18 +62,15 @@ class EeyFunction( EeyValue ):
 #        self.arg_types_and_names = arg_types_and_names
 
     @abstractmethod
-    def call( self, env, args ): pass
-
-    @abstractmethod
     def return_type( self ): pass
 
     @abstractmethod
-    def args_match( self, args ): pass
+    def args_match( self, args ): pass # TODO: move into EeyCallable
 
     def is_known( self, env ):
         return True
 
-class EeyFunctionOverloadList( EeyValue ):
+class EeyFunctionOverloadList( EeyCallable ):
     def __init__( self, first_fn ):
         EeyValue.__init__( self )
         self._list = [first_fn]

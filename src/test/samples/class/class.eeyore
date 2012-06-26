@@ -4,12 +4,13 @@ class MyClass:
         var:
             int   self.a = a
             float self.b = b
-#    def void meth( MyClass self ):
-#        return a + 1
+
+    def void meth( MyClass self ):
+        return self.a + 2
 
 MyClass mc = MyClass.init( 3, 1.5 ) # TODO: print without trailing zeroes
 
 print( mc.a )
 print( mc.b )
-#print( mc.meth() ) TODO
+print( mc.meth() )
 

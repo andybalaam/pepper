@@ -47,6 +47,7 @@ class EeyCppRenderer( object ):
             self._headers.append( header )
 
     def add_function( self, env, runtime_function ):
+
         signature = _function_signature_string(
             env, runtime_function.user_function )
 

@@ -12,6 +12,7 @@ from values import EeyValue
 from values import EeyVariable
 from values import EeyVoid
 from values import all_known
+from functionvalues import EeyCallable
 from functionvalues import EeyDef
 from functionvalues import EeyFunction
 from functionvalues import EeyRuntimeUserFunction
@@ -72,11 +73,47 @@ class EeyDefInit( EeyDef ):
     def self_var_name( self ):
         return self.arg_types_and_names[0][1].name()
 
+class EeyMethod( EeyFunction ):
+    def __init__( self, instance, fn ):
+        EeyFunction.__init__( self )
+        self.instance = instance
+        self.fn = fn
+
+    def construction_args( self ):
+        return ( self.instance, self.fn )
+
+    def _instance_plus_args( self, args ):
+        return (self.instance,) + args
+
+    def call( self, env, args ):
+        return self.fn.call( env, self._instance_plus_args( args ) )
+
+    def return_type( self ):
+        return self.fn.return_type()
+
+    def args_match( self, args ):
+        self.fn.args_match( self._instance_plus_args( args ) )
+
+
+class EeyInstanceNamespace( EeyNamespace ):
+    def __init__( self, instance, class_namespace ):
+        EeyNamespace.__init__( self )
+        self.instance = instance
+        self.class_namespace = class_namespace
+
+    def _find( self, key ):
+        f = self.class_namespace._find( key )
+        if f is not None and isinstance( f, EeyCallable ):
+            return EeyMethod( self.instance, f )
+        else:
+            return EeyNamespace._find( self, key)
+
 class EeyInstance( EeyValue ):
     def __init__( self, clazz ):
         EeyValue.__init__( self )
         self.clazz = clazz
-        self.namespace = EeyNamespace()
+        self.namespace = EeyInstanceNamespace(
+            self, self.clazz.get_namespace() )
 
     def get_class_name( self ):
         return self.clazz.name
