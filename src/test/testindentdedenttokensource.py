@@ -167,6 +167,31 @@ def test_dedent_at_end_even_when_last_line_has_leading_space():
 
 
 
+def test_no_dedent_in_middle_of_block():
+    _assert_indent_dedent_generated(
+        """
+0001:0001  LEADINGSP(    )
+0001:0005     SYMBOL(a)
+0001:0006    NEWLINE
+0002:0001    NEWLINE
+0003:0001  LEADINGSP(    )
+0003:0005     SYMBOL(b)
+0003:0006    NEWLINE
+""",
+        """
+0001:0001     INDENT
+0001:0005     SYMBOL(a)
+0001:0006    NEWLINE
+0002:0001    NEWLINE
+0003:0005     SYMBOL(b)
+0003:0006    NEWLINE
+0003:0006     DEDENT
+0003:0006    NEWLINE
+"""
+        )
+
+
+
 
 def test_dedent_at_end_even_when_last_line_has_no_newline():
     _assert_indent_dedent_generated(

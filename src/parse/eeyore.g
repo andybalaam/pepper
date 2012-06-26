@@ -222,7 +222,8 @@ suite :
     COLON^
     NEWLINE!
     INDENT!
-    ( statement | returnStatement )+
+    ( NEWLINE! )*
+    ( statement ( NEWLINE! )* | returnStatement ( NEWLINE! )* )+
     DEDENT!
 ;
 
@@ -230,7 +231,8 @@ classSuite :
     COLON^
     NEWLINE!
     INDENT!
-    ( classStatement )+
+    ( NEWLINE! )*
+    ( classStatement ( NEWLINE! )* )+
     DEDENT!
 ;
 
@@ -238,9 +240,10 @@ initFunctionSuite :
     COLON^
     NEWLINE!
     INDENT!
+    ( NEWLINE! )*
     (
-          ( varStatement ( statement )* )
-        | ( statement )+
+          ( varStatement ( statement ( NEWLINE! )* )* )
+        | ( statement ( NEWLINE! )* )+
     )
     DEDENT!
 ;
@@ -249,7 +252,8 @@ varSuite :
     COLON^
     NEWLINE!
     INDENT!
-    ( initialisation )+
+    ( NEWLINE! )*
+    ( initialisation ( NEWLINE! )* )+
     DEDENT!
 ;
 

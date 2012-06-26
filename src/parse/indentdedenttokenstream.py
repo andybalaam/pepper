@@ -60,6 +60,8 @@ class IndentDedentTokenStream( TokenStream, IterableFromTokenStream ):
         elif tok.getType() == EeyoreLexer.LEADINGSP:
             # If we hit some leading spaces, generate indents or dedents
             return self.HandleLeadingSpace( tok )
+        elif tok.getType() == EeyoreLexer.NEWLINE:
+            return tok
         elif self.last_newline is not None:
             # If we are the beginning a new line but there is no leading
             # whitespace,we must dedent all the way to the left

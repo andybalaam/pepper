@@ -253,4 +253,63 @@ EeyClass(
 
 
 
+def test_empty_line_in_class():
+    assert_parser_result_from_code(
+        r"""
+class MyClass:
+    def void meth( MyClass self ):
+        pass
+
+    def void meth2( MyClass self ):
+        pass
+""",
+        r"""
+["class":class]
+    [SYMBOL:MyClass]
+    [COLON::]
+        ["def":def]
+            [SYMBOL:void]
+            [SYMBOL:meth]
+            [LPAREN:(]
+                [SYMBOL:MyClass]
+                [SYMBOL:self]
+            [COLON::]
+                [SYMBOL:pass]
+        ["def":def]
+            [SYMBOL:void]
+            [SYMBOL:meth2]
+            [LPAREN:(]
+                [SYMBOL:MyClass]
+                [SYMBOL:self]
+            [COLON::]
+                [SYMBOL:pass]
+""",
+        r"""
+EeyClass(
+    EeySymbol('MyClass'),
+    (),
+    (
+        EeyDef(
+            EeySymbol('void'),
+            EeySymbol('meth'),
+            ((EeySymbol('MyClass'), EeySymbol('self')),),
+            (
+                EeySymbol('pass'),
+            )
+        ), 
+        EeyDef(
+            EeySymbol('void'),
+            EeySymbol('meth2'),
+            ((EeySymbol('MyClass'), EeySymbol('self')),),
+            (
+                EeySymbol('pass'),
+            )
+        )
+    )
+)
+""" )
+
+
+
+
 
