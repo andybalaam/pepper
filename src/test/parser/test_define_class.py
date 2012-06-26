@@ -252,6 +252,114 @@ EeyClass(
 """ )
 
 
+def test_def_init_with_empty_line():
+    assert_parser_result_from_code(
+        r"""
+class MyClass:
+    def_init():
+        int x = 0
+
+        int y =2
+""",
+        r"""
+["class":class]
+    [SYMBOL:MyClass]
+    [COLON::]
+        ["def_init":def_init]
+            [LPAREN:(]
+            [COLON::]
+                [EQUALS:=]
+                    [SYMBOL:int]
+                    [SYMBOL:x]
+                    [INT:0]
+                [EQUALS:=]
+                    [SYMBOL:int]
+                    [SYMBOL:y]
+                    [INT:2]
+""",
+        r"""
+EeyClass(
+    EeySymbol('MyClass'),
+    (),
+    (
+        EeyDefInit(
+            (),
+            (
+                EeyInit(
+                    EeySymbol('int'),
+                    EeySymbol('x'),
+                    EeyInt('0')
+                ), 
+                EeyInit(
+                    EeySymbol('int'),
+                    EeySymbol('y'),
+                    EeyInt('2')
+                )
+            )
+        ),
+    )
+)
+""" )
+
+
+def test_var_block_with_empty_line():
+    assert_parser_result_from_code(
+        r"""
+class MyClass:
+    def_init():
+        var:
+            int self.x = 3
+
+            int self.y = 4
+""",
+        r"""
+["class":class]
+    [SYMBOL:MyClass]
+    [COLON::]
+        ["def_init":def_init]
+            [LPAREN:(]
+            [COLON::]
+                ["var":var]
+                    [COLON::]
+                        [EQUALS:=]
+                            [SYMBOL:int]
+                            [SYMBOL:self.x]
+                            [INT:3]
+                        [EQUALS:=]
+                            [SYMBOL:int]
+                            [SYMBOL:self.y]
+                            [INT:4]
+""",
+        r"""
+EeyClass(
+    EeySymbol('MyClass'),
+    (),
+    (
+        EeyDefInit(
+            (),
+            (
+                EeyVar(
+                    (
+                        EeyInit(
+                            EeySymbol('int'),
+                            EeySymbol('self.x'),
+                            EeyInt('3')
+                        ), 
+                        EeyInit(
+                            EeySymbol('int'),
+                            EeySymbol('self.y'),
+                            EeyInt('4')
+                        )
+                    )
+                ),
+            )
+        ),
+    )
+)
+""" )
+
+
+
 
 def test_empty_line_in_class():
     assert_parser_result_from_code(

@@ -1,4 +1,5 @@
 from assert_parser_result import assert_parser_result
+from assert_parser_result import assert_parser_result_from_code
 
 def test_define_function():
     assert_parser_result(
@@ -152,6 +153,46 @@ EeyDef(
 )
 """ )
 
+
+
+def test_empty_line_in_function():
+    assert_parser_result_from_code(
+        r"""
+def int fn():
+    int x = 0
+
+    return x
+""",
+        r"""
+["def":def]
+    [SYMBOL:int]
+    [SYMBOL:fn]
+    [LPAREN:(]
+    [COLON::]
+        [EQUALS:=]
+            [SYMBOL:int]
+            [SYMBOL:x]
+            [INT:0]
+        ["return":return]
+            [SYMBOL:x]
+""",
+        r"""
+EeyDef(
+    EeySymbol('int'),
+    EeySymbol('fn'),
+    (),
+    (
+        EeyInit(
+            EeySymbol('int'),
+            EeySymbol('x'),
+            EeyInt('0')
+        ), 
+        EeyReturn(
+            EeySymbol('x')
+        )
+    )
+)
+""" )
 
 
 
