@@ -81,7 +81,7 @@ class EeyCppRenderer( object ):
                 self.value = value
 
             def construction_args( self ):
-                return ( self.value )
+                return ( self.value, )
 
             def get_name( self ):
                 return self.value.name + "&"
