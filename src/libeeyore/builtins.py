@@ -21,7 +21,7 @@ class EeyPrint( EeyFunction ):
     def call( self, env, args ):
         return EeyRuntimePrint( args )
 
-    def return_type( self ):
+    def return_type( self, env, args ):
         return EeyType( EeyNoneType )
 
     def args_match( self, args ):
@@ -37,7 +37,7 @@ class EeyRuntimeLen( EeyValue ):
         self.arg = args[0]
 
     def construction_args( self ):
-        return ( (arg,), )
+        return ( (self.arg,), )
 
     def do_evaluate( self, env ):
         # TODO: if it's known, do it
@@ -51,10 +51,13 @@ class EeyLen( EeyFunction ):
     def construction_args( self ):
         return ()
 
+    def get_fn( self, args, env ):
+        return self
+
     def call( self, env, args ):
         return EeyRuntimeLen( args )
 
-    def return_type( self ):
+    def return_type( self, env, args ):
         return EeyType( EeyInt )
 
     def args_match( self, args ):
@@ -75,6 +78,7 @@ def add_builtins( env ):
     env.namespace["int"]   = EeyType( EeyInt )
     env.namespace["string"]= EeyType( EeyString )
     env.namespace["void"]  = EeyType( EeyVoid )
+    env.namespace["type"]  = EeyType( EeyType )
 
     # Functions
     env.namespace["len"]   = EeyLen()

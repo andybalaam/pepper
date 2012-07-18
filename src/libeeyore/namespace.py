@@ -18,6 +18,9 @@ class EeyNamespace( object ):
         assert( key not in self.thedict ) # TODO - not an assert
         self.thedict[key] = value
 
+    def overwrite( self, key, value ):
+        self.thedict[key] = value
+
     def _find( self, key ):
         if key in self.thedict:
             return self.thedict[key]
@@ -27,8 +30,11 @@ class EeyNamespace( object ):
             return None
 
     def key_for_value( self, value ):
-        for k, v in self.thedict.items():
+        for k, v in self.thedict.iteritems():
             if value == v:
                 return k
         return None
+
+    def iteritems( self ):
+        return self.thedict.iteritems()
 

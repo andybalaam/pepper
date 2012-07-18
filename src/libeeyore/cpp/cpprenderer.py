@@ -5,7 +5,6 @@ from libeeyore.functionvalues import EeyRuntimeUserFunction
 from libeeyore.functionvalues import EeyUserFunction
 from libeeyore.namespace import EeyNamespace
 from libeeyore.values import EeySymbol
-from libeeyore.values import EeyTypeMatcher
 from libeeyore.values import EeyValue
 
 import cppvalues
@@ -41,6 +40,7 @@ class EeyCppRenderer( object ):
         self._functions = {} # name -> signature -> ( name, rendered body )
         self._classes = {} # name -> rendered_body
         self.init_variable_name = None
+        self.self_variable_name = None
 
     def add_header( self, header ):
         if header not in self._headers:
@@ -51,7 +51,13 @@ class EeyCppRenderer( object ):
         signature = _function_signature_string(
             env, runtime_function.user_function )
 
-        name = runtime_function.user_function.name
+        if runtime_function.namespace_name is not None:
+            name = runtime_function.namespace_name
+            name += "_eey_c_eey_"
+        else:
+            name = ""
+
+        name += runtime_function.user_function.name
         if name not in self._functions:
             self._functions[name] = {}
 
@@ -75,38 +81,23 @@ class EeyCppRenderer( object ):
 
     def add_def_init( self, env, runtime_instance ):
 
-        class SpecialType( EeyValue ):
-            def __init__( self, value ):
-                EeyValue.__init__( self )
-                self.value = value
-
-            def construction_args( self ):
-                return ( self.value, )
-
-            def get_name( self ):
-                return self.value.name + "&"
-
-            def render( self, env ):
-                return self.get_name()
-
-            def get_namespace( self ):
-                return EeyNamespace()
-
         fn = runtime_instance.init_fn.user_function
 
         clazz = runtime_instance.instance.clazz
-        clazz_type_and_name = ( SpecialType( clazz ), EeySymbol("self") )
+
+        clazz_type_and_name = ( clazz, EeySymbol("self") )
         init_style_arg_types_and_names = (
             (clazz_type_and_name,) + fn.arg_types_and_names[1:] )
 
         init_style_fn = EeyRuntimeUserFunction(
             EeyUserFunction(
-                runtime_instance.instance.clazz.name + "_eey_c_eey_" + fn.name,
+                fn.name,
                 fn.ret_type,
                 init_style_arg_types_and_names,
                 fn.body_stmts
             ),
-            runtime_instance.init_fn.args
+            runtime_instance.init_fn.args,
+            runtime_instance.instance.clazz.name
         )
 
         return self.add_function( env, init_style_fn )

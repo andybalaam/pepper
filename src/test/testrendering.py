@@ -141,7 +141,7 @@ def test_function_with_no_args():
     env = EeyEnvironment( EeyCppRenderer() )
 
     fn = EeyUserFunction( "myfn", EeyType( EeyVoid ), (), ( EeyPass(), ) )
-    rtfn = EeyRuntimeUserFunction( fn, () )
+    rtfn = EeyRuntimeUserFunction( fn, (), None )
 
     ans = env.renderer.render_exe( [rtfn], env )
 
@@ -164,8 +164,8 @@ def test_function_called_twice_same_args():
     env = EeyEnvironment( EeyCppRenderer() )
 
     fn = EeyUserFunction( "myfn", EeyType( EeyVoid ), (), ( EeyPass(), ) )
-    rtfn1 = EeyRuntimeUserFunction( fn, () )
-    rtfn2 = EeyRuntimeUserFunction( fn, () )
+    rtfn1 = EeyRuntimeUserFunction( fn, (), None )
+    rtfn2 = EeyRuntimeUserFunction( fn, (), None )
 
     ans = env.renderer.render_exe( [rtfn1, rtfn2], env )
 
@@ -207,10 +207,10 @@ def test_overloaded_functions():
         ( EeyPass(), )
     )
 
-    rtfn1 = EeyRuntimeUserFunction( fnflt, ( EeyFloat( "3.0" ), ) )
-    rtfn2 = EeyRuntimeUserFunction( fnint, ( EeyInt( "3" ), ) )
-    rtfn3 = EeyRuntimeUserFunction( fnint, ( EeyInt( "4" ), ) )
-    rtfn4 = EeyRuntimeUserFunction( fnflt, ( EeyFloat( "5.1" ), ) )
+    rtfn1 = EeyRuntimeUserFunction( fnflt, ( EeyFloat( "3.0" ), ), None )
+    rtfn2 = EeyRuntimeUserFunction( fnint, ( EeyInt( "3" ),     ), None )
+    rtfn3 = EeyRuntimeUserFunction( fnint, ( EeyInt( "4" ),     ), None )
+    rtfn4 = EeyRuntimeUserFunction( fnflt, ( EeyFloat( "5.1" ), ), None )
 
     ans = env.renderer.render_exe( [rtfn1, rtfn2, rtfn3, rtfn4], env )
 
@@ -254,13 +254,16 @@ def test_Choose_runtime_overload_by_evaluated_type():
         ( EeyPass(), )
     )
 
-    rtfn1 = EeyRuntimeUserFunction( fnint, ( EeyInt( "3" ), ) )
-    rtfn2 = EeyRuntimeUserFunction( fnbool, (
-        EeyGreaterThan(
-            EeyVariable( EeyType( EeyInt ) ),
-            EeyVariable( EeyType( EeyInt ) )
+    rtfn1 = EeyRuntimeUserFunction( fnint, ( EeyInt( "3" ), ), None )
+    rtfn2 = EeyRuntimeUserFunction( fnbool,
+        (
+            EeyGreaterThan(
+                EeyVariable( EeyType( EeyInt ), "r" ),
+                EeyVariable( EeyType( EeyInt ), "s" )
+            ),
         ),
-    ) )
+        None
+    )
 
     assert_equal( env.renderer.add_function( env, rtfn1 ), "myfn" )
     assert_equal( env.renderer.add_function( env, rtfn2 ), "myfn_eey_1" )
@@ -271,7 +274,7 @@ def test_Render_runtime_class():
     env = EeyEnvironment( EeyCppRenderer() )
     add_builtins( env )
 
-    env.namespace['a'] = EeyVariable( EeyType( EeyInt ) )
+    env.namespace['a'] = EeyVariable( EeyType( EeyInt ), "a" )
 
     cls = EeyClass(
         EeySymbol( 'MyClass' ),

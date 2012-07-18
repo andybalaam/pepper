@@ -12,6 +12,13 @@ from values import eey_none
 
 from usererrorexception import EeyUserErrorException
 
+class EeyPlaceholder( EeyValue ):
+    def construction_args( self ):
+        return ()
+
+    def evaluate( self, env ):
+        raise Exception( "Should never have an EeyPlaceholder to evaluate." )
+
 class EeyImport( EeyValue ):
     def __init__( self, module_name ):
         EeyValue.__init__( self )
@@ -130,8 +137,9 @@ class EeyInit( EeyValue ):
         ( tp, ns, nm, val ) = self._eval_args( env )
 
         if nm in ns:
-            raise EeyUserErrorException(
-                "Namespace already contains the name '" + nm + "'." )
+            if not isinstance( ns[nm], EeyPlaceholder ):
+                raise EeyUserErrorException(
+                    "Namespace already contains the name '" + nm + "'." )
 
         val_type = val.evaluated_type( env )
         if not tp.matches( val_type ):
@@ -141,9 +149,9 @@ class EeyInit( EeyValue ):
             if val.is_known( env ):
                 return val
             else:
-                return EeyVariable( tp )
+                return tp.instance( nm )
 
-        ns[nm] = make_value()
+        ns.overwrite( nm, make_value() )
 
         return self
 

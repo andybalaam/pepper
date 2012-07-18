@@ -110,7 +110,7 @@ def test_Add_two_known_floats_renders_calculated_sum():
 
 def test_Unknown_variable_renders_as_symbol():
     env = EeyEnvironment( EeyCppRenderer() )
-    env.namespace["myvariable"] = EeyVariable( EeyType( EeyInt ) )
+    env.namespace["myvariable"] = EeyVariable( EeyType( EeyInt ), "myvariable" )
 
     value = EeySymbol( "myvariable" )
 
@@ -118,7 +118,7 @@ def test_Unknown_variable_renders_as_symbol():
 
 def test_Add_Unknown_to_known_literal_renders_uncalculated_sum():
     env = EeyEnvironment( EeyCppRenderer() )
-    env.namespace["input"] = EeyVariable( EeyType( EeyInt ) )
+    env.namespace["input"] = EeyVariable( EeyType( EeyInt ), "input" )
 
     value = EeyPlus( EeyInt( "4" ), EeySymbol( "input" ) )
 
@@ -126,7 +126,7 @@ def test_Add_Unknown_to_known_literal_renders_uncalculated_sum():
 
 def test_Add_Unknown_to_known_symbol_renders_uncalculated_sum():
     env = EeyEnvironment( EeyCppRenderer() )
-    env.namespace["input"] = EeyVariable( EeyType( EeyInt ) )
+    env.namespace["input"] = EeyVariable( EeyType( EeyInt ), "input" )
     env.namespace["four"] = EeyInt( "4" )
 
     value = EeyPlus( EeySymbol( "input" ), EeySymbol( "four" ) )
@@ -136,7 +136,7 @@ def test_Add_Unknown_to_known_symbol_renders_uncalculated_sum():
 
 def test_Unknown_inside_nested_plus_causes_whole_sum_to_be_uncalculated():
     env = EeyEnvironment( EeyCppRenderer() )
-    env.namespace["input"] = EeyVariable( EeyType( EeyInt ) )
+    env.namespace["input"] = EeyVariable( EeyType( EeyInt ), "input" )
 
     value = EeyPlus( EeyInt( "4" ),
         EeyPlus( EeyInt( "5" ), EeySymbol( "input" ) ) )
@@ -160,7 +160,10 @@ def test_Print_unknown_int_renders_as_percent_d():
     builtins.add_builtins( env )
 
     init = EeyInit(
-        EeyType( EeyInt ), EeySymbol( "i" ), EeyVariable( EeyType( EeyInt ) ) )
+        EeyType( EeyInt ),
+        EeySymbol( "i" ),
+        EeyVariable( EeyType( EeyInt ), "i" )
+    )
 
     init.evaluate( env )
 
@@ -176,7 +179,7 @@ def test_Print_unknown_float_renders_as_percent_f():
 
     init = EeyInit(
         EeyType( EeyFloat ), EeySymbol( "f" ),
-        EeyVariable( EeyType( EeyFloat ) )
+        EeyVariable( EeyType( EeyFloat ), "f" )
     )
 
     init.evaluate( env )
@@ -194,7 +197,7 @@ def test_Print_unknown_bool_renders_as_percent_s_colon_op():
 
     init = EeyInit(
         EeyType( EeyBool ), EeySymbol( "b" ),
-        EeyVariable( EeyType( EeyBool ) )
+        EeyVariable( EeyType( EeyBool ), "b" )
     )
 
     init.evaluate( env )
@@ -249,7 +252,7 @@ def test_known_initialisation_renders_nothing():
 def test_unknown_initialisation_evaluates_to_self():
     env = EeyEnvironment( EeyCppRenderer() )
     add_builtins( env )
-    env.namespace["unknown"] = EeyVariable( EeyType( EeyInt ) )
+    env.namespace["unknown"] = EeyVariable( EeyType( EeyInt ), "unknown" )
     init = EeyInit( EeySymbol( "int" ), EeySymbol( "i" ),
         EeySymbol( "unknown" ) )
     assert_equal( init.evaluate( env ), init )
@@ -257,7 +260,7 @@ def test_unknown_initialisation_evaluates_to_self():
 def test_unknown_initialisation_renders():
     env = EeyEnvironment( EeyCppRenderer() )
     add_builtins( env )
-    env.namespace["unknown"] = EeyVariable( EeyType( EeyInt ) )
+    env.namespace["unknown"] = EeyVariable( EeyType( EeyInt ), "unknown" )
     init = EeyInit( EeySymbol( "int" ), EeySymbol( "i" ),
         EeySymbol( "unknown" ) )
     assert_equal( init.render( env ), "int i = unknown" )
@@ -267,7 +270,7 @@ def test_unknown_initialisation_makes_symbol_valid():
     env = EeyEnvironment( EeyCppRenderer() )
     add_builtins( env )
 
-    env.namespace["unknown"] = EeyVariable( EeyType( EeyInt ) )
+    env.namespace["unknown"] = EeyVariable( EeyType( EeyInt ), "unknown" )
 
     init = EeyInit( EeySymbol( "int" ), EeySymbol( "i" ),
         EeySymbol( "unknown" ) )

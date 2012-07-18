@@ -126,9 +126,19 @@ def render_EeyNoneType( env, value ):
     return ""
 
 
-def render_type_and_name( env, typename ):
-    return "%s %s" % (
-        typename[0].render( env ),
+def _render_type_and_name( env, typename ):
+    evald_type = typename[0].evaluate( env )
+
+    # TODO: deal with copyable types etc., which should have no ampersand
+    # TODO: avoid isinstance?
+    if isinstance( evald_type, EeyUserClass ):
+        amp = "&"
+    else:
+        amp = ""
+
+    return "%s%s %s" % (
+        evald_type.render( env ),
+        amp,
         typename[1].symbol_name
     )
 
@@ -174,7 +184,7 @@ def render_EeyUserFunction_body( env, name, func_call ):
     ret = fn.ret_type.render( env )
     ret += " "
     ret += name
-    ret += _render_bracketed_list( render_type_and_name( env, typename ) for
+    ret += _render_bracketed_list( _render_type_and_name( env, typename ) for
         typename in fn.arg_types_and_names )
     ret += "\n{\n"
 
@@ -207,7 +217,7 @@ def render_EeyRuntimeUserFunction( env, value ):
     return ( name +
         _render_bracketed_list( arg.render( env ) for arg in value.args ) )
 
-def render_EeyRuntimeInstance( env, value ):
+def render_EeyRuntimeInit( env, value ):
     env.renderer.add_class( env, value.instance.clazz )
     name = env.renderer.add_def_init( env, value )
 
@@ -219,8 +229,10 @@ def render_EeyRuntimeInstance( env, value ):
         )
     )
 
-def render_EeyFunctionCall( env, value ):
+def render_EeyRuntimeInstance( env, value ):
+    return value.name
 
+def render_EeyFunctionCall( env, value ):
     fn = value.func.evaluate( env )
 
     # TODO: assert fn is callable

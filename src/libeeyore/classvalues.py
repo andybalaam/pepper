@@ -4,6 +4,7 @@ from itertools import ifilter
 from libeeyore.environment import EeyEnvironment
 from libeeyore.namespace import EeyNamespace
 from languagevalues import EeyInit
+from languagevalues import EeyPlaceholder
 from values import EeyType
 from values import EeyTypeMatcher
 from values import EeySymbol
@@ -15,6 +16,7 @@ from values import all_known
 from functionvalues import EeyCallable
 from functionvalues import EeyDef
 from functionvalues import EeyFunction
+from functionvalues import EeyFunctionOverloadList
 from functionvalues import EeyRuntimeUserFunction
 from usererrorexception import EeyUserErrorException
 
@@ -73,7 +75,8 @@ class EeyDefInit( EeyDef ):
     def self_var_name( self ):
         return self.arg_types_and_names[0][1].name()
 
-class EeyMethod( EeyFunction ):
+
+class EeyInstanceMethod( EeyFunction ):
     def __init__( self, instance, fn ):
         EeyFunction.__init__( self )
         self.instance = instance
@@ -86,13 +89,23 @@ class EeyMethod( EeyFunction ):
         return (self.instance,) + args
 
     def call( self, env, args ):
-        return self.fn.call( env, self._instance_plus_args( args ) )
+        if all_known( args + (self.instance,), env ):
+            return self.fn.call( env, self._instance_plus_args( args ) )
+        else:
+            return EeyRuntimeUserFunction(
+                self.fn,
+                self._instance_plus_args( args ),
+                self.instance.clazz.name
+            )
 
-    def return_type( self ):
-        return self.fn.return_type()
+    def return_type( self, env, args ):
+        return self.fn.return_type( env, self._instance_plus_args( args ) )
 
-    def args_match( self, args ):
-        self.fn.args_match( self._instance_plus_args( args ) )
+    def args_match( self, env, args ):
+        return self.fn.args_match( env, self._instance_plus_args( args ) )
+
+    def is_known( self, env ):
+        return self.instance.is_known( env )
 
 
 class EeyInstanceNamespace( EeyNamespace ):
@@ -102,11 +115,21 @@ class EeyInstanceNamespace( EeyNamespace ):
         self.class_namespace = class_namespace
 
     def _find( self, key ):
-        f = self.class_namespace._find( key )
-        if f is not None and isinstance( f, EeyCallable ):
-            return EeyMethod( self.instance, f )
+
+        found = EeyNamespace._find( self, key)
+        if found is not None:
+            return found
+
+        found = self.class_namespace._find( key )
+        if isinstance( found, EeyFunctionOverloadList ):
+            return EeyFunctionOverloadList(
+                map(
+                    lambda fn: EeyInstanceMethod( self.instance, fn ),
+                    found._list
+                )
+            )
         else:
-            return EeyNamespace._find( self, key)
+            return found
 
 class EeyInstance( EeyValue ):
     def __init__( self, clazz ):
@@ -122,13 +145,13 @@ class EeyInstance( EeyValue ):
         return ( self.clazz, )
 
     def evaluated_type( self, env ):
-        return self.clazz
+        return self.clazz.evaluate( env )
 
     def get_namespace( self ):
         return self.namespace
 
 
-class EeyRuntimeInstance( EeyValue ):
+class EeyRuntimeInit( EeyValue ):
     def __init__( self, instance, args, init_fn ):
         EeyValue.__init__( self )
         # TODO: check arg types
@@ -143,6 +166,7 @@ class EeyRuntimeInstance( EeyValue ):
 class FakeInstance( EeyInstance ):
     def __init__( self, clazz ):
         self.clazz = clazz
+
 
 class EeyInitMethod( EeyFunction ):
     def __init__( self, user_class ):
@@ -159,14 +183,14 @@ class EeyInitMethod( EeyFunction ):
             return ret
         else:
             inst = self.user_class.create_instance()
-            return EeyRuntimeInstance(
+            return EeyRuntimeInit(
                 inst,
                 args,
                 self.user_class.namespace[INIT_IMPL_NAME].call(
                     env, (inst,) + args )
             )
 
-    def return_type( self ):
+    def return_type( self, env, args ):
         return self.user_class
 
     def args_match( self, args ):
@@ -186,6 +210,27 @@ class EeyInitMethod( EeyFunction ):
     def construction_args( self ):
         return ( self.user_class, )
 
+
+class EeyRuntimeInstance( EeyValue ):
+    def __init__( self, clazz, name ):
+        EeyValue.__init__( self )
+        self.clazz = clazz
+        self.name = name
+        self.namespace = EeyInstanceNamespace(
+            self, self.clazz.get_namespace() )
+
+    def construction_args( self ):
+        return ( self.clazz, self.name )
+
+    def get_namespace( self ):
+        return self.namespace
+
+    def evaluated_type( self, env ):
+        return self.clazz.evaluate( env )
+
+    def is_known( self, env ):
+        return False
+
 class EeyUserClass( EeyValue, EeyTypeMatcher ):
     def __init__( self, name, base_classes, body_stmts ):
         EeyValue.__init__( self )
@@ -197,6 +242,9 @@ class EeyUserClass( EeyValue, EeyTypeMatcher ):
 
     def is_known( self, env ):
         return True # TODO - not always known
+
+    def instance( self, name ):
+        return EeyRuntimeInstance( self, name )
 
     def do_evaluate( self, env ):
         self.namespace = EeyNamespace( env.namespace )
@@ -215,7 +263,7 @@ class EeyUserClass( EeyValue, EeyTypeMatcher ):
         self.member_variables = self._find_member_variables()
 
         for var_type, var_name in self.member_variables:
-            self.namespace[var_name] = EeyVariable( var_type )
+            self.namespace[var_name] = EeyPlaceholder()
 
         return self
 

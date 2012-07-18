@@ -37,10 +37,10 @@ class EeyFunctionCall( EeyValue ):
             return self
 
     def is_known( self, env ):
-        return all_known( self.args, env )
+        return all_known( self.args + (self.func,), env )
 
     def evaluated_type( self, env ):
-        return self.func.evaluate( env ).return_type()
+        return self.func.evaluate( env ).return_type( env, self.args )
 
 class EeyReturn( EeyValue ):
     def __init__( self, value ):
@@ -54,6 +54,10 @@ class EeyCallable( EeyValue ):
     @abstractmethod
     def call( self, env, args ): pass
 
+    @abstractmethod
+    def return_type( self, env, args ): pass
+
+
 class EeyFunction( EeyCallable ):
     __metaclass__ = ABCMeta
 
@@ -62,18 +66,18 @@ class EeyFunction( EeyCallable ):
 #        self.arg_types_and_names = arg_types_and_names
 
     @abstractmethod
-    def return_type( self ): pass
-
-    @abstractmethod
     def args_match( self, args ): pass # TODO: move into EeyCallable
 
     def is_known( self, env ):
         return True
 
 class EeyFunctionOverloadList( EeyCallable ):
-    def __init__( self, first_fn ):
+    def __init__( self, initial_list ):
         EeyValue.__init__( self )
-        self._list = [first_fn]
+        self._list = initial_list
+
+    def is_known( self, env ):
+        return all_known( self._list, env )
 
     def construction_args( self ):
         return ()
@@ -81,12 +85,22 @@ class EeyFunctionOverloadList( EeyCallable ):
     def append( self, fn ):
         self._list.append( fn )
 
+    def return_type( self, env, args ):
+        return self._get_fn( args, env ).return_type( env, args )
+
+    def _get_fn( self, args, env ):
+        for fn in reversed( self._list ):
+            if fn.args_match( env, args ):
+                return fn
+
+        return None
+
     def call( self, env, args ):
         assert( len( self._list ) > 0 )
 
-        for fn in reversed( self._list ):
-            if fn.args_match( env, args ):
-                return fn.call( env, args )
+        matching_fn = self._get_fn( args, env )
+        if matching_fn is not None:
+            return matching_fn.call( env, args )
 
         # If we got here, no overload matched
         if len( self._list ) == 1:
@@ -174,14 +188,15 @@ class EeyFunctionOverloadList( EeyCallable ):
 
 
 class EeyRuntimeUserFunction( EeyValue ):
-    def __init__( self, user_function, args ):
+    def __init__( self, user_function, args, namespace_name ):
         EeyValue.__init__( self )
         # TODO: check arg types
         self.user_function = user_function
         self.args = args
+        self.namespace_name = namespace_name
 
     def construction_args( self ):
-        return ( self.user_function, self.args )
+        return ( self.user_function, self.args, self.namespace_name )
 
 class EeyUserFunction( EeyFunction ):
     def __init__( self, name, ret_type, arg_types_and_names, body_stmts ):
@@ -197,10 +212,11 @@ class EeyUserFunction( EeyFunction ):
         return ( self.name, self.ret_type, self.arg_types_and_names,
             self.body_stmts )
 
-    def return_type( self ):
+    def return_type( self, env, args ):
         return self.ret_type
 
     def args_match( self, env, args ):
+
         if len( args ) != len( self.arg_types_and_names ):
             return False
 
@@ -226,7 +242,7 @@ class EeyUserFunction( EeyFunction ):
                     return ev_st.value.evaluate( newenv )
             return EeyPass()
         else:
-            return EeyRuntimeUserFunction( self, args )
+            return EeyRuntimeUserFunction( self, args, None )
 
     def execution_environment( self, env, args, known ):
         newenv = env.clone_deeper()
@@ -235,7 +251,7 @@ class EeyUserFunction( EeyFunction ):
             if known:
                 val = val.evaluate( env )
             else:
-                val = EeyVariable( tp.evaluate( env ) )
+                val = EeyVariable( tp.evaluate( env ), name.name() )
             newenv.namespace[name.name()] = val
 
         return newenv
@@ -261,7 +277,11 @@ class EeyDef( EeyValue ):
         nm = self.name.name()
 
         fn = EeyUserFunction(
-            nm, self.ret_type, self.arg_types_and_names, self.body_stmts )
+            nm,
+            self.ret_type.evaluate( env ),
+            self.arg_types_and_names,
+            self.body_stmts
+        )
 
         if nm in env.namespace:
             val = env.namespace[nm]
@@ -275,7 +295,7 @@ class EeyDef( EeyValue ):
             val.append( fn )
 
         else:
-            env.namespace[nm] = EeyFunctionOverloadList( fn )
+            env.namespace[nm] = EeyFunctionOverloadList( [fn] )
 
         return self
 

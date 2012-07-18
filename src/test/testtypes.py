@@ -21,7 +21,7 @@ def test_Bool_evaluated_type():
 def test_Variable_evaluated_type():
     env = EeyEnvironment( None )
     assert_equal(
-        EeyVariable( EeyType( EeyString ) ).evaluated_type( env ),
+        EeyVariable( EeyType( EeyString ), "x" ).evaluated_type( env ),
         EeyType( EeyString )
     )
 
@@ -50,7 +50,7 @@ def test_Known_Symbol_evaluated_type():
 def test_Unknown_Symbol_evaluated_type():
     env = EeyEnvironment( None )
     init = EeyInit( EeyType( EeyString ), EeySymbol( "x" ), EeyVariable(
-        EeyType( EeyString ) ) )
+        EeyType( EeyString ), "x" ) )
     init.evaluate( env )
 
     assert_equal( EeySymbol( "x" ).evaluated_type( env ), EeyType( EeyString ) )

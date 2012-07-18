@@ -13,5 +13,5 @@ MyClass mc = MyClass.init( len( sys.argv ), 1.5 )
 
 print( mc.a )
 print( mc.b )
-#print( mc.meth() )
+print( mc.meth() )
 

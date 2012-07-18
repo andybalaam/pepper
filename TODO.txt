@@ -1,5 +1,20 @@
 
 
+
+
+- Tests for all the changes I made to get methods working
+
+- Make argument order consistent in call, return_type etc.
+
+- Break into lots of separate files and dirs
+
+- Remove special cases for def_init - it can work just like any method I think
+
+- Remove name from EeyVariable - only needed by EeyRuntimeInstance
+
+- Combine EeyInstance with EeyRuntimeInstance?
+
+
 - Overloading at runtime
   + Only one definition of function rendered when called multiple times
   - Multiple calls with different types mean multiple fns rendered, with

@@ -42,12 +42,13 @@ class EeyValue( object ):
 # --- Specific value types ---
 
 class EeyVariable( EeyValue ):
-    def __init__( self, clazz ):
+    def __init__( self, clazz, name ):
         EeyValue.__init__( self )
         self.clazz = clazz
+        self.name = name
 
     def construction_args( self ):
-        return ( self.clazz, )
+        return ( self.clazz, self.name )
 
     def is_known( self, env ):
         return False
@@ -93,10 +94,11 @@ class EeySymbol( EeyValue ):
         if len( spl ) == 1: # No more dotted elements in the name, return
             return ( namespace, this_ns_name, base_sym )
         else:
+            self._check_contains( namespace, this_ns_name, base_sym )
+
             if base_sym != "":
                 base_sym += "."
             base_sym += this_ns_name
-            self._check_contains( namespace, this_ns_name, base_sym )
 
             new_ns_holder = namespace[this_ns_name].evaluate( env )
 
@@ -130,6 +132,7 @@ class EeySymbol( EeyValue ):
         return self.symbol_name
 
     def do_evaluate( self, env ):
+
         # Look up this symbol in the namespace of our environment
         value = self._lookup( env ).evaluate( env )
 
@@ -308,6 +311,12 @@ class EeyTypeMatcher():
         """
         pass
 
+    @abstractmethod
+    def instance( self, name ):
+        """
+        Create an object representing a runtime instance of this class.
+        """
+        pass
 
 class EeyEmptyNamespace( object ):
 
@@ -344,6 +353,9 @@ class EeyType( EeyValue, EeyTypeMatcher ):
 
     def underlying_class( self ):
         return self.value
+
+    def instance( self, name ):
+        return EeyVariable( self, name )
 
     def get_namespace( self ):
         return EeyEmptyNamespace()
