@@ -5,127 +5,59 @@ from libeeyore.builtins import *
 from libeeyore.environment import EeyEnvironment
 from libeeyore.values import *
 
-def test_true():
+def assert_defined( name, expected_class, expected_value = None ):
     env = EeyEnvironment( None )
     add_builtins( env )
 
-    value = EeySymbol( "True" )
+    value = EeySymbol( name )
     ans = value.evaluate( env )
 
-    assert_equal( ans.__class__, EeyBool )
-    assert_equal( ans.value, True )
+    assert_equal( ans.__class__, expected_class )
 
+    if expected_value != None:
+        assert_equal( ans.value, expected_value )
 
-def test_false():
-    env = EeyEnvironment( None )
-    add_builtins( env )
+# Statements
+def test_pass():
+    assert_defined( "pass", EeyPass )
 
-    value = EeySymbol( "False" )
-    ans = value.evaluate( env )
+# Values
+def test_False():
+    assert_defined( "False", EeyBool, False )
 
-    assert_equal( ans.__class__, EeyBool )
-    assert_equal( ans.value, False )
+def test_True():
+    assert_defined( "True", EeyBool, True )
 
-def test_len():
-    env = EeyEnvironment( None )
-    add_builtins( env )
-
-    value = EeySymbol( "len" )
-    ans = value.evaluate( env )
-
-    assert_equal( ans.__class__, EeyLen )
-
-def test_print():
-    env = EeyEnvironment( None )
-    add_builtins( env )
-
-    value = EeySymbol( "print" )
-    ans = value.evaluate( env )
-
-    assert_equal( ans.__class__, EeyPrint )
-
-
-def test_int():
-    env = EeyEnvironment( None )
-    add_builtins( env )
-
-    value = EeySymbol( "int" )
-    ans = value.evaluate( env )
-
-    assert_equal( ans.__class__, EeyType )
-    assert_equal( ans.value, EeyInt )
-
+# Types
+def test_bool():
+    assert_defined( "bool", EeyType, EeyBool )
 
 def test_float():
-    env = EeyEnvironment( None )
-    add_builtins( env )
+    assert_defined( "float", EeyType, EeyFloat )
 
-    value = EeySymbol( "float" )
-    ans = value.evaluate( env )
-
-    assert_equal( ans.__class__, EeyType )
-    assert_equal( ans.value, EeyFloat )
-
+def test_int():
+    assert_defined( "int", EeyType, EeyInt )
 
 def test_string():
-    env = EeyEnvironment( None )
-    add_builtins( env )
+    assert_defined( "string", EeyType, EeyString )
 
-    value = EeySymbol( "string" )
-    ans = value.evaluate( env )
+def test_void():
+    assert_defined( "void", EeyType, EeyVoid )
 
-    assert_equal( ans.__class__, EeyType )
-    assert_equal( ans.value, EeyString )
+def test_type():
+    assert_defined( "type", EeyType, EeyType )
 
-
-def test_bool():
-    env = EeyEnvironment( None )
-    add_builtins( env )
-
-    value = EeySymbol( "bool" )
-    ans = value.evaluate( env )
-
-    assert_equal( ans.__class__, EeyType )
-    assert_equal( ans.value, EeyBool )
-
-def test_print_return_type_is_none():
-    assert_equal( EeyPrint().return_type( None, () ), EeyType( EeyNoneType ) )
+# Functions
+def test_len():
+    assert_defined( "len", EeyLen )
 
 def test_len_return_type_is_int():
     assert_equal( EeyLen().return_type( None, () ), EeyType( EeyInt ) )
 
+def test_print():
+    assert_defined( "print", EeyPrint )
 
-def test_void():
-    env = EeyEnvironment( None )
-    add_builtins( env )
-
-    value = EeySymbol( "void" )
-    ans = value.evaluate( env )
-
-    assert_equal( ans.__class__, EeyType )
-    assert_equal( ans.value, EeyVoid )
-
-
-
-def test_pass():
-    env = EeyEnvironment( None )
-    add_builtins( env )
-
-    value = EeySymbol( "pass" )
-    ans = value.evaluate( env )
-
-    assert_equal( ans.__class__, EeyPass )
-
-
-
-def test_type():
-    env = EeyEnvironment( None )
-    add_builtins( env )
-
-    value = EeySymbol( "type" )
-    ans = value.evaluate( env )
-
-    assert_equal( ans.__class__, EeyType )
-
+def test_print_return_type_is_none():
+    assert_equal( EeyPrint().return_type( None, () ), EeyType( EeyNoneType ) )
 
 
