@@ -16,6 +16,8 @@
 
 - Move arg_types_and_names into EeyFunction
 
+- Rename EeyInstanceMethod to EeyInstanceUserMethod?
+
 - Overloading at runtime
   + Only one definition of function rendered when called multiple times
   - Multiple calls with different types mean multiple fns rendered, with
