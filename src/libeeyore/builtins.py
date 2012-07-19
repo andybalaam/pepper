@@ -51,9 +51,6 @@ class EeyLen( EeyFunction ):
     def construction_args( self ):
         return ()
 
-    def get_fn( self, args, env ):
-        return self
-
     def call( self, env, args ):
         return EeyRuntimeLen( args )
 
