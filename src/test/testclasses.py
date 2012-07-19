@@ -348,3 +348,62 @@ def test_Class_reports_properties_available():
     assert_true( "foo" not in cls.get_namespace() )
 
 
+
+class FakeFn( object ):
+    def call( self, env, args ):
+        return "FakeFn ret val"
+
+class FakeClass( object ):
+    def __init__( self ):
+        self.name = "FakeClass"
+
+    def get_namespace( self ):
+        return {}
+
+def create_method():
+    clazz = FakeClass()
+    instance = EeyInstance( clazz )
+    fn = FakeFn()
+    return EeyInstanceMethod( instance, fn )
+
+def test_Calling_a_method_with_known_args_returns_the_answer():
+
+    # Create a method on an instance, which uses a function we expect
+    # to be called
+    meth = create_method()
+
+    # This is what we are testing: the underlying function was called
+    assert_equal(
+        "FakeFn ret val",
+        meth.call( "env", ( EeyInt( "3" ), EeyInt( "4" ) ) )
+    )
+
+def test_Calling_a_method_with_unknown_args_returns_a_runtime_function():
+
+    # Create a method on an instance
+    meth = create_method()
+
+    # This is what we are testing: we returned an EeyRuntimeUserFunction
+    # because an argument was unknown
+    assert_equal(
+        EeyRuntimeUserFunction,
+        meth.call(
+            "env", ( EeyInt( "3" ), EeyVariable( EeyInt, "x" ) ) ).__class__
+    )
+
+def test_Calling_a_method_with_unknown_instance_returns_a_runtime_function():
+
+    # Create a method on a runtime instance
+    clazz = FakeClass()
+    instance = EeyRuntimeInstance( clazz, "inst" )
+    fn = FakeFn()
+    meth = EeyInstanceMethod( instance, fn )
+
+    # This is what we are testing: we returned an EeyRuntimeUserFunction
+    # because the instance was unknown
+    assert_equal(
+        EeyRuntimeUserFunction,
+        meth.call(
+            "env", ( EeyInt( "3" ), EeyInt( "3" ) ) ).__class__
+    )
+
