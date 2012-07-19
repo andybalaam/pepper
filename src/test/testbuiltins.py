@@ -35,6 +35,16 @@ def test_len():
 
     assert_equal( ans.__class__, EeyLen )
 
+def test_print():
+    env = EeyEnvironment( None )
+    add_builtins( env )
+
+    value = EeySymbol( "print" )
+    ans = value.evaluate( env )
+
+    assert_equal( ans.__class__, EeyPrint )
+
+
 def test_int():
     env = EeyEnvironment( None )
     add_builtins( env )
@@ -105,5 +115,17 @@ def test_pass():
     ans = value.evaluate( env )
 
     assert_equal( ans.__class__, EeyPass )
+
+
+
+def test_type():
+    env = EeyEnvironment( None )
+    add_builtins( env )
+
+    value = EeySymbol( "type" )
+    ans = value.evaluate( env )
+
+    assert_equal( ans.__class__, EeyType )
+
 
 
