@@ -490,4 +490,60 @@ def test_args_dont_match_error_when_they_do():
         )
     )
 
+def test_Overloaded_functions_supply_correct_return_type_based_on_args():
+    env = EeyEnvironment( EeyCppRenderer() )
+    add_builtins( env )
+
+    # Make a function taking ints, and another taking strings, with different
+    # return types
+
+    int_function = EeyUserFunction(
+        "int_function",
+        EeyType( EeyFloat ),
+        (
+            ( EeySymbol( "int" ), EeySymbol( "a1" ) ),
+            ( EeySymbol( "int" ), EeySymbol( "a2" ) ),
+        ),
+        ( EeyPass(), )
+    )
+
+    string_function = EeyUserFunction(
+        "string_function",
+        EeyType( EeyInt ),
+        (
+            ( EeySymbol( "string" ), EeySymbol( "b1" ) ),
+            ( EeySymbol( "string" ), EeySymbol( "b2" ) ),
+        ),
+        ( EeyPass(), )
+    )
+
+    # Make an overload list that consists of these 2 functions
+
+    overload = EeyFunctionOverloadList( [ int_function, string_function ] )
+
+    # Set up some variables to use as arguments
+
+    env.namespace["i1"] = EeyInt( "3" )
+    env.namespace["i2"] = EeyInt( "4" )
+    env.namespace["s1"] = EeyString( "s1" )
+    env.namespace["s2"] = EeyString( "s2" )
+
+    s_i1 = EeySymbol( "i1" )
+    s_i2 = EeySymbol( "i2" )
+    s_s1 = EeySymbol( "s1" )
+    s_s2 = EeySymbol( "s2" )
+
+    # This is what we are testing: ask for the overload's return type,
+    # supplying arguments to disambiguate which function we really mean
+
+    assert_equal(
+        EeyType( EeyFloat ),
+        overload.return_type( env, ( s_i1, s_i2 ) )
+    )
+
+    assert_equal(
+        EeyType( EeyInt ),
+        overload.return_type( env, ( s_s1, s_s2 ) )
+    )
+
 
