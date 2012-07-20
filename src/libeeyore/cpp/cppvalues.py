@@ -92,7 +92,7 @@ def render_EeyInit( env, value ):
         # TODO: avoid use of isinstance?
         if isinstance( ev_var_type, EeyUserClass ):
             # Remember the variable name in the renderer - we will use it
-            # in render_EeyRuntimeInstance, which needs to know it even
+            # in render_EeyRuntimeInit, which needs to know it even
             # though it shouldn't, because the init function is converted
             # from a normal one to one that passes the instance as its
             # first argument.
@@ -230,7 +230,7 @@ def render_EeyRuntimeInit( env, value ):
     )
 
 def render_EeyRuntimeInstance( env, value ):
-    return value.name
+    return value.var_name
 
 def render_EeyFunctionCall( env, value ):
     fn = value.func.evaluate( env )
@@ -248,9 +248,6 @@ def render_EeyClass( env, value ):
 
 def render_EeyUserClass( env, value ):
     return value.name
-
-def render_EeyInstance( env, value ):
-    return ""
 
 def render_EeyArrayLookup( env, value ):
     # TODO: handle large numbers

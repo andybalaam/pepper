@@ -19,18 +19,18 @@ def test_Float_doesnt_match_Int():
 
 def test_Int_doesnt_match_class_instance():
     the_type = EeyType( EeyFloat )
-    the_value = EeyUserClass( "MyClass", (), (EeyPass(),) ).create_instance()
+    the_value = EeyUserClass( "MyClass", (), (EeyPass(),) ).known_instance()
     assert_false( the_type.matches( the_value.evaluated_type( env ) ) )
 
 def test_Class_matches_instance():
     the_type = EeyUserClass( "MyClass", (), (EeyPass(),) )
-    the_value = the_type.create_instance()
+    the_value = the_type.known_instance()
     assert_true( the_type.matches( the_value.evaluated_type( env ) ) )
 
 def test_Class_doesnt_match_instance_of_other():
     the_type = EeyUserClass( "MyClass", (), (EeyPass(),) )
     the_other_type = EeyUserClass( "MyOtherClass", (), (EeyPass(),) )
-    the_value = the_other_type.create_instance()
+    the_value = the_other_type.known_instance()
     assert_false( the_type.matches( the_value.evaluated_type( env ) ) )
 
 def test_Class_doesnt_match_Int():

@@ -92,8 +92,8 @@ def test_Init_returns_a_new_instance():
     value = EeyFunctionCall( EeySymbol( "MyClass.init" ), () )
     ev_value = value.evaluate( env )
 
-    assert_equal( ev_value.__class__, EeyInstance )
-    assert_equal( ev_value.get_class_name(), "MyClass" )
+    assert_equal( EeyKnownInstance, ev_value.__class__ )
+    assert_equal( "MyClass", ev_value.clazz.name )
 
 
 def test_Init_with_arg_returns_new_instance_constructed_with_arg():
@@ -362,7 +362,7 @@ class FakeClass( object ):
 
 def create_method():
     clazz = FakeClass()
-    instance = EeyInstance( clazz )
+    instance = EeyKnownInstance( clazz )
     fn = FakeFn()
     return EeyInstanceMethod( instance, fn )
 
@@ -408,9 +408,13 @@ def test_Calling_a_method_with_unknown_instance_returns_a_runtime_function():
     )
 
 
+class MyInstance( EeyInstance ):
+    def construction_args( self ):
+        pass
+
 def test_Instances_return_their_own_values_overriding_class_values():
     clazz = FakeClass()
-    inst = EeyInstance( clazz )
+    inst = MyInstance( clazz )
 
     # Put values into both the class and the instance (instance first to
     # avoid errors if I decide it is an error to override in a subnamespace)
@@ -431,7 +435,7 @@ def test_Instances_return_class_values_where_they_have_nothing():
             return self.namespace
 
     clazz = MyClass()
-    inst = EeyInstance( clazz )
+    inst = MyInstance( clazz )
 
     # Put a values into the class
     clazz.get_namespace()["a"] = "class_value"
@@ -450,7 +454,7 @@ def test_Instance_returns_a_method_when_class_holds_a_function():
             return self.namespace
 
     clazz = MyClass()
-    inst = EeyInstance( clazz )
+    inst = MyInstance( clazz )
     fn = "fake_fn"
 
     # Put values into both the class and the instance

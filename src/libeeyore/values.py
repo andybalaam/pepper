@@ -312,7 +312,7 @@ class EeyTypeMatcher():
         pass
 
     @abstractmethod
-    def instance( self, name ):
+    def runtime_instance( self, name ):
         """
         Create an object representing a runtime instance of this class.
         """
@@ -354,7 +354,7 @@ class EeyType( EeyValue, EeyTypeMatcher ):
     def underlying_class( self ):
         return self.value
 
-    def instance( self, name ):
+    def runtime_instance( self, name ):
         return EeyVariable( self, name )
 
     def get_namespace( self ):

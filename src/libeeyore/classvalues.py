@@ -141,14 +141,30 @@ class EeyInstance( EeyValue ):
     def get_class_name( self ):
         return self.clazz.name
 
-    def construction_args( self ):
-        return ( self.clazz, )
+    def get_namespace( self ):
+        return self.namespace
 
     def evaluated_type( self, env ):
         return self.clazz
 
-    def get_namespace( self ):
-        return self.namespace
+
+class EeyKnownInstance( EeyInstance ):
+    def construction_args( self ):
+        return ( self.clazz )
+
+    def is_known( self, env ):
+        return True
+
+class EeyRuntimeInstance( EeyInstance ):
+    def __init__( self, clazz, var_name ):
+        EeyInstance.__init__( self, clazz )
+        self.var_name = var_name
+
+    def construction_args( self ):
+        return ( self.clazz, self.var_name )
+
+    def is_known( self, env ):
+        return False
 
 
 class EeyRuntimeInit( EeyValue ):
@@ -163,11 +179,6 @@ class EeyRuntimeInit( EeyValue ):
         return ( self.instance, self.args, self.init_fn )
 
 
-class FakeInstance( EeyInstance ):
-    def __init__( self, clazz ):
-        self.clazz = clazz
-
-
 class EeyInitMethod( EeyFunction ):
     def __init__( self, user_class ):
         EeyFunction.__init__( self )
@@ -175,14 +186,14 @@ class EeyInitMethod( EeyFunction ):
 
     def call( self, env, args ):
         if all_known( args, env ):
-            ret = self.user_class.create_instance()
+            ret = self.user_class.known_instance()
             if INIT_IMPL_NAME in self.user_class.namespace:
                 self.user_class.namespace[INIT_IMPL_NAME].call(
                     env, (ret,) + args )
             # TODO: else default constructor
             return ret
         else:
-            inst = self.user_class.create_instance()
+            inst = self.user_class.runtime_instance( "" )
             return EeyRuntimeInit(
                 inst,
                 args,
@@ -202,7 +213,7 @@ class EeyInitMethod( EeyFunction ):
         # call to matches() on the EeyUserClass, and put it on the beginning
         # of the args array before we match against the user-defined init
         # method.
-        self_plus_args = [ FakeInstance( self.user_class ) ] + args
+        self_plus_args = [ EeyKnownInstance( self.user_class ) ] + args
 
         return self.user_class.namespace[INIT_IMPL_NAME].args_match(
             self_plus_args )
@@ -210,26 +221,6 @@ class EeyInitMethod( EeyFunction ):
     def construction_args( self ):
         return ( self.user_class, )
 
-
-class EeyRuntimeInstance( EeyValue ):
-    def __init__( self, clazz, name ):
-        EeyValue.__init__( self )
-        self.clazz = clazz
-        self.name = name
-        self.namespace = EeyInstanceNamespace(
-            self, self.clazz.get_namespace() )
-
-    def construction_args( self ):
-        return ( self.clazz, self.name )
-
-    def get_namespace( self ):
-        return self.namespace
-
-    def evaluated_type( self, env ):
-        return self.clazz
-
-    def is_known( self, env ):
-        return False
 
 class EeyUserClass( EeyValue, EeyTypeMatcher ):
     def __init__( self, name, base_classes, body_stmts ):
@@ -243,8 +234,11 @@ class EeyUserClass( EeyValue, EeyTypeMatcher ):
     def is_known( self, env ):
         return True # TODO - not always known
 
-    def instance( self, name ):
+    def runtime_instance( self, name ):
         return EeyRuntimeInstance( self, name )
+
+    def known_instance( self ):
+        return EeyKnownInstance( self )
 
     def do_evaluate( self, env ):
         self.namespace = EeyNamespace( env.namespace )
@@ -283,9 +277,6 @@ class EeyUserClass( EeyValue, EeyTypeMatcher ):
 
     def construction_args( self ):
         return ( self.name, self.base_classes, self.body_stmts )
-
-    def create_instance( self ):
-        return EeyInstance( self )
 
     def matches( self, other ):
         """

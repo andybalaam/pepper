@@ -149,7 +149,7 @@ class EeyInit( EeyValue ):
             if val.is_known( env ):
                 return val
             else:
-                return tp.instance( nm )
+                return tp.runtime_instance( nm )
 
         ns.overwrite( nm, make_value() )
 
