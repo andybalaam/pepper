@@ -54,7 +54,7 @@ class EeyVariable( EeyValue ):
         return False
 
     def evaluated_type( self, env ):
-        return self.clazz.evaluate( env )
+        return self.clazz
 
     def get_namespace( self ):
         return self.clazz.get_namespace()

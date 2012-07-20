@@ -145,7 +145,7 @@ class EeyInstance( EeyValue ):
         return ( self.clazz, )
 
     def evaluated_type( self, env ):
-        return self.clazz.evaluate( env )
+        return self.clazz
 
     def get_namespace( self ):
         return self.namespace
@@ -226,7 +226,7 @@ class EeyRuntimeInstance( EeyValue ):
         return self.namespace
 
     def evaluated_type( self, env ):
-        return self.clazz.evaluate( env )
+        return self.clazz
 
     def is_known( self, env ):
         return False
