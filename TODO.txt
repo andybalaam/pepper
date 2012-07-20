@@ -5,6 +5,9 @@
 
 - Move arg_types_and_names into EeyFunction
 
+- Ensure local variables can't hide wider-scope variables with the same
+  name, but class members _can_ have the same name as something in scope.
+
 - Overloading at runtime
   + Only one definition of function rendered when called multiple times
   - Multiple calls with different types mean multiple fns rendered, with
