@@ -342,3 +342,67 @@ int main( int argc, char* argv[] )
     )
 
 
+
+def test_Render_runtime_method_call():
+    env = EeyEnvironment( EeyCppRenderer() )
+    add_builtins( env )
+
+    env.namespace['a'] = EeyVariable( EeyType( EeyInt ), "a" )
+
+    cls = EeyClass(
+        EeySymbol( 'MyClass' ),
+        (),
+        (
+            EeyDefInit(
+                (
+                    ( EeySymbol('MyClass'), EeySymbol('self') ),
+                    ( EeySymbol('int'), EeySymbol('x') ),
+                ),
+                ( EeyPass(), )
+            ),
+            EeyDef(
+                EeySymbol('void'),
+                EeySymbol('my_meth'),
+                ( ( EeySymbol('MyClass'), EeySymbol('self') ), ),
+                ( EeyPass(), )
+            )
+        )
+    )
+
+    init = EeyInit(
+        EeySymbol( 'MyClass' ),
+        EeySymbol( 'mc' ),
+        EeyFunctionCall( EeySymbol( 'MyClass.init' ), ( EeySymbol( "a" ), ) )
+    )
+
+    meth = EeyFunctionCall( EeySymbol( "mc.my_meth" ), () )
+
+    ans = env.renderer.render_exe( [ cls, init, meth ], env )
+
+    assert_equal(
+        """
+struct MyClass
+{
+};
+
+void MyClass_eey_c_eey___init__( MyClass& self, int x )
+{
+}
+
+void MyClass_eey_c_eey_my_meth( MyClass& self )
+{
+}
+
+int main( int argc, char* argv[] )
+{
+    MyClass mc; MyClass_eey_c_eey___init__( mc, a );
+    MyClass_eey_c_eey_my_meth( mc );
+
+    return 0;
+}
+""",
+        ans
+    )
+
+
+
