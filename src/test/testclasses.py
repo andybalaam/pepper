@@ -407,3 +407,64 @@ def test_Calling_a_method_with_unknown_instance_returns_a_runtime_function():
             "env", ( EeyInt( "3" ), EeyInt( "3" ) ) ).__class__
     )
 
+
+def test_Instances_return_their_own_values_overriding_class_values():
+    clazz = FakeClass()
+    inst = EeyInstance( clazz )
+
+    # Put values into both the class and the instance (instance first to
+    # avoid errors if I decide it is an error to override in a subnamespace)
+    inst.get_namespace()["a"] = "return_me"
+    clazz.get_namespace()["a"] = "dont_return_me"
+
+    # This is what we are testing: the instance one wins
+    assert_equal( "return_me", inst.get_namespace()["a"] )
+
+
+def test_Instances_return_class_values_where_they_have_nothing():
+
+    class MyClass( object ):
+        def __init__( self ):
+            self.namespace = EeyNamespace()
+
+        def get_namespace( self ):
+            return self.namespace
+
+    clazz = MyClass()
+    inst = EeyInstance( clazz )
+
+    # Put a values into the class
+    clazz.get_namespace()["a"] = "class_value"
+
+    # This is what we are testing: we find it in the class
+    assert_equal( "class_value", inst.get_namespace()["a"] )
+
+
+def test_Instance_returns_a_method_when_class_holds_a_function():
+
+    class MyClass( object ):
+        def __init__( self ):
+            self.namespace = EeyNamespace()
+
+        def get_namespace( self ):
+            return self.namespace
+
+    clazz = MyClass()
+    inst = EeyInstance( clazz )
+    fn = "fake_fn"
+
+    # Put values into both the class and the instance
+    clazz.get_namespace()["a"] = EeyFunctionOverloadList( [fn] )
+
+    # This is what we are testing: get the function out via the instance
+    ans = inst.get_namespace()["a"]
+
+    # The function was wrapped as a method
+    ans_fn = ans._list[0]
+    assert_equal( EeyInstanceMethod, ans_fn.__class__ )
+    assert_equal( inst, ans_fn.instance )
+    assert_equal( fn, ans_fn.fn )
+
+
+
+
