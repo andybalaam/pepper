@@ -18,10 +18,10 @@ class EeyPrint( EeyFunction ):
     def construction_args( self ):
         return ()
 
-    def call( self, env, args ):
+    def call( self, args, env ):
         return EeyRuntimePrint( args )
 
-    def return_type( self, env, args ):
+    def return_type( self, args, env ):
         return EeyType( EeyNoneType )
 
     def args_match( self, args ):
@@ -51,10 +51,10 @@ class EeyLen( EeyFunction ):
     def construction_args( self ):
         return ()
 
-    def call( self, env, args ):
+    def call( self, args, env ):
         return EeyRuntimeLen( args )
 
-    def return_type( self, env, args ):
+    def return_type( self, args, env ):
         return EeyType( EeyInt )
 
     def args_match( self, args ):

@@ -88,9 +88,9 @@ class EeyInstanceMethod( EeyFunction ):
     def _instance_plus_args( self, args ):
         return (self.instance,) + args
 
-    def call( self, env, args ):
+    def call( self, args, env ):
         if all_known( args + (self.instance,), env ):
-            return self.fn.call( env, self._instance_plus_args( args ) )
+            return self.fn.call( self._instance_plus_args( args ), env )
         else:
             return EeyRuntimeUserFunction(
                 self.fn,
@@ -98,11 +98,11 @@ class EeyInstanceMethod( EeyFunction ):
                 self.instance.clazz.name
             )
 
-    def return_type( self, env, args ):
-        return self.fn.return_type( env, self._instance_plus_args( args ) )
+    def return_type( self, args, env ):
+        return self.fn.return_type( self._instance_plus_args( args ), env )
 
-    def args_match( self, env, args ):
-        return self.fn.args_match( env, self._instance_plus_args( args ) )
+    def args_match( self, args, env ):
+        return self.fn.args_match( self._instance_plus_args( args ), env )
 
     def is_known( self, env ):
         return self.instance.is_known( env )
@@ -184,12 +184,12 @@ class EeyInitMethod( EeyFunction ):
         EeyFunction.__init__( self )
         self.user_class = user_class
 
-    def call( self, env, args ):
+    def call( self, args, env ):
         if all_known( args, env ):
             ret = self.user_class.known_instance()
             if INIT_IMPL_NAME in self.user_class.namespace:
                 self.user_class.namespace[INIT_IMPL_NAME].call(
-                    env, (ret,) + args )
+                    (ret,) + args, env )
             # TODO: else default constructor
             return ret
         else:
@@ -198,10 +198,10 @@ class EeyInitMethod( EeyFunction ):
                 inst,
                 args,
                 self.user_class.namespace[INIT_IMPL_NAME].call(
-                    env, (inst,) + args )
+                    (inst,) + args, env )
             )
 
-    def return_type( self, env, args ):
+    def return_type( self, args, env ):
         return self.user_class
 
     def args_match( self, args ):

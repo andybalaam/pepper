@@ -23,7 +23,7 @@ def _render_with_semicolon( value, env ):
         ret += ";"
     return ret
 
-def _function_signature_string( env, user_function ):
+def _function_signature_string( user_function, env ):
     ret = user_function.name
     ret += "_eey_s_eey_"
     ret += "_eey_s_eey_".join(
@@ -45,10 +45,10 @@ class EeyCppRenderer( object ):
         if header not in self._headers:
             self._headers.append( header )
 
-    def add_function( self, env, runtime_function ):
+    def add_function( self, runtime_function, env ):
 
         signature = _function_signature_string(
-            env, runtime_function.user_function )
+            runtime_function.user_function, env )
 
         if runtime_function.namespace_name is not None:
             name = runtime_function.namespace_name
@@ -72,13 +72,13 @@ class EeyCppRenderer( object ):
                 name = _overload_name( name, num_overloads )
 
             rendered = cppvalues.render_EeyUserFunction_body(
-                env, name, runtime_function )
+                name, runtime_function, env )
 
             overloads[signature] = ( name, rendered )
 
         return name
 
-    def add_def_init( self, env, runtime_instance ):
+    def add_def_init( self, runtime_instance, env ):
 
         fn = runtime_instance.init_fn.user_function
 
@@ -99,14 +99,14 @@ class EeyCppRenderer( object ):
             runtime_instance.instance.clazz.name
         )
 
-        return self.add_function( env, init_style_fn )
+        return self.add_function( init_style_fn, env )
 
 
-    def add_class( self, env, clazz ):
+    def add_class( self, clazz, env ):
         # TODO: handle clashes - if same, no problem, if different, fail?
         name = clazz.name
         self._classes[ name ] = cppvalues.render_EeyUserClass_body(
-            env, name, clazz )
+            name, clazz, env )
 
 
 

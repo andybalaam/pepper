@@ -449,17 +449,23 @@ def test_args_match_for_calculated_type():
         )
     )
 
-    assert_true( fndecl.args_match( env,
-        (
-            EeySymbol( "a" ),
+    assert_true(
+        fndecl.args_match(
+            (
+                EeySymbol( "a" ),
+            ),
+            env
         )
-    ) )
+    )
 
-    assert_false( fndecl.args_match( env,
-        (
-            EeySymbol( "b" ),
+    assert_false(
+        fndecl.args_match(
+            (
+                EeySymbol( "b" ),
+            ),
+            env
         )
-    ) )
+    )
 
 
 @raises( AssertionError )
@@ -484,10 +490,10 @@ def test_args_dont_match_error_when_they_do():
     # Should throw since the args do match!
     overload.args_dont_match_error(
         fndecl,
-        env,
         (
             EeySymbol( "a" ),
-        )
+        ),
+        env
     )
 
 def test_Overloaded_functions_supply_correct_return_type_based_on_args():
@@ -538,12 +544,12 @@ def test_Overloaded_functions_supply_correct_return_type_based_on_args():
 
     assert_equal(
         EeyType( EeyFloat ),
-        overload.return_type( env, ( s_i1, s_i2 ) )
+        overload.return_type( ( s_i1, s_i2 ), env )
     )
 
     assert_equal(
         EeyType( EeyInt ),
-        overload.return_type( env, ( s_s1, s_s2 ) )
+        overload.return_type( ( s_s1, s_s2 ), env )
     )
 
 

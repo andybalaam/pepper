@@ -265,8 +265,8 @@ def test_Choose_runtime_overload_by_evaluated_type():
         None
     )
 
-    assert_equal( env.renderer.add_function( env, rtfn1 ), "myfn" )
-    assert_equal( env.renderer.add_function( env, rtfn2 ), "myfn_eey_1" )
+    assert_equal( env.renderer.add_function( rtfn1, env ), "myfn" )
+    assert_equal( env.renderer.add_function( rtfn2, env ), "myfn_eey_1" )
 
 
 

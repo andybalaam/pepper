@@ -78,7 +78,7 @@ class EeySymbol( EeyValue ):
             # TODO: say where we were looking
 
 
-    def _do_find_namespace_and_name( self, sym, base_sym, env, namespace ):
+    def _do_find_namespace_and_name( self, sym, base_sym, namespace, env ):
         """
         @return (namespace, name, base_name) where:
                     namespace is the namespace in which this symbol is found
@@ -114,18 +114,18 @@ class EeySymbol( EeyValue ):
             new_ns = new_ns_holder.get_namespace()
 
             return self._do_find_namespace_and_name(
-                spl[1], base_sym, env, new_ns )
+                spl[1], base_sym, new_ns, env )
 
     def _lookup( self, env ):
         (namespace, name, base_sym) = self._do_find_namespace_and_name(
-            self.symbol_name, "", env, env.namespace )
+            self.symbol_name, "", env.namespace, env )
 
         self._check_contains( namespace, name, base_sym )
         return namespace[name]
 
     def find_namespace_and_name( self, env ):
         return self._do_find_namespace_and_name(
-            self.symbol_name, "", env, env.namespace )
+            self.symbol_name, "", env.namespace, env )
 
     def name( self ):
         # TODO: delete this method, or use it consistently

@@ -32,7 +32,7 @@ class EeyFunctionCall( EeyValue ):
         if self.is_known( env ):
             fn = self.func.evaluate( env )
             assert is_callable( fn ) # TODO: not assert
-            return fn.call( env, self.args )
+            return fn.call( self.args, env )
         else:
             return self
 
@@ -40,7 +40,7 @@ class EeyFunctionCall( EeyValue ):
         return all_known( self.args + (self.func,), env )
 
     def evaluated_type( self, env ):
-        return self.func.evaluate( env ).return_type( env, self.args )
+        return self.func.evaluate( env ).return_type( self.args, env )
 
 class EeyReturn( EeyValue ):
     def __init__( self, value ):
@@ -52,10 +52,10 @@ class EeyReturn( EeyValue ):
 
 class EeyCallable( EeyValue ):
     @abstractmethod
-    def call( self, env, args ): pass
+    def call( self, args, env ): pass
 
     @abstractmethod
-    def return_type( self, env, args ): pass
+    def return_type( self, args, env ): pass
 
 
 class EeyFunction( EeyCallable ):
@@ -85,31 +85,31 @@ class EeyFunctionOverloadList( EeyCallable ):
     def append( self, fn ):
         self._list.append( fn )
 
-    def return_type( self, env, args ):
-        return self._get_fn( args, env ).return_type( env, args )
+    def return_type( self, args, env ):
+        return self._get_fn( args, env ).return_type( args, env )
 
     def _get_fn( self, args, env ):
         for fn in reversed( self._list ):
-            if fn.args_match( env, args ):
+            if fn.args_match( args, env ):
                 return fn
 
         return None
 
-    def call( self, env, args ):
+    def call( self, args, env ):
         assert( len( self._list ) > 0 )
 
         matching_fn = self._get_fn( args, env )
         if matching_fn is not None:
-            return matching_fn.call( env, args )
+            return matching_fn.call( args, env )
 
         # If we got here, no overload matched
         if len( self._list ) == 1:
             # Special error if there was only one overload
-            self.args_dont_match_error( self._list[0], env, args )
+            self.args_dont_match_error( self._list[0], args, env )
         else:
-            self.no_match_error( env, args )
+            self.no_match_error( args, env )
 
-    def args_dont_match_error( self, fn, env, args ):
+    def args_dont_match_error( self, fn, args, env ):
         if len( args ) != len( fn.arg_types_and_names ):
             raise EeyUserErrorException(
                 ( "Wrong number of arguments to function {fn_name}.  " +
@@ -142,7 +142,7 @@ class EeyFunctionOverloadList( EeyCallable ):
 
         assert False, "args_dont_match_error called when the args do match!"
 
-    def no_match_error( self, env, args ):
+    def no_match_error( self, args, env ):
         def type_plus_arg( arg ):
             assert "value" in arg.__dict__, (
                 "We don't support rendering unusual values nicely yet" ) #TODO
@@ -212,10 +212,10 @@ class EeyUserFunction( EeyFunction ):
         return ( self.name, self.ret_type, self.arg_types_and_names,
             self.body_stmts )
 
-    def return_type( self, env, args ):
+    def return_type( self, args, env ):
         return self.ret_type
 
-    def args_match( self, env, args ):
+    def args_match( self, args, env ):
 
         if len( args ) != len( self.arg_types_and_names ):
             return False
@@ -229,12 +229,12 @@ class EeyUserFunction( EeyFunction ):
 
         return True
 
-    def call( self, env, args ):
+    def call( self, args, env ):
         """You  must call args_match first and only call this if the return
         value was True"""
         if all_known( args, env ):
 
-            newenv = self.execution_environment( env, args, True )
+            newenv = self.execution_environment( args, True, env )
 
             for stmt in self.body_stmts:
                 ev_st = stmt.evaluate( newenv )
@@ -244,7 +244,7 @@ class EeyUserFunction( EeyFunction ):
         else:
             return EeyRuntimeUserFunction( self, args, None )
 
-    def execution_environment( self, env, args, known ):
+    def execution_environment( self, args, known, env ):
         newenv = env.clone_deeper()
 
         for val, (tp, name) in izip( args, self.arg_types_and_names ):

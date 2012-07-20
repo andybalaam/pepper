@@ -25,11 +25,11 @@ class FormatArgs( object ):
         return self.lst
 
 
-def append_print_arg( fmtstr, fmtargs, env, value ):
+def append_print_arg( fmtstr, fmtargs, value, env ):
 
     if value.__class__ is EeyPlus: # TODO: and if an arg is a string
-        append_print_arg( fmtstr, fmtargs, env, value.left_value )
-        append_print_arg( fmtstr, fmtargs, env, value.right_value )
+        append_print_arg( fmtstr, fmtargs, value.left_value, env )
+        append_print_arg( fmtstr, fmtargs, value.right_value, env )
         return
 
     if value.is_known( env ):
@@ -58,7 +58,7 @@ def append_print_arg( fmtstr, fmtargs, env, value ):
             + str( arg0.__class__ ) )
 
 
-def render_EeyRuntimePrint( env, value ):
+def render_EeyRuntimePrint( value, env ):
     assert( len( value.args ) == 1 ) # TODO: not an assert
     arg0 = value.args[0]
     #assert( arg0.__class__ is EeyString ) # TODO: not assert, less specific?
@@ -70,7 +70,7 @@ def render_EeyRuntimePrint( env, value ):
     fmtstr = FormatString( '"' )
     fmtargs = FormatArgs()
 
-    append_print_arg( fmtstr, fmtargs, env, arg0 )
+    append_print_arg( fmtstr, fmtargs, arg0, env )
 
     fmtstr.append( '\\n"' )
 
@@ -80,7 +80,7 @@ def render_EeyRuntimePrint( env, value ):
 
     return ret
 
-def render_EeyRuntimeLen( env, value ):
+def render_EeyRuntimeLen( value, env ):
     arg = value.arg.evaluate( env )
     assert( arg.__class__ == EeySysArgv ) # TODO other types
     return "argc"

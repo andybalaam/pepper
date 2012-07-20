@@ -350,7 +350,7 @@ def test_Class_reports_properties_available():
 
 
 class FakeFn( object ):
-    def call( self, env, args ):
+    def call( self, args, env ):
         return "FakeFn ret val"
 
 class FakeClass( object ):
@@ -375,7 +375,7 @@ def test_Calling_a_method_with_known_args_returns_the_answer():
     # This is what we are testing: the underlying function was called
     assert_equal(
         "FakeFn ret val",
-        meth.call( "env", ( EeyInt( "3" ), EeyInt( "4" ) ) )
+        meth.call( ( EeyInt( "3" ), EeyInt( "4" ) ), "env" )
     )
 
 def test_Calling_a_method_with_unknown_args_returns_a_runtime_function():
@@ -388,7 +388,7 @@ def test_Calling_a_method_with_unknown_args_returns_a_runtime_function():
     assert_equal(
         EeyRuntimeUserFunction,
         meth.call(
-            "env", ( EeyInt( "3" ), EeyVariable( EeyInt, "x" ) ) ).__class__
+            ( EeyInt( "3" ), EeyVariable( EeyInt, "x" ) ), "env" ).__class__
     )
 
 def test_Calling_a_method_with_unknown_instance_returns_a_runtime_function():
@@ -404,7 +404,7 @@ def test_Calling_a_method_with_unknown_instance_returns_a_runtime_function():
     assert_equal(
         EeyRuntimeUserFunction,
         meth.call(
-            "env", ( EeyInt( "3" ), EeyInt( "3" ) ) ).__class__
+            ( EeyInt( "3" ), EeyInt( "3" ) ), "env" ).__class__
     )
 
 

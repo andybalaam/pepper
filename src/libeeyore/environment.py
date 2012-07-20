@@ -13,7 +13,7 @@ class EeyEnvironment( object ):
             self.namespace = namespace
 
     def render_value( self, value ):
-        return self.renderer.value_renderer( value )( self, value )
+        return self.renderer.value_renderer( value )( value, self )
 
     def render_exe( self, values ):
         return self.renderer.render_exe( values, self )

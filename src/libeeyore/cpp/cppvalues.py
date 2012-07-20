@@ -9,35 +9,35 @@ from libeeyore.languagevalues import *
 from libeeyore.values import *
 from libeeyore.builtinmodules.eeysys import EeySysArgv
 
-def render_EeySymbol( env, value ):
+def render_EeySymbol( value, env ):
     return value.name()
 
-def render_EeyInt( env, value ):
+def render_EeyInt( value, env ):
     return str( value.value )
 
-def render_EeyFloat( env, value ):
+def render_EeyFloat( value, env ):
     return str( value.value )
 
-def render_EeyBool( env, value ):
+def render_EeyBool( value, env ):
     if value.value:
         return "true"
     else:
         return "false"
 
-def render_EeyString( env, value ):
+def render_EeyString( value, env ):
     return '"%s"' % value.value
 
-def render_EeyPlus( env, value ):
+def render_EeyPlus( value, env ):
     # TODO: assert they are addable and switch on how to add them
     return "(%s + %s)" % (
         value.left_value.render( env ), value.right_value.render( env ) )
 
-def render_EeyTimes( env, value ):
+def render_EeyTimes( value, env ):
     # TODO: assert they are timesable and switch on how to multiply them
     return "(%s * %s)" % (
         value.left_value.render( env ), value.right_value.render( env ) )
 
-def render_EeyGreaterThan( env, value ):
+def render_EeyGreaterThan( value, env ):
     # TODO: assert they are comparable
     return "(%s > %s)" % (
         value.left_value.render( env ), value.right_value.render( env ) )
@@ -46,7 +46,7 @@ def render_EeyGreaterThan( env, value ):
 def _render_cmds( cmds, env ):
     return "\n        ".join( c.render(env) for c in cmds )
 
-def render_EeyIf( env, value ):
+def render_EeyIf( value, env ):
     # TODO: assert predicate is a bool or function returning one
 
     else_block = ""
@@ -68,22 +68,22 @@ def render_EeyIf( env, value ):
         else_block = else_block
         )
 
-def render_EeyFunction( env, value ):
+def render_EeyFunction( value, env ):
     raise Exception( "Don't know how to render a function yet" )
 
-def render_EeyPrint( env, value ):
-    return render_EeyFunction( env, value )
+def render_EeyPrint( value, env ):
+    return render_EeyFunction( value, env )
 
-def render_EeyDef( env, value ):
+def render_EeyDef( value, env ):
     return ""
 
-def render_EeyPass( env, value ):
+def render_EeyPass( value, env ):
     return ""
 
-def render_EeyImport( env, value ):
+def render_EeyImport( value, env ):
     return ""
 
-def render_EeyInit( env, value ):
+def render_EeyInit( value, env ):
     if value.is_known( env ):
         return ""
     else:
@@ -114,7 +114,7 @@ type2string = {
     EeyVoid  : "void",
     }
 
-def render_EeyType( env, value ):
+def render_EeyType( value, env ):
     if not value.is_known( env ):
         raise EeyUserErrorException( v + " should be known!  "
             + "Eeyore can't (currently) support types that are unknown at "
@@ -122,11 +122,11 @@ def render_EeyType( env, value ):
         # TODO: ensure error message properly displays the unknown thing
     return type2string[value.value]
 
-def render_EeyNoneType( env, value ):
+def render_EeyNoneType( value, env ):
     return ""
 
 
-def _render_type_and_name( env, typename ):
+def _render_type_and_name( typename, env ):
     evald_type = typename[0].evaluate( env )
 
     # TODO: deal with copyable types etc., which should have no ampersand
@@ -152,7 +152,7 @@ def _render_bracketed_list( items ):
     ret += ")"
     return ret
 
-def render_EeyUserClass_body( env, name, clazz ):
+def render_EeyUserClass_body( name, clazz, env ):
     ret = "struct %s\n{\n" % name
 
     for mem in clazz.member_variables:
@@ -161,7 +161,7 @@ def render_EeyUserClass_body( env, name, clazz ):
     ret += "};\n\n"
     return ret
 
-def render_statements( statements, env, indent ):
+def render_statements( statements, indent, env ):
     ret = ""
     for stmt in statements:
         st = stmt.evaluate( env )
@@ -176,7 +176,7 @@ def indent_if_needed( line ):
     else:
         return "    %s;\n" % line
 
-def render_EeyUserFunction_body( env, name, func_call ):
+def render_EeyUserFunction_body( name, func_call, env ):
     fn = func_call.user_function.evaluate( env )
 
     assert( fn.__class__ == EeyUserFunction ) # TODO: handle other types
@@ -184,11 +184,11 @@ def render_EeyUserFunction_body( env, name, func_call ):
     ret = fn.ret_type.render( env )
     ret += " "
     ret += name
-    ret += _render_bracketed_list( _render_type_and_name( env, typename ) for
+    ret += _render_bracketed_list( _render_type_and_name( typename, env ) for
         typename in fn.arg_types_and_names )
     ret += "\n{\n"
 
-    newenv = fn.execution_environment( env, func_call.args, False )
+    newenv = fn.execution_environment( func_call.args, False, env )
 
     for body_stmt in fn.body_stmts:
         st = body_stmt.evaluate( newenv )
@@ -200,7 +200,7 @@ def render_EeyUserFunction_body( env, name, func_call ):
 
     return ret
 
-def render_EeyVar( env, value ):
+def render_EeyVar( value, env ):
     ret = ""
 
     for stmt in value.body_stmts:
@@ -211,15 +211,15 @@ def render_EeyVar( env, value ):
     return ret
 
 
-def render_EeyRuntimeUserFunction( env, value ):
-    name = env.renderer.add_function( env, value )
+def render_EeyRuntimeUserFunction( value, env ):
+    name = env.renderer.add_function( value, env )
 
     return ( name +
         _render_bracketed_list( arg.render( env ) for arg in value.args ) )
 
-def render_EeyRuntimeInit( env, value ):
-    env.renderer.add_class( env, value.instance.clazz )
-    name = env.renderer.add_def_init( env, value )
+def render_EeyRuntimeInit( value, env ):
+    env.renderer.add_class( value.instance.clazz, env )
+    name = env.renderer.add_def_init( value, env )
 
     # Use the variable name we remembered in render_EeyInit
     return ( name +
@@ -229,31 +229,31 @@ def render_EeyRuntimeInit( env, value ):
         )
     )
 
-def render_EeyRuntimeInstance( env, value ):
+def render_EeyRuntimeInstance( value, env ):
     return value.var_name
 
-def render_EeyFunctionCall( env, value ):
+def render_EeyFunctionCall( value, env ):
     fn = value.func.evaluate( env )
 
     # TODO: assert fn is callable
 
-    return fn.call( env, value.args ).render( env )
+    return fn.call( value.args, env ).render( env )
 
-def render_EeyReturn( env, value ):
+def render_EeyReturn( value, env ):
     return "return " + value.value.render( env )
 
 
-def render_EeyClass( env, value ):
+def render_EeyClass( value, env ):
     return ""
 
-def render_EeyUserClass( env, value ):
+def render_EeyUserClass( value, env ):
     return value.name
 
-def render_EeyArrayLookup( env, value ):
+def render_EeyArrayLookup( value, env ):
     # TODO: handle large numbers
     return value.array_value.render( env ) + "[%s]" % value.index.value
 
-def render_EeySysArgv( env, value ):
+def render_EeySysArgv( value, env ):
     # TODO: set up a global variable called global_argv and initialise
     #       it at the beginning of main
     return "argv"
