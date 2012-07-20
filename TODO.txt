@@ -5,8 +5,6 @@
 
 - Move arg_types_and_names into EeyFunction
 
-- Rename EeyInstanceMethod to EeyInstanceUserMethod?
-
 - Overloading at runtime
   + Only one definition of function rendered when called multiple times
   - Multiple calls with different types mean multiple fns rendered, with
@@ -15,13 +13,11 @@
 
 - Overloads on different user-defined types
 
-
 - Find out why if I call gt3 twice in calculated_type.eeyore it returns the
   same answer each time.
 
 - Line and column number of errors
 
-- Calling methods on class instances
 - Spaces in class bodies
 - Checking whether class members are available, and of the right type
 - Multiple def_inits in a class must agree on properties
