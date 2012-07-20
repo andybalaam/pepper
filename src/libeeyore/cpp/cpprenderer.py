@@ -40,7 +40,6 @@ class EeyCppRenderer( object ):
         self._functions = {} # name -> signature -> ( name, rendered body )
         self._classes = {} # name -> rendered_body
         self.init_variable_name = None
-        self.self_variable_name = None
 
     def add_header( self, header ):
         if header not in self._headers:
