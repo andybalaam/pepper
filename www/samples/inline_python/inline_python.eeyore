@@ -1,5 +1,5 @@
 
-pysnippet = lang( "python" ) {{{
+pysnippet = lang "python": {{{
     s.format( foo="bar" )
 }}}
 

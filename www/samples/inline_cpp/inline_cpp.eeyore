@@ -3,7 +3,7 @@ def int my_fn():
 
     x = 1
 
-    lang( "c++" ) {{{
+    lang "c++": {{{
         ++x;
     }}}.execute( x=x )
 
