@@ -16,26 +16,32 @@ def test_hello_world():
 0001:0024     RPAREN
 """ )
 
-    _assert_token( tokens[ 0], ( "0001",            LexedLexer.NUMBER ) )
-    _assert_token( tokens[ 1], ( ":",               LexedLexer.COLON ) )
-    _assert_token( tokens[ 2], ( "0008",            LexedLexer.NUMBER ) )
-    _assert_token( tokens[ 3], ( "     ",           LexedLexer.SPACES ) )
-    _assert_token( tokens[ 4], ( "STRING",          LexedLexer.SYMBOL ) )
-    _assert_token( tokens[ 5], ( "(Hello, world!)", LexedLexer.CONTENT ) )
-    _assert_token( tokens[ 6], ( "\n",              LexedLexer.NEWLINE ) )
-    _assert_token( tokens[ 7], ( "0001",            LexedLexer.NUMBER ) )
-    _assert_token( tokens[ 8], ( ":",               LexedLexer.COLON ) )
-    _assert_token( tokens[ 9], ( "0024",            LexedLexer.NUMBER ) )
-    _assert_token( tokens[10], ( "     ",           LexedLexer.SPACES ) )
-    _assert_token( tokens[11], ( "RPAREN",          LexedLexer.SYMBOL ) )
-    _assert_token( tokens[12], ( "\n",              LexedLexer.NEWLINE ) )
+    _assert_token( tokens[ 0], ( "0001",          LexedLexer.NUMBER ) )
+    _assert_token( tokens[ 1], ( ":",             LexedLexer.COLON ) )
+    _assert_token( tokens[ 2], ( "0008",          LexedLexer.NUMBER ) )
+    _assert_token( tokens[ 3], ( "     ",         LexedLexer.SPACES ) )
+    _assert_token( tokens[ 4], ( "STRING",        LexedLexer.SYMBOL ) )
+    _assert_token( tokens[ 5], ( "Hello, world!", LexedLexer.CONTENT ) )
+    _assert_token( tokens[ 6], ( "0001",          LexedLexer.NUMBER ) )
+    _assert_token( tokens[ 7], ( ":",             LexedLexer.COLON ) )
+    _assert_token( tokens[ 8], ( "0024",          LexedLexer.NUMBER ) )
+    _assert_token( tokens[ 9], ( "     ",         LexedLexer.SPACES ) )
+    _assert_token( tokens[10], ( "RPAREN",        LexedLexer.SYMBOL ) )
+    _assert_token( tokens[11], ( "\n",            LexedLexer.NEWLINE ) )
 
-    assert_equal( len( tokens ), 13 )
+    assert_equal( len( tokens ), 12 )
 
 def test_quoted():
     tokens = _lex( """0001:0008   "import"(import)
 """ )
 
     _assert_token( tokens[4], ( '"import"', LexedLexer.QUOTED_LITERAL ) )
+
+def test_string_containing_bracket():
+    tokens = _lex( """0001:0008   STRING(Hello (foo) world)
+""" )
+
+    _assert_token( tokens[5], ( 'Hello (foo) world', LexedLexer.CONTENT ) )
+
 
 

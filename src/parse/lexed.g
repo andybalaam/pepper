@@ -28,7 +28,7 @@ SYMBOL : ( 'A'..'Z' )+ ;
 
 QUOTED_LITERAL  : '"' ( 'a' .. 'z' | '_' )+ '"' ;
 
-CONTENT : '(' ( ~( ')' ) )* ')';
+CONTENT : '('! ( options {greedy=false;} : . )* ')'! NEWLINE! ;
 
 
 class LexedParser extends Parser;
@@ -47,14 +47,14 @@ protected tokenName returns [t]:
 
 line returns [t]:
     linenum:NUMBER COLON colnum:NUMBER SPACES
-    symbol=tokenName ( content:CONTENT )? NEWLINE
+    symbol=tokenName ( content:CONTENT | NEWLINE )
     {
         from antlr import CommonToken
         import EeyoreParser
         t = CommonToken(
             type = EeyoreParser._tokenNames.index( symbol.getText() ) )
         if content is not None:
-            t.setText( content.getText()[1:-1] )
+            t.setText( content.getText() )
         t.setLine( int( linenum.getText() ) )
         t.setColumn( int( colnum.getText() ) )
     }

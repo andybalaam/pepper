@@ -13,19 +13,18 @@ def _parse( tokens ):
 
 def test_2_lines():
     value = _parse( (
-        make_token( "0002",            LexedLexer.NUMBER ),
-        make_token( ":",               LexedLexer.COLON ),
-        make_token( "0008",            LexedLexer.NUMBER ),
-        make_token( "  ",              LexedLexer.SPACES ),
-        make_token( "STRING",          LexedLexer.SYMBOL ),
-        make_token( "(Hello, world!)", LexedLexer.CONTENT ),
-        make_token( "\n",              LexedLexer.NEWLINE ),
-        make_token( "0003",            LexedLexer.NUMBER ),
-        make_token( ":",               LexedLexer.COLON ),
-        make_token( "0001",            LexedLexer.NUMBER ),
-        make_token( "  ",              LexedLexer.SPACES ),
-        make_token( "RPAREN",          LexedLexer.SYMBOL ),
-        make_token( "\n",              LexedLexer.NEWLINE ),
+        make_token( "0002",          LexedLexer.NUMBER ),
+        make_token( ":",             LexedLexer.COLON ),
+        make_token( "0008",          LexedLexer.NUMBER ),
+        make_token( "  ",            LexedLexer.SPACES ),
+        make_token( "STRING",        LexedLexer.SYMBOL ),
+        make_token( "Hello, world!", LexedLexer.CONTENT ),
+        make_token( "0003",          LexedLexer.NUMBER ),
+        make_token( ":",             LexedLexer.COLON ),
+        make_token( "0001",          LexedLexer.NUMBER ),
+        make_token( "  ",            LexedLexer.SPACES ),
+        make_token( "RPAREN",        LexedLexer.SYMBOL ),
+        make_token( "\n",            LexedLexer.NEWLINE ),
         ) )
 
     val = value.line()
