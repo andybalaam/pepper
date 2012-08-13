@@ -160,17 +160,17 @@ def test_float_literal():
     assert( len( tokens ) == 3 )
 
 
-def test_code_quote():
-    tokens = _lex( "{{{ foo bar }}}" )
-    _assert_token( tokens[0], " foo bar ", EeyoreLexer.QUOTEDCODE )
+def test_triple_quote():
+    tokens = _lex( '""" foo bar """' )
+    _assert_token( tokens[0], " foo bar ", EeyoreLexer.STRING )
     assert( len( tokens ) == 1 )
 
 
 
-def test_2_code_quotes():
-    tokens = _lex( "{{{ foo bar }}} {{{baz quux}}}" )
-    _assert_token( tokens[0], " foo bar ", EeyoreLexer.QUOTEDCODE )
-    _assert_token( tokens[1], "baz quux", EeyoreLexer.QUOTEDCODE )
+def test_2_triple_quotes():
+    tokens = _lex( '""" foo bar """ """baz quux"""' )
+    _assert_token( tokens[0], " foo bar ", EeyoreLexer.STRING )
+    _assert_token( tokens[1], "baz quux",  EeyoreLexer.STRING )
     assert( len( tokens ) == 2 )
 
 

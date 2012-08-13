@@ -21,6 +21,10 @@
 
 - Line and column number of errors, including in quoted code
 
+- lexed.g newlines in text
+
+- Escaping quotes in strings
+
 - Spaces in class bodies
 - Checking whether class members are available, and of the right type
 - Multiple def_inits in a class must agree on properties

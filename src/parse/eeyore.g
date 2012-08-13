@@ -62,31 +62,32 @@ INT_OR_FLOAT
     | INT                  { $setType(INT) }
 ;
 
-protected LCODEQUOTE :
-    "{{{"
+
+
+protected TRIPLEDOUBLEQUOTE :
+    '"' '"' '"'
 ;
 
-protected RCODEQUOTE :
-    "}}}"
-;
-
-QUOTEDCODE :
-    LCODEQUOTE!
-    ( options {greedy=false;} : . )*
-    RCODEQUOTE!
-;
-
-protected QUOTE : // TODO: single quoted strings
+protected DOUBLEQUOTE : // TODO: single quoted strings
       '"'
 ;
 
-STRING :
-    QUOTE!
-    ( ~( '"') )*
-    QUOTE!
+protected DOUBLEQUOTESTRING :
+    DOUBLEQUOTE!
+    ( ~( '"' ) )*
+    DOUBLEQUOTE!
 ;
 
+protected TRIPLEDOUBLEQUOTESTRING :
+    TRIPLEDOUBLEQUOTE!
+    ( options {greedy=false;} : . )*
+    TRIPLEDOUBLEQUOTE!
+;
 
+// Not sure how to resolve the ambiguity here
+STRING :
+    ( TRIPLEDOUBLEQUOTESTRING | DOUBLEQUOTESTRING )
+;
 
 LPAREN :
     '('
@@ -212,7 +213,6 @@ simpleExpression :
     | functionCall
     | arrayLookup
     | ifExpression
-    | QUOTEDCODE
 ;
 
 
@@ -323,7 +323,6 @@ expression returns [r]
     | #(TIMES e1=expression e2=expression) { r = EeyTimes( e1, e2 ) }
     | #(GT e1=expression e2=expression) { r = EeyGreaterThan( e1, e2 ) }
     | f=functionCall { r = f }
-    | q:QUOTEDCODE { r = EeyQuote( q.getText() ) }
 ;
 
 initialisation returns [r]
