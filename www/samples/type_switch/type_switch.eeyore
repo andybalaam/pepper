@@ -1,0 +1,13 @@
+
+def my_fn( none_or(int) x ):
+    type_switch x:
+        case int i:
+            print( i )
+        case NoneType n:
+            print( "It's None!" )
+
+
+my_fn( make_none_or(int, 3) )
+
+my_fn( make_none_or(int, None) )
+

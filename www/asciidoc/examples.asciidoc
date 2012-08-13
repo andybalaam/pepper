@@ -88,3 +88,8 @@ include::../real_samples/samples/calculated_type/calculated_type.asciidoc[]
 
 include::../samples/web/web.asciidoc[]
 
+== Type Switch ==
+
+include::../samples/type_switch/type_switch.asciidoc[]
+
+

@@ -23,6 +23,7 @@ SAMPLES = \
 	samples/inline_cpp/inline_cpp.asciidoc \
 	samples/inline_python/inline_python.asciidoc \
 	samples/web/web.asciidoc \
+	samples/type_switch/type_switch.asciidoc \
 
 REAL_SAMPLES = \
 	real_samples/samples/hello/hello.asciidoc \
