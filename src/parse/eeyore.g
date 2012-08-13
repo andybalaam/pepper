@@ -62,6 +62,20 @@ INT_OR_FLOAT
     | INT                  { $setType(INT) }
 ;
 
+protected LCODEQUOTE :
+    "{{{"
+;
+
+protected RCODEQUOTE :
+    "}}}"
+;
+
+QUOTEDCODE :
+    LCODEQUOTE!
+    ( options {greedy=false;} : . )*
+    RCODEQUOTE!
+;
+
 protected QUOTE : // TODO: single quoted strings
       '"'
 ;
@@ -71,6 +85,8 @@ STRING :
     ( ~( '"') )*
     QUOTE!
 ;
+
+
 
 LPAREN :
     '('
@@ -196,6 +212,7 @@ simpleExpression :
     | functionCall
     | arrayLookup
     | ifExpression
+    | QUOTEDCODE
 ;
 
 
@@ -274,6 +291,7 @@ from libeeyore.values import *
 from libeeyore.classvalues import *
 from libeeyore.languagevalues import *
 from libeeyore.functionvalues import *
+from libeeyore.quotevalues import *
 }
 class EeyoreTreeWalker extends TreeParser;
 
@@ -305,6 +323,7 @@ expression returns [r]
     | #(TIMES e1=expression e2=expression) { r = EeyTimes( e1, e2 ) }
     | #(GT e1=expression e2=expression) { r = EeyGreaterThan( e1, e2 ) }
     | f=functionCall { r = f }
+    | q:QUOTEDCODE { r = EeyQuote( q.getText() ) }
 ;
 
 initialisation returns [r]

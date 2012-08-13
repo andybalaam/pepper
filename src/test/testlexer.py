@@ -159,3 +159,20 @@ def test_float_literal():
     _assert_token( tokens[2], ".45",     EeyoreLexer.FLOAT )
     assert( len( tokens ) == 3 )
 
+
+def test_code_quote():
+    tokens = _lex( "{{{ foo bar }}}" )
+    _assert_token( tokens[0], " foo bar ", EeyoreLexer.QUOTEDCODE )
+    assert( len( tokens ) == 1 )
+
+
+
+def test_2_code_quotes():
+    tokens = _lex( "{{{ foo bar }}} {{{baz quux}}}" )
+    _assert_token( tokens[0], " foo bar ", EeyoreLexer.QUOTEDCODE )
+    _assert_token( tokens[1], "baz quux", EeyoreLexer.QUOTEDCODE )
+    assert( len( tokens ) == 2 )
+
+
+
+

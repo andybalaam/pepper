@@ -19,7 +19,7 @@
 - Find out why if I call gt3 twice in calculated_type.eeyore it returns the
   same answer each time.
 
-- Line and column number of errors
+- Line and column number of errors, including in quoted code
 
 - Spaces in class bodies
 - Checking whether class members are available, and of the right type
