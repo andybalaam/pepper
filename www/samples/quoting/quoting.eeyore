@@ -3,5 +3,5 @@
 snippet = quote:
     x + y
 
-print( snippet.execute( x=3, y=4 ) )
+print( snippet.eval( x=3, y=4 ) )
 

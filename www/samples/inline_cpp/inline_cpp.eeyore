@@ -5,7 +5,7 @@ def int my_fn():
 
     lang( "c++", """
         ++x;
-    """ ).execute( x=x )
+    """ ).eval( x=x )
 
     return x
 
