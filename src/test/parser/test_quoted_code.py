@@ -3,13 +3,30 @@ from assert_parser_result import assert_parser_result
 def test_quoted_sum():
     assert_parser_result(
         r"""
-0001:0001    STRING( x + y )
-0001:0010    NEWLINE
+0001:0001    "quote"(quote)
+0001:0015      COLON(:)
+0001:0016    NEWLINE
+0002:0001     INDENT
+0002:0005     SYMBOL(x)
+0002:0012       PLUS(+)
+0002:0013     SYMBOL(y)
+0002:0013    NEWLINE
+0002:0013     DEDENT
+0002:0013    NEWLINE
+0003:0001    NEWLINE
+
 """,
         r"""
-[STRING: x + y ]
+["quote":quote]
+    [COLON::]
+        [PLUS:+]
+            [SYMBOL:x]
+            [SYMBOL:y]
 """,
         r"""
-EeyString(' x + y ')
+EeyQuote((EeyPlus(EeySymbol('x'),EeySymbol('y')),))
 """ )
+
+
+
 

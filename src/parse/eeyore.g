@@ -213,6 +213,7 @@ simpleExpression :
     | functionCall
     | arrayLookup
     | ifExpression
+    | quotedCode
 ;
 
 
@@ -229,6 +230,10 @@ arrayLookup :
 
 ifExpression :
     "if"^ expression suite ( NEWLINE! "else" suite )?
+;
+
+quotedCode :
+    "quote"^ suite
 ;
 
 argumentsList:
@@ -323,6 +328,7 @@ expression returns [r]
     | #(TIMES e1=expression e2=expression) { r = EeyTimes( e1, e2 ) }
     | #(GT e1=expression e2=expression) { r = EeyGreaterThan( e1, e2 ) }
     | f=functionCall { r = f }
+    | q=quotedCode { r = q }
 ;
 
 initialisation returns [r]
@@ -366,6 +372,10 @@ ifExpression returns [r]
 elseExpression returns [r]
     { r = None }
     : ( "else" s=suite { r = s } )?
+;
+
+quotedCode returns [r]
+    : #("quote" s=suite ) { r = EeyQuote( s ) }
 ;
 
 functionCall returns [r]
