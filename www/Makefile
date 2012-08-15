@@ -19,7 +19,6 @@ SAMPLES = \
 	samples/templates/templates.asciidoc \
 	samples/implicit_templates/implicit_templates.asciidoc \
 	samples/token_pasting/token_pasting.asciidoc \
-	samples/quoting/quoting.asciidoc \
 	samples/inline_cpp/inline_cpp.asciidoc \
 	samples/foreign_function/foreign_function.asciidoc \
 	samples/web/web.asciidoc \
@@ -31,6 +30,7 @@ REAL_SAMPLES = \
 	real_samples/samples/overload_function/overload_function.asciidoc \
 	real_samples/samples/overload_runtime/overload_runtime.asciidoc \
 	real_samples/samples/calculated_type/calculated_type.asciidoc \
+	real_samples/samples/quoting/quoting.asciidoc \
 
 
 HTMLS=html/index.html html/explicitownership.html html/examples.html
