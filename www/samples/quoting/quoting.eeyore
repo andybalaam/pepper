@@ -1,6 +1,6 @@
 
 
-snippet = quote:
+code snippet = quote:
     x + y
 
 print( snippet.evaluate( x=3, y=4 ) )
