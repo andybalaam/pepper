@@ -1,6 +1,7 @@
 
 from values import *
 from functionvalues import EeyFunction
+from quotevalues import EeyQuote
 
 class EeyRuntimePrint( EeyValue ):
     def __init__( self, args ):
@@ -76,6 +77,7 @@ def add_builtins( env ):
     env.namespace["string"]= EeyType( EeyString )
     env.namespace["void"]  = EeyType( EeyVoid )
     env.namespace["type"]  = EeyType( EeyType )
+    env.namespace["code"]  = EeyType( EeyQuote )
 
     # Functions
     env.namespace["len"]   = EeyLen()
