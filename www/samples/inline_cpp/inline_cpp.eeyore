@@ -1,14 +1,14 @@
 
-def int my_fn():
+# Will fail if this code doesn't run at runtime
 
-    x = 1
+int x = 1
 
-    lang( "c++", """
-        ++x;
-    """ ).eval( x=x )
+inline_lang( "c++", """
 
-    return x
+++x;
 
-print( my_fn() )
+""" )
+
+print( x )
 
 

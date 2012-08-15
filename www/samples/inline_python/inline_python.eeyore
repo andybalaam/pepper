@@ -1,8 +1,0 @@
-
-pysnippet = lang( "python", """
-    s.format( foo="bar" )
-""" )
-
-print( pysnippet.eval( s="{foo} baz" ) )
-
-

@@ -76,9 +76,9 @@ include::../samples/quoting/quoting.asciidoc[]
 
 include::../samples/inline_cpp/inline_cpp.asciidoc[]
 
-== Inline Python ==
+== "Foreign" Functions ==
 
-include::../samples/inline_python/inline_python.asciidoc[]
+include::../samples/foreign_function/foreign_function.asciidoc[]
 
 == Calculated Types ==
 

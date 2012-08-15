@@ -21,7 +21,7 @@ SAMPLES = \
 	samples/token_pasting/token_pasting.asciidoc \
 	samples/quoting/quoting.asciidoc \
 	samples/inline_cpp/inline_cpp.asciidoc \
-	samples/inline_python/inline_python.asciidoc \
+	samples/foreign_function/foreign_function.asciidoc \
 	samples/web/web.asciidoc \
 	samples/type_switch/type_switch.asciidoc \
 

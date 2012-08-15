@@ -1,0 +1,9 @@
+
+def_lang(python) string format_with_pyformat( string inp ):
+    """
+    return inp.format( lang="python" )
+    """
+
+print( format_with_pyformat( "language = {lang}" ) )
+
+
