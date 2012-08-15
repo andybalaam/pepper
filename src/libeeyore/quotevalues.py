@@ -15,7 +15,7 @@ class EeyQuoteEvaluate( EeyFunction ):
         return len( args ) == 0
 
     def call( self, args, env ):
-        return self.quote.unquote()
+        return self.quote.unquote().evaluate( env )
 
     def return_type( self, args, env ):
         return EeyType( EeyQuote )
