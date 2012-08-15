@@ -71,6 +71,7 @@ include::../samples/compile_time_fibonacci/compile_time_fibonacci.asciidoc[]
 == Quoting ==
 
 include::../real_samples/samples/quoting/quoting.asciidoc[]
+include::../samples/quote_and_replace/quote_and_replace.asciidoc[]
 
 == Inline C++ ==
 

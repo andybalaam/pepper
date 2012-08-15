@@ -20,6 +20,7 @@ SAMPLES = \
 	samples/implicit_templates/implicit_templates.asciidoc \
 	samples/token_pasting/token_pasting.asciidoc \
 	samples/inline_cpp/inline_cpp.asciidoc \
+	samples/quote_and_replace/quote_and_replace.asciidoc \
 	samples/foreign_function/foreign_function.asciidoc \
 	samples/web/web.asciidoc \
 	samples/type_switch/type_switch.asciidoc \

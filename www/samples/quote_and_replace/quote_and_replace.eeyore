@@ -1,0 +1,15 @@
+# A manual implementation of template-like functionality
+
+code sqs = quote:
+    def T square_something( T inp ):
+        return inp * inp
+
+int x = 3
+float y = 4.0
+
+int   xs = sqs.replace( T=int   ).evaluate()( x )
+float ys = sqs.replace( T=float ).evaluate()( y )
+
+print( xs )
+print( ys )
+
