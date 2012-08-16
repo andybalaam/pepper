@@ -6,7 +6,7 @@ from libeeyore.environment import EeyEnvironment
 
 class RenderBuildStep( BuildStep ):
     def read_from_file( self, fl ):
-        raise AssertionError( "Can't read cpp file" )
+        return fl.read()
 
     def process( self, val ):
         env = EeyEnvironment( EeyCppRenderer() )
