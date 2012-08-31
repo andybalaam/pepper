@@ -164,6 +164,7 @@ statement :
       initialisationOrExpression
     | functionDefinition
     | classDefinition
+    | forStatement
     | importStatement
 ;
 
@@ -172,6 +173,7 @@ classStatement :
     | functionDefinition
     | initFunctionDefinition
     | classDefinition
+    | forStatement
     | importStatement
 ;
 
@@ -189,6 +191,10 @@ initFunctionDefinition :
 
 classDefinition :
     "class"^ SYMBOL classSuite NEWLINE!
+;
+
+forStatement :
+    "for"^ expression SYMBOL "in"! expression suite NEWLINE!
 ;
 
 importStatement :
@@ -292,11 +298,7 @@ returnStatement :
 ;
 
 {
-from libeeyore.values import *
-from libeeyore.classvalues import *
-from libeeyore.languagevalues import *
-from libeeyore.functionvalues import *
-from libeeyore.quotevalues import *
+from libeeyore.vals.all_values import *
 }
 class EeyoreTreeWalker extends TreeParser;
 
@@ -305,6 +307,7 @@ statement returns [r]
     | i=initialisation { r = i }
     | f=functionDefinition { r = f }
     | c=classDefinition { r = c }
+    | f=forStatement { r = f }
     | i=importStatement { r = i }
 ;
 
@@ -314,6 +317,7 @@ classStatement returns [r]
     | f=functionDefinition { r = f }
     | f=initFunctionDefinition { r = f }
     | c=classDefinition { r = c }
+    | f=forStatement { r = f }
     | i=importStatement { r = i }
 ;
 
@@ -349,6 +353,11 @@ initFunctionDefinition returns [r]
 classDefinition returns [r]
     : #("class" n=symbol s=classSuite)
         { r = EeyClass( n, (), s ) }
+;
+
+forStatement returns [r]
+    : #("for" t=expression v=symbol i=expression s=suite)
+        { r = EeyFor( t, v, i, s ) }
 ;
 
 importStatement returns [r]
