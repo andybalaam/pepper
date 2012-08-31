@@ -2,6 +2,8 @@
 import sys
 
 from cppbuiltins import *
+from cpputils import render_statements
+from special import *
 from libeeyore.builtins import *
 from libeeyore.classvalues import *
 from libeeyore.functionvalues import *
@@ -43,9 +45,6 @@ def render_EeyGreaterThan( value, env ):
         value.left_value.render( env ), value.right_value.render( env ) )
 
 
-def _render_cmds( cmds, env ):
-    return "\n        ".join( c.render(env) for c in cmds )
-
 def render_EeyIf( value, env ):
     # TODO: assert predicate is a bool or function returning one
 
@@ -56,15 +55,15 @@ def render_EeyIf( value, env ):
     {{
         {cmds_if_false};
     }}""".format(
-            cmds_if_false = _render_cmds( value.cmds_if_false, env )
+            cmds_if_false = render_statements(
+                value.cmds_if_false, "", env )
             )
 
     return """if( {predicate} )
     {{
-        {cmds_if_true};
-    }}{else_block}""".format(
+        {cmds_if_true}    }}{else_block}""".format(
         predicate = value.predicate.render( env ),
-        cmds_if_true = _render_cmds( value.cmds_if_true,  env ),
+        cmds_if_true = render_statements( value.cmds_if_true, "", env ),
         else_block = else_block
         )
 
@@ -159,15 +158,6 @@ def render_EeyUserClass_body( name, clazz, env ):
         ret += "    %s %s;\n" % ( mem[0].render( env ), mem[1] )
 
     ret += "};\n\n"
-    return ret
-
-def render_statements( statements, indent, env ):
-    ret = ""
-    for stmt in statements:
-        st = stmt.evaluate( env )
-        if st.__class__ == EeyPass:
-            continue
-        ret += "%s%s;\n" % ( indent, st.render( env ) )
     return ret
 
 def indent_if_needed( line ):

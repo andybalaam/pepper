@@ -1,5 +1,3 @@
-import sys
-
 from libeeyore.values import EeyValue
 
 class EeyFor( EeyValue ):
