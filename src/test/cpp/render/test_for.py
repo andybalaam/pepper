@@ -1,3 +1,5 @@
+from test.eeyasserts import assert_multiline_equal
+
 from libeeyore import builtins
 from libeeyore.environment import EeyEnvironment
 from libeeyore.cpp.cpprenderer import EeyCppRenderer
@@ -31,13 +33,14 @@ def test_Basic_int_for_loop():
 
     ans = env.renderer.render_exe( [ stmt ], env )
 
-    assert_equal(
-        """
+    assert_multiline_equal(
+        """#include <stdio.h>
+
 int main( int argc, char* argv[] )
 {
     for( int i = 0; i < 4; ++i )
     {
-        printf( "%d", i )
+        printf( "%d\\n", i );
     }
 
     return 0;

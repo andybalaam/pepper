@@ -53,8 +53,7 @@ def render_EeyIf( value, env ):
         else_block = """
     else
     {{
-        {cmds_if_false};
-    }}""".format(
+        {cmds_if_false}    }}""".format(
             cmds_if_false = render_statements(
                 value.cmds_if_false, "", env )
             )
