@@ -27,6 +27,7 @@ SAMPLES = \
 
 REAL_SAMPLES = \
 	real_samples/samples/hello/hello.asciidoc \
+	real_samples/samples/for_in_range/for_in_range.asciidoc \
 	real_samples/samples/addatcompiletime/addatcompiletime.asciidoc \
 	real_samples/samples/overload_function/overload_function.asciidoc \
 	real_samples/samples/overload_runtime/overload_runtime.asciidoc \
