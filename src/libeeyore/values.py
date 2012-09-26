@@ -175,6 +175,11 @@ class EeyInt( EeyValue ):
         # TODO: handle large numbers
         return EeyInt( str( int( self.value ) + int( other.value ) ) )
 
+    def minus( self, other ):
+        assert other.__class__ == self.__class__
+        # TODO: handle large numbers
+        return EeyInt( str( int( self.value ) - int( other.value ) ) )
+
     def times( self, other ):
         assert other.__class__ == self.__class__
         # TODO: handle large numbers

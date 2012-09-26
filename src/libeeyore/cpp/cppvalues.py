@@ -32,6 +32,11 @@ def render_EeyPlus( value, env ):
     return "(%s + %s)" % (
         value.left_value.render( env ), value.right_value.render( env ) )
 
+def render_EeyMinus( value, env ):
+    # TODO: assert they are minusable and switch on how to minus them
+    return "(%s - %s)" % (
+        value.left_value.render( env ), value.right_value.render( env ) )
+
 def render_EeyTimes( value, env ):
     # TODO: assert they are timesable and switch on how to multiply them
     return "(%s * %s)" % (
