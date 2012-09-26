@@ -20,6 +20,26 @@ EeyPlus(
 )
 """ )
 
+def test_operator_minus():
+    assert_parser_result(
+        r"""
+0001:0001     SYMBOL(a)
+0001:0002      MINUS(-)
+0001:0003     SYMBOL(b)
+0001:0004    NEWLINE
+""",
+        r"""
+[MINUS:-]
+    [SYMBOL:a]
+    [SYMBOL:b]
+""",
+        r"""
+EeyMinus(
+    EeySymbol('a'),
+    EeySymbol('b')
+)
+""" )
+
 def test_operator_times():
     assert_parser_result(
         r"""

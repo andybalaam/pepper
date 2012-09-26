@@ -137,6 +137,7 @@ NEWLINE :
 ;
 
 PLUS : '+' ;
+MINUS : '-' ;
 TIMES : '*' ;
 
 GT : '>' ;
@@ -196,7 +197,7 @@ importStatement :
 ;
 
 expression :
-    simpleExpression ( ( PLUS^ | TIMES^ | GT^ ) expression )?
+    simpleExpression ( ( PLUS^ | MINUS^ | TIMES^ | GT^ ) expression )?
 ;
 
 typedArgumentsList :
@@ -292,6 +293,7 @@ returnStatement :
 ;
 
 {
+from libeeyore.vals import *
 from libeeyore.values import *
 from libeeyore.classvalues import *
 from libeeyore.languagevalues import *
@@ -325,6 +327,7 @@ expression returns [r]
     | a=arraylookup { r = a }
     | i=ifExpression { r = i }
     | #(PLUS e1=expression e2=expression) { r = EeyPlus( e1, e2 ) }
+    | #(MINUS e1=expression e2=expression) { r = EeyMinus( e1, e2 ) }
     | #(TIMES e1=expression e2=expression) { r = EeyTimes( e1, e2 ) }
     | #(GT e1=expression e2=expression) { r = EeyGreaterThan( e1, e2 ) }
     | f=functionCall { r = f }
