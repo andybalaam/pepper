@@ -197,6 +197,18 @@ importStatement :
 ;
 
 expression :
+    LPAREN! expression RPAREN! | commaExpression
+;
+
+noCommaExpression :
+    LPAREN! expression RPAREN! | calcExpression
+;
+
+commaExpression :
+    calcExpression ( COMMA^ calcExpression ( COMMA! calcExpression )* )?
+;
+
+calcExpression :
     simpleExpression ( ( PLUS^ | MINUS^ | TIMES^ | GT^ ) expression )?
 ;
 
@@ -238,7 +250,7 @@ quotedCode :
 ;
 
 argumentsList:
-    ( expression ( COMMA expression )* )?
+    ( noCommaExpression ( COMMA noCommaExpression )* )?
 ;
 
 suite :
@@ -332,6 +344,7 @@ expression returns [r]
     | #(GT e1=expression e2=expression) { r = EeyGreaterThan( e1, e2 ) }
     | f=functionCall { r = f }
     | q=quotedCode { r = q }
+    | t=tuple { r = t }
 ;
 
 initialisation returns [r]
@@ -379,6 +392,17 @@ elseExpression returns [r]
 
 quotedCode returns [r]
     : #("quote" s=suite ) { r = EeyQuote( s ) }
+;
+
+tuple returns [r]
+    : t=tupleContents { r = EeyTuple( t ) }
+;
+
+tupleContents returns [r]
+    : #(COMMA
+        e=expression { r = (e,) }
+        ( e=expression { r += (e,) } )*
+    )
 ;
 
 functionCall returns [r]
