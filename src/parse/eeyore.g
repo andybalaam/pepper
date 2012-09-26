@@ -166,14 +166,12 @@ statement :
     | functionDefinition
     | classDefinition
     | importStatement
+    | forStatement
 ;
 
 classStatement :
-      initialisationOrExpression
-    | functionDefinition
+    statement
     | initFunctionDefinition
-    | classDefinition
-    | importStatement
 ;
 
 initialisationOrExpression :
@@ -194,6 +192,10 @@ classDefinition :
 
 importStatement :
     "import"^ SYMBOL NEWLINE!
+;
+
+forStatement :
+    "for"^ expression SYMBOL "in"! expression suite NEWLINE!
 ;
 
 expression :
@@ -320,15 +322,12 @@ statement returns [r]
     | f=functionDefinition { r = f }
     | c=classDefinition { r = c }
     | i=importStatement { r = i }
+    | f=forStatement { r = f }
 ;
 
 classStatement returns [r]
-    : e=expression { r = e }
-    | i=initialisation { r = i }
-    | f=functionDefinition { r = f }
+    : s=statement { r = s }
     | f=initFunctionDefinition { r = f }
-    | c=classDefinition { r = c }
-    | i=importStatement { r = i }
 ;
 
 expression returns [r]
@@ -369,6 +368,11 @@ classDefinition returns [r]
 
 importStatement returns [r]
     : #("import" m:SYMBOL) { r = EeyImport( m.getText() ) }
+;
+
+forStatement returns [r]
+    : #("for" t=expression s=symbol r=expression c=suite)
+        { r = EeyFor( t, s, r, c ) }
 ;
 
 symbol returns [r]
