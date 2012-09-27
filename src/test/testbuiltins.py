@@ -3,7 +3,7 @@ from nose.tools import *
 
 from libeeyore.builtins import *
 from libeeyore.environment import EeyEnvironment
-from libeeyore.values import *
+from libeeyore.vals.all_values import *
 
 def assert_defined( name, expected_class, expected_value = None ):
     env = EeyEnvironment( None )
@@ -56,6 +56,19 @@ def test_len_return_type_is_int():
 
 def test_print():
     assert_defined( "print", EeyPrint )
+
+def test_range():
+    env = EeyEnvironment( None )
+    add_builtins( env )
+
+    r = EeySymbol( "range" ).evaluate( env ).call(
+        (EeyInt("3"), EeyInt("4")), env )
+
+    assert_equal( EeyRange, r.__class__ )
+    assert_equal( EeyInt, r.begin.__class__ )
+    assert_equal( EeyInt, r.end.__class__ )
+    assert_equal( "3", r.begin.value )
+    assert_equal( "4", r.end.value )
 
 def test_print_return_type_is_none():
     assert_equal( EeyPrint().return_type( None, () ), EeyType( EeyNoneType ) )

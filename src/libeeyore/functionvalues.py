@@ -11,6 +11,18 @@ from values import EeyPass
 from values import all_known
 from usererrorexception import EeyUserErrorException
 
+def execution_environment( arg_types_and_names, args, known, env ):
+    newenv = env.clone_deeper()
+
+    for val, (tp, name) in izip( args, arg_types_and_names ):
+        if known:
+            val = val.evaluate( env )
+        else:
+            val = EeyVariable( tp.evaluate( env ), name.name() )
+        newenv.namespace[name.name()] = val
+
+    return newenv
+
 def is_callable( value ):
     return True # TODO: check whether the object may be called
 
@@ -245,16 +257,9 @@ class EeyUserFunction( EeyFunction ):
             return EeyRuntimeUserFunction( self, args, None )
 
     def execution_environment( self, args, known, env ):
-        newenv = env.clone_deeper()
+        return execution_environment(
+            self.arg_types_and_names, args, known, env )
 
-        for val, (tp, name) in izip( args, self.arg_types_and_names ):
-            if known:
-                val = val.evaluate( env )
-            else:
-                val = EeyVariable( tp.evaluate( env ), name.name() )
-            newenv.namespace[name.name()] = val
-
-        return newenv
 
 class EeyDef( EeyValue ):
     def __init__( self, ret_type, name, arg_types_and_names, body_stmts ):

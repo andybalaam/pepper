@@ -1,7 +1,5 @@
 
-from values import *
-from functionvalues import EeyFunction
-from quotevalues import EeyQuote
+from libeeyore.vals.all_values import *
 
 class EeyRuntimePrint( EeyValue ):
     def __init__( self, args ):
@@ -82,4 +80,17 @@ def add_builtins( env ):
     # Functions
     env.namespace["len"]   = EeyLen()
     env.namespace["print"] = EeyPrint()
+
+    # TODO: write this in eeyore
+    env.namespace["range"] = EeyUserFunction(
+        "range_impl",
+        EeyType( EeyRange ),
+        (
+            ( EeyType( EeyInt ), EeySymbol( "begin" ) ),
+            ( EeyType( EeyInt ), EeySymbol( "end" ) ),
+        ),
+        (
+            EeyReturn( EeyRange( EeySymbol( "begin" ), EeySymbol( "end" ) ) ),
+        )
+    ).evaluate( env )
 

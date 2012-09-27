@@ -1,17 +1,11 @@
 
-from libeeyore.languagevalues import EeyIf
-from libeeyore.classvalues import INIT_IMPL_NAME
-from libeeyore.functionvalues import EeyRuntimeUserFunction
-from libeeyore.functionvalues import EeyUserFunction
-from libeeyore.namespace import EeyNamespace
-from libeeyore.values import EeySymbol
-from libeeyore.values import EeyValue
+from libeeyore.vals.all_values import *
 
 import cppvalues
 
 def _has_semicolon( val ):
     cls = val.__class__
-    if cls == EeyIf:
+    if cls in ( EeyIf, EeyFor ):
         return False
     else:
         return True

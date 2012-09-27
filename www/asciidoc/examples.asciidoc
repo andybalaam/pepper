@@ -6,6 +6,11 @@
 
 include::../real_samples/samples/hello/hello.asciidoc[]
 
+== Loops ==
+
+include::../real_samples/samples/for_in_range/for_in_range.asciidoc[]
+
+
 == Add at compile time ==
 
 include::../real_samples/samples/addatcompiletime/addatcompiletime.asciidoc[]
