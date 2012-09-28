@@ -84,9 +84,15 @@ protected TRIPLEDOUBLEQUOTESTRING :
     TRIPLEDOUBLEQUOTE!
 ;
 
-// Not sure how to resolve the ambiguity here
 STRING :
-    ( TRIPLEDOUBLEQUOTESTRING | DOUBLEQUOTESTRING )
+    (
+        // Pick triple-quoted string whenever we see 3 quotes,
+        // rather than one empty double-quoted string followed by
+        // the start of another.
+        options {generateAmbigWarnings=false;} :
+              TRIPLEDOUBLEQUOTESTRING
+            | DOUBLEQUOTESTRING
+    )
 ;
 
 LPAREN :
