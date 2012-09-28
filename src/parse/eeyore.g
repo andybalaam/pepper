@@ -198,12 +198,12 @@ importStatement :
     "import"^ SYMBOL NEWLINE!
 ;
 
-expression :
-    LPAREN! expression RPAREN! | commaExpression
-;
-
 noCommaExpression :
     LPAREN! expression RPAREN! | calcExpression
+;
+
+expression :
+    LPAREN! expression RPAREN! | commaExpression
 ;
 
 commaExpression :
@@ -211,12 +211,12 @@ commaExpression :
 ;
 
 calcExpression :
-    simpleExpression ( ( PLUS^ | MINUS^ | TIMES^ | GT^ ) expression )?
+    simpleExpression ( ( PLUS^ | MINUS^ | TIMES^ | GT^ ) noCommaExpression )?
 ;
 
 typedArgumentsList :
     LPAREN^
-    ( expression SYMBOL ( COMMA expression SYMBOL )* )?
+    ( noCommaExpression SYMBOL ( COMMA noCommaExpression SYMBOL )* )?
     RPAREN!
 ;
 
