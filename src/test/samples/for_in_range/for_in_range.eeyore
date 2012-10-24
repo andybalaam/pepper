@@ -2,3 +2,6 @@
 for int n in range( 0, 10 ):
     print( n )
 
+for int n in range( 50, 60, 2 ):
+    print( n )
+

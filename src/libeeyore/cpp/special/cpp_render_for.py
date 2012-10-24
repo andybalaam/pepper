@@ -3,7 +3,6 @@ from libeeyore.vals.all_values import *
 from libeeyore.cpp.cpputils import render_statements
 
 def render_EeyFor( value, env ):
-
     evald_it = value.iterator.evaluate( env )
 
     if not evald_it.is_known( env ):
@@ -22,9 +21,20 @@ def render_EeyFor( value, env ):
     args = ( value.variable_name, )
     newenv = execution_environment( arg_types_and_names, args, False, env )
 
-    return """for( {variable_type} {variable_name} = {begin}; {variable_name} < {end}; ++{variable_name} )
+    if evald_it.step.evaluate( env ).value == "1":
+        modify_code = "++{variable_name}"
+    else:
+        modify_code = "{variable_name} += {step}"
+
+    modify_code = modify_code.format(
+        variable_name = value.variable_name.symbol_name,
+        step = evald_it.step.render( env ),
+    )
+
+    return """for( {variable_type} {variable_name} = {begin}; {variable_name} < {end}; {modify_code} )
     {{
 {body_statements}    }}""".format(
+        modify_code = modify_code,
         variable_type = value.variable_type.render( env ),
         variable_name = value.variable_name.symbol_name,
         begin = evald_it.begin.render( env ),

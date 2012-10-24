@@ -88,9 +88,13 @@ def add_builtins( env ):
         (
             ( EeyType( EeyInt ), EeySymbol( "begin" ) ),
             ( EeyType( EeyInt ), EeySymbol( "end" ) ),
+            ( EeyType( EeyInt ), EeySymbol( "step" ), EeyInt( "1" ) ),
         ),
         (
-            EeyReturn( EeyRange( EeySymbol( "begin" ), EeySymbol( "end" ) ) ),
+            # TODO: if end < begin and step was not supplied, default to -1
+            EeyReturn( EeyRange(
+                EeySymbol( "begin" ), EeySymbol( "end" ), EeySymbol( "step" )
+            ) ),
         )
     ).evaluate( env )
 

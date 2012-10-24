@@ -50,3 +50,50 @@ int main( int argc, char* argv[] )
     )
 
 
+
+
+def Loop_over_range_with_nondefault_step___test():
+
+    env = EeyEnvironment( EeyCppRenderer() )
+    builtins.add_builtins( env )
+
+    stmt = EeyFor(
+        EeySymbol('int'),
+        EeySymbol('i'),
+        EeyFunctionCall(
+            EeySymbol('range'),
+            (
+                EeyInt('10'),
+                EeyInt('20'),
+                EeyInt('3'),
+            )
+        ),
+        (
+            EeyFunctionCall(
+                EeySymbol('print'),
+                (
+                    EeySymbol('i'),
+                )
+            ),
+        )
+    )
+
+    ans = env.renderer.render_exe( [ stmt ], env )
+
+    assert_multiline_equal(
+        """#include <stdio.h>
+
+int main( int argc, char* argv[] )
+{
+    for( int i = 10; i < 20; i += 3 )
+    {
+        printf( "%d\\n", i );
+    }
+
+    return 0;
+}
+""",
+        ans
+    )
+
+

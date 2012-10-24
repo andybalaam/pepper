@@ -6,6 +6,10 @@ int main( int argc, char* argv[] )
     {
         printf( "%d\n", n );
     }
+    for( int n = 50; n < 60; n += 2 )
+    {
+        printf( "%d\n", n );
+    }
 
     return 0;
 }

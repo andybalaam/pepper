@@ -12,6 +12,7 @@ class EeyValue( object ):
 
     def __init__( self ):
         self.cached_eval = None
+        self.cached_eval_env = None
 
     def render( self, env ):
         return env.render_value( self.evaluate( env ) )
@@ -20,8 +21,10 @@ class EeyValue( object ):
         return True
 
     def evaluate( self, env ):
-        if self.cached_eval is None:
+        if self.cached_eval is None or env is not self.cached_eval_env:
             self.cached_eval = self.do_evaluate( env )
+            self.cached_eval_env = env
+
         return self.cached_eval
 
     def do_evaluate( self, env ):
@@ -132,7 +135,6 @@ class EeySymbol( EeyValue ):
         return self.symbol_name
 
     def do_evaluate( self, env ):
-
         # Look up this symbol in the namespace of our environment
         value = self._lookup( env ).evaluate( env )
 

@@ -85,6 +85,9 @@ class EeyReturn( EeyValue ):
     def construction_args( self ):
         return ( self.value, )
 
+    def do_evaluate( self, env ):
+        return EeyReturn( self.value.evaluate( env ) )
+
 class EeyCallable( EeyValue ):
     @abstractmethod
     def call( self, args, env ): pass
