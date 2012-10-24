@@ -11,17 +11,37 @@ from values import EeyPass
 from values import all_known
 from usererrorexception import EeyUserErrorException
 
+
+
+def has_default( type_and_name ):
+    return ( len( type_and_name ) == 3 )
+
+
 def execution_environment( arg_types_and_names, args, known, env ):
     newenv = env.clone_deeper()
 
-    for val, (tp, name) in izip( args, arg_types_and_names ):
+    i = 0
+    while i < len( arg_types_and_names ):
+        type_and_name = arg_types_and_names[i]
+        name = type_and_name[1]
+
+        if i < len( args ):
+            val = args[i]
+        else:
+            assert has_default( type_and_name )
+            val = type_and_name[2]
+
         if known:
             val = val.evaluate( env )
         else:
+            tp   = type_and_name[0]
             val = EeyVariable( tp.evaluate( env ), name.name() )
+
         newenv.namespace[name.name()] = val
+        i += 1
 
     return newenv
+
 
 def is_callable( value ):
     return True # TODO: check whether the object may be called
@@ -229,17 +249,29 @@ class EeyUserFunction( EeyFunction ):
 
     def args_match( self, args, env ):
 
-        if len( args ) != len( self.arg_types_and_names ):
-            return False
+        i = 0
+        while True:
 
-        for arg, (reqtype, reqname) in izip( args, self.arg_types_and_names ):
-            evald_req = reqtype.evaluate( env )
-            arg_type = arg.evaluated_type( env )
+            # Have we looked at all allowed args?  Then we're finished
+            if i >= len( self.arg_types_and_names ):
+                # Matches if we've finished all the args too
+                return ( i >= len( args ) )
 
-            if not evald_req.matches( arg_type ):
-                return False
+            type_and_name = self.arg_types_and_names[i]
 
-        return True
+            # Have we run out of args?  If so, remaining allowed must be opt
+            if i >= len( args ):
+                if not has_default( type_and_name ):
+                    return False
+            else:
+                arg = args[i]
+                reqtype = type_and_name[0].evaluate( env )
+                arg_type = arg.evaluated_type( env )
+                if not reqtype.matches( arg_type ):
+                    return False
+
+            i += 1
+
 
     def call( self, args, env ):
         """You  must call args_match first and only call this if the return
