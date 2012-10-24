@@ -16,6 +16,9 @@ from usererrorexception import EeyUserErrorException
 def has_default( type_and_name ):
     return ( len( type_and_name ) == 3 )
 
+def type_matches( env, tp, val ):
+    return tp.evaluate( env ).matches( val.evaluated_type( env ) )
+
 
 def execution_environment( arg_types_and_names, args, known, env ):
     newenv = env.clone_deeper()
@@ -156,10 +159,10 @@ class EeyFunctionOverloadList( EeyCallable ):
 
         for argnum, ( arg, (reqtype, reqname) ) in enumerate( izip( args,
                 fn.arg_types_and_names ) ):
-            ev_reqtype = reqtype.evaluate( env )
-            arg_type = arg.evaluated_type( env )
 
-            if not ev_reqtype.matches( arg_type ):
+            if not type_matches( env, reqtype, arg ):
+                ev_reqtype = reqtype.evaluate( env )
+                arg_type = arg.evaluated_type( env )
                 raise EeyUserErrorException(
                     ( "For function '{fn_name}', argument " +
                         "'{argname}' should be {reqtype}, " +
@@ -247,6 +250,29 @@ class EeyUserFunction( EeyFunction ):
     def return_type( self, args, env ):
         return self.ret_type
 
+    def do_evaluate( self, env ):
+        self.check_default_arg_types( env )
+        return self
+
+    def check_default_arg_types( self, env ):
+        for type_and_name in self.arg_types_and_names:
+            if has_default( type_and_name ):
+                if not type_matches( env, type_and_name[0], type_and_name[2] ):
+                    reqtype = type_and_name[0].evaluate( env )
+                    deftype = type_and_name[2].evaluated_type( env )
+                    raise EeyUserErrorException(
+                        (
+                            "In function '{funcname}', the default for " +
+                            "argument '{argname}' should be {reqtype}, but " +
+                            "it is {deftype}."
+                        ).format(
+                            funcname = self.name,
+                            argname = type_and_name[1].symbol_name,
+                            reqtype = env.pretty_name( reqtype ),
+                            deftype = env.pretty_name( deftype ),
+                        )
+                    )
+
     def args_match( self, args, env ):
 
         i = 0
@@ -264,10 +290,7 @@ class EeyUserFunction( EeyFunction ):
                 if not has_default( type_and_name ):
                     return False
             else:
-                arg = args[i]
-                reqtype = type_and_name[0].evaluate( env )
-                arg_type = arg.evaluated_type( env )
-                if not reqtype.matches( arg_type ):
+                if not type_matches( env, type_and_name[0], args[i] ):
                     return False
 
             i += 1
@@ -318,7 +341,7 @@ class EeyDef( EeyValue ):
             self.ret_type.evaluate( env ),
             self.arg_types_and_names,
             self.body_stmts
-        )
+        ).evaluate( env )
 
         if nm in env.namespace:
             val = env.namespace[nm]

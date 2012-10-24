@@ -58,7 +58,7 @@ def test_Call_fn_with_wrong_arg_type():
     expected_error = (
         r"""For function 'myfunc', argument 'x' should be int, not string.""" )
 
-        # This is what we are testing: should throw as no args supplied
+        # This is what we are testing: should throw as string is not int
     assert_raises_regexp(
         EeyUserErrorException,
         expected_error,
