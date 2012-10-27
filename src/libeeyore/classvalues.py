@@ -178,6 +178,13 @@ class EeyRuntimeInit( EeyValue ):
     def construction_args( self ):
         return ( self.instance, self.args, self.init_fn )
 
+    def evaluated_type( self, env ):
+        return self.instance.clazz
+
+    def is_known( self, env ):
+        return False
+
+
 
 class EeyInitMethod( EeyFunction ):
     def __init__( self, user_class ):

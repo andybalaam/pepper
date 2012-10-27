@@ -14,7 +14,9 @@ def test_Hello_World():
     value = EeyFunctionCall( EeySymbol( "print" ),
         ( EeyString( "Hello, World!" ), ) )
 
-    assert_equal( env.render_exe( ( value, ) ), """#include <stdio.h>
+    assert_multiline_equal(
+        env.render_exe( ( value, ) ),
+        """#include <stdio.h>
 
 int main( int argc, char* argv[] )
 {
@@ -55,7 +57,9 @@ def test_Echo_arg1():
 
     program = ( impt, fncall )
 
-    assert_equal( env.render_exe( program ), """#include <stdio.h>
+    assert_multiline_equal(
+        env.render_exe( program ),
+        """#include <stdio.h>
 
 int main( int argc, char* argv[] )
 {
@@ -124,7 +128,9 @@ def test_Two_prints():
     value2 = EeyFunctionCall( EeySymbol( "print" ),
         ( EeyString( "World!" ), ) )
 
-    assert_equal( env.render_exe( ( value1, value2 ) ), """#include <stdio.h>
+    assert_multiline_equal(
+        env.render_exe( ( value1, value2 ) ),
+        """#include <stdio.h>
 
 int main( int argc, char* argv[] )
 {
@@ -317,7 +323,7 @@ def test_Render_runtime_class():
 
     ans = env.renderer.render_exe( [ cls, init ], env )
 
-    assert_equal(
+    assert_multiline_equal(
         """
 struct MyClass
 {
@@ -379,7 +385,7 @@ def test_Render_runtime_method_call():
 
     ans = env.renderer.render_exe( [ cls, init, meth ], env )
 
-    assert_equal(
+    assert_multiline_equal(
         """
 struct MyClass
 {

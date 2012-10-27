@@ -64,12 +64,9 @@ class EeyFunctionCall( EeyValue ):
         return ( self.func, self.args )
 
     def do_evaluate( self, env ):
-        if self.is_known( env ):
-            fn = self.func.evaluate( env )
-            assert is_callable( fn ) # TODO: not assert
-            return fn.call( self.args, env )
-        else:
-            return self
+        fn = self.func.evaluate( env )
+        assert is_callable( fn ) # TODO: not assert
+        return fn.call( self.args, env )
 
     def is_known( self, env ):
         return all_known( self.args + (self.func,), env )
@@ -235,6 +232,13 @@ class EeyRuntimeUserFunction( EeyValue ):
 
     def construction_args( self ):
         return ( self.user_function, self.args, self.namespace_name )
+
+    def is_known( self, env ):
+        return False
+
+    def evaluated_type( self, env ):
+        return self.user_function.return_type( self.args, env )
+
 
 class EeyUserFunction( EeyFunction ):
     def __init__( self, name, ret_type, arg_types_and_names, body_stmts ):
