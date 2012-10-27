@@ -11,6 +11,8 @@ def test_Basic_int_for_loop():
     env = EeyEnvironment( EeyCppRenderer() )
     builtins.add_builtins( env )
 
+    EeyImport( "sys" ).evaluate( env )
+
     stmt = EeyFor(
         EeySymbol('int'),
         EeySymbol('i'),
@@ -18,7 +20,10 @@ def test_Basic_int_for_loop():
             EeySymbol('range'),
             (
                 EeyInt('0'), 
-                EeyInt('4')
+                EeyFunctionCall(
+                    EeySymbol( "len" ),
+                    ( EeySymbol( "sys.argv" ), )
+                ),
             )
         ),
         (
@@ -38,7 +43,7 @@ def test_Basic_int_for_loop():
 
 int main( int argc, char* argv[] )
 {
-    for( int i = 0; i < 4; ++i )
+    for( int i = 0; i < argc; ++i )
     {
         printf( "%d\\n", i );
     }
@@ -57,6 +62,7 @@ def Loop_over_range_with_nondefault_step___test():
     env = EeyEnvironment( EeyCppRenderer() )
     builtins.add_builtins( env )
 
+    EeyImport( "sys" ).evaluate( env )
     stmt = EeyFor(
         EeySymbol('int'),
         EeySymbol('i'),
@@ -64,7 +70,10 @@ def Loop_over_range_with_nondefault_step___test():
             EeySymbol('range'),
             (
                 EeyInt('10'),
-                EeyInt('20'),
+                EeyFunctionCall(
+                    EeySymbol( "len" ),
+                    ( EeySymbol( "sys.argv" ), )
+                ),
                 EeyInt('3'),
             )
         ),
@@ -85,7 +94,7 @@ def Loop_over_range_with_nondefault_step___test():
 
 int main( int argc, char* argv[] )
 {
-    for( int i = 10; i < 20; i += 3 )
+    for( int i = 10; i < argc; i += 3 )
     {
         printf( "%d\\n", i );
     }

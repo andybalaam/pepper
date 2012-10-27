@@ -315,8 +315,18 @@ class EeyUserFunction( EeyFunction ):
                 if ev_st.__class__ == EeyReturn:
                     return ev_st.value.evaluate( newenv )
             return EeyPass()
-        else:
-            return EeyRuntimeUserFunction( self, args, None )
+        elif len( self.body_stmts ) == 1:
+            if self.name == "range_impl":
+                # TODO: only enabled for ranges - should work for everything?
+
+                # Special case: even if unknown, a single-line function which
+                # just returns can be replaced by the contents of the return
+                newenv = self.execution_environment( args, True, env )
+                ev_st = self.body_stmts[0].evaluate( newenv )
+                if ev_st.__class__ == EeyReturn:
+                    return ev_st.value
+
+        return EeyRuntimeUserFunction( self, args, None )
 
     def execution_environment( self, args, known, env ):
         return execution_environment(

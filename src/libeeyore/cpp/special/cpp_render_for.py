@@ -5,10 +5,6 @@ from libeeyore.cpp.cpputils import render_statements
 def render_EeyFor( value, env ):
     evald_it = value.iterator.evaluate( env )
 
-    if not evald_it.is_known( env ):
-        raise Exception(
-            "At the moment, iterators must be known at compile time." ) # TODO
-
     if evald_it.evaluated_type( env ).value is not EeyRange:
         # TODO Can only iterate over ranges
         raise Exception( "Can only iterate over ranges so far, not " +
@@ -40,7 +36,7 @@ def render_EeyFor( value, env ):
         begin = evald_it.begin.render( env ),
         end   = evald_it.end.render( env ),
         body_statements = render_statements(
-            value.body_statements, "        ", newenv )
+            value.body_stmts, "        ", newenv )
     )
 
 

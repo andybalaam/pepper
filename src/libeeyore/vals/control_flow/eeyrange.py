@@ -1,6 +1,26 @@
+from libeeyore.all_known import all_known
+from libeeyore.values import EeyInt
 from libeeyore.values import EeyValue
 
-# TODO: test this class in isoloation
+
+class Iter( object ):
+    def __init__( self, eeyrange ):
+        # TODO: handle large numbers
+        self.index = int( eeyrange.begin.value )
+        self.end   = int( eeyrange.end.value )
+        self.step  = int( eeyrange.step.value )
+
+    def __iter__( self ):
+        return self
+
+    def next( self ):
+        # TODO: handle large numbers
+        if self.index >= self.end:
+            raise StopIteration()
+        ret = EeyInt( str( self.index ) )
+        self.index += self.step
+        return ret
+
 
 class EeyRange( EeyValue ):
     def __init__( self, begin, end, step ):
@@ -19,9 +39,14 @@ class EeyRange( EeyValue ):
             self.step.evaluate( env )
         )
 
+    def is_known( self, env ):
+        return all_known( ( self.begin, self.end, self.step ), env )
+
     @staticmethod
     def init( begin, end, step ):
         return EeyRange( begin, end, step )
 
+    def __iter__( self ):
+        return Iter( self )
 
 

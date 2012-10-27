@@ -42,7 +42,7 @@ class EeyRuntimeLen( EeyValue ):
         # TODO: if it's known, do it
         return self
 
-    def is_known( self ):
+    def is_known( self, env ):
         # TODO: if it's known, return True
         return False
 

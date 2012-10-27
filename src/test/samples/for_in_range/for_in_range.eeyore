@@ -1,7 +1,8 @@
+import sys
 
-for int n in range( 0, 10 ):
+for int n in range( 0, len( sys.argv ) ):
     print( n )
 
-for int n in range( 50, 60, 2 ):
+for int n in range( 3, len( sys.argv ), 2 ):
     print( n )
 

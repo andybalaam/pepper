@@ -2,11 +2,11 @@
 
 int main( int argc, char* argv[] )
 {
-    for( int n = 0; n < 10; ++n )
+    for( int n = 0; n < argc; ++n )
     {
         printf( "%d\n", n );
     }
-    for( int n = 50; n < 60; n += 2 )
+    for( int n = 3; n < argc; n += 2 )
     {
         printf( "%d\n", n );
     }
