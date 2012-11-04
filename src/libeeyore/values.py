@@ -172,6 +172,11 @@ class EeyInt( EeyValue ):
     def construction_args( self ):
         return ( self.value, )
 
+    def plusequals( self, other ):
+        assert other.__class__ == self.__class__
+        # TODO: handle large numbers
+        self.value = str( int( self.value ) + int( other.value ) )
+
     def plus( self, other ):
         assert other.__class__ == self.__class__
         # TODO: handle large numbers

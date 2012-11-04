@@ -1,11 +1,17 @@
 from libeeyore.values import EeyValue
 
 class EeyModification( EeyValue ):
-    def __init__( self, var_name, init_value ):
+    def __init__( self, var, mod_value ):
         EeyValue.__init__( self )
-        self.var_name = var_name
-        self.init_value = init_value
+        self.var = var
+        self.mod_value = mod_value
 
     def construction_args( self ):
-        return ( self.var_name, self.init_value, )
+        return ( self.var, self.mod_value, )
+
+    def do_evaluate( self, env ):
+        self.var.evaluate( env ).plusequals( self.mod_value.evaluate( env ) )
+        return self
+
+
 
