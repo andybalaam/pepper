@@ -5,21 +5,6 @@ from libeeyore.environment import EeyEnvironment
 
 from libeeyore.vals.all_values import *
 
-def Range_function_unknown_evaluates_to_EeyRange___test():
-    env = EeyEnvironment( None )
-    builtins.add_builtins( env )
-
-    r = EeyFunctionCall(
-        EeySymbol( "range" ),
-        (
-            EeyInt( "1" ), EeyVariable( "x", EeyType( EeyInt ) ),
-        )
-    )
-
-    ev_r = r.evaluate( env )
-
-    assert_equal( ev_r.__class__, EeyRange )
-
 
 def Range_with_known_args_is_known__test():
     r = EeyRange( EeyInt( "3" ), EeyInt( "6" ), EeyInt( "2" ) )
@@ -88,6 +73,57 @@ def Loop_through_stepped_range___test():
         EeySymbol('int'),
         EeySymbol('k1'),
         EeyRange( EeyInt('0'), EeyInt('4'), EeyInt('2') ),
+        (
+            loop_stmt,
+        )
+    )
+
+    stmt.evaluate( env )
+
+    assert_equal( ["0", "2"], loop_stmt.evals )
+
+
+def Loop_through_default_range_function___test():
+
+    env = EeyEnvironment( None )
+    builtins.add_builtins( env )
+
+    loop_stmt1 = FakeStatement( "i" )
+    loop_stmt2 = FakeStatement( "i" )
+
+    stmt = EeyFor(
+        EeySymbol('int'),
+        EeySymbol('i'),
+        EeyFunctionCall(
+            EeySymbol( 'range' ),
+            ( EeyInt('0'), EeyInt('4'), EeyInt('1') ),
+        ),
+        (
+            loop_stmt1,
+            loop_stmt2,
+        )
+    )
+
+    stmt.evaluate( env )
+
+    assert_equal( ["0", "1", "2", "3"], loop_stmt1.evals )
+    assert_equal( ["0", "1", "2", "3"], loop_stmt2.evals )
+
+
+def Loop_through_stepped_range_function___test():
+
+    env = EeyEnvironment( None )
+    builtins.add_builtins( env )
+
+    loop_stmt = FakeStatement( "k1" )
+
+    stmt = EeyFor(
+        EeySymbol('int'),
+        EeySymbol('k1'),
+        EeyFunctionCall(
+            EeySymbol( 'range' ),
+            ( EeyInt('0'), EeyInt('4'), EeyInt('2') ),
+        ),
         (
             loop_stmt,
         )

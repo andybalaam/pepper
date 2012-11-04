@@ -59,6 +59,22 @@ class EeyLen( EeyFunction ):
     def args_match( self, args ):
         return True # TODO
 
+# TODO: write this in eeyore
+range_function = EeyUserFunction(
+    "range_impl",
+    EeyType( EeyRange ),
+    (
+        ( EeyType( EeyInt ), EeySymbol( "begin" ) ),
+        ( EeyType( EeyInt ), EeySymbol( "end" ) ),
+        ( EeyType( EeyInt ), EeySymbol( "step" ), EeyInt( "1" ) ),
+    ),
+    (
+        # TODO: if end < begin and step was not supplied, default to -1
+        EeyReturn( EeyRange(
+            EeySymbol( "begin" ), EeySymbol( "end" ), EeySymbol( "step" )
+        ) ),
+    )
+)
 
 def add_builtins( env ):
     # Statements
@@ -80,21 +96,5 @@ def add_builtins( env ):
     # Functions
     env.namespace["len"]   = EeyLen()
     env.namespace["print"] = EeyPrint()
-
-    # TODO: write this in eeyore
-    env.namespace["range"] = EeyUserFunction(
-        "range_impl",
-        EeyType( EeyRange ),
-        (
-            ( EeyType( EeyInt ), EeySymbol( "begin" ) ),
-            ( EeyType( EeyInt ), EeySymbol( "end" ) ),
-            ( EeyType( EeyInt ), EeySymbol( "step" ), EeyInt( "1" ) ),
-        ),
-        (
-            # TODO: if end < begin and step was not supplied, default to -1
-            EeyReturn( EeyRange(
-                EeySymbol( "begin" ), EeySymbol( "end" ), EeySymbol( "step" )
-            ) ),
-        )
-    ).evaluate( env )
+    env.namespace["range"] = range_function.evaluate( env )
 
