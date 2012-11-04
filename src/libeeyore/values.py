@@ -206,6 +206,11 @@ class EeyFloat( EeyValue ):
     def construction_args( self ):
         return ( self.value, )
 
+    def plusequals( self, other ):
+        assert other.__class__ == self.__class__
+        # TODO: handle arbitrary numbers
+        self.value = str( float( self.value ) + float( other.value ) )
+
     def plus( self, other ):
         assert other.__class__ == self.__class__
         # TODO: handle arbitrary numbers
