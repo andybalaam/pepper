@@ -1,0 +1,15 @@
+import sys
+
+def reduce(
+        function( int, ( int, int, ) ) fn, iterable( int ) iter, int start ):
+    acc = start
+    for int v in iter:
+        acc = fn( acc, v )
+    return acc
+
+
+print( reduce( lang.plus, ( 2, 4, 6 ), 0 ) )
+
+print( reduce( lang.times, range( 1, len( sys.argv ) + 1 ), 1 )
+
+

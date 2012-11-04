@@ -24,6 +24,7 @@ SAMPLES = \
 	samples/foreign_function/foreign_function.asciidoc \
 	samples/web/web.asciidoc \
 	samples/type_switch/type_switch.asciidoc \
+	samples/reduce/reduce.asciidoc \
 
 REAL_SAMPLES = \
 	real_samples/samples/hello/hello.asciidoc \

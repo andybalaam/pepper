@@ -98,4 +98,8 @@ include::../samples/web/web.asciidoc[]
 
 include::../samples/type_switch/type_switch.asciidoc[]
 
+== Reduce ==
+
+include::../samples/reduce/reduce.asciidoc[]
+
 
