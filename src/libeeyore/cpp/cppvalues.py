@@ -29,6 +29,11 @@ def render_EeyBool( value, env ):
 def render_EeyString( value, env ):
     return '"%s"' % value.value
 
+def render_EeyModification( value, env ):
+    # TODO: assert they are addable and switch on how to add them
+    return "%s += %s" % (
+        value.var.render( env ), value.mod_value.render( env ) )
+
 def render_EeyPlus( value, env ):
     # TODO: assert they are addable and switch on how to add them
     return "(%s + %s)" % (

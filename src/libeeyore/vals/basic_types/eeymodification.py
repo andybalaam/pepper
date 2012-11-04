@@ -1,4 +1,5 @@
 from libeeyore.values import EeyValue
+from libeeyore.values import all_known
 
 class EeyModification( EeyValue ):
     def __init__( self, var, mod_value ):
@@ -10,8 +11,13 @@ class EeyModification( EeyValue ):
         return ( self.var, self.mod_value, )
 
     def do_evaluate( self, env ):
-        self.var.evaluate( env ).plusequals( self.mod_value.evaluate( env ) )
+        if self.is_known( env ):
+            self.var.evaluate(
+                env ).plusequals( self.mod_value.evaluate( env ) )
         return self
+
+    def is_known( self, env ):
+        return all_known( ( self.var, self.mod_value, ), env )
 
 
 
