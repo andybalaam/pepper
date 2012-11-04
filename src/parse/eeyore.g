@@ -146,6 +146,8 @@ PLUS : '+' ;
 MINUS : '-' ;
 TIMES : '*' ;
 
+PLUSEQUALS : "+=" ;
+
 GT : '>' ;
 
 COLON : ':';
@@ -169,6 +171,7 @@ program :
 
 statement :
       initialisationOrExpression
+    | modification
     | functionDefinition
     | classDefinition
     | forStatement
@@ -182,6 +185,10 @@ classStatement :
 
 initialisationOrExpression :
     expression ( SYMBOL EQUALS^ expression )? NEWLINE!
+;
+
+modification :
+    SYMBOL PLUSEQUALS^ expression NEWLINE!
 ;
 
 functionDefinition :
@@ -320,6 +327,7 @@ class EeyoreTreeWalker extends TreeParser;
 statement returns [r]
     : e=expression { r = e }
     | i=initialisation { r = i }
+    | m=modification { r = m }
     | f=functionDefinition { r = f }
     | c=classDefinition { r = c }
     | f=forStatement { r = f }
@@ -350,6 +358,11 @@ expression returns [r]
 initialisation returns [r]
     : #(EQUALS t=expression s=symbol v=expression)
         { r = EeyInit( t, s, v ) }
+;
+
+modification returns [r]
+    : #(PLUSEQUALS s=symbol v=expression)
+        { r = EeyModification( s, v ) }
 ;
 
 functionDefinition returns [r]
