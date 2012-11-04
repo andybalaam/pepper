@@ -3,7 +3,7 @@ from all_known import all_known
 from eeyinterface import implements_interface
 from values import EeyArray
 from values import EeyBool
-from values import EeyInt
+from vals.numbers import EeyInt
 from values import EeySymbol
 from values import EeyType
 from values import EeyValue

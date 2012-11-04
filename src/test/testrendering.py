@@ -5,6 +5,8 @@ from libeeyore.environment import EeyEnvironment
 from libeeyore.cpp.cppvalues import *
 from libeeyore.cpp.cpprenderer import EeyCppRenderer
 
+from libeeyore.vals.all_values import *
+
 from eeyasserts import assert_multiline_equal
 
 def test_Hello_World():

@@ -1,7 +1,7 @@
 
 from libeeyore.eeyinterface import implements_interface
-from libeeyore.values import *
 from libeeyore.builtinmodules.eeysys import EeySysArgv
+from libeeyore.vals.all_values import *
 
 
 class FormatString( object ):

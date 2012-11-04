@@ -1,5 +1,5 @@
 from libeeyore.all_known import all_known
-from libeeyore.values import EeyInt
+from libeeyore.vals.numbers import EeyInt
 from libeeyore.values import EeyValue
 
 

@@ -2,8 +2,7 @@
 from nose.tools import *
 
 from libeeyore.environment import EeyEnvironment
-from libeeyore.values import *
-from libeeyore.classvalues import *
+from libeeyore.vals.all_values import *
 
 env = EeyEnvironment( None )
 
