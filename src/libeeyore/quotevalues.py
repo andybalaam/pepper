@@ -1,3 +1,6 @@
+# Copyright (C) 2012 Andy Balaam and The Pepper Developers
+# Released under the MIT License.  See the file COPYING.txt for details.
+
 from libeeyore.namespace import EeyNamespace
 from functionvalues import EeyFunction
 from values import EeyValue

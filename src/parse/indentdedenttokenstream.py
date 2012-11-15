@@ -1,3 +1,6 @@
+# Copyright (C) 2012 Andy Balaam and The Pepper Developers
+# Released under the MIT License.  See the file COPYING.txt for details.
+
 
 # Inspired in places by:
 # http://www.antlr.org/depot/examples-v3/java/python/PythonTokenSource.java

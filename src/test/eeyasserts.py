@@ -1,3 +1,6 @@
+# Copyright (C) 2012 Andy Balaam and The Pepper Developers
+# Released under the MIT License.  See the file COPYING.txt for details.
+
 
 def assert_contains( find_in, to_find ):
     if find_in.find( to_find ) != -1:

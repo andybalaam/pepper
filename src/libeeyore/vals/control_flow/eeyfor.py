@@ -1,3 +1,6 @@
+# Copyright (C) 2012 Andy Balaam and The Pepper Developers
+# Released under the MIT License.  See the file COPYING.txt for details.
+
 from libeeyore.functionvalues import execution_environment
 from libeeyore.values import EeyValue
 from libeeyore.values import eey_none
