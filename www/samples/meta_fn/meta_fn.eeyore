@@ -1,3 +1,6 @@
+# Copyright (C) 2012 Andy Balaam and The Pepper Developers
+# Released under the MIT License.  See the file COPYING.txt for details.
+
 
 def auto make_sort_pair( type T ):
     def ( T, T ) sort_pair( T x, T y ):
