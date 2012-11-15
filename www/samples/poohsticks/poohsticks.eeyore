@@ -1,4 +1,4 @@
-# Eeyore poohsticks - demononstrates transfer of ownership
+# Pepper poohsticks - demononstrates transfer of ownership
 def int8 main( array_of(immutable(string)) args )
     River river = River.new()
 

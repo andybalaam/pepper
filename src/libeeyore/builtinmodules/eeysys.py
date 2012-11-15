@@ -28,7 +28,7 @@ class EeySys( EeyValue ):
         self.namespace = {
             "argv"     : EeySysArgv(),
             "copyright": EeyString(
-                "Copyright (C) 2010-2012 Andy Balaam and the Eeyore developers"
+                "Copyright (C) 2010-2012 Andy Balaam and the Pepper developers"
             ),
         }
 

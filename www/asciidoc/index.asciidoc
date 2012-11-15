@@ -3,17 +3,17 @@ Copyright (C) 2011-2012 Andy Balaam and The Pepper Developers
 Released under the MIT License.  See the file COPYING.txt for details.
 ////
 
-= Eeyore Programming Language =
+= Pepper Programming Language =
 
 You can jump straight to some link:examples.html[Examples].
 
-Eeyore is a ficticious multi-paradigm programming language with the following capabilities:
+Pepper is a ficticious multi-paradigm programming language with the following capabilities:
 
 * NativePerformanceAndDeployability
 
-Eeyore will compile to native executable code, making it fast and easy to deploy.
+Pepper will compile to native executable code, making it fast and easy to deploy.
 
-Its runtime library will be small and will be capable of being statically linked, meaning installing an Eeyore program can be as simple as copying a single executable file.
+Its runtime library will be small and will be capable of being statically linked, meaning installing a Pepper program can be as simple as copying a single executable file.
 
 It will perform inlining and compile-time processing to allow high-level expression without incurring overhead.
 
@@ -21,25 +21,25 @@ It will support and encourage stack storage, pass-by-value and explicit ownershi
 
 * link:explicitownership.html[Explicit Ownership]
 
-Eeyore will aim to allow and encourage being explicit in all areas.  It is intended particularly to enforce explicit ownership of objects, so that memory management is automatic, but entirely within the control of the programmer.
+Pepper will aim to allow and encourage being explicit in all areas.  It is intended particularly to enforce explicit ownership of objects, so that memory management is automatic, but entirely within the control of the programmer.
 
 * ExpressivePowerAndMetaprogramming
 
-Eeyore will provide high-level concepts from languages like Lisp such as first-class functions and generic programming.  Where such concepts may be resolved at compile-time to machine language instructions they will be, and only where resolution must occur at runtime will overhead be incurred.
+Pepper will provide high-level concepts from languages like Lisp such as first-class functions and generic programming.  Where such concepts may be resolved at compile-time to machine language instructions they will be, and only where resolution must occur at runtime will overhead be incurred.
 
 * SyntacticSimplicity
 
-Eeyore will follow Python's lead in reducing the amount of unnecessary syntax and providing mechanisms to make the programmer's intentions clear.
+Pepper will follow Python's lead in reducing the amount of unnecessary syntax and providing mechanisms to make the programmer's intentions clear.
 
 Its syntax will feel relatively natural to programmers from the C++/Java/C# and Python language families.
 
 * EverythingBuiltIn
 
-Eeyore will provide ways to build user interfaces and use other technologies such as the web, XML, email.  It will provide a single "right" way and encourage programmers to use and improve it.
+Pepper will provide ways to build user interfaces and use other technologies such as the web, XML, email.  It will provide a single "right" way and encourage programmers to use and improve it.
 
-For example, Eeyore will provide generic methods for creating windows, menus, buttons etc. which will be implemented using different underlying technologies on different platforms (e.g. win32, Gtk+, Cocoa).
+For example, Pepper will provide generic methods for creating windows, menus, buttons etc. which will be implemented using different underlying technologies on different platforms (e.g. win32, Gtk+, Cocoa).
 
 * MiniLanguages
 
-Eeyore will allow and encourage the creation of mini-languages (including Domain-Specific Languages) which are native to the language but fit the domain of the problem they are solving.
+Pepper will allow and encourage the creation of mini-languages (including Domain-Specific Languages) which are native to the language but fit the domain of the problem they are solving.
 

@@ -6,7 +6,7 @@ Released under the MIT License.  See the file COPYING.txt for details.
 = Explicit Ownership =
 
 ****
-Eeyore will aim to allow and encourage being explicit in all areas. It is intended particularly to enforce explicit ownership of objects, so that memory management is automatic, but entirely within the control of the programmer.
+Pepper will aim to allow and encourage being explicit in all areas. It is intended particularly to enforce explicit ownership of objects, so that memory management is automatic, but entirely within the control of the programmer.
 ****
 
 == Performance is often about memory ==
@@ -79,7 +79,7 @@ Perhaps like this:
 
 [source,python]
 ----
-# Eeyore
+# Pepper
 class Winnie:
     Stick mystick
     Owl* owl
@@ -88,7 +88,7 @@ class Winnie:
 Here, using the class name on its own means we own the object, and if we simply want to refer to something, we borrow from C++ and use a *.
 
 ****
-Note: Eeyore uses "+.+" to refer to members of things referred to by reference, so to call a method on owl, we would do something like +owl.hoot()+.  This might look odd for a C++ person, but I've always felt the "`->`" unnecessary.
+Note: Pepper uses "+.+" to refer to members of things referred to by reference, so to call a method on owl, we would do something like +owl.hoot()+.  This might look odd for a C++ person, but I've always felt the "`->`" unnecessary.
 ****
 
 Under the covers, the Stick might be allocated as part of Winnie like in example eo1, or separately like in example eo2 - the language takes care of that (using the more efficient implementation if possible) but we can guarantee that the Stick will be destroyed when the Winnie is destroyed.
@@ -97,7 +97,7 @@ For this to work, we would need our language to enforce ownership rules.  For ex
 
 [source,python]
 ----
-# Eeeyore
+# Pepper
 def void grab_stick( Stick* sticktograb ):
     Stick stick = sticktograb # Compile error
 ----
@@ -110,7 +110,7 @@ Of course, in some cases ownership of an object needs to be transferred.  An obv
 
 [source,python]
 ----
-# Eeeyore
+# Pepper
 def Stick create_stick(): # return value expresses transfer of ownership
     Stick ret = Stick.new()
     # Details omitted
@@ -121,7 +121,7 @@ In other cases, a more explicit transfer is needed.  This:
 
 [source,python]
 ----
-# Eeyore
+# Pepper
 def void steal_stick():
     Stick stick1 = Stick.new()
     Stick stick2 = stick1 # Steal here!
@@ -131,7 +131,7 @@ is a compile error, and we should force the programmer to be explicit about what
 
 [source,python]
 ----
-# Eeyore
+# Pepper
 def void copy_stick():
     Stick stick1 = Stick.new()
     Stick stick2 = copy stick1 # Copy it
@@ -141,7 +141,7 @@ where we have used the +copy+ keyword to show we want to copy stick1 to create s
 
 [source,python]
 ----
-# Eeyore
+# Pepper
 def void really_steal_stick():
     none_or(Stick) stick1 = Stick.new()
     Stick stick2 = release( stick1 ) # Steal it

@@ -1,6 +1,6 @@
 The Pepper Programming Language
 
-Eeyore is a ficticious multi-paradigm programming language.
+Pepper is a ficticious multi-paradigm programming language.
 
 See http://www.artificialworlds.net/pepper for more information.
 
