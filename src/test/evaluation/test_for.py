@@ -4,25 +4,25 @@
 from nose.tools import *
 
 from libpepper import builtins
-from libpepper.environment import EeyEnvironment
+from libpepper.environment import PepEnvironment
 
 from libpepper.vals.all_values import *
 
 
 def Range_with_known_args_is_known__test():
-    r = EeyRange( EeyInt( "3" ), EeyInt( "6" ), EeyInt( "2" ) )
-    assert_true( r.is_known( EeyEnvironment( None ) ) )
+    r = PepRange( PepInt( "3" ), PepInt( "6" ), PepInt( "2" ) )
+    assert_true( r.is_known( PepEnvironment( None ) ) )
 
 
 
 def Range_with_unknown_args_is_unknown__test():
-    r = EeyRange(
-        EeyInt( "3" ), EeyVariable( EeyType( EeyInt ), "t" ), EeyInt( "2" ) )
+    r = PepRange(
+        PepInt( "3" ), PepVariable( PepType( PepInt ), "t" ), PepInt( "2" ) )
 
-    assert_false( r.is_known( EeyEnvironment( None ) ) )
+    assert_false( r.is_known( PepEnvironment( None ) ) )
 
 def Range_can_be_iterated___test():
-    r = EeyRange( EeyInt( "3" ), EeyInt( "8" ), EeyInt( "2" ) )
+    r = PepRange( PepInt( "3" ), PepInt( "8" ), PepInt( "2" ) )
 
     assert_equal(
         [ "3", "5", "7" ],
@@ -30,9 +30,9 @@ def Range_can_be_iterated___test():
     )
 
 
-class FakeStatement( EeyValue ):
+class FakeStatement( PepValue ):
     def __init__( self, symbolname ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.evals = []
         self.symbolname = symbolname
 
@@ -40,20 +40,20 @@ class FakeStatement( EeyValue ):
         return ()
 
     def evaluate( self, env ):
-        self.evals.append( EeySymbol( self.symbolname ).evaluate( env ).value )
+        self.evals.append( PepSymbol( self.symbolname ).evaluate( env ).value )
         return self
 
 def Loop_through_default_range___test():
 
-    env = EeyEnvironment( None )
+    env = PepEnvironment( None )
 
     loop_stmt1 = FakeStatement( "i" )
     loop_stmt2 = FakeStatement( "i" )
 
-    stmt = EeyFor(
-        EeySymbol('int'),
-        EeySymbol('i'),
-        EeyRange( EeyInt('0'), EeyInt('4'), EeyInt('1') ),
+    stmt = PepFor(
+        PepSymbol('int'),
+        PepSymbol('i'),
+        PepRange( PepInt('0'), PepInt('4'), PepInt('1') ),
         (
             loop_stmt1,
             loop_stmt2,
@@ -68,14 +68,14 @@ def Loop_through_default_range___test():
 
 def Loop_through_stepped_range___test():
 
-    env = EeyEnvironment( None )
+    env = PepEnvironment( None )
 
     loop_stmt = FakeStatement( "k1" )
 
-    stmt = EeyFor(
-        EeySymbol('int'),
-        EeySymbol('k1'),
-        EeyRange( EeyInt('0'), EeyInt('4'), EeyInt('2') ),
+    stmt = PepFor(
+        PepSymbol('int'),
+        PepSymbol('k1'),
+        PepRange( PepInt('0'), PepInt('4'), PepInt('2') ),
         (
             loop_stmt,
         )
@@ -88,18 +88,18 @@ def Loop_through_stepped_range___test():
 
 def Loop_through_default_range_function___test():
 
-    env = EeyEnvironment( None )
+    env = PepEnvironment( None )
     builtins.add_builtins( env )
 
     loop_stmt1 = FakeStatement( "i" )
     loop_stmt2 = FakeStatement( "i" )
 
-    stmt = EeyFor(
-        EeySymbol('int'),
-        EeySymbol('i'),
-        EeyFunctionCall(
-            EeySymbol( 'range' ),
-            ( EeyInt('0'), EeyInt('4'), EeyInt('1') ),
+    stmt = PepFor(
+        PepSymbol('int'),
+        PepSymbol('i'),
+        PepFunctionCall(
+            PepSymbol( 'range' ),
+            ( PepInt('0'), PepInt('4'), PepInt('1') ),
         ),
         (
             loop_stmt1,
@@ -115,17 +115,17 @@ def Loop_through_default_range_function___test():
 
 def Loop_through_stepped_range_function___test():
 
-    env = EeyEnvironment( None )
+    env = PepEnvironment( None )
     builtins.add_builtins( env )
 
     loop_stmt = FakeStatement( "k1" )
 
-    stmt = EeyFor(
-        EeySymbol('int'),
-        EeySymbol('k1'),
-        EeyFunctionCall(
-            EeySymbol( 'range' ),
-            ( EeyInt('0'), EeyInt('4'), EeyInt('2') ),
+    stmt = PepFor(
+        PepSymbol('int'),
+        PepSymbol('k1'),
+        PepFunctionCall(
+            PepSymbol( 'range' ),
+            ( PepInt('0'), PepInt('4'), PepInt('2') ),
         ),
         (
             loop_stmt,

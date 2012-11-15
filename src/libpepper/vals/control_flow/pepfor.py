@@ -2,13 +2,13 @@
 # Released under the MIT License.  See the file COPYING.txt for details.
 
 from libpepper.functionvalues import execution_environment
-from libpepper.values import EeyValue
-from libpepper.values import eey_none
+from libpepper.values import PepValue
+from libpepper.values import pep_none
 
-class EeyFor( EeyValue ):
+class PepFor( PepValue ):
     def __init__(
             self, variable_type, variable_name, iterator, body_stmts ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.variable_type = variable_type
         self.variable_name = variable_name
         self.iterator = iterator
@@ -35,9 +35,9 @@ class EeyFor( EeyValue ):
                 for stmt in self.body_stmts:
                     ev_st = stmt.evaluate( newenv )
                     # TODO: handle return from inside for
-                    #if ev_st.__class__ == EeyReturn:
+                    #if ev_st.__class__ == PepReturn:
                     #    return ev_st.value.evaluate( newenv )
-            return eey_none
+            return pep_none
         else:
             return self
 

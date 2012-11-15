@@ -4,18 +4,18 @@
 
 from nose.tools import *
 
-from libpepper.environment import EeyEnvironment
+from libpepper.environment import PepEnvironment
 from libpepper.cpp.cppvalues import *
-from libpepper.cpp.cpprenderer import EeyCppRenderer
+from libpepper.cpp.cpprenderer import PepCppRenderer
 
-from eeyasserts import *
+from pepasserts import *
 
 def test_import_sys_copyright():
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
 
-    assert_equal( EeyImport( "sys" ).render( env ), "" )
+    assert_equal( PepImport( "sys" ).render( env ), "" )
 
-    cpy = EeySymbol( "sys.copyright" ).render( env )
+    cpy = PepSymbol( "sys.copyright" ).render( env )
 
     assert_contains( cpy, "Copyright" )
     assert_contains( cpy, "Andy Balaam" )

@@ -5,74 +5,74 @@ from nose.tools import *
 
 from libpepper.builtins import add_builtins
 from libpepper.vals.all_values import *
-from libpepper.environment import EeyEnvironment
-from libpepper.cpp.cpprenderer import EeyCppRenderer
+from libpepper.environment import PepEnvironment
+from libpepper.cpp.cpprenderer import PepCppRenderer
 
 def Initial_optional_arg_is_used_when_missed_out___test():
 
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
 
-    fndecl = EeyDef(
-        EeyType( EeyInt ),
-        EeySymbol( "myfunc" ),
+    fndecl = PepDef(
+        PepType( PepInt ),
+        PepSymbol( "myfunc" ),
         (
-            ( EeyType( EeyInt ), EeySymbol( "x" ), EeyInt( "13" ) ),
+            ( PepType( PepInt ), PepSymbol( "x" ), PepInt( "13" ) ),
         ),
         (
-            EeyReturn( EeySymbol( "x" ) ),
+            PepReturn( PepSymbol( "x" ) ),
         )
     )
 
     fndecl.evaluate( env )
 
-    value = EeyFunctionCall( EeySymbol( "myfunc" ), () )
+    value = PepFunctionCall( PepSymbol( "myfunc" ), () )
 
     assert_equal( value.render( env ), "13" )
 
 
 def Initial_optional_arg_is_not_used_when_arg_is_supplied___test():
 
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
 
-    fndecl = EeyDef(
-        EeyType( EeyInt ),
-        EeySymbol( "myfunc" ),
+    fndecl = PepDef(
+        PepType( PepInt ),
+        PepSymbol( "myfunc" ),
         (
-            ( EeyType( EeyInt ), EeySymbol( "x" ), EeyInt( "13" ) ),
+            ( PepType( PepInt ), PepSymbol( "x" ), PepInt( "13" ) ),
         ),
         (
-            EeyReturn( EeySymbol( "x" ) ),
+            PepReturn( PepSymbol( "x" ) ),
         )
     )
 
     fndecl.evaluate( env )
 
-    value = EeyFunctionCall( EeySymbol( "myfunc" ), ( EeyInt( "99" ), ) )
+    value = PepFunctionCall( PepSymbol( "myfunc" ), ( PepInt( "99" ), ) )
 
     assert_equal( value.render( env ), "99" )
 
 
 def Later_optional_arg_is_used_when_missed_out___test():
 
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
 
-    fndecl = EeyDef(
-        EeyType( EeyInt ),
-        EeySymbol( "myfunc" ),
+    fndecl = PepDef(
+        PepType( PepInt ),
+        PepSymbol( "myfunc" ),
         (
-            ( EeyType( EeyInt ), EeySymbol( "x" ) ),
-            ( EeyType( EeyInt ), EeySymbol( "y" ) ),
-            ( EeyType( EeyInt ), EeySymbol( "z" ), EeyInt( "14" ) ),
+            ( PepType( PepInt ), PepSymbol( "x" ) ),
+            ( PepType( PepInt ), PepSymbol( "y" ) ),
+            ( PepType( PepInt ), PepSymbol( "z" ), PepInt( "14" ) ),
         ),
         (
-            EeyReturn( EeySymbol( "z" ) ),
+            PepReturn( PepSymbol( "z" ) ),
         )
     )
 
     fndecl.evaluate( env )
 
-    value = EeyFunctionCall(
-        EeySymbol( "myfunc" ), ( EeyInt( "2" ), EeyInt( "1" ) )
+    value = PepFunctionCall(
+        PepSymbol( "myfunc" ), ( PepInt( "2" ), PepInt( "1" ) )
     )
 
     assert_equal( value.render( env ), "14" )
@@ -80,46 +80,46 @@ def Later_optional_arg_is_used_when_missed_out___test():
 
 def Later_optional_arg_is_not_used_when_arg_is_supplied___test():
 
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
 
-    fndecl = EeyDef(
-        EeyType( EeyInt ),
-        EeySymbol( "myfunc" ),
+    fndecl = PepDef(
+        PepType( PepInt ),
+        PepSymbol( "myfunc" ),
         (
-            ( EeyType( EeyInt ), EeySymbol( "x" ) ),
-            ( EeyType( EeyInt ), EeySymbol( "y" ) ),
-            ( EeyType( EeyInt ), EeySymbol( "z" ), EeyInt( "14" ) ),
+            ( PepType( PepInt ), PepSymbol( "x" ) ),
+            ( PepType( PepInt ), PepSymbol( "y" ) ),
+            ( PepType( PepInt ), PepSymbol( "z" ), PepInt( "14" ) ),
         ),
         (
-            EeyReturn( EeySymbol( "z" ) ),
+            PepReturn( PepSymbol( "z" ) ),
         )
     )
 
     fndecl.evaluate( env )
 
-    value = EeyFunctionCall(
-        EeySymbol( "myfunc" ), ( EeyInt( "2" ), EeyInt( "1" ), EeyInt( "101" ) )
+    value = PepFunctionCall(
+        PepSymbol( "myfunc" ), ( PepInt( "2" ), PepInt( "1" ), PepInt( "101" ) )
     )
 
     assert_equal( value.render( env ), "101" )
 
 
 def Optional_arg_of_wrong_type_is_an_error___test():
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     add_builtins( env )
 
     def define_and_eval():
 
-        fndecl = EeyDef(
-            EeyType( EeyInt ),
-            EeySymbol( "myfunc" ),
+        fndecl = PepDef(
+            PepType( PepInt ),
+            PepSymbol( "myfunc" ),
             (
-                ( EeyType( EeyInt ), EeySymbol( "x" ) ),
-                ( EeyType( EeyInt ), EeySymbol( "y" ) ),
-                ( EeyType( EeyInt ), EeySymbol( "z" ), EeyString( "foo" ) ),
+                ( PepType( PepInt ), PepSymbol( "x" ) ),
+                ( PepType( PepInt ), PepSymbol( "y" ) ),
+                ( PepType( PepInt ), PepSymbol( "z" ), PepString( "foo" ) ),
             ),
             (
-                EeyReturn( EeySymbol( "z" ) ),
+                PepReturn( PepSymbol( "z" ) ),
             )
         )
         fndecl.evaluate( env )
@@ -132,7 +132,7 @@ def Optional_arg_of_wrong_type_is_an_error___test():
         # This is what we are testing: should throw as the default arg
         # has the wrong type
     assert_raises_regexp(
-        EeyUserErrorException,
+        PepUserErrorException,
         expected_error,
         define_and_eval
     )

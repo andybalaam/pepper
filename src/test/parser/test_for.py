@@ -21,18 +21,18 @@ for int i in ( 1, 2, 3 ):
         [SYMBOL:pass]
 """,
         r"""
-EeyFor(
-    EeySymbol('int'),
-    EeySymbol('i'),
-    EeyTuple(
+PepFor(
+    PepSymbol('int'),
+    PepSymbol('i'),
+    PepTuple(
         (
-            EeyInt('1'), 
-            EeyInt('2'), 
-            EeyInt('3')
+            PepInt('1'), 
+            PepInt('2'), 
+            PepInt('3')
         )
     ),
     (
-        EeySymbol('pass'),
+        PepSymbol('pass'),
     )
 )
 """ )
@@ -59,21 +59,21 @@ for int i in range( 0, 4 ):
             [SYMBOL:i]
 """,
         r"""
-EeyFor(
-    EeySymbol('int'),
-    EeySymbol('i'),
-    EeyFunctionCall(
-        EeySymbol('range'),
+PepFor(
+    PepSymbol('int'),
+    PepSymbol('i'),
+    PepFunctionCall(
+        PepSymbol('range'),
         (
-            EeyInt('0'), 
-            EeyInt('4')
+            PepInt('0'), 
+            PepInt('4')
         )
     ),
     (
-        EeyFunctionCall(
-            EeySymbol('print'),
+        PepFunctionCall(
+            PepSymbol('print'),
             (
-                EeySymbol('i'),
+                PepSymbol('i'),
             )
         ),
     )

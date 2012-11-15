@@ -6,29 +6,29 @@ from nose.tools import *
 
 from libpepper.builtins import add_builtins
 from libpepper.classvalues import *
-from libpepper.environment import EeyEnvironment
+from libpepper.environment import PepEnvironment
 from libpepper.cpp.cppvalues import *
-from libpepper.cpp.cpprenderer import EeyCppRenderer
+from libpepper.cpp.cpprenderer import PepCppRenderer
 
-from libpepper.usererrorexception import EeyUserErrorException
+from libpepper.usererrorexception import PepUserErrorException
 
-from eeyasserts import assert_contains
-from eeyasserts import assert_multiline_equal
+from pepasserts import assert_contains
+from pepasserts import assert_multiline_equal
 
 def test_Static_variable_can_be_read():
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
 
-    decl = EeyClass(
-        name=EeySymbol( "MyClass" ),
+    decl = PepClass(
+        name=PepSymbol( "MyClass" ),
         base_classes=(),
         body_stmts=(
-            EeyInit( EeyType( EeyInt ), EeySymbol( "i" ), EeyInt( "7" ) ),
+            PepInit( PepType( PepInt ), PepSymbol( "i" ), PepInt( "7" ) ),
         )
     )
 
     assert_equal( decl.render( env ), "" )
 
-    value = EeySymbol( "MyClass.i" )
+    value = PepSymbol( "MyClass.i" )
 
     assert_equal( value.render( env ), "7" )
 
@@ -40,20 +40,20 @@ def test_Member_function_can_be_executed():
         first argument (got int instance instead)
     """
 
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
 
-    decl = EeyClass(
-        name=EeySymbol( "MyClass" ),
+    decl = PepClass(
+        name=PepSymbol( "MyClass" ),
         base_classes=(),
         body_stmts=(
-            EeyDef(
-                EeyType( EeyInt ),
-                EeySymbol( "myfunc" ),
+            PepDef(
+                PepType( PepInt ),
+                PepSymbol( "myfunc" ),
                 (
-                    ( EeyType( EeyInt ), EeySymbol( "x" ) ),
+                    ( PepType( PepInt ), PepSymbol( "x" ) ),
                 ),
                 (
-                    EeyReturn( EeySymbol( "x" ) ),
+                    PepReturn( PepSymbol( "x" ) ),
                 )
             ),
         )
@@ -61,17 +61,17 @@ def test_Member_function_can_be_executed():
 
     assert_equal( decl.render( env ), "" )
 
-    value3 = EeyFunctionCall(
-        EeySymbol( "MyClass.myfunc" ),
+    value3 = PepFunctionCall(
+        PepSymbol( "MyClass.myfunc" ),
         (
-            EeyInt( "3" ),
+            PepInt( "3" ),
         )
     )
 
-    value5 = EeyFunctionCall(
-        EeySymbol( "MyClass.myfunc" ),
+    value5 = PepFunctionCall(
+        PepSymbol( "MyClass.myfunc" ),
         (
-            EeyInt( "5" ),
+            PepInt( "5" ),
         )
     )
 
@@ -80,46 +80,46 @@ def test_Member_function_can_be_executed():
 
 def test_Init_returns_a_new_instance():
 
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
 
-    decl = EeyClass(
-        name=EeySymbol( "MyClass" ),
+    decl = PepClass(
+        name=PepSymbol( "MyClass" ),
         base_classes=(),
         body_stmts=(
-            EeyPass(),
+            PepPass(),
         )
     )
 
     assert_equal( decl.render( env ), "" )
 
-    value = EeyFunctionCall( EeySymbol( "MyClass.init" ), () )
+    value = PepFunctionCall( PepSymbol( "MyClass.init" ), () )
     ev_value = value.evaluate( env )
 
-    assert_equal( EeyKnownInstance, ev_value.__class__ )
+    assert_equal( PepKnownInstance, ev_value.__class__ )
     assert_equal( "MyClass", ev_value.clazz.name )
 
 
 def test_Init_with_arg_returns_new_instance_constructed_with_arg():
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     add_builtins( env )
 
-    decl = EeyClass(
-        name=EeySymbol( "MyClass" ),
+    decl = PepClass(
+        name=PepSymbol( "MyClass" ),
         base_classes=(),
         body_stmts=(
-            EeyDefInit(
+            PepDefInit(
                 (
-                    ( EeySymbol( "MyClass" ), EeySymbol( 'self' ) ),
-                    ( EeySymbol( "int" ), EeySymbol( 'a' ) ),
+                    ( PepSymbol( "MyClass" ), PepSymbol( 'self' ) ),
+                    ( PepSymbol( "int" ), PepSymbol( 'a' ) ),
                 ),
                 (
                     (
-                        EeyVar(
+                        PepVar(
                             (
-                                EeyInit(
-                                    EeySymbol( "int" ),
-                                    EeySymbol( "self.x" ),
-                                    EeySymbol( "a" )
+                                PepInit(
+                                    PepSymbol( "int" ),
+                                    PepSymbol( "self.x" ),
+                                    PepSymbol( "a" )
                                 ),
                             )
                         ),
@@ -131,41 +131,41 @@ def test_Init_with_arg_returns_new_instance_constructed_with_arg():
 
     assert_equal( "", decl.render( env ) )
 
-    make_instance = EeyInit(
-        EeySymbol( "MyClass" ),
-        EeySymbol( "my_instance" ),
-        EeyFunctionCall(
-            EeySymbol( "MyClass.init" ), ( EeyInt( "3" ), )
+    make_instance = PepInit(
+        PepSymbol( "MyClass" ),
+        PepSymbol( "my_instance" ),
+        PepFunctionCall(
+            PepSymbol( "MyClass.init" ), ( PepInt( "3" ), )
         )
     )
 
     assert_equal( "", make_instance.render( env ) )
 
-    value = EeySymbol( "my_instance.x" )
+    value = PepSymbol( "my_instance.x" )
 
     assert_equal( "3", value.render( env ) )
 
 
 def test_Can_get_names_of_member_variables_from_def_init():
 
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     add_builtins( env )
 
-    definit = EeyDefInit(
-        ( ( EeySymbol( "MyClass" ), EeySymbol( 'fooself' ) ), ),
+    definit = PepDefInit(
+        ( ( PepSymbol( "MyClass" ), PepSymbol( 'fooself' ) ), ),
         (
             (
-                EeyVar(
+                PepVar(
                     (
-                        EeyInit(
-                            EeySymbol( "int" ),
-                            EeySymbol( "fooself.member_one" ),
-                            EeyInt( 0 )
+                        PepInit(
+                            PepSymbol( "int" ),
+                            PepSymbol( "fooself.member_one" ),
+                            PepInt( 0 )
                         ),
-                        EeyInit(
-                            EeySymbol( "float" ),
-                            EeySymbol( "fooself.member_two" ),
-                            EeyFloat( 0.1 )
+                        PepInit(
+                            PepSymbol( "float" ),
+                            PepSymbol( "fooself.member_two" ),
+                            PepFloat( 0.1 )
                         ),
                     )
                 ),
@@ -175,8 +175,8 @@ def test_Can_get_names_of_member_variables_from_def_init():
 
     assert_equal(
         str( [
-            ( EeySymbol( "int" ),   "member_one" ),
-            ( EeySymbol( "float" ), "member_two" )
+            ( PepSymbol( "int" ),   "member_one" ),
+            ( PepSymbol( "float" ), "member_two" )
         ] ),
         str( definit.get_member_variables() )
     )
@@ -184,19 +184,19 @@ def test_Can_get_names_of_member_variables_from_def_init():
 
 def test_Not_allowed_non_self_inits_in_var():
 
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     add_builtins( env )
 
-    definit = EeyDefInit(
-        ( ( EeySymbol( "MyClass" ), EeySymbol( 'barself' ) ), ),
+    definit = PepDefInit(
+        ( ( PepSymbol( "MyClass" ), PepSymbol( 'barself' ) ), ),
         (
             (
-                EeyVar(
+                PepVar(
                     (
-                        EeyInit(
-                            EeySymbol( "int" ),
-                            EeySymbol( "my_var" ),
-                            EeyInt( 0 )
+                        PepInit(
+                            PepSymbol( "int" ),
+                            PepSymbol( "my_var" ),
+                            PepInt( 0 )
                         ),
                     )
                 ),
@@ -207,7 +207,7 @@ def test_Not_allowed_non_self_inits_in_var():
     exception_caught = False
     try:
         definit.get_member_variables()
-    except EeyUserErrorException, e:
+    except PepUserErrorException, e:
         exception_caught = True
         assert_contains( str( e ), "'my_var' does not start with 'barself.'" )
 
@@ -216,19 +216,19 @@ def test_Not_allowed_non_self_inits_in_var():
 
 def test_Must_provide_nonempty_variable_name_in_var():
 
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     add_builtins( env )
 
-    definit = EeyDefInit(
-        ( ( EeySymbol( "MyClass" ), EeySymbol( 'self' ) ), ),
+    definit = PepDefInit(
+        ( ( PepSymbol( "MyClass" ), PepSymbol( 'self' ) ), ),
         (
             (
-                EeyVar(
+                PepVar(
                     (
-                        EeyInit(
-                            EeySymbol( "int" ),
-                            EeySymbol( "self." ),
-                            EeyInt( 0 )
+                        PepInit(
+                            PepSymbol( "int" ),
+                            PepSymbol( "self." ),
+                            PepInt( 0 )
                         ),
                     )
                 ),
@@ -239,7 +239,7 @@ def test_Must_provide_nonempty_variable_name_in_var():
     exception_caught = False
     try:
         definit.get_member_variables()
-    except EeyUserErrorException, e:
+    except PepUserErrorException, e:
         exception_caught = True
         assert_contains(
             str( e ),
@@ -252,28 +252,28 @@ def test_Must_provide_nonempty_variable_name_in_var():
 
 def test_Can_get_names_of_member_variables_from_class():
 
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     add_builtins( env )
 
-    cls = EeyUserClass(
+    cls = PepUserClass(
         name="MyClass",
         base_classes=(),
         body_stmts=(
-            EeyDefInit(
-                ( ( EeySymbol( "MyClass" ), EeySymbol( 'self' ) ), ),
+            PepDefInit(
+                ( ( PepSymbol( "MyClass" ), PepSymbol( 'self' ) ), ),
                 (
                     (
-                        EeyVar(
+                        PepVar(
                             (
-                                EeyInit(
-                                    EeySymbol( "int" ),
-                                    EeySymbol( "self.member_one" ),
-                                    EeyInt( 0 )
+                                PepInit(
+                                    PepSymbol( "int" ),
+                                    PepSymbol( "self.member_one" ),
+                                    PepInt( 0 )
                                 ),
-                                EeyInit(
-                                    EeySymbol( "float" ),
-                                    EeySymbol( "self.member_two" ),
-                                    EeyFloat( 0.1 )
+                                PepInit(
+                                    PepSymbol( "float" ),
+                                    PepSymbol( "self.member_two" ),
+                                    PepFloat( 0.1 )
                                 ),
                             )
                         ),
@@ -285,8 +285,8 @@ def test_Can_get_names_of_member_variables_from_class():
 
     assert_equal(
         str( [
-            ( EeySymbol( "int" ),   "member_one" ),
-            ( EeySymbol( "float" ), "member_two" )
+            ( PepSymbol( "int" ),   "member_one" ),
+            ( PepSymbol( "float" ), "member_two" )
         ] ),
         str( cls.member_variables )
     )
@@ -295,21 +295,21 @@ def test_Can_get_names_of_member_variables_from_class():
 
 def test_Class_reports_methods_available():
 
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     add_builtins( env )
 
-    cls = EeyUserClass(
+    cls = PepUserClass(
         name="MyClass",
         base_classes=(),
         body_stmts=(
-            EeyDef(
-                EeyType( EeyInt ),
-                EeySymbol( "myfunc" ),
+            PepDef(
+                PepType( PepInt ),
+                PepSymbol( "myfunc" ),
                 (
-                    ( EeySymbol( "MyClass" ), EeySymbol( "self" ) ),
+                    ( PepSymbol( "MyClass" ), PepSymbol( "self" ) ),
                 ),
                 (
-                    EeyReturn( EeyInt( "3" ) ),
+                    PepReturn( PepInt( "3" ) ),
                 )
             ),
         )
@@ -321,23 +321,23 @@ def test_Class_reports_methods_available():
 
 def test_Class_reports_properties_available():
 
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     add_builtins( env )
 
-    cls = EeyUserClass(
+    cls = PepUserClass(
         name="MyClass",
         base_classes=(),
         body_stmts=(
-            EeyDefInit(
-                ( ( EeySymbol( "MyClass" ), EeySymbol( 'self' ) ), ),
+            PepDefInit(
+                ( ( PepSymbol( "MyClass" ), PepSymbol( 'self' ) ), ),
                 (
                     (
-                        EeyVar(
+                        PepVar(
                             (
-                                EeyInit(
-                                    EeySymbol( "int" ),
-                                    EeySymbol( "self.myprop" ),
-                                    EeyInt( 0 )
+                                PepInit(
+                                    PepSymbol( "int" ),
+                                    PepSymbol( "self.myprop" ),
+                                    PepInt( 0 )
                                 ),
                             )
                         ),
@@ -365,9 +365,9 @@ class FakeClass( object ):
 
 def create_method():
     clazz = FakeClass()
-    instance = EeyKnownInstance( clazz )
+    instance = PepKnownInstance( clazz )
     fn = FakeFn()
-    return EeyInstanceMethod( instance, fn )
+    return PepInstanceMethod( instance, fn )
 
 def test_Calling_a_method_with_known_args_returns_the_answer():
 
@@ -378,7 +378,7 @@ def test_Calling_a_method_with_known_args_returns_the_answer():
     # This is what we are testing: the underlying function was called
     assert_equal(
         "FakeFn ret val",
-        meth.call( ( EeyInt( "3" ), EeyInt( "4" ) ), "env" )
+        meth.call( ( PepInt( "3" ), PepInt( "4" ) ), "env" )
     )
 
 def test_Calling_a_method_with_unknown_args_returns_a_runtime_function():
@@ -386,32 +386,32 @@ def test_Calling_a_method_with_unknown_args_returns_a_runtime_function():
     # Create a method on an instance
     meth = create_method()
 
-    # This is what we are testing: we returned an EeyRuntimeUserFunction
+    # This is what we are testing: we returned an PepRuntimeUserFunction
     # because an argument was unknown
     assert_equal(
-        EeyRuntimeUserFunction,
+        PepRuntimeUserFunction,
         meth.call(
-            ( EeyInt( "3" ), EeyVariable( EeyInt, "x" ) ), "env" ).__class__
+            ( PepInt( "3" ), PepVariable( PepInt, "x" ) ), "env" ).__class__
     )
 
 def test_Calling_a_method_with_unknown_instance_returns_a_runtime_function():
 
     # Create a method on a runtime instance
     clazz = FakeClass()
-    instance = EeyRuntimeInstance( clazz, "inst" )
+    instance = PepRuntimeInstance( clazz, "inst" )
     fn = FakeFn()
-    meth = EeyInstanceMethod( instance, fn )
+    meth = PepInstanceMethod( instance, fn )
 
-    # This is what we are testing: we returned an EeyRuntimeUserFunction
+    # This is what we are testing: we returned an PepRuntimeUserFunction
     # because the instance was unknown
     assert_equal(
-        EeyRuntimeUserFunction,
+        PepRuntimeUserFunction,
         meth.call(
-            ( EeyInt( "3" ), EeyInt( "3" ) ), "env" ).__class__
+            ( PepInt( "3" ), PepInt( "3" ) ), "env" ).__class__
     )
 
 
-class MyInstance( EeyInstance ):
+class MyInstance( PepInstance ):
     def construction_args( self ):
         pass
 
@@ -432,7 +432,7 @@ def test_Instances_return_class_values_where_they_have_nothing():
 
     class MyClass( object ):
         def __init__( self ):
-            self.namespace = EeyNamespace()
+            self.namespace = PepNamespace()
 
         def get_namespace( self ):
             return self.namespace
@@ -451,7 +451,7 @@ def test_Instance_returns_a_method_when_class_holds_a_function():
 
     class MyClass( object ):
         def __init__( self ):
-            self.namespace = EeyNamespace()
+            self.namespace = PepNamespace()
 
         def get_namespace( self ):
             return self.namespace
@@ -461,78 +461,78 @@ def test_Instance_returns_a_method_when_class_holds_a_function():
     fn = "fake_fn"
 
     # Put values into both the class and the instance
-    clazz.get_namespace()["a"] = EeyFunctionOverloadList( [fn] )
+    clazz.get_namespace()["a"] = PepFunctionOverloadList( [fn] )
 
     # This is what we are testing: get the function out via the instance
     ans = inst.get_namespace()["a"]
 
     # The function was wrapped as a method
     ans_fn = ans._list[0]
-    assert_equal( EeyInstanceMethod, ans_fn.__class__ )
+    assert_equal( PepInstanceMethod, ans_fn.__class__ )
     assert_equal( inst, ans_fn.instance )
     assert_equal( fn, ans_fn.fn )
 
 
 def create_runtime_instance_and_method_call( env ):
-    env.namespace['a'] = EeyVariable( EeyType( EeyInt ), "a" )
+    env.namespace['a'] = PepVariable( PepType( PepInt ), "a" )
 
-    EeyClass(
-        EeySymbol( 'MyClass' ),
+    PepClass(
+        PepSymbol( 'MyClass' ),
         (),
         (
-            EeyDefInit(
+            PepDefInit(
                 (
-                    ( EeySymbol('MyClass'), EeySymbol('self') ),
-                    ( EeyType( EeyInt ), EeySymbol('x') ),
+                    ( PepSymbol('MyClass'), PepSymbol('self') ),
+                    ( PepType( PepInt ), PepSymbol('x') ),
                 ),
-                ( EeyPass(), )
+                ( PepPass(), )
             ),
-            EeyDef(
-                EeyType( EeyVoid ),
-                EeySymbol('my_meth'),
-                ( ( EeySymbol('MyClass'), EeySymbol('self') ), ),
-                ( EeyPass(), )
+            PepDef(
+                PepType( PepVoid ),
+                PepSymbol('my_meth'),
+                ( ( PepSymbol('MyClass'), PepSymbol('self') ), ),
+                ( PepPass(), )
             )
         )
     ).evaluate( env )
 
-    EeyInit(
-        EeySymbol( 'MyClass' ),
-        EeySymbol( 'mc' ),
-        EeyFunctionCall( EeySymbol( 'MyClass.init' ), ( EeySymbol( "a" ), ) )
+    PepInit(
+        PepSymbol( 'MyClass' ),
+        PepSymbol( 'mc' ),
+        PepFunctionCall( PepSymbol( 'MyClass.init' ), ( PepSymbol( "a" ), ) )
     ).evaluate( env )
 
-    meth = EeyFunctionCall( EeySymbol( "mc.my_meth" ), () )
+    meth = PepFunctionCall( PepSymbol( "mc.my_meth" ), () )
 
     return meth
 
 def Runtime_instance_has_evaluated_type_of_class___test():
-    env = EeyEnvironment( None )
+    env = PepEnvironment( None )
     meth = create_runtime_instance_and_method_call( env )
 
     assert_equal(
-        EeySymbol( "MyClass" ).evaluate( env ),
-        EeySymbol( "mc" ).evaluated_type( env )
+        PepSymbol( "MyClass" ).evaluate( env ),
+        PepSymbol( "mc" ).evaluated_type( env )
     )
 
 
 def Runtime_instance_allows_access_to_methods___test():
-    env = EeyEnvironment( None )
+    env = PepEnvironment( None )
     meth = create_runtime_instance_and_method_call( env )
 
     # my_meth is a callable taking no args and returning void
     assert_equal(
-        EeyType( EeyVoid ),
-        EeySymbol( "mc.my_meth" ).evaluate( env ).return_type( (), env )
+        PepType( PepVoid ),
+        PepSymbol( "mc.my_meth" ).evaluate( env ).return_type( (), env )
     )
 
     # The methods are not known since the instance isn't
-    assert_false( EeySymbol( "mc.my_meth" ).evaluate( env ).is_known( env ) )
+    assert_false( PepSymbol( "mc.my_meth" ).evaluate( env ).is_known( env ) )
 
 
 
 def Method_calls_of_runtime_instances_are_unknown___test():
-    env = EeyEnvironment( None )
+    env = PepEnvironment( None )
     meth = create_runtime_instance_and_method_call( env )
 
     assert_false( meth.is_known( env ) )
@@ -543,13 +543,13 @@ def Method_calls_of_runtime_instances_are_unknown___test():
 
 
 def Evaluated_types_of_method_calls_of_runtime_instances_are_correct___test():
-    env = EeyEnvironment( None )
+    env = PepEnvironment( None )
     meth = create_runtime_instance_and_method_call( env )
 
-    assert_equal( EeyType( EeyVoid ), meth.evaluated_type( env ) )
+    assert_equal( PepType( PepVoid ), meth.evaluated_type( env ) )
 
     ev_meth = meth.evaluate( env )
 
-    assert_equal( EeyType( EeyVoid ), ev_meth.evaluated_type( env ) )
+    assert_equal( PepType( PepVoid ), ev_meth.evaluated_type( env ) )
 
 

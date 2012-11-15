@@ -1,39 +1,39 @@
 # Copyright (C) 2012 Andy Balaam and The Pepper Developers
 # Released under the MIT License.  See the file COPYING.txt for details.
 
-from test.eeyasserts import assert_multiline_equal
+from test.pepasserts import assert_multiline_equal
 
 from libpepper import builtins
-from libpepper.environment import EeyEnvironment
-from libpepper.cpp.cpprenderer import EeyCppRenderer
+from libpepper.environment import PepEnvironment
+from libpepper.cpp.cpprenderer import PepCppRenderer
 
 from libpepper.vals.all_values import *
 
 def test_Basic_int_for_loop():
 
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     builtins.add_builtins( env )
 
-    EeyImport( "sys" ).evaluate( env )
+    PepImport( "sys" ).evaluate( env )
 
-    stmt = EeyFor(
-        EeySymbol('int'),
-        EeySymbol('i'),
-        EeyFunctionCall(
-            EeySymbol('range'),
+    stmt = PepFor(
+        PepSymbol('int'),
+        PepSymbol('i'),
+        PepFunctionCall(
+            PepSymbol('range'),
             (
-                EeyInt('0'), 
-                EeyFunctionCall(
-                    EeySymbol( "len" ),
-                    ( EeySymbol( "sys.argv" ), )
+                PepInt('0'), 
+                PepFunctionCall(
+                    PepSymbol( "len" ),
+                    ( PepSymbol( "sys.argv" ), )
                 ),
             )
         ),
         (
-            EeyFunctionCall(
-                EeySymbol('print'),
+            PepFunctionCall(
+                PepSymbol('print'),
                 (
-                    EeySymbol('i'),
+                    PepSymbol('i'),
                 )
             ),
         )
@@ -62,29 +62,29 @@ int main( int argc, char* argv[] )
 
 def Loop_over_range_with_nondefault_step___test():
 
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     builtins.add_builtins( env )
 
-    EeyImport( "sys" ).evaluate( env )
-    stmt = EeyFor(
-        EeySymbol('int'),
-        EeySymbol('i'),
-        EeyFunctionCall(
-            EeySymbol('range'),
+    PepImport( "sys" ).evaluate( env )
+    stmt = PepFor(
+        PepSymbol('int'),
+        PepSymbol('i'),
+        PepFunctionCall(
+            PepSymbol('range'),
             (
-                EeyInt('10'),
-                EeyFunctionCall(
-                    EeySymbol( "len" ),
-                    ( EeySymbol( "sys.argv" ), )
+                PepInt('10'),
+                PepFunctionCall(
+                    PepSymbol( "len" ),
+                    ( PepSymbol( "sys.argv" ), )
                 ),
-                EeyInt('3'),
+                PepInt('3'),
             )
         ),
         (
-            EeyFunctionCall(
-                EeySymbol('print'),
+            PepFunctionCall(
+                PepSymbol('print'),
                 (
-                    EeySymbol('i'),
+                    PepSymbol('i'),
                 )
             ),
         )

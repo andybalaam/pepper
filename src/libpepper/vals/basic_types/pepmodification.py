@@ -1,12 +1,12 @@
 # Copyright (C) 2012 Andy Balaam and The Pepper Developers
 # Released under the MIT License.  See the file COPYING.txt for details.
 
-from libpepper.values import EeyValue
+from libpepper.values import PepValue
 from libpepper.values import all_known
 
-class EeyModification( EeyValue ):
+class PepModification( PepValue ):
     def __init__( self, var, mod_value ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.var = var
         self.mod_value = mod_value
 

@@ -19,9 +19,9 @@ def test_simple_modification():
     [INT:7]
 """,
         r"""
-EeyModification(
-    EeySymbol('i'),
-    EeyInt('7')
+PepModification(
+    PepSymbol('i'),
+    PepInt('7')
 )
 """ )
 
@@ -38,9 +38,9 @@ self.x += 4
     [INT:4]
 """,
         r"""
-EeyModification(
-    EeySymbol('self.x'),
-    EeyInt('4')
+PepModification(
+    PepSymbol('self.x'),
+    PepInt('4')
 )
 """ )
 

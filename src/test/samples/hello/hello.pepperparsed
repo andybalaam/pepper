@@ -1,1 +1,1 @@
-EeyFunctionCall(EeySymbol('print'),(EeyString('Hello, world!'),))
+PepFunctionCall(PepSymbol('print'),(PepString('Hello, world!'),))

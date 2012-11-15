@@ -42,23 +42,23 @@ def test_calculated_type():
         [SYMBOL:pass]
 """,
         r"""
-EeyDef(
-    EeySymbol('int'),
-    EeySymbol('myfn'),
+PepDef(
+    PepSymbol('int'),
+    PepSymbol('myfn'),
     (
         (
-            EeyFunctionCall(
-                EeySymbol('fn2'),
+            PepFunctionCall(
+                PepSymbol('fn2'),
                 (
-                    EeySymbol('a'), 
-                    EeySymbol('b')
+                    PepSymbol('a'), 
+                    PepSymbol('b')
                 )
             ), 
-            EeySymbol('cfg')
+            PepSymbol('cfg')
         ),
     ),
     (
-        EeySymbol('pass'),
+        PepSymbol('pass'),
     )
 )
 """ )

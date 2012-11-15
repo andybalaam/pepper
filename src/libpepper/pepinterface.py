@@ -3,6 +3,6 @@
 
 
 def implements_interface( obj, interface ):
-    if str( interface ) == "<class 'libpepper.values.EeySymbol'>":
-        return str( obj.__class__ ) != "<class 'libpepper.values.EeyVariable'>"
+    if str( interface ) == "<class 'libpepper.values.PepSymbol'>":
+        return str( obj.__class__ ) != "<class 'libpepper.values.PepVariable'>"
     return True # TODO: check we implement it

@@ -6,9 +6,9 @@ from nose.tools import *
 
 from libpepper.pepperoptions import PepperOptions
 
-from libpepper.usererrorexception import EeyUserErrorException
+from libpepper.usererrorexception import PepUserErrorException
 
-@raises( EeyUserErrorException )
+@raises( PepUserErrorException )
 def test_no_args():
     PepperOptions( [ "progname" ] )
 

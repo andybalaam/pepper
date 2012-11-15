@@ -8,7 +8,7 @@ import cppvalues
 
 def _has_semicolon( val ):
     cls = val.__class__
-    if cls in ( EeyIf, EeyFor ):
+    if cls in ( PepIf, PepFor ):
         return False
     else:
         return True
@@ -22,16 +22,16 @@ def _render_with_semicolon( value, env ):
 
 def _function_signature_string( user_function, env ):
     ret = user_function.name
-    ret += "_eey_s_eey_"
-    ret += "_eey_s_eey_".join(
+    ret += "_pep_s_pep_"
+    ret += "_pep_s_pep_".join(
         str( tn[0].evaluate( env ).get_name() ) for
             tn in user_function.arg_types_and_names )
     return ret
 
 def _overload_name( name, num_overloads ):
-    return "%s_eey_%d" % ( name, num_overloads )
+    return "%s_pep_%d" % ( name, num_overloads )
 
-class EeyCppRenderer( object ):
+class PepCppRenderer( object ):
     def __init__( self ):
         self._headers = []
         self._functions = {} # name -> signature -> ( name, rendered body )
@@ -49,7 +49,7 @@ class EeyCppRenderer( object ):
 
         if runtime_function.namespace_name is not None:
             name = runtime_function.namespace_name
-            name += "_eey_c_eey_"
+            name += "_pep_c_pep_"
         else:
             name = ""
 
@@ -68,7 +68,7 @@ class EeyCppRenderer( object ):
             if num_overloads > 0:
                 name = _overload_name( name, num_overloads )
 
-            rendered = cppvalues.render_EeyUserFunction_body(
+            rendered = cppvalues.render_PepUserFunction_body(
                 name, runtime_function, env )
 
             overloads[signature] = ( name, rendered )
@@ -81,12 +81,12 @@ class EeyCppRenderer( object ):
 
         clazz = runtime_instance.instance.clazz
 
-        clazz_type_and_name = ( clazz, EeySymbol("self") )
+        clazz_type_and_name = ( clazz, PepSymbol("self") )
         init_style_arg_types_and_names = (
             (clazz_type_and_name,) + fn.arg_types_and_names[1:] )
 
-        init_style_fn = EeyRuntimeUserFunction(
-            EeyUserFunction(
+        init_style_fn = PepRuntimeUserFunction(
+            PepUserFunction(
                 fn.name,
                 fn.ret_type,
                 init_style_arg_types_and_names,
@@ -102,7 +102,7 @@ class EeyCppRenderer( object ):
     def add_class( self, clazz, env ):
         # TODO: handle clashes - if same, no problem, if different, fail?
         name = clazz.name
-        self._classes[ name ] = cppvalues.render_EeyUserClass_body(
+        self._classes[ name ] = cppvalues.render_PepUserClass_body(
             name, clazz, env )
 
 

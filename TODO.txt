@@ -3,7 +3,7 @@
 
 - Remove special cases for def_init - it can work just like any method I think
 
-- Move arg_types_and_names into EeyFunction
+- Move arg_types_and_names into PepFunction
 
 - Ensure local variables can't hide wider-scope variables with the same
   name, but class members _can_ have the same name as something in scope.
@@ -29,7 +29,7 @@
 - Checking whether class members are available, and of the right type
 - Multiple def_inits in a class must agree on properties
 
-- Enforce not allowed string "_eey_" in any identifier
+- Enforce not allowed string "_pep_" in any identifier
 
 - Modifying values
 

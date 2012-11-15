@@ -5,18 +5,18 @@
 from nose.tools import *
 
 from libpepper.builtins import *
-from libpepper.environment import EeyEnvironment
+from libpepper.environment import PepEnvironment
 from libpepper.languagevalues import *
 from libpepper.values import *
 
 def test_initialisation():
-    env = EeyEnvironment( None )
+    env = PepEnvironment( None )
     add_builtins( env )
 
-    init = EeyInit( EeySymbol( "int" ), EeySymbol( "i" ), EeyInt( "7" ) )
+    init = PepInit( PepSymbol( "int" ), PepSymbol( "i" ), PepInt( "7" ) )
     init.evaluate( env )
 
-    value = EeySymbol( "i" )
+    value = PepSymbol( "i" )
 
     assert_equal( value.evaluate( env ).value, "7" )
 

@@ -12,7 +12,7 @@ from libpepper.buildsteps.renderbuildstep import RenderBuildStep
 from libpepper.buildsteps.sourcebuildstep import SourceBuildStep
 from libpepper.pepperoptions import PepperOptions
 from libpepper.functionvalues import *
-from libpepper.usererrorexception import EeyUserErrorException
+from libpepper.usererrorexception import PepUserErrorException
 from libpepper.values import *
 from parse import PepperLexer
 
@@ -137,7 +137,7 @@ def test_process_options_parse_tree_to_cpp():
 
 class AlwaysThrowUserErrorOptions( object ):
     def __init__( self, argv ):
-        raise EeyUserErrorException( "usage: blah" )
+        raise PepUserErrorException( "usage: blah" )
 
 def test_parse_and_process_options_arguments_wrong():
 
@@ -506,7 +506,7 @@ def test_ParseBuildStep_read_from_file():
     in_fl = StringIO( """
 
     # Comment
-    EeyFunctionCall( EeySymbol( "print" ), ( EeyString( "Hello, world!" ), ) ) #com
+    PepFunctionCall( PepSymbol( "print" ), ( PepString( "Hello, world!" ), ) ) #com
     """ )
 
     values = list( step.read_from_file( in_fl ) )
@@ -514,15 +514,15 @@ def test_ParseBuildStep_read_from_file():
     assert_equal( len( values ), 1 )
 
     fncall = values[0]
-    assert_equal( fncall.__class__, EeyFunctionCall )
+    assert_equal( fncall.__class__, PepFunctionCall )
     assert_equal( fncall.func_name, "print" )
     func = fncall.func
-    assert_equal( func.__class__, EeySymbol )
+    assert_equal( func.__class__, PepSymbol )
     assert_equal( func.symbol_name, "print" )
     args = fncall.args
     assert_equal( len( args ), 1 )
     hwstr = args[0]
-    assert_equal( hwstr.__class__, EeyString )
+    assert_equal( hwstr.__class__, PepString )
     assert_equal( hwstr.value, "Hello, world!" )
 
 
@@ -543,15 +543,15 @@ def test_ParseBuildStep_process():
     assert_equal( len( values ), 1 )
 
     fncall = values[0]
-    assert_equal( fncall.__class__, EeyFunctionCall )
+    assert_equal( fncall.__class__, PepFunctionCall )
     assert_equal( fncall.func_name, "print" )
     func = fncall.func
-    assert_equal( func.__class__, EeySymbol )
+    assert_equal( func.__class__, PepSymbol )
     assert_equal( func.symbol_name, "print" )
     args = fncall.args
     assert_equal( len( args ), 1 )
     hwstr = args[0]
-    assert_equal( hwstr.__class__, EeyString )
+    assert_equal( hwstr.__class__, PepString )
     assert_equal( hwstr.value, "Hello" )
 
 
@@ -562,11 +562,11 @@ def test_ParseBuildStep_write_to_file():
     step = ParseBuildStep()
 
     parsetree = [
-        EeyFunctionCall( EeySymbol( 'print' ), (
-            EeyString( 'Hello,' ),
+        PepFunctionCall( PepSymbol( 'print' ), (
+            PepString( 'Hello,' ),
             ) ),
-        EeyFunctionCall( EeySymbol( 'print' ), (
-            EeyString( 'world!' ),
+        PepFunctionCall( PepSymbol( 'print' ), (
+            PepString( 'world!' ),
             ) ),
         ]
 
@@ -575,8 +575,8 @@ def test_ParseBuildStep_write_to_file():
     step.write_to_file( parsetree, out_fl )
 
     assert_equal( out_fl.getvalue(),
-        """EeyFunctionCall(EeySymbol('print'),(EeyString('Hello,'),))
-EeyFunctionCall(EeySymbol('print'),(EeyString('world!'),))
+        """PepFunctionCall(PepSymbol('print'),(PepString('Hello,'),))
+PepFunctionCall(PepSymbol('print'),(PepString('world!'),))
 """ )
 
 
@@ -585,8 +585,8 @@ def test_RenderBuildStep_process():
 
     step = RenderBuildStep()
 
-    parsetree = [ EeyFunctionCall( EeySymbol( "print" ), (
-            EeyString( "Hello, world!" ),
+    parsetree = [ PepFunctionCall( PepSymbol( "print" ), (
+            PepString( "Hello, world!" ),
         ) ) ]
 
     cpp = step.process( parsetree )

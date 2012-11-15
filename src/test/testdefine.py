@@ -4,13 +4,13 @@
 
 from nose.tools import *
 
-from libpepper.environment import EeyEnvironment
-from libpepper.values import EeySymbol
-from libpepper.usererrorexception import EeyUserErrorException
+from libpepper.environment import PepEnvironment
+from libpepper.values import PepSymbol
+from libpepper.usererrorexception import PepUserErrorException
 
-@raises( EeyUserErrorException )
+@raises( PepUserErrorException )
 def test_Use_an_undefined_symbol_throws():
-    env = EeyEnvironment( None )
-    value = EeySymbol( "mynotdef" )
+    env = PepEnvironment( None )
+    value = PepSymbol( "mynotdef" )
     value.evaluate( env ) # Should throw
 

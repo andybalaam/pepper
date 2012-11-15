@@ -16,8 +16,8 @@ def test_call_function():
     [SYMBOL:f]
 """,
         r"""
-EeyFunctionCall(
-    EeySymbol('f'),
+PepFunctionCall(
+    PepSymbol('f'),
     ()
 )
 """ )
@@ -46,12 +46,12 @@ def test_call_function_with_args():
     [INT:3]
 """,
         r"""
-EeyFunctionCall(
-    EeySymbol('f'),
+PepFunctionCall(
+    PepSymbol('f'),
     (
-        EeyInt('1'), 
-        EeyInt('2'), 
-        EeyInt('3')
+        PepInt('1'), 
+        PepInt('2'), 
+        PepInt('3')
     )
 )
 """ )

@@ -2,5 +2,5 @@
 # Released under the MIT License.  See the file COPYING.txt for details.
 
 
-class EeyUserErrorException( Exception ):
+class PepUserErrorException( Exception ):
     pass

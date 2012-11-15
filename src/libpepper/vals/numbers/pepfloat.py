@@ -1,12 +1,12 @@
 # Copyright (C) 2012 Andy Balaam and The Pepper Developers
 # Released under the MIT License.  See the file COPYING.txt for details.
 
-from libpepper.values import EeyBool
-from libpepper.values import EeyValue
+from libpepper.values import PepBool
+from libpepper.values import PepValue
 
-class EeyFloat( EeyValue ):
+class PepFloat( PepValue ):
     def __init__( self,  str_float ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.value = str( str_float )
 
     def construction_args( self ):
@@ -20,16 +20,16 @@ class EeyFloat( EeyValue ):
     def plus( self, other ):
         assert other.__class__ == self.__class__
         # TODO: handle arbitrary numbers
-        return EeyFloat( str( float( self.value ) + float( other.value ) ) )
+        return PepFloat( str( float( self.value ) + float( other.value ) ) )
 
     def times( self, other ):
         assert other.__class__ == self.__class__
         # TODO: handle arbitrary numbers
-        return EeyFloat( str( float( self.value ) * float( other.value ) ) )
+        return PepFloat( str( float( self.value ) * float( other.value ) ) )
 
     def greater_than( self, other ):
         assert other.__class__ == self.__class__
         # TODO: handle arbitrary numbers
-        return EeyBool( float( self.value ) > float( other.value ) )
+        return PepBool( float( self.value ) > float( other.value ) )
 
 

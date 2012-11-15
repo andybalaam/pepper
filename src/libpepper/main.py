@@ -10,7 +10,7 @@ import cpp.cmdrunner
 import cpp.cppcompiler
 
 from pepperoptions import PepperOptions
-from usererrorexception import EeyUserErrorException
+from usererrorexception import PepUserErrorException
 
 from buildsteps.sourcebuildstep  import SourceBuildStep
 from buildsteps.lexbuildstep     import LexBuildStep
@@ -106,7 +106,7 @@ def parse_and_process_options( argv, options_Class, sysops_Class, exec_Class,
 
         return process_options( options, sys_operations, executor )
 
-    except EeyUserErrorException, e:
+    except PepUserErrorException, e:
         stderr.write( "Error: " + str( e ) + "\n" )
         return RET_USER_ERROR
 

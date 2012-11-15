@@ -7,16 +7,16 @@ from libpepper.cpp.cpputils import render_statements
 
 from libpepper import builtins
 
-def render_EeyFor( value, env ):
+def render_PepFor( value, env ):
     evald_it = value.iterator.evaluate( env )
 
-    if evald_it.evaluated_type( env ).value is EeyRange:
-        if evald_it.__class__ is EeyRange:
+    if evald_it.evaluated_type( env ).value is PepRange:
+        if evald_it.__class__ is PepRange:
             step  = evald_it.step
             begin = evald_it.begin
             end   = evald_it.end
         elif (
-            evald_it.__class__ is EeyRuntimeUserFunction and
+            evald_it.__class__ is PepRuntimeUserFunction and
             evald_it.user_function is builtins.range_function
         ):
         # TODO: surely there's a cleverer way to do this than knowing the impl
@@ -26,7 +26,7 @@ def render_EeyFor( value, env ):
             if len( evald_it.args ) > 2:
                 step = evald_it.args[2]
             else:
-                step = EeyInt( "1" )
+                step = PepInt( "1" )
         else:
             # TODO: support evaluating unknown functions that return ranges?
             raise Exception( "Can't (currently) support iterating over " +

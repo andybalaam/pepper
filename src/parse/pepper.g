@@ -343,15 +343,15 @@ classStatement returns [r]
 
 expression returns [r]
     : s=symbol { r = s }
-    | i:INT    { r = EeyInt(    i.getText() ) }
-    | d:FLOAT  { r = EeyFloat(  d.getText() ) }
-    | t:STRING { r = EeyString( t.getText() ) }
+    | i:INT    { r = PepInt(    i.getText() ) }
+    | d:FLOAT  { r = PepFloat(  d.getText() ) }
+    | t:STRING { r = PepString( t.getText() ) }
     | a=arraylookup { r = a }
     | i=ifExpression { r = i }
-    | #(PLUS e1=expression e2=expression) { r = EeyPlus( e1, e2 ) }
-    | #(MINUS e1=expression e2=expression) { r = EeyMinus( e1, e2 ) }
-    | #(TIMES e1=expression e2=expression) { r = EeyTimes( e1, e2 ) }
-    | #(GT e1=expression e2=expression) { r = EeyGreaterThan( e1, e2 ) }
+    | #(PLUS e1=expression e2=expression) { r = PepPlus( e1, e2 ) }
+    | #(MINUS e1=expression e2=expression) { r = PepMinus( e1, e2 ) }
+    | #(TIMES e1=expression e2=expression) { r = PepTimes( e1, e2 ) }
+    | #(GT e1=expression e2=expression) { r = PepGreaterThan( e1, e2 ) }
     | f=functionCall { r = f }
     | q=quotedCode { r = q }
     | t=tuple { r = t }
@@ -359,50 +359,50 @@ expression returns [r]
 
 initialisation returns [r]
     : #(EQUALS t=expression s=symbol v=expression)
-        { r = EeyInit( t, s, v ) }
+        { r = PepInit( t, s, v ) }
 ;
 
 modification returns [r]
     : #(PLUSEQUALS s=symbol v=expression)
-        { r = EeyModification( s, v ) }
+        { r = PepModification( s, v ) }
 ;
 
 functionDefinition returns [r]
     : #("def" t=expression n=symbol a=typedArgumentsList s=suite)
-        { r = EeyDef( t, n, a, s ) }
+        { r = PepDef( t, n, a, s ) }
 ;
 
 initFunctionDefinition returns [r]
     : #("def_init" a=typedArgumentsList s=initFunctionSuite)
-        { r = EeyDefInit( a, s ) }
+        { r = PepDefInit( a, s ) }
 ;
 
 classDefinition returns [r]
     : #("class" n=symbol s=classSuite)
-        { r = EeyClass( n, (), s ) }
+        { r = PepClass( n, (), s ) }
 ;
 
 forStatement returns [r]
     : #("for" t=expression v=symbol i=expression s=suite)
-        { r = EeyFor( t, v, i, s ) }
+        { r = PepFor( t, v, i, s ) }
 ;
 
 importStatement returns [r]
-    : #("import" m:SYMBOL) { r = EeyImport( m.getText() ) }
+    : #("import" m:SYMBOL) { r = PepImport( m.getText() ) }
 ;
 
 symbol returns [r]
-    : f:SYMBOL { r = EeySymbol( f.getText() ) }
+    : f:SYMBOL { r = PepSymbol( f.getText() ) }
 ;
 
 arraylookup returns [r]
     : #(LSQUBR arr=symbol idx=expression)
-        { r = EeyArrayLookup( arr, idx ) }
+        { r = PepArrayLookup( arr, idx ) }
 ;
 
 ifExpression returns [r]
     : #("if" pred=expression s=suite es=elseExpression )
-        { r = EeyIf( pred, s, es ) }
+        { r = PepIf( pred, s, es ) }
 ;
 
 elseExpression returns [r]
@@ -411,11 +411,11 @@ elseExpression returns [r]
 ;
 
 quotedCode returns [r]
-    : #("quote" s=suite ) { r = EeyQuote( s ) }
+    : #("quote" s=suite ) { r = PepQuote( s ) }
 ;
 
 tuple returns [r]
-    : t=tupleContents { r = EeyTuple( t ) }
+    : t=tupleContents { r = PepTuple( t ) }
 ;
 
 tupleContents returns [r]
@@ -426,7 +426,7 @@ tupleContents returns [r]
 ;
 
 functionCall returns [r]
-    : #(LPAREN f=symbol a=argumentsList) { r = EeyFunctionCall( f, a ) }
+    : #(LPAREN f=symbol a=argumentsList) { r = PepFunctionCall( f, a ) }
 ;
 
 typedArgumentsList returns [r]
@@ -490,11 +490,11 @@ initialisationsList returns [r]
 
 
 varStatement returns [r]
-    : #("var" s=varSuite ) { r = EeyVar( s ) }
+    : #("var" s=varSuite ) { r = PepVar( s ) }
 ;
 
 statementOrReturnStatement returns [r]
     : s=statement { r = s }
-    | #("return" e=expression) { r = EeyReturn( e ) }
+    | #("return" e=expression) { r = PepReturn( e ) }
 ;
 

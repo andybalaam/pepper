@@ -5,37 +5,37 @@
 from nose.tools import *
 
 from libpepper import builtins
-from libpepper.environment import EeyEnvironment
+from libpepper.environment import PepEnvironment
 from libpepper.cpp.cppvalues import *
-from libpepper.cpp.cpprenderer import EeyCppRenderer
-from libpepper.builtinmodules.eeysys import EeySysArgv
+from libpepper.cpp.cpprenderer import PepCppRenderer
+from libpepper.builtinmodules.pepsys import PepSysArgv
 
 
 #def test_Known_plus_string():
-#    env = EeyEnvironment( EeyCppRenderer() )
-#    env.namespace["input"] = EeyVariable( EeyType( EeyString ), "input" )
+#    env = PepEnvironment( PepCppRenderer() )
+#    env.namespace["input"] = PepVariable( PepType( PepString ), "input" )
 #
-#    value = EeyPlus( EeyString( "known" ), EeySymbol( "input" ) )
+#    value = PepPlus( PepString( "known" ), PepSymbol( "input" ) )
 #
 #    assert_equal( value.render( env ), '("known" + input)' )
 #
 #
 #def test_Known_plus_string_inside_print():
-#    env = EeyEnvironment( EeyCppRenderer() )
-#    env.namespace["input"] = EeyVariable( EeyType( EeyString ), "input" )
+#    env = PepEnvironment( PepCppRenderer() )
+#    env.namespace["input"] = PepVariable( PepType( PepString ), "input" )
 #
-#    value = EeyPrint( EeyPlus( EeyString( "known" ), EeySymbol( "input" ) ) )
+#    value = PepPrint( PepPlus( PepString( "known" ), PepSymbol( "input" ) ) )
 #
 #    assert_equal( value.render( env ), 'printf( "known%s", input )' )
 
 def test_Known_plus_argv():
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     builtins.add_builtins( env )
 
-    value = EeyFunctionCall( EeySymbol( "print" ), (
-        EeyPlus(
-            EeyString( "known" ),
-            EeyArrayLookup( EeySysArgv(), EeyInt( "1" ) )
+    value = PepFunctionCall( PepSymbol( "print" ), (
+        PepPlus(
+            PepString( "known" ),
+            PepArrayLookup( PepSysArgv(), PepInt( "1" ) )
             ),
         ) )
 
@@ -43,15 +43,15 @@ def test_Known_plus_argv():
 
 
 def test_Known_plus_argv_plus_known():
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     builtins.add_builtins( env )
 
-    value = EeyFunctionCall( EeySymbol( "print" ), (
-        EeyPlus(
-            EeyString( "known" ),
-            EeyPlus(
-                EeyArrayLookup( EeySysArgv(), EeyInt( "1" ) ),
-                EeyString( "known2" )
+    value = PepFunctionCall( PepSymbol( "print" ), (
+        PepPlus(
+            PepString( "known" ),
+            PepPlus(
+                PepArrayLookup( PepSysArgv(), PepInt( "1" ) ),
+                PepString( "known2" )
                 )
             ),
         ) )

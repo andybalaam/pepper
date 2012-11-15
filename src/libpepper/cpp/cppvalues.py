@@ -12,53 +12,53 @@ from libpepper.classvalues import *
 from libpepper.functionvalues import *
 from libpepper.languagevalues import *
 from libpepper.values import *
-from libpepper.builtinmodules.eeysys import EeySysArgv
+from libpepper.builtinmodules.pepsys import PepSysArgv
 
-def render_EeySymbol( value, env ):
+def render_PepSymbol( value, env ):
     return value.name()
 
-def render_EeyInt( value, env ):
+def render_PepInt( value, env ):
     return str( value.value )
 
-def render_EeyFloat( value, env ):
+def render_PepFloat( value, env ):
     return str( value.value )
 
-def render_EeyBool( value, env ):
+def render_PepBool( value, env ):
     if value.value:
         return "true"
     else:
         return "false"
 
-def render_EeyString( value, env ):
+def render_PepString( value, env ):
     return '"%s"' % value.value
 
-def render_EeyModification( value, env ):
+def render_PepModification( value, env ):
     # TODO: assert they are addable and switch on how to add them
     return "%s += %s" % (
         value.var.render( env ), value.mod_value.render( env ) )
 
-def render_EeyPlus( value, env ):
+def render_PepPlus( value, env ):
     # TODO: assert they are addable and switch on how to add them
     return "(%s + %s)" % (
         value.left_value.render( env ), value.right_value.render( env ) )
 
-def render_EeyMinus( value, env ):
+def render_PepMinus( value, env ):
     # TODO: assert they are minusable and switch on how to minus them
     return "(%s - %s)" % (
         value.left_value.render( env ), value.right_value.render( env ) )
 
-def render_EeyTimes( value, env ):
+def render_PepTimes( value, env ):
     # TODO: assert they are timesable and switch on how to multiply them
     return "(%s * %s)" % (
         value.left_value.render( env ), value.right_value.render( env ) )
 
-def render_EeyGreaterThan( value, env ):
+def render_PepGreaterThan( value, env ):
     # TODO: assert they are comparable
     return "(%s > %s)" % (
         value.left_value.render( env ), value.right_value.render( env ) )
 
 
-def render_EeyIf( value, env ):
+def render_PepIf( value, env ):
     # TODO: assert predicate is a bool or function returning one
 
     else_block = ""
@@ -79,31 +79,31 @@ def render_EeyIf( value, env ):
         else_block = else_block
         )
 
-def render_EeyFunction( value, env ):
+def render_PepFunction( value, env ):
     raise Exception( "Don't know how to render a function yet" )
 
-def render_EeyPrint( value, env ):
-    return render_EeyFunction( value, env )
+def render_PepPrint( value, env ):
+    return render_PepFunction( value, env )
 
-def render_EeyDef( value, env ):
+def render_PepDef( value, env ):
     return ""
 
-def render_EeyPass( value, env ):
+def render_PepPass( value, env ):
     return ""
 
-def render_EeyImport( value, env ):
+def render_PepImport( value, env ):
     return ""
 
-def render_EeyInit( value, env ):
+def render_PepInit( value, env ):
     if value.is_known( env ):
         return ""
     else:
         ev_var_type = value.var_type.evaluate( env )
 
         # TODO: avoid use of isinstance?
-        if isinstance( ev_var_type, EeyUserClass ):
+        if isinstance( ev_var_type, PepUserClass ):
             # Remember the variable name in the renderer - we will use it
-            # in render_EeyRuntimeInit, which needs to know it even
+            # in render_PepRuntimeInit, which needs to know it even
             # though it shouldn't, because the init function is converted
             # from a normal one to one that passes the instance as its
             # first argument.
@@ -119,21 +119,21 @@ def render_EeyInit( value, env ):
         )
 
 type2string = {
-    EeyBool  : "bool",
-    EeyFloat : "double",
-    EeyInt   : "int", # Maybe should be intptr_t - I just can't bring myself
-    EeyVoid  : "void",
+    PepBool  : "bool",
+    PepFloat : "double",
+    PepInt   : "int", # Maybe should be intptr_t - I just can't bring myself
+    PepVoid  : "void",
     }
 
-def render_EeyType( value, env ):
+def render_PepType( value, env ):
     if not value.is_known( env ):
-        raise EeyUserErrorException( v + " should be known!  "
+        raise PepUserErrorException( v + " should be known!  "
             + "Pepper can't (currently) support types that are unknown at "
             + "compile time." )
         # TODO: ensure error message properly displays the unknown thing
     return type2string[value.value]
 
-def render_EeyNoneType( value, env ):
+def render_PepNoneType( value, env ):
     return ""
 
 
@@ -142,7 +142,7 @@ def _render_type_and_name( typename, env ):
 
     # TODO: deal with copyable types etc., which should have no ampersand
     # TODO: avoid isinstance?
-    if isinstance( evald_type, EeyUserClass ):
+    if isinstance( evald_type, PepUserClass ):
         amp = "&"
     else:
         amp = ""
@@ -163,7 +163,7 @@ def _render_bracketed_list( items ):
     ret += ")"
     return ret
 
-def render_EeyUserClass_body( name, clazz, env ):
+def render_PepUserClass_body( name, clazz, env ):
     ret = "struct %s\n{\n" % name
 
     for mem in clazz.member_variables:
@@ -178,10 +178,10 @@ def indent_if_needed( line ):
     else:
         return "    %s;\n" % line
 
-def render_EeyUserFunction_body( name, func_call, env ):
+def render_PepUserFunction_body( name, func_call, env ):
     fn = func_call.user_function.evaluate( env )
 
-    assert( fn.__class__ == EeyUserFunction ) # TODO: handle other types
+    assert( fn.__class__ == PepUserFunction ) # TODO: handle other types
 
     ret = fn.ret_type.render( env )
     ret += " "
@@ -194,7 +194,7 @@ def render_EeyUserFunction_body( name, func_call, env ):
 
     for body_stmt in fn.body_stmts:
         st = body_stmt.evaluate( newenv )
-        if st.__class__ == EeyPass:
+        if st.__class__ == PepPass:
             continue
         ret += indent_if_needed( st.render( newenv ) )
 
@@ -202,28 +202,28 @@ def render_EeyUserFunction_body( name, func_call, env ):
 
     return ret
 
-def render_EeyVar( value, env ):
+def render_PepVar( value, env ):
     ret = ""
 
     for stmt in value.body_stmts:
-        assert( stmt.__class__ == EeyInit )
+        assert( stmt.__class__ == PepInit )
         ret += "    %s = %s;\n" % (
             stmt.var_name.symbol_name, stmt.init_value.render( env ) )
 
     return ret
 
 
-def render_EeyRuntimeUserFunction( value, env ):
+def render_PepRuntimeUserFunction( value, env ):
     name = env.renderer.add_function( value, env )
 
     return ( name +
         _render_bracketed_list( arg.render( env ) for arg in value.args ) )
 
-def render_EeyRuntimeInit( value, env ):
+def render_PepRuntimeInit( value, env ):
     env.renderer.add_class( value.instance.clazz, env )
     name = env.renderer.add_def_init( value, env )
 
-    # Use the variable name we remembered in render_EeyInit
+    # Use the variable name we remembered in render_PepInit
     return ( name +
         _render_bracketed_list(
             ( env.renderer.init_variable_name, ) + tuple(
@@ -231,31 +231,31 @@ def render_EeyRuntimeInit( value, env ):
         )
     )
 
-def render_EeyRuntimeInstance( value, env ):
+def render_PepRuntimeInstance( value, env ):
     return value.var_name
 
-def render_EeyFunctionCall( value, env ):
+def render_PepFunctionCall( value, env ):
     fn = value.func.evaluate( env )
 
     # TODO: assert fn is callable
 
     return fn.call( value.args, env ).render( env )
 
-def render_EeyReturn( value, env ):
+def render_PepReturn( value, env ):
     return "return " + value.value.render( env )
 
 
-def render_EeyClass( value, env ):
+def render_PepClass( value, env ):
     return ""
 
-def render_EeyUserClass( value, env ):
+def render_PepUserClass( value, env ):
     return value.name
 
-def render_EeyArrayLookup( value, env ):
+def render_PepArrayLookup( value, env ):
     # TODO: handle large numbers
     return value.array_value.render( env ) + "[%s]" % value.index.value
 
-def render_EeySysArgv( value, env ):
+def render_PepSysArgv( value, env ):
     # TODO: set up a global variable called global_argv and initialise
     #       it at the beginning of main
     return "argv"

@@ -1,1 +1,1 @@
-EeyFunctionCall(EeySymbol('print'),(EeyPlus(EeyInt('1'),EeyInt('2')),))
+PepFunctionCall(PepSymbol('print'),(PepPlus(PepInt('1'),PepInt('2')),))

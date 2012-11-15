@@ -1,2 +1,2 @@
-EeyInit(EeySymbol('int'),EeySymbol('i'),EeyInt('6'))
-EeyFunctionCall(EeySymbol('print'),(EeySymbol('i'),))
+PepInit(PepSymbol('int'),PepSymbol('i'),PepInt('6'))
+PepFunctionCall(PepSymbol('print'),(PepSymbol('i'),))

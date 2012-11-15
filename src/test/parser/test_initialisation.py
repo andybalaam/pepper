@@ -21,10 +21,10 @@ def test_simple_initialisation():
     [INT:7]
 """,
         r"""
-EeyInit(
-    EeySymbol('int'),
-    EeySymbol('i'),
-    EeyInt('7')
+PepInit(
+    PepSymbol('int'),
+    PepSymbol('i'),
+    PepInt('7')
 )
 """ )
 
@@ -45,10 +45,10 @@ def test_float_initialisation():
     [FLOAT:7.4]
 """,
         r"""
-EeyInit(
-    EeySymbol('float'),
-    EeySymbol('f'),
-    EeyFloat('7.4')
+PepInit(
+    PepSymbol('float'),
+    PepSymbol('f'),
+    PepFloat('7.4')
 )
 """ )
 
@@ -65,10 +65,10 @@ int self.x = 4
     [INT:4]
 """,
         r"""
-EeyInit(
-    EeySymbol('int'),
-    EeySymbol('self.x'),
-    EeyInt('4')
+PepInit(
+    PepSymbol('int'),
+    PepSymbol('self.x'),
+    PepInt('4')
 )
 """ )
 

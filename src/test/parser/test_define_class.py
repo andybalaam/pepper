@@ -31,11 +31,11 @@ def test_empty_class():
         [SYMBOL:pass]
 """,
         r"""
-EeyClass(
-    EeySymbol('MyClass'),
+PepClass(
+    PepSymbol('MyClass'),
     (),
     (
-        EeySymbol('pass'),
+        PepSymbol('pass'),
     )
 )
 """ )
@@ -67,14 +67,14 @@ def test_static_member_variable():
             [INT:3]
 """,
         r"""
-EeyClass(
-    EeySymbol('MyClass'),
+PepClass(
+    PepSymbol('MyClass'),
     (),
     (
-        EeyInit(
-            EeySymbol('int'),
-            EeySymbol('x'),
-            EeyInt('3')
+        PepInit(
+            PepSymbol('int'),
+            PepSymbol('x'),
+            PepInt('3')
         ),
     )
 )
@@ -118,16 +118,16 @@ def test_method():
                 [SYMBOL:pass]
 """,
         r"""
-EeyClass(
-    EeySymbol('MyClass'),
+PepClass(
+    PepSymbol('MyClass'),
     (),
     (
-        EeyDef(
-            EeySymbol('void'),
-            EeySymbol('myfn'),
+        PepDef(
+            PepSymbol('void'),
+            PepSymbol('myfn'),
             (),
             (
-                EeySymbol('pass'),
+                PepSymbol('pass'),
             )
         ),
     )
@@ -190,19 +190,19 @@ def test_init_method():
                 [SYMBOL:pass]
 """,
         r"""
-EeyClass(
-    EeySymbol('MyClass'),
+PepClass(
+    PepSymbol('MyClass'),
     (),
     (
-        EeyDefInit(
+        PepDefInit(
             (
                 (
-                    EeySymbol('int'), 
-                    EeySymbol('x')
+                    PepSymbol('int'), 
+                    PepSymbol('x')
                 ),
             ),
             (
-                EeySymbol('pass'),
+                PepSymbol('pass'),
             )
         ),
     )
@@ -232,19 +232,19 @@ class MyClass:
                             [INT:3]
 """,
         r"""
-EeyClass(
-    EeySymbol('MyClass'),
+PepClass(
+    PepSymbol('MyClass'),
     (),
     (
-        EeyDefInit(
+        PepDefInit(
             (),
             (
-                EeyVar(
+                PepVar(
                     (
-                        EeyInit(
-                            EeySymbol('int'),
-                            EeySymbol('self.x'),
-                            EeyInt('3')
+                        PepInit(
+                            PepSymbol('int'),
+                            PepSymbol('self.x'),
+                            PepInt('3')
                         ),
                     )
                 ),
@@ -281,22 +281,22 @@ class MyClass:
                     [INT:2]
 """,
         r"""
-EeyClass(
-    EeySymbol('MyClass'),
+PepClass(
+    PepSymbol('MyClass'),
     (),
     (
-        EeyDefInit(
+        PepDefInit(
             (),
             (
-                EeyInit(
-                    EeySymbol('int'),
-                    EeySymbol('x'),
-                    EeyInt('0')
+                PepInit(
+                    PepSymbol('int'),
+                    PepSymbol('x'),
+                    PepInt('0')
                 ), 
-                EeyInit(
-                    EeySymbol('int'),
-                    EeySymbol('y'),
-                    EeyInt('2')
+                PepInit(
+                    PepSymbol('int'),
+                    PepSymbol('y'),
+                    PepInt('2')
                 )
             )
         ),
@@ -334,24 +334,24 @@ class MyClass:
                             [INT:4]
 """,
         r"""
-EeyClass(
-    EeySymbol('MyClass'),
+PepClass(
+    PepSymbol('MyClass'),
     (),
     (
-        EeyDefInit(
+        PepDefInit(
             (),
             (
-                EeyVar(
+                PepVar(
                     (
-                        EeyInit(
-                            EeySymbol('int'),
-                            EeySymbol('self.x'),
-                            EeyInt('3')
+                        PepInit(
+                            PepSymbol('int'),
+                            PepSymbol('self.x'),
+                            PepInt('3')
                         ), 
-                        EeyInit(
-                            EeySymbol('int'),
-                            EeySymbol('self.y'),
-                            EeyInt('4')
+                        PepInit(
+                            PepSymbol('int'),
+                            PepSymbol('self.y'),
+                            PepInt('4')
                         )
                     )
                 ),
@@ -396,24 +396,24 @@ class MyClass:
                 [SYMBOL:pass]
 """,
         r"""
-EeyClass(
-    EeySymbol('MyClass'),
+PepClass(
+    PepSymbol('MyClass'),
     (),
     (
-        EeyDef(
-            EeySymbol('void'),
-            EeySymbol('meth'),
-            ((EeySymbol('MyClass'), EeySymbol('self')),),
+        PepDef(
+            PepSymbol('void'),
+            PepSymbol('meth'),
+            ((PepSymbol('MyClass'), PepSymbol('self')),),
             (
-                EeySymbol('pass'),
+                PepSymbol('pass'),
             )
         ), 
-        EeyDef(
-            EeySymbol('void'),
-            EeySymbol('meth2'),
-            ((EeySymbol('MyClass'), EeySymbol('self')),),
+        PepDef(
+            PepSymbol('void'),
+            PepSymbol('meth2'),
+            ((PepSymbol('MyClass'), PepSymbol('self')),),
             (
-                EeySymbol('pass'),
+                PepSymbol('pass'),
             )
         )
     )

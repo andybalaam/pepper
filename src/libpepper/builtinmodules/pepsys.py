@@ -2,14 +2,14 @@
 # Released under the MIT License.  See the file COPYING.txt for details.
 
 
-from libpepper.values import EeyString
-from libpepper.values import EeyValue
+from libpepper.values import PepString
+from libpepper.values import PepValue
 
 
-class EeySysArgv( EeyValue ):
+class PepSysArgv( PepValue ):
 
     def __init__( self ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
 
     def construction_args( self ):
         return ()
@@ -21,13 +21,13 @@ class EeySysArgv( EeyValue ):
         return self
 
 
-class EeySys( EeyValue ):
+class PepSys( PepValue ):
     def __init__( self ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
 
         self.namespace = {
-            "argv"     : EeySysArgv(),
-            "copyright": EeyString(
+            "argv"     : PepSysArgv(),
+            "copyright": PepString(
                 "Copyright (C) 2010-2012 Andy Balaam and the Pepper developers"
             ),
         }

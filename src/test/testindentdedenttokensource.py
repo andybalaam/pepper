@@ -5,12 +5,12 @@
 from cStringIO import StringIO
 from nose.tools import *
 
-from libpepper.usererrorexception import EeyUserErrorException
+from libpepper.usererrorexception import PepUserErrorException
 from parse.indentdedenttokenstream import IndentDedentTokenStream
 from parse.peppertokenstreamfromfile import PepperTokenStreamFromFile
 from parse.peppertokentostring import render_token
 
-from eeyasserts import assert_multiline_equal
+from pepasserts import assert_multiline_equal
 
 def _tokens_2_string( tokens ):
     return "\n" + "\n".join( render_token( token ) for token in tokens ) + "\n"
@@ -90,7 +90,7 @@ def test_indent_single_line():
 """
         )
 
-@raises( EeyUserErrorException )
+@raises( PepUserErrorException )
 def test_indent_not_divisible_by_4():
     for x in _indent_dedent_token_string(
         """
@@ -247,7 +247,7 @@ def test_indent_and_dedent_before_end():
 
 
 
-@raises( EeyUserErrorException )
+@raises( PepUserErrorException )
 def test_dedent_to_unknown_indentation():
     for x in _indent_dedent_token_string(
         """

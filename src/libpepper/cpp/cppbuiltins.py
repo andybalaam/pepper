@@ -2,8 +2,8 @@
 # Released under the MIT License.  See the file COPYING.txt for details.
 
 
-from libpepper.eeyinterface import implements_interface
-from libpepper.builtinmodules.eeysys import EeySysArgv
+from libpepper.pepinterface import implements_interface
+from libpepper.builtinmodules.pepsys import PepSysArgv
 from libpepper.vals.all_values import *
 
 
@@ -30,7 +30,7 @@ class FormatArgs( object ):
 
 def append_print_arg( fmtstr, fmtargs, value, env ):
 
-    if value.__class__ is EeyPlus: # TODO: and if an arg is a string
+    if value.__class__ is PepPlus: # TODO: and if an arg is a string
         append_print_arg( fmtstr, fmtargs, value.left_value, env )
         append_print_arg( fmtstr, fmtargs, value.right_value, env )
         return
@@ -40,20 +40,20 @@ def append_print_arg( fmtstr, fmtargs, value, env ):
     else:
         cls = value.evaluated_type( env ).underlying_class()
 
-    if cls is EeyString:
+    if cls is PepString:
         # We don't call render, because we add our own quotes here
         fmtstr.append( value.as_py_str() )
-    elif cls is EeyInt:
+    elif cls is PepInt:
         fmtstr.append( "%d" )
         fmtargs.append( value.render( env ) )
-    elif cls is EeyFloat:
+    elif cls is PepFloat:
         fmtstr.append( "%f" )
         fmtargs.append( value.render( env ) )
         # TODO: format float output better
-    elif cls is EeyBool:
+    elif cls is PepBool:
         fmtstr.append( "%s" )
         fmtargs.append( '(%s ? "true" : "false")' % value.render( env ) )
-    elif implements_interface( value, EeyString ):
+    elif implements_interface( value, PepString ):
         fmtstr.append( "%s" )
         fmtargs.append( value.render( env ) )
     else:
@@ -61,10 +61,10 @@ def append_print_arg( fmtstr, fmtargs, value, env ):
             + str( arg0.__class__ ) )
 
 
-def render_EeyRuntimePrint( value, env ):
+def render_PepRuntimePrint( value, env ):
     assert( len( value.args ) == 1 ) # TODO: not an assert
     arg0 = value.args[0]
-    #assert( arg0.__class__ is EeyString ) # TODO: not assert, less specific?
+    #assert( arg0.__class__ is PepString ) # TODO: not assert, less specific?
 
     env.renderer.add_header( "stdio.h" )
 
@@ -83,8 +83,8 @@ def render_EeyRuntimePrint( value, env ):
 
     return ret
 
-def render_EeyRuntimeLen( value, env ):
+def render_PepRuntimeLen( value, env ):
     arg = value.arg.evaluate( env )
-    assert( arg.__class__ == EeySysArgv ) # TODO other types
+    assert( arg.__class__ == PepSysArgv ) # TODO other types
     return "argc"
 

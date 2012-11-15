@@ -21,11 +21,11 @@ def test_multiline():
     [SYMBOL:sys]
 """,
         r"""
-EeyImport('sys')
-EeyFunctionCall(
-    EeySymbol('print'),
+PepImport('sys')
+PepFunctionCall(
+    PepSymbol('print'),
     (
-        EeySymbol('sys.argv'),
+        PepSymbol('sys.argv'),
     )
 )
 """ )

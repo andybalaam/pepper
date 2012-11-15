@@ -18,9 +18,9 @@ def test_array_lookup():
     [INT:1]
 """,
         r"""
-EeyArrayLookup(
-    EeySymbol('myarr'),
-    EeyInt('1')
+PepArrayLookup(
+    PepSymbol('myarr'),
+    PepInt('1')
 )
 """ )
 
@@ -45,12 +45,12 @@ def test_function_with_array_lookup():
         [INT:2]
 """,
     r"""
-EeyFunctionCall(
-    EeySymbol('print'),
+PepFunctionCall(
+    PepSymbol('print'),
     (
-        EeyArrayLookup(
-            EeySymbol('myarr'),
-            EeyInt('2')
+        PepArrayLookup(
+            PepSymbol('myarr'),
+            PepInt('2')
         ),
     )
 )
@@ -72,9 +72,9 @@ def test_array_lookup_qualified():
     [INT:3]
 """,
     r"""
-EeyArrayLookup(
-    EeySymbol('a.b'),
-    EeyInt('3')
+PepArrayLookup(
+    PepSymbol('a.b'),
+    PepInt('3')
 )
 """ )
 

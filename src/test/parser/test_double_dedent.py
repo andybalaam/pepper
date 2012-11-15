@@ -63,29 +63,29 @@ def test_double_dedent():
                     [SYMBOL:float]
 """,
         r"""
-EeyDef(
-    EeySymbol('type'),
-    EeySymbol('myfn'),
+PepDef(
+    PepSymbol('type'),
+    PepSymbol('myfn'),
     (
         (
-            EeySymbol('int'), 
-            EeySymbol('cfg')
+            PepSymbol('int'), 
+            PepSymbol('cfg')
         ),
     ),
     (
-        EeyIf(
-            EeyGreaterThan(
-                EeySymbol('cfg'),
-                EeyInt('0')
+        PepIf(
+            PepGreaterThan(
+                PepSymbol('cfg'),
+                PepInt('0')
             ),
             (
-                EeyReturn(
-                    EeySymbol('int')
+                PepReturn(
+                    PepSymbol('int')
                 ),
             ),
             (
-                EeyReturn(
-                    EeySymbol('float')
+                PepReturn(
+                    PepSymbol('float')
                 ),
             )
         ),

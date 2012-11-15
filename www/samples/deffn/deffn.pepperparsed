@@ -1,2 +1,2 @@
-EeyDef(EeySymbol('int'),EeySymbol('plus1'),((EeySymbol('int'), EeySymbol('i')),),(EeyReturn(EeyPlus(EeySymbol('i'),EeyInt('1'))),))
-EeyFunctionCall(EeySymbol('print'),(EeyFunctionCall(EeySymbol('plus1'),(EeyInt('2'),)),))
+PepDef(PepSymbol('int'),PepSymbol('plus1'),((PepSymbol('int'), PepSymbol('i')),),(PepReturn(PepPlus(PepSymbol('i'),PepInt('1'))),))
+PepFunctionCall(PepSymbol('print'),(PepFunctionCall(PepSymbol('plus1'),(PepInt('2'),)),))

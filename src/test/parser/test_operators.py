@@ -17,9 +17,9 @@ def test_operator_plus():
     [SYMBOL:b]
 """,
         r"""
-EeyPlus(
-    EeySymbol('a'),
-    EeySymbol('b')
+PepPlus(
+    PepSymbol('a'),
+    PepSymbol('b')
 )
 """ )
 
@@ -37,9 +37,9 @@ def test_operator_minus():
     [SYMBOL:b]
 """,
         r"""
-EeyMinus(
-    EeySymbol('a'),
-    EeySymbol('b')
+PepMinus(
+    PepSymbol('a'),
+    PepSymbol('b')
 )
 """ )
 
@@ -57,9 +57,9 @@ def test_operator_times():
     [SYMBOL:b]
 """,
         r"""
-EeyTimes(
-    EeySymbol('a'),
-    EeySymbol('b')
+PepTimes(
+    PepSymbol('a'),
+    PepSymbol('b')
 )
 """ )
 
@@ -78,9 +78,9 @@ def test_operator_greater_than():
     [SYMBOL:b]
 """,
         r"""
-EeyGreaterThan(
-    EeySymbol('a'),
-    EeySymbol('b')
+PepGreaterThan(
+    PepSymbol('a'),
+    PepSymbol('b')
 )
 """ )
 
@@ -104,12 +104,12 @@ def test_plus_in_function_call():
         [SYMBOL:b]
 """,
         r"""
-EeyFunctionCall(
-    EeySymbol('print'),
+PepFunctionCall(
+    PepSymbol('print'),
     (
-        EeyPlus(
-            EeyInt('3'),
-            EeySymbol('b')
+        PepPlus(
+            PepInt('3'),
+            PepSymbol('b')
         ),
     )
 )

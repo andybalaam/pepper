@@ -3,28 +3,28 @@
 
 
 from all_known import all_known
-from eeyinterface import implements_interface
-from values import EeyArray
-from values import EeyBool
-from vals.numbers import EeyInt
-from values import EeySymbol
-from values import EeyType
-from values import EeyValue
-from values import EeyVariable
-from values import eey_none
+from pepinterface import implements_interface
+from values import PepArray
+from values import PepBool
+from vals.numbers import PepInt
+from values import PepSymbol
+from values import PepType
+from values import PepValue
+from values import PepVariable
+from values import pep_none
 
-from usererrorexception import EeyUserErrorException
+from usererrorexception import PepUserErrorException
 
-class EeyPlaceholder( EeyValue ):
+class PepPlaceholder( PepValue ):
     def construction_args( self ):
         return ()
 
     def evaluate( self, env ):
-        raise Exception( "Should never have an EeyPlaceholder to evaluate." )
+        raise Exception( "Should never have an PepPlaceholder to evaluate." )
 
-class EeyImport( EeyValue ):
+class PepImport( PepValue ):
     def __init__( self, module_name ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.module_name = module_name
 
     def construction_args( self ):
@@ -33,19 +33,19 @@ class EeyImport( EeyValue ):
     def do_evaluate( self, env ):
 
         if self.module_name == "sys":
-            import builtinmodules.eeysys
-            env.namespace["sys"] = builtinmodules.eeysys.EeySys()
+            import builtinmodules.pepsys
+            env.namespace["sys"] = builtinmodules.pepsys.PepSys()
         else:
-            raise EeyUserErrorException( "No module named %s" %
+            raise PepUserErrorException( "No module named %s" %
                 self.module_name )
 
         self.cached_eval = self
         return self
 
 
-class EeyArrayLookup( EeyValue ):
+class PepArrayLookup( PepValue ):
     def __init__( self, array_value, index ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.array_value = array_value
         self.index = index
 
@@ -56,8 +56,8 @@ class EeyArrayLookup( EeyValue ):
         idx = self.index.evaluate( env )
         arr = self.array_value.evaluate( env )
         if arr.is_known( env ):
-            assert( idx.__class__ == EeyInt )
-            assert( implements_interface( arr, EeyArray ) )
+            assert( idx.__class__ == PepInt )
+            assert( implements_interface( arr, PepArray ) )
             # TODO: handle large number indices
             return arr.get_index( int( idx.value ) ).evaluate( env )
         else:
@@ -66,9 +66,9 @@ class EeyArrayLookup( EeyValue ):
     def is_known( self, env ):
         return all_known( ( self.array_value, self.index ), env )
 
-class EeyIf( EeyValue ):
+class PepIf( PepValue ):
     def __init__( self, predicate, cmds_if_true, cmds_if_false ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.predicate = predicate
         self.cmds_if_true = cmds_if_true
         self.cmds_if_false = cmds_if_false
@@ -79,13 +79,13 @@ class EeyIf( EeyValue ):
     def do_evaluate( self, env ):
         pred = self.predicate.evaluate( env )
         if pred.is_known( env ):
-            assert( pred.__class__ == EeyBool ) # TODO: other types
+            assert( pred.__class__ == PepBool ) # TODO: other types
             if pred.value:
                 return self._run_commands( self.cmds_if_true, env )
             elif self.cmds_if_false is not None:
                 return self._run_commands( self.cmds_if_false, env )
             else:
-                return eey_none
+                return pep_none
         else:
             return self
 
@@ -99,23 +99,23 @@ class EeyIf( EeyValue ):
             )
 
     def _run_commands( self, cmds, env ):
-        # TODO: support EeyArray of statements?  As well?
+        # TODO: support PepArray of statements?  As well?
         ret = None
         for cmd in cmds:
             ret = cmd.evaluate( env )
         return ret # TODO: should we return all evaluated statements?
 
-class EeyInitialisingWithWrongType( EeyUserErrorException ):
+class PepInitialisingWithWrongType( PepUserErrorException ):
     def __init__( self, decl_type, init_value_type ):
-        EeyUserErrorException.__init__( self, ( "Declared type is %s, but "
+        PepUserErrorException.__init__( self, ( "Declared type is %s, but "
             + "initial value supplied is of type %s." ) % (
                 str( decl_type ), str( init_value_type )
                 ) )
 
-class EeyInit( EeyValue ):
+class PepInit( PepValue ):
 
     def __init__( self, var_type, var_name, init_value ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.var_type   = var_type
         self.var_name   = var_name
         self.init_value = init_value
@@ -128,7 +128,7 @@ class EeyInit( EeyValue ):
 
         # Don't evaluate - will need to semi-evaluate in
         # order to support symbol( "x" ) here?
-        assert( self.var_name.__class__ == EeySymbol ) # TODO: not assert
+        assert( self.var_name.__class__ == PepSymbol ) # TODO: not assert
         (namespace, name, base_sym) = self.var_name.find_namespace_and_name(
             env )
 
@@ -140,13 +140,13 @@ class EeyInit( EeyValue ):
         ( tp, ns, nm, val ) = self._eval_args( env )
 
         if nm in ns:
-            if not isinstance( ns[nm], EeyPlaceholder ):
-                raise EeyUserErrorException(
+            if not isinstance( ns[nm], PepPlaceholder ):
+                raise PepUserErrorException(
                     "Namespace already contains the name '" + nm + "'." )
 
         val_type = val.evaluated_type( env )
         if not tp.matches( val_type ):
-            raise EeyInitialisingWithWrongType( tp, val_type )
+            raise PepInitialisingWithWrongType( tp, val_type )
 
         def make_value():
             if val.is_known( env ):

@@ -2,7 +2,7 @@
 # Released under the MIT License.  See the file COPYING.txt for details.
 
 
-class EeyNamespace( object ):
+class PepNamespace( object ):
 
     def __init__( self, shallower_ns = None ):
         self.shallower_ns = shallower_ns

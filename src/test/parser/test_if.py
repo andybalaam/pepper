@@ -30,13 +30,13 @@ def test_if():
             [INT:3]
 """,
         r"""
-EeyIf(
-    EeySymbol('True'),
+PepIf(
+    PepSymbol('True'),
     (
-        EeyFunctionCall(
-            EeySymbol('print'),
+        PepFunctionCall(
+            PepSymbol('print'),
             (
-                EeyInt('3'),
+                PepInt('3'),
             )
         ),
     ),
@@ -71,15 +71,15 @@ def test_if_function_call():
         [INT:3]
 """,
         r"""
-EeyIf(
-    EeyFunctionCall(
-        EeySymbol('f'),
+PepIf(
+    PepFunctionCall(
+        PepSymbol('f'),
         (
-            EeyInt('3'),
+            PepInt('3'),
         )
     ),
     (
-        EeyInt('3'),
+        PepInt('3'),
     ),
     None
 )
@@ -112,13 +112,13 @@ def test_if_operator():
         [INT:3]
 """,
         r"""
-EeyIf(
-    EeyGreaterThan(
-        EeyInt('3'),
-        EeyInt('4')
+PepIf(
+    PepGreaterThan(
+        PepInt('3'),
+        PepInt('4')
     ),
     (
-        EeyInt('3'),
+        PepInt('3'),
     ),
     None
 )
@@ -155,18 +155,18 @@ def test_if_operator_and_function():
         [INT:3]
 """,
         r"""
-EeyIf(
-    EeyGreaterThan(
-        EeyFunctionCall(
-            EeySymbol('f'),
+PepIf(
+    PepGreaterThan(
+        PepFunctionCall(
+            PepSymbol('f'),
             (
-                EeySymbol('a'),
+                PepSymbol('a'),
             )
         ),
-        EeyInt('4')
+        PepInt('4')
     ),
     (
-        EeyInt('3'),
+        PepInt('3'),
     ),
     None
 )
@@ -206,13 +206,13 @@ def test_if_else():
         [INT:0]
 """,
         r"""
-EeyIf(
-    EeySymbol('True'),
+PepIf(
+    PepSymbol('True'),
     (
-        EeyInt('1'),
+        PepInt('1'),
     ),
     (
-        EeyInt('0'),
+        PepInt('0'),
     )
 )""" )
 

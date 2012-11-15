@@ -32,13 +32,13 @@ def test_define_function():
             [INT:1]
 """,
         r"""
-EeyDef(
-    EeySymbol('int'),
-    EeySymbol('myfn'),
+PepDef(
+    PepSymbol('int'),
+    PepSymbol('myfn'),
     (),
     (
-        EeyReturn(
-            EeyInt('1')
+        PepReturn(
+            PepInt('1')
         ),
     )
 )
@@ -87,16 +87,16 @@ def test_define_function_with_args():
         [SYMBOL:pass]
 """,
         r"""
-EeyDef(
-    EeySymbol('void'),
-    EeySymbol('myfn'),
+PepDef(
+    PepSymbol('void'),
+    PepSymbol('myfn'),
     (
-        (EeySymbol('int'), EeySymbol('x')), 
-        (EeySymbol('bool'), EeySymbol('y')), 
-        (EeySymbol('int'), EeySymbol('z'))
+        (PepSymbol('int'), PepSymbol('x')), 
+        (PepSymbol('bool'), PepSymbol('y')), 
+        (PepSymbol('int'), PepSymbol('z'))
     ),
     (
-        EeySymbol('pass'),
+        PepSymbol('pass'),
     )
 )
 """ )
@@ -139,18 +139,18 @@ def test_define_function_two_lines():
             [SYMBOL:a]
 """,
         """
-EeyDef(
-    EeySymbol('void'),
-    EeySymbol('myfn'),
+PepDef(
+    PepSymbol('void'),
+    PepSymbol('myfn'),
     (),
     (
-        EeyInit(
-            EeySymbol('int'),
-            EeySymbol('a'),
-            EeyInt('7')
+        PepInit(
+            PepSymbol('int'),
+            PepSymbol('a'),
+            PepInt('7')
         ), 
-        EeyReturn(
-            EeySymbol('a')
+        PepReturn(
+            PepSymbol('a')
         )
     )
 )
@@ -180,18 +180,18 @@ def int fn():
             [SYMBOL:x]
 """,
         r"""
-EeyDef(
-    EeySymbol('int'),
-    EeySymbol('fn'),
+PepDef(
+    PepSymbol('int'),
+    PepSymbol('fn'),
     (),
     (
-        EeyInit(
-            EeySymbol('int'),
-            EeySymbol('x'),
-            EeyInt('0')
+        PepInit(
+            PepSymbol('int'),
+            PepSymbol('x'),
+            PepInt('0')
         ), 
-        EeyReturn(
-            EeySymbol('x')
+        PepReturn(
+            PepSymbol('x')
         )
     )
 )

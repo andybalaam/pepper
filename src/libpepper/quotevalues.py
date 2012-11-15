@@ -1,14 +1,14 @@
 # Copyright (C) 2012 Andy Balaam and The Pepper Developers
 # Released under the MIT License.  See the file COPYING.txt for details.
 
-from libpepper.namespace import EeyNamespace
-from functionvalues import EeyFunction
-from values import EeyValue
+from libpepper.namespace import PepNamespace
+from functionvalues import PepFunction
+from values import PepValue
 
 
-class EeyQuoteEvaluate( EeyFunction ):
+class PepQuoteEvaluate( PepFunction ):
     def __init__( self, quote ):
-        EeyFunction.__init__( self )
+        PepFunction.__init__( self )
         self.quote = quote
 
     def construction_args( self ):
@@ -21,12 +21,12 @@ class EeyQuoteEvaluate( EeyFunction ):
         return self.quote.unquote().evaluate( env )
 
     def return_type( self, args, env ):
-        return EeyType( EeyQuote )
+        return PepType( PepQuote )
 
 
-class EeyQuote( EeyValue ):
+class PepQuote( PepValue ):
     def __init__( self, statements ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.statements = statements
 
     def construction_args( self ):
@@ -34,13 +34,13 @@ class EeyQuote( EeyValue ):
 
     def unquote( self ):
         # TODO: Make a new value type which is a block of statements:
-        #       probably shared with EeyUserFunction and other places?
+        #       probably shared with PepUserFunction and other places?
         #       For now, just return the last statement.
         return self.statements[-1]
 
     def get_namespace( self ):
-        ret = EeyNamespace()
-        ret["evaluate"] = EeyQuoteEvaluate( self )
+        ret = PepNamespace()
+        ret["evaluate"] = PepQuoteEvaluate( self )
         return ret
 
 

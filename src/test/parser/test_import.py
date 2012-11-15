@@ -16,7 +16,7 @@ def test_import():
     [SYMBOL:sys]
 """,
         r"""
-EeyImport('sys')
+PepImport('sys')
 """ )
 
 

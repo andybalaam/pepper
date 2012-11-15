@@ -4,20 +4,20 @@
 from nose.tools import *
 
 from libpepper import builtins
-from libpepper.environment import EeyEnvironment
+from libpepper.environment import PepEnvironment
 from libpepper.cpp.cppvalues import *
-from libpepper.cpp.cpprenderer import EeyCppRenderer
+from libpepper.cpp.cpprenderer import PepCppRenderer
 
 from libpepper.vals.all_values import *
 
-from eeyasserts import assert_multiline_equal
+from pepasserts import assert_multiline_equal
 
 def test_Hello_World():
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     builtins.add_builtins( env )
 
-    value = EeyFunctionCall( EeySymbol( "print" ),
-        ( EeyString( "Hello, World!" ), ) )
+    value = PepFunctionCall( PepSymbol( "print" ),
+        ( PepString( "Hello, World!" ), ) )
 
     assert_multiline_equal(
         env.render_exe( ( value, ) ),
@@ -32,7 +32,7 @@ int main( int argc, char* argv[] )
 """ )
 
 def test_Echo_arg1():
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     builtins.add_builtins( env )
 
     # import sys
@@ -42,23 +42,23 @@ def test_Echo_arg1():
     #
     # print sys.argv[1]
 
-    impt = EeyImport( "sys" )
+    impt = PepImport( "sys" )
 
-#    fndef = EeyDefine( EeySymbol( "getname" ),
-#        EeyUserFunction(
+#    fndef = PepDefine( PepSymbol( "getname" ),
+#        PepUserFunction(
 #            "getname",
-#            EeyType( EeyString ),
+#            PepType( PepString ),
 #            (
-#                ( EeyType( EeyString ), EeySymbol( "name" ) ),
+#                ( PepType( PepString ), PepSymbol( "name" ) ),
 #                ),
 #            (
-#                EeyReturn( EeySymbol( "name" ) ),
+#                PepReturn( PepSymbol( "name" ) ),
 #                )
 #            )
 #        )
 
-    fncall = EeyFunctionCall( EeySymbol( "print" ),
-        ( EeyArrayLookup( EeySymbol( "sys.argv" ), EeyInt( "1" ) ), ) )
+    fncall = PepFunctionCall( PepSymbol( "print" ),
+        ( PepArrayLookup( PepSymbol( "sys.argv" ), PepInt( "1" ) ), ) )
 
     program = ( impt, fncall )
 
@@ -75,7 +75,7 @@ int main( int argc, char* argv[] )
 """ )
 
 def test_single_statement_if():
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     builtins.add_builtins( env )
 
     # import sys
@@ -83,23 +83,23 @@ def test_single_statement_if():
     # if len( sys.argv ) > 1:
     #   print sys.argv[1]
 
-    impt = EeyImport( "sys" )
+    impt = PepImport( "sys" )
 
-    ifstmt = EeyIf(
-        EeyGreaterThan(
-            EeyFunctionCall(
-                EeySymbol( "len" ), (
-                    EeySymbol( "sys.argv" ),
+    ifstmt = PepIf(
+        PepGreaterThan(
+            PepFunctionCall(
+                PepSymbol( "len" ), (
+                    PepSymbol( "sys.argv" ),
                     )
                 ),
-            EeyInt( "1" )
+            PepInt( "1" )
             ),
             (
-                EeyFunctionCall(
-                    EeySymbol( "print" ), (
-                        EeyArrayLookup(
-                            EeySymbol( "sys.argv" ),
-                            EeyInt( "1" )
+                PepFunctionCall(
+                    PepSymbol( "print" ), (
+                        PepArrayLookup(
+                            PepSymbol( "sys.argv" ),
+                            PepInt( "1" )
                             ),
                         ),
                     ),
@@ -125,13 +125,13 @@ int main( int argc, char* argv[] )
 
 
 def test_Two_prints():
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     builtins.add_builtins( env )
 
-    value1 = EeyFunctionCall( EeySymbol( "print" ),
-        ( EeyString( "Hello," ), ) )
-    value2 = EeyFunctionCall( EeySymbol( "print" ),
-        ( EeyString( "World!" ), ) )
+    value1 = PepFunctionCall( PepSymbol( "print" ),
+        ( PepString( "Hello," ), ) )
+    value2 = PepFunctionCall( PepSymbol( "print" ),
+        ( PepString( "World!" ), ) )
 
     assert_multiline_equal(
         env.render_exe( ( value1, value2 ) ),
@@ -149,10 +149,10 @@ int main( int argc, char* argv[] )
 
 
 def test_function_with_no_args():
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
 
-    fn = EeyUserFunction( "myfn", EeyType( EeyVoid ), (), ( EeyPass(), ) )
-    rtfn = EeyRuntimeUserFunction( fn, (), None )
+    fn = PepUserFunction( "myfn", PepType( PepVoid ), (), ( PepPass(), ) )
+    rtfn = PepRuntimeUserFunction( fn, (), None )
 
     ans = env.renderer.render_exe( [rtfn], env )
 
@@ -172,11 +172,11 @@ int main( int argc, char* argv[] )
 
 
 def test_function_called_twice_same_args():
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
 
-    fn = EeyUserFunction( "myfn", EeyType( EeyVoid ), (), ( EeyPass(), ) )
-    rtfn1 = EeyRuntimeUserFunction( fn, (), None )
-    rtfn2 = EeyRuntimeUserFunction( fn, (), None )
+    fn = PepUserFunction( "myfn", PepType( PepVoid ), (), ( PepPass(), ) )
+    rtfn1 = PepRuntimeUserFunction( fn, (), None )
+    rtfn2 = PepRuntimeUserFunction( fn, (), None )
 
     ans = env.renderer.render_exe( [rtfn1, rtfn2], env )
 
@@ -202,26 +202,26 @@ int main( int argc, char* argv[] )
 
 
 def test_overloaded_functions():
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
 
-    fnint = EeyUserFunction(
+    fnint = PepUserFunction(
         "myfn",
-        EeyType( EeyVoid ),
-        ( ( EeyType( EeyInt ), EeySymbol( "x" ) ), ),
-        ( EeyPass(), )
+        PepType( PepVoid ),
+        ( ( PepType( PepInt ), PepSymbol( "x" ) ), ),
+        ( PepPass(), )
     )
 
-    fnflt = EeyUserFunction(
+    fnflt = PepUserFunction(
         "myfn",
-        EeyType( EeyVoid ),
-        ( ( EeyType( EeyFloat ), EeySymbol( "f" ) ), ),
-        ( EeyPass(), )
+        PepType( PepVoid ),
+        ( ( PepType( PepFloat ), PepSymbol( "f" ) ), ),
+        ( PepPass(), )
     )
 
-    rtfn1 = EeyRuntimeUserFunction( fnflt, ( EeyFloat( "3.0" ), ), None )
-    rtfn2 = EeyRuntimeUserFunction( fnint, ( EeyInt( "3" ),     ), None )
-    rtfn3 = EeyRuntimeUserFunction( fnint, ( EeyInt( "4" ),     ), None )
-    rtfn4 = EeyRuntimeUserFunction( fnflt, ( EeyFloat( "5.1" ), ), None )
+    rtfn1 = PepRuntimeUserFunction( fnflt, ( PepFloat( "3.0" ), ), None )
+    rtfn2 = PepRuntimeUserFunction( fnint, ( PepInt( "3" ),     ), None )
+    rtfn3 = PepRuntimeUserFunction( fnint, ( PepInt( "4" ),     ), None )
+    rtfn4 = PepRuntimeUserFunction( fnflt, ( PepFloat( "5.1" ), ), None )
 
     ans = env.renderer.render_exe( [rtfn1, rtfn2, rtfn3, rtfn4], env )
 
@@ -230,15 +230,15 @@ void myfn( double f )
 {
 }
 
-void myfn_eey_1( int x )
+void myfn_pep_1( int x )
 {
 }
 
 int main( int argc, char* argv[] )
 {
     myfn( 3.0 );
-    myfn_eey_1( 3 );
-    myfn_eey_1( 4 );
+    myfn_pep_1( 3 );
+    myfn_pep_1( 4 );
     myfn( 5.1 );
 
     return 0;
@@ -249,66 +249,66 @@ int main( int argc, char* argv[] )
 
 def test_Choose_runtime_overload_by_evaluated_type():
 
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
 
-    fnint = EeyUserFunction(
+    fnint = PepUserFunction(
         "myfn",
-        EeyType( EeyVoid ),
-        ( ( EeyType( EeyInt ), EeySymbol( "x" ) ), ),
-        ( EeyPass(), )
+        PepType( PepVoid ),
+        ( ( PepType( PepInt ), PepSymbol( "x" ) ), ),
+        ( PepPass(), )
     )
 
-    fnbool = EeyUserFunction(
+    fnbool = PepUserFunction(
         "myfn",
-        EeyType( EeyVoid ),
-        ( ( EeyType( EeyBool ), EeySymbol( "b" ) ), ),
-        ( EeyPass(), )
+        PepType( PepVoid ),
+        ( ( PepType( PepBool ), PepSymbol( "b" ) ), ),
+        ( PepPass(), )
     )
 
-    rtfn1 = EeyRuntimeUserFunction( fnint, ( EeyInt( "3" ), ), None )
-    rtfn2 = EeyRuntimeUserFunction( fnbool,
+    rtfn1 = PepRuntimeUserFunction( fnint, ( PepInt( "3" ), ), None )
+    rtfn2 = PepRuntimeUserFunction( fnbool,
         (
-            EeyGreaterThan(
-                EeyVariable( EeyType( EeyInt ), "r" ),
-                EeyVariable( EeyType( EeyInt ), "s" )
+            PepGreaterThan(
+                PepVariable( PepType( PepInt ), "r" ),
+                PepVariable( PepType( PepInt ), "s" )
             ),
         ),
         None
     )
 
     assert_equal( env.renderer.add_function( rtfn1, env ), "myfn" )
-    assert_equal( env.renderer.add_function( rtfn2, env ), "myfn_eey_1" )
+    assert_equal( env.renderer.add_function( rtfn2, env ), "myfn_pep_1" )
 
 
 
 def test_Render_runtime_class():
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     add_builtins( env )
 
-    env.namespace['a'] = EeyVariable( EeyType( EeyInt ), "a" )
+    env.namespace['a'] = PepVariable( PepType( PepInt ), "a" )
 
-    cls = EeyClass(
-        EeySymbol( 'MyClass' ),
+    cls = PepClass(
+        PepSymbol( 'MyClass' ),
         (),
         (
-            EeyDefInit(
+            PepDefInit(
                 (
-                    ( EeySymbol('MyClass'), EeySymbol('self') ),
-                    ( EeySymbol('int'), EeySymbol('a') ),
-                    ( EeySymbol('float'), EeySymbol('b') )
+                    ( PepSymbol('MyClass'), PepSymbol('self') ),
+                    ( PepSymbol('int'), PepSymbol('a') ),
+                    ( PepSymbol('float'), PepSymbol('b') )
                 ),
                 (
-                    EeyVar(
+                    PepVar(
                         (
-                            EeyInit(
-                                EeySymbol('int'),
-                                EeySymbol('self.a'),
-                                EeySymbol('a')
+                            PepInit(
+                                PepSymbol('int'),
+                                PepSymbol('self.a'),
+                                PepSymbol('a')
                             ),
-                            EeyInit(
-                                EeySymbol('float'),
-                                EeySymbol('self.b'),
-                                EeySymbol('b')
+                            PepInit(
+                                PepSymbol('float'),
+                                PepSymbol('self.b'),
+                                PepSymbol('b')
                             )
                         )
                     ),
@@ -317,12 +317,12 @@ def test_Render_runtime_class():
         )
     )
 
-    init = EeyInit(
-        EeySymbol( 'MyClass' ),
-        EeySymbol( 'mc' ),
-        EeyFunctionCall(
-            EeySymbol( 'MyClass.init' ),
-            ( EeySymbol( 'a' ), EeyFloat('1.5') )
+    init = PepInit(
+        PepSymbol( 'MyClass' ),
+        PepSymbol( 'mc' ),
+        PepFunctionCall(
+            PepSymbol( 'MyClass.init' ),
+            ( PepSymbol( 'a' ), PepFloat('1.5') )
         )
     )
 
@@ -336,7 +336,7 @@ struct MyClass
     double b;
 };
 
-void MyClass_eey_c_eey___init__( MyClass& self, int a, double b )
+void MyClass_pep_c_pep___init__( MyClass& self, int a, double b )
 {
     self.a = a;
     self.b = b;
@@ -344,7 +344,7 @@ void MyClass_eey_c_eey___init__( MyClass& self, int a, double b )
 
 int main( int argc, char* argv[] )
 {
-    MyClass mc; MyClass_eey_c_eey___init__( mc, a, 1.5 );
+    MyClass mc; MyClass_pep_c_pep___init__( mc, a, 1.5 );
 
     return 0;
 }
@@ -355,38 +355,38 @@ int main( int argc, char* argv[] )
 
 
 def test_Render_runtime_method_call():
-    env = EeyEnvironment( EeyCppRenderer() )
+    env = PepEnvironment( PepCppRenderer() )
     add_builtins( env )
 
-    env.namespace['a'] = EeyVariable( EeyType( EeyInt ), "a" )
+    env.namespace['a'] = PepVariable( PepType( PepInt ), "a" )
 
-    cls = EeyClass(
-        EeySymbol( 'MyClass' ),
+    cls = PepClass(
+        PepSymbol( 'MyClass' ),
         (),
         (
-            EeyDefInit(
+            PepDefInit(
                 (
-                    ( EeySymbol('MyClass'), EeySymbol('self') ),
-                    ( EeySymbol('int'), EeySymbol('x') ),
+                    ( PepSymbol('MyClass'), PepSymbol('self') ),
+                    ( PepSymbol('int'), PepSymbol('x') ),
                 ),
-                ( EeyPass(), )
+                ( PepPass(), )
             ),
-            EeyDef(
-                EeySymbol('void'),
-                EeySymbol('my_meth'),
-                ( ( EeySymbol('MyClass'), EeySymbol('self') ), ),
-                ( EeyPass(), )
+            PepDef(
+                PepSymbol('void'),
+                PepSymbol('my_meth'),
+                ( ( PepSymbol('MyClass'), PepSymbol('self') ), ),
+                ( PepPass(), )
             )
         )
     )
 
-    init = EeyInit(
-        EeySymbol( 'MyClass' ),
-        EeySymbol( 'mc' ),
-        EeyFunctionCall( EeySymbol( 'MyClass.init' ), ( EeySymbol( "a" ), ) )
+    init = PepInit(
+        PepSymbol( 'MyClass' ),
+        PepSymbol( 'mc' ),
+        PepFunctionCall( PepSymbol( 'MyClass.init' ), ( PepSymbol( "a" ), ) )
     )
 
-    meth = EeyFunctionCall( EeySymbol( "mc.my_meth" ), () )
+    meth = PepFunctionCall( PepSymbol( "mc.my_meth" ), () )
 
     ans = env.renderer.render_exe( [ cls, init, meth ], env )
 
@@ -396,18 +396,18 @@ struct MyClass
 {
 };
 
-void MyClass_eey_c_eey___init__( MyClass& self, int x )
+void MyClass_pep_c_pep_my_meth( MyClass& self )
 {
 }
 
-void MyClass_eey_c_eey_my_meth( MyClass& self )
+void MyClass_pep_c_pep___init__( MyClass& self, int x )
 {
 }
 
 int main( int argc, char* argv[] )
 {
-    MyClass mc; MyClass_eey_c_eey___init__( mc, a );
-    MyClass_eey_c_eey_my_meth( mc );
+    MyClass mc; MyClass_pep_c_pep___init__( mc, a );
+    MyClass_pep_c_pep_my_meth( mc );
 
     return 0;
 }

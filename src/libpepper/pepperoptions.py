@@ -6,7 +6,7 @@ import version
 
 from optparse import OptionParser
 
-from usererrorexception import EeyUserErrorException
+from usererrorexception import PepUserErrorException
 
 class PepperOptions( object ):
 
@@ -57,7 +57,7 @@ class PepperOptions( object ):
         (options, args) = parser.parse_args( argv[1:] )
 
         if len( args ) < 1:
-            raise EeyUserErrorException( parser.get_usage() )
+            raise PepUserErrorException( parser.get_usage() )
 
         self.infile  = PepperOptions.FileDetails( args[0] )
 

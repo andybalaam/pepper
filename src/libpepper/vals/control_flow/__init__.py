@@ -2,6 +2,6 @@
 # Released under the MIT License.  See the file COPYING.txt for details.
 
 
-from eeyfor import EeyFor
-from eeyrange import EeyRange
+from pepfor import PepFor
+from peprange import PepRange
 

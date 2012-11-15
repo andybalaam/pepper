@@ -21,10 +21,10 @@ def test_hello_world():
     [STRING:Hello, world!]
 """,
         r"""
-EeyFunctionCall(
-    EeySymbol('print'),
+PepFunctionCall(
+    PepSymbol('print'),
     (
-        EeyString('Hello, world!'),
+        PepString('Hello, world!'),
     )
 )
 """ )

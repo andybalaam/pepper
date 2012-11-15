@@ -5,14 +5,14 @@
 from nose.tools import *
 
 from libpepper.builtins import *
-from libpepper.environment import EeyEnvironment
+from libpepper.environment import PepEnvironment
 from libpepper.vals.all_values import *
 
 def assert_defined( name, expected_class, expected_value = None ):
-    env = EeyEnvironment( None )
+    env = PepEnvironment( None )
     add_builtins( env )
 
-    value = EeySymbol( name )
+    value = PepSymbol( name )
     ans = value.evaluate( env )
 
     assert_equal( ans.__class__, expected_class )
@@ -22,58 +22,58 @@ def assert_defined( name, expected_class, expected_value = None ):
 
 # Statements
 def test_pass():
-    assert_defined( "pass", EeyPass )
+    assert_defined( "pass", PepPass )
 
 # Values
 def test_False():
-    assert_defined( "False", EeyBool, False )
+    assert_defined( "False", PepBool, False )
 
 def test_True():
-    assert_defined( "True", EeyBool, True )
+    assert_defined( "True", PepBool, True )
 
 # Types
 def test_bool():
-    assert_defined( "bool", EeyType, EeyBool )
+    assert_defined( "bool", PepType, PepBool )
 
 def test_float():
-    assert_defined( "float", EeyType, EeyFloat )
+    assert_defined( "float", PepType, PepFloat )
 
 def test_int():
-    assert_defined( "int", EeyType, EeyInt )
+    assert_defined( "int", PepType, PepInt )
 
 def test_string():
-    assert_defined( "string", EeyType, EeyString )
+    assert_defined( "string", PepType, PepString )
 
 def test_void():
-    assert_defined( "void", EeyType, EeyVoid )
+    assert_defined( "void", PepType, PepVoid )
 
 def test_type():
-    assert_defined( "type", EeyType, EeyType )
+    assert_defined( "type", PepType, PepType )
 
 # Functions
 def test_len():
-    assert_defined( "len", EeyLen )
+    assert_defined( "len", PepLen )
 
 def test_len_return_type_is_int():
-    assert_equal( EeyLen().return_type( None, () ), EeyType( EeyInt ) )
+    assert_equal( PepLen().return_type( None, () ), PepType( PepInt ) )
 
 def test_print():
-    assert_defined( "print", EeyPrint )
+    assert_defined( "print", PepPrint )
 
 def test_range():
-    env = EeyEnvironment( None )
+    env = PepEnvironment( None )
     add_builtins( env )
 
-    r = EeySymbol( "range" ).evaluate( env ).call(
-        (EeyInt("3"), EeyInt("4")), env )
+    r = PepSymbol( "range" ).evaluate( env ).call(
+        (PepInt("3"), PepInt("4")), env )
 
-    assert_equal( EeyRange, r.__class__ )
-    assert_equal( EeyInt, r.begin.__class__ )
-    assert_equal( EeyInt, r.end.__class__ )
+    assert_equal( PepRange, r.__class__ )
+    assert_equal( PepInt, r.begin.__class__ )
+    assert_equal( PepInt, r.end.__class__ )
     assert_equal( "3", r.begin.value )
     assert_equal( "4", r.end.value )
 
 def test_print_return_type_is_none():
-    assert_equal( EeyPrint().return_type( None, () ), EeyType( EeyNoneType ) )
+    assert_equal( PepPrint().return_type( None, () ), PepType( PepNoneType ) )
 
 

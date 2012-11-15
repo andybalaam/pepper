@@ -27,7 +27,7 @@ def test_quoted_sum():
             [SYMBOL:y]
 """,
         r"""
-EeyQuote((EeyPlus(EeySymbol('x'),EeySymbol('y')),))
+PepQuote((PepPlus(PepSymbol('x'),PepSymbol('y')),))
 """ )
 
 

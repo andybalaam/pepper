@@ -4,15 +4,15 @@
 
 from buildstep import BuildStep
 from libpepper import builtins
-from libpepper.cpp.cpprenderer import EeyCppRenderer
-from libpepper.environment import EeyEnvironment
+from libpepper.cpp.cpprenderer import PepCppRenderer
+from libpepper.environment import PepEnvironment
 
 class RenderBuildStep( BuildStep ):
     def read_from_file( self, fl ):
         return fl.read()
 
     def process( self, val ):
-        env = EeyEnvironment( EeyCppRenderer() )
+        env = PepEnvironment( PepCppRenderer() )
         builtins.add_builtins( env )
         return env.render_exe( val )
 

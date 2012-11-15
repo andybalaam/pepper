@@ -11,7 +11,7 @@ from antlr import TokenStream
 
 import PepperLexer
 from iterablefromtokenstream import IterableFromTokenStream
-from libpepper.usererrorexception import EeyUserErrorException
+from libpepper.usererrorexception import PepUserErrorException
 
 def _new_indent( tok ):
     ret = CommonToken()
@@ -100,7 +100,7 @@ class IndentDedentTokenStream( TokenStream, IterableFromTokenStream ):
 
         indent_col = len( tok.getText() )
         if ( indent_col % 4 ) != 0:
-            raise EeyUserErrorException(
+            raise PepUserErrorException(
                 "Indentation at the beginning of a line must be "
                 + "4 spaces." )
 
@@ -120,7 +120,7 @@ class IndentDedentTokenStream( TokenStream, IterableFromTokenStream ):
                     self.last_newline ) )
 
             if indent_col != self.indents_stack[-1]:
-                raise EeyUserErrorException(
+                raise PepUserErrorException(
                     "Dedented to a level that does not match a previous "
                     + "indent level." )
 

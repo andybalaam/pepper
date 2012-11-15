@@ -15,7 +15,7 @@ from parse.iterablefromtokenstream import IterableFromTokenStream
 
 from test.tokenutils import Iterable2TokenStream
 
-from test.eeyasserts import assert_multiline_equal
+from test.pepasserts import assert_multiline_equal
 
 def _ast_node_children_to_string( ast, indent ):
     ret = ""

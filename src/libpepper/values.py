@@ -4,12 +4,12 @@
 from abc import ABCMeta, abstractmethod
 
 from all_known import all_known
-from eeyinterface import implements_interface
-from usererrorexception import EeyUserErrorException
+from pepinterface import implements_interface
+from usererrorexception import PepUserErrorException
 
 # -- Base class and global methods ---
 
-class EeyValue( object ):
+class PepValue( object ):
 
     __metaclass__ = ABCMeta
 
@@ -34,7 +34,7 @@ class EeyValue( object ):
         return self
 
     def evaluated_type( self, env ):
-        return EeyType( self.__class__ )
+        return PepType( self.__class__ )
 
     @abstractmethod
     def construction_args( self ): pass
@@ -47,9 +47,9 @@ class EeyValue( object ):
 
 # --- Specific value types ---
 
-class EeyVariable( EeyValue ):
+class PepVariable( PepValue ):
     def __init__( self, clazz, name ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.clazz = clazz
         self.name = name
 
@@ -66,9 +66,9 @@ class EeyVariable( EeyValue ):
         return self.clazz.get_namespace()
 
 
-class EeySymbol( EeyValue ):
+class PepSymbol( PepValue ):
     def __init__( self, symbol_name ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.symbol_name = symbol_name
 
     def construction_args( self ):
@@ -76,7 +76,7 @@ class EeySymbol( EeyValue ):
 
     def _check_contains( self, namespace, name, base_sym ):
         if name not in namespace:
-            raise EeyUserErrorException(
+            raise PepUserErrorException(
                 ( "The symbol '%s' is not defined in '%s'." % (
                     name, base_sym ) )
             )
@@ -109,7 +109,7 @@ class EeySymbol( EeyValue ):
             new_ns_holder = namespace[this_ns_name].evaluate( env )
 
             if not hasattr( new_ns_holder.__class__, "get_namespace" ):
-                raise EeyUserErrorException(
+                raise PepUserErrorException(
                     (
                         "The value %s at '%s' is not a " +
                         "class, object or module, so you can't look up " +
@@ -144,7 +144,7 @@ class EeySymbol( EeyValue ):
         if value.is_known( env ):
             # Pass back what we looked up
             return value
-        elif implements_interface( value, EeySymbol ):
+        elif implements_interface( value, PepSymbol ):
             return value
         else:
             # If what we find is a variable (i.e. something unknown until
@@ -158,30 +158,30 @@ class EeySymbol( EeyValue ):
     def evaluated_type( self, env ):
         return self._lookup( env ).evaluated_type( env )
 
-class EeyBool( EeyValue ):
+class PepBool( PepValue ):
     def __init__( self, value ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.value = value
 
     def construction_args( self ):
         return ( self.value, )
 
 
-class EeyNoneType( EeyValue ):
+class PepNoneType( PepValue ):
     def construction_args( self ):
         return ()
 
-eey_none = EeyNoneType()
+pep_none = PepNoneType()
 
 
-class EeyVoid( EeyValue ):
+class PepVoid( PepValue ):
     def construction_args( self ):
         return ()
 
 
-class EeyString( EeyValue ):
+class PepString( PepValue ):
     def __init__( self, py_str ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.value = py_str
 
     def construction_args( self ):
@@ -190,9 +190,9 @@ class EeyString( EeyValue ):
     def as_py_str( self ):
         return self.value
 
-class EeyBinaryOp( EeyValue ):
+class PepBinaryOp( PepValue ):
     def __init__( self, left_value, right_value ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         # TODO: assert( all( self.is_applicable, ( left_value, right_value ) )
         self.left_value  = left_value
         self.right_value = right_value
@@ -215,32 +215,32 @@ class EeyBinaryOp( EeyValue ):
         return all_known( ( self.left_value, self.right_value ), env )
 
 
-class EeyPlus( EeyBinaryOp ):
+class PepPlus( PepBinaryOp ):
     def operator( self, lv, rv ):
         return lv.plus( rv )
 
-class EeyTimes( EeyBinaryOp ):
+class PepTimes( PepBinaryOp ):
     def operator( self, lv, rv ):
         return lv.times( rv )
 
-class EeyGreaterThan( EeyBinaryOp ):
+class PepGreaterThan( PepBinaryOp ):
     def operator( self, lv, rv ):
         return lv.greater_than( rv )
 
     def evaluated_type( self, env ):
-        return EeyType( EeyBool )
+        return PepType( PepBool )
 
 
-class EeyPass( EeyValue ):
+class PepPass( PepValue ):
     """A statement that does nothing."""
 
     def __init__( self ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
 
     def construction_args( self ):
         return ()
 
-class EeyTypeMatcher():
+class PepTypeMatcher():
     __metaclass__ = ABCMeta
 
     @abstractmethod
@@ -275,7 +275,7 @@ class EeyTypeMatcher():
         """
         pass
 
-class EeyEmptyNamespace( object ):
+class PepEmptyNamespace( object ):
 
     def __contains__( self, key ):
         return False
@@ -289,13 +289,13 @@ class EeyEmptyNamespace( object ):
     def key_for_value( self, value ):
         return None
 
-class EeyType( EeyValue, EeyTypeMatcher ):
+class PepType( PepValue, PepTypeMatcher ):
     """
-    A type which is directly representable as a Python class e.g. EeyInt
+    A type which is directly representable as a Python class e.g. PepInt
     """
 
     def __init__( self, value ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         # TODO: check we have been passed a type
         self.value = value
 
@@ -312,10 +312,10 @@ class EeyType( EeyValue, EeyTypeMatcher ):
         return self.value
 
     def runtime_instance( self, name ):
-        return EeyVariable( self, name )
+        return PepVariable( self, name )
 
     def get_namespace( self ):
-        return EeyEmptyNamespace()
+        return PepEmptyNamespace()
 
     def __eq__( self, other ):
         return (
@@ -326,9 +326,9 @@ class EeyType( EeyValue, EeyTypeMatcher ):
     def __ne__( self, other ):
         return not self.__eq__( other )
 
-class EeyArray( EeyValue ):
+class PepArray( PepValue ):
     def __init__( self, value_type, values ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.value_type = value_type
         self.values = values
 

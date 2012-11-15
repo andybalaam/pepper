@@ -4,35 +4,35 @@
 
 from itertools import ifilter
 
-from libpepper.environment import EeyEnvironment
-from libpepper.namespace import EeyNamespace
-from languagevalues import EeyInit
-from languagevalues import EeyPlaceholder
-from values import EeyType
-from values import EeyTypeMatcher
-from values import EeySymbol
-from values import EeyString
-from values import EeyValue
-from values import EeyVariable
-from values import EeyVoid
+from libpepper.environment import PepEnvironment
+from libpepper.namespace import PepNamespace
+from languagevalues import PepInit
+from languagevalues import PepPlaceholder
+from values import PepType
+from values import PepTypeMatcher
+from values import PepSymbol
+from values import PepString
+from values import PepValue
+from values import PepVariable
+from values import PepVoid
 from values import all_known
-from functionvalues import EeyCallable
-from functionvalues import EeyDef
-from functionvalues import EeyFunction
-from functionvalues import EeyFunctionOverloadList
-from functionvalues import EeyRuntimeUserFunction
-from usererrorexception import EeyUserErrorException
+from functionvalues import PepCallable
+from functionvalues import PepDef
+from functionvalues import PepFunction
+from functionvalues import PepFunctionOverloadList
+from functionvalues import PepRuntimeUserFunction
+from usererrorexception import PepUserErrorException
 
 INIT_METHOD_NAME = "init"
 INIT_IMPL_NAME = "__init__"
 
 
-class EeyDefInit( EeyDef ):
+class PepDefInit( PepDef ):
     def __init__( self, arg_types_and_names, body_stmts ):
-        EeyDef.__init__(
+        PepDef.__init__(
             self,
-            EeyType( EeyVoid ),
-            EeySymbol( INIT_IMPL_NAME ),
+            PepType( PepVoid ),
+            PepSymbol( INIT_IMPL_NAME ),
             arg_types_and_names,
             body_stmts
         )
@@ -45,20 +45,20 @@ class EeyDefInit( EeyDef ):
     def get_member_variables( self ):
         ret = []
 
-        is_var = lambda stmt: stmt.__class__ == EeyVar
+        is_var = lambda stmt: stmt.__class__ == PepVar
         for var_stmt in ifilter( is_var, self.body_stmts ):
             for init_stmt in var_stmt.body_stmts:
-                if init_stmt.__class__ != EeyInit:
+                if init_stmt.__class__ != PepInit:
                     # Should not happen since this is defined in the syntax
                     # (but might change one day?)
-                    raise EeyUserErrorException(
+                    raise PepUserErrorException(
                         "Var blocks may only contain initialisation statements"
                     )
                 # TODO: handle expressions that evaluate to symbols
                 nm = init_stmt.var_name.name()
                 selfdot = self.self_var_name() + "."
                 if not nm.startswith( selfdot ):
-                    raise EeyUserErrorException(
+                    raise PepUserErrorException(
                         "Only members of this class should be initialised in " +
                         "var blocks.  '" + nm + "' does not start with '" +
                         selfdot + "', but it should."
@@ -66,7 +66,7 @@ class EeyDefInit( EeyDef ):
                 nm = nm[ len(selfdot): ]
 
                 if len( nm ) == 0:
-                    raise EeyUserErrorException(
+                    raise PepUserErrorException(
                         "You must provide a variable name, not just '" +
                         selfdot + "'."
                     )
@@ -79,9 +79,9 @@ class EeyDefInit( EeyDef ):
         return self.arg_types_and_names[0][1].name()
 
 
-class EeyInstanceMethod( EeyFunction ):
+class PepInstanceMethod( PepFunction ):
     def __init__( self, instance, fn ):
-        EeyFunction.__init__( self )
+        PepFunction.__init__( self )
         self.instance = instance
         self.fn = fn
 
@@ -95,7 +95,7 @@ class EeyInstanceMethod( EeyFunction ):
         if all_known( args + (self.instance,), env ):
             return self.fn.call( self._instance_plus_args( args ), env )
         else:
-            return EeyRuntimeUserFunction(
+            return PepRuntimeUserFunction(
                 self.fn,
                 self._instance_plus_args( args ),
                 self.instance.clazz.name
@@ -111,34 +111,34 @@ class EeyInstanceMethod( EeyFunction ):
         return self.instance.is_known( env )
 
 
-class EeyInstanceNamespace( EeyNamespace ):
+class PepInstanceNamespace( PepNamespace ):
     def __init__( self, instance, class_namespace ):
-        EeyNamespace.__init__( self )
+        PepNamespace.__init__( self )
         self.instance = instance
         self.class_namespace = class_namespace
 
     def _find( self, key ):
 
-        found = EeyNamespace._find( self, key)
+        found = PepNamespace._find( self, key)
         if found is not None:
             return found
 
         found = self.class_namespace._find( key )
-        if isinstance( found, EeyFunctionOverloadList ):
-            return EeyFunctionOverloadList(
+        if isinstance( found, PepFunctionOverloadList ):
+            return PepFunctionOverloadList(
                 map(
-                    lambda fn: EeyInstanceMethod( self.instance, fn ),
+                    lambda fn: PepInstanceMethod( self.instance, fn ),
                     found._list
                 )
             )
         else:
             return found
 
-class EeyInstance( EeyValue ):
+class PepInstance( PepValue ):
     def __init__( self, clazz ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.clazz = clazz
-        self.namespace = EeyInstanceNamespace(
+        self.namespace = PepInstanceNamespace(
             self, self.clazz.get_namespace() )
 
     def get_class_name( self ):
@@ -151,16 +151,16 @@ class EeyInstance( EeyValue ):
         return self.clazz
 
 
-class EeyKnownInstance( EeyInstance ):
+class PepKnownInstance( PepInstance ):
     def construction_args( self ):
         return ( self.clazz )
 
     def is_known( self, env ):
         return True
 
-class EeyRuntimeInstance( EeyInstance ):
+class PepRuntimeInstance( PepInstance ):
     def __init__( self, clazz, var_name ):
-        EeyInstance.__init__( self, clazz )
+        PepInstance.__init__( self, clazz )
         self.var_name = var_name
 
     def construction_args( self ):
@@ -170,9 +170,9 @@ class EeyRuntimeInstance( EeyInstance ):
         return False
 
 
-class EeyRuntimeInit( EeyValue ):
+class PepRuntimeInit( PepValue ):
     def __init__( self, instance, args, init_fn ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         # TODO: check arg types
         self.instance = instance
         self.args = args
@@ -189,9 +189,9 @@ class EeyRuntimeInit( EeyValue ):
 
 
 
-class EeyInitMethod( EeyFunction ):
+class PepInitMethod( PepFunction ):
     def __init__( self, user_class ):
-        EeyFunction.__init__( self )
+        PepFunction.__init__( self )
         self.user_class = user_class
 
     def call( self, args, env ):
@@ -204,7 +204,7 @@ class EeyInitMethod( EeyFunction ):
             return ret
         else:
             inst = self.user_class.runtime_instance( "" )
-            return EeyRuntimeInit(
+            return PepRuntimeInit(
                 inst,
                 args,
                 self.user_class.namespace[INIT_IMPL_NAME].call(
@@ -220,10 +220,10 @@ class EeyInitMethod( EeyFunction ):
             return ( len( args ) == 0 )
 
         # Make an object that looks like an instance so it passes the
-        # call to matches() on the EeyUserClass, and put it on the beginning
+        # call to matches() on the PepUserClass, and put it on the beginning
         # of the args array before we match against the user-defined init
         # method.
-        self_plus_args = [ EeyKnownInstance( self.user_class ) ] + args
+        self_plus_args = [ PepKnownInstance( self.user_class ) ] + args
 
         return self.user_class.namespace[INIT_IMPL_NAME].args_match(
             self_plus_args )
@@ -232,9 +232,9 @@ class EeyInitMethod( EeyFunction ):
         return ( self.user_class, )
 
 
-class EeyUserClass( EeyValue, EeyTypeMatcher ):
+class PepUserClass( PepValue, PepTypeMatcher ):
     def __init__( self, name, base_classes, body_stmts ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.name = name
         self.base_classes = base_classes
         self.body_stmts = body_stmts
@@ -245,29 +245,29 @@ class EeyUserClass( EeyValue, EeyTypeMatcher ):
         return True # TODO - not always known
 
     def runtime_instance( self, name ):
-        return EeyRuntimeInstance( self, name )
+        return PepRuntimeInstance( self, name )
 
     def known_instance( self ):
-        return EeyKnownInstance( self )
+        return PepKnownInstance( self )
 
     def do_evaluate( self, env ):
-        self.namespace = EeyNamespace( env.namespace )
-        subenv = EeyEnvironment( env.renderer, self.namespace )
+        self.namespace = PepNamespace( env.namespace )
+        subenv = PepEnvironment( env.renderer, self.namespace )
         for st in self.body_stmts:
             st.evaluate( subenv )
 
         if INIT_METHOD_NAME in self.namespace:
-            raise EeyUserErrorException( "You may not define the symbol " +
+            raise PepUserErrorException( "You may not define the symbol " +
                 "'%s' in a class definition." % INIT_METHOD_NAME )
 
         # TODO: disallow defining functions called __init__
 
-        self.namespace[INIT_METHOD_NAME] = EeyInitMethod( self )
+        self.namespace[INIT_METHOD_NAME] = PepInitMethod( self )
 
         self.member_variables = self._find_member_variables()
 
         for var_type, var_name in self.member_variables:
-            self.namespace[var_name] = EeyPlaceholder()
+            self.namespace[var_name] = PepPlaceholder()
 
         return self
 
@@ -275,7 +275,7 @@ class EeyUserClass( EeyValue, EeyTypeMatcher ):
         ret = []
 
         first_def_init = True
-        is_def_init = lambda stmt: stmt.__class__ == EeyDefInit
+        is_def_init = lambda stmt: stmt.__class__ == PepDefInit
         for stmt in ifilter( is_def_init, self.body_stmts ):
             if first_def_init:
                 ret = stmt.get_member_variables()
@@ -304,9 +304,9 @@ class EeyUserClass( EeyValue, EeyTypeMatcher ):
         return self.namespace
 
 
-class EeyClass( EeyValue ):
+class PepClass( PepValue ):
     def __init__( self, name, base_classes, body_stmts ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.name = name
         self.base_classes = base_classes
         self.body_stmts = body_stmts
@@ -319,11 +319,11 @@ class EeyClass( EeyValue ):
         nm = self.name.name()
 
         if nm in env.namespace:
-            raise EeyUserErrorException(
+            raise PepUserErrorException(
                 "The symbol '%s' is already defined." % nm )
              # TODO: line, column, filename
         else:
-            env.namespace[nm] = EeyUserClass(
+            env.namespace[nm] = PepUserClass(
                 nm, self.base_classes, self.body_stmts )
 
         return self
@@ -331,9 +331,9 @@ class EeyClass( EeyValue ):
     def check_init_matches( self, var_names ):
         pass # TODO: ensure later def_inits match the first one
 
-class EeyVar( EeyValue ):
+class PepVar( PepValue ):
     def __init__( self, body_stmts ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.body_stmts = body_stmts
 
     def construction_args( self ):

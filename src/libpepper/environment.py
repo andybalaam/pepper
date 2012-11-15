@@ -3,15 +3,15 @@
 
 from itertools import izip
 
-from namespace import EeyNamespace
+from namespace import PepNamespace
 
-from values import EeyType
+from values import PepType
 
-class EeyEnvironment( object ):
+class PepEnvironment( object ):
     def __init__( self, renderer, namespace = None ):
         self.renderer = renderer
         if namespace is None:
-            self.namespace = EeyNamespace()
+            self.namespace = PepNamespace()
         else:
             self.namespace = namespace
 
@@ -24,7 +24,7 @@ class EeyEnvironment( object ):
     def clone_deeper( self ):
         """Create a new environment based on this one."""
 
-        return EeyEnvironment( self.renderer, EeyNamespace( self.namespace ) )
+        return PepEnvironment( self.renderer, PepNamespace( self.namespace ) )
 
     def pretty_name( self, value ):
         ret = self.namespace.key_for_value( value )

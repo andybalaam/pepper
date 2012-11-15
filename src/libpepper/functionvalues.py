@@ -5,14 +5,14 @@ from abc import ABCMeta
 from abc import abstractmethod
 from itertools import izip
 
-from environment import EeyEnvironment
-from values import EeySymbol
-from values import EeyType
-from values import EeyValue
-from values import EeyVariable
-from values import EeyPass
+from environment import PepEnvironment
+from values import PepSymbol
+from values import PepType
+from values import PepValue
+from values import PepVariable
+from values import PepPass
 from values import all_known
-from usererrorexception import EeyUserErrorException
+from usererrorexception import PepUserErrorException
 
 
 
@@ -41,7 +41,7 @@ def execution_environment( arg_types_and_names, args, known, env ):
             val = val.evaluate( env )
         else:
             tp   = type_and_name[0]
-            val = EeyVariable( tp.evaluate( env ), name.name() )
+            val = PepVariable( tp.evaluate( env ), name.name() )
 
         newenv.namespace[name.name()] = val
         i += 1
@@ -52,10 +52,10 @@ def execution_environment( arg_types_and_names, args, known, env ):
 def is_callable( value ):
     return True # TODO: check whether the object may be called
 
-class EeyFunctionCall( EeyValue ):
+class PepFunctionCall( PepValue ):
     def __init__( self, func, args ):
-        EeyValue.__init__( self )
-        if func.__class__ == EeySymbol: # TODO: evaluate first?
+        PepValue.__init__( self )
+        if func.__class__ == PepSymbol: # TODO: evaluate first?
             self.func_name = func.symbol_name
         else:
             self.func_name = None
@@ -77,18 +77,18 @@ class EeyFunctionCall( EeyValue ):
     def evaluated_type( self, env ):
         return self.func.evaluate( env ).return_type( self.args, env )
 
-class EeyReturn( EeyValue ):
+class PepReturn( PepValue ):
     def __init__( self, value ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.value = value
 
     def construction_args( self ):
         return ( self.value, )
 
     def do_evaluate( self, env ):
-        return EeyReturn( self.value.evaluate( env ) )
+        return PepReturn( self.value.evaluate( env ) )
 
-class EeyCallable( EeyValue ):
+class PepCallable( PepValue ):
     @abstractmethod
     def call( self, args, env ): pass
 
@@ -96,22 +96,22 @@ class EeyCallable( EeyValue ):
     def return_type( self, args, env ): pass
 
 
-class EeyFunction( EeyCallable ):
+class PepFunction( PepCallable ):
     __metaclass__ = ABCMeta
 
     def __init__( self ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
 #        self.arg_types_and_names = arg_types_and_names
 
     @abstractmethod
-    def args_match( self, args ): pass # TODO: move into EeyCallable
+    def args_match( self, args ): pass # TODO: move into PepCallable
 
     def is_known( self, env ):
         return True
 
-class EeyFunctionOverloadList( EeyCallable ):
+class PepFunctionOverloadList( PepCallable ):
     def __init__( self, initial_list ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self._list = initial_list
 
     def is_known( self, env ):
@@ -149,7 +149,7 @@ class EeyFunctionOverloadList( EeyCallable ):
 
     def args_dont_match_error( self, fn, args, env ):
         if len( args ) != len( fn.arg_types_and_names ):
-            raise EeyUserErrorException(
+            raise PepUserErrorException(
                 ( "Wrong number of arguments to function {fn_name}.  " +
                     "You supplied {supplied}, but there should be {required}."
                 ).format(
@@ -166,7 +166,7 @@ class EeyFunctionOverloadList( EeyCallable ):
             if not type_matches( env, reqtype, arg ):
                 ev_reqtype = reqtype.evaluate( env )
                 arg_type = arg.evaluated_type( env )
-                raise EeyUserErrorException(
+                raise PepUserErrorException(
                     ( "For function '{fn_name}', argument " +
                         "'{argname}' should be {reqtype}, " +
                         "not {supplied_type}."
@@ -221,13 +221,13 @@ class EeyFunctionOverloadList( EeyCallable ):
                 )
             )
 
-        raise EeyUserErrorException( msg )
+        raise PepUserErrorException( msg )
 
 
 
-class EeyRuntimeUserFunction( EeyValue ):
+class PepRuntimeUserFunction( PepValue ):
     def __init__( self, user_function, args, namespace_name ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         # TODO: check arg types
         self.user_function = user_function
         self.args = args
@@ -243,10 +243,10 @@ class EeyRuntimeUserFunction( EeyValue ):
         return self.user_function.return_type( self.args, env )
 
 
-class EeyUserFunction( EeyFunction ):
+class PepUserFunction( PepFunction ):
     def __init__( self, name, ret_type, arg_types_and_names, body_stmts ):
-        EeyFunction.__init__( self )
-        #EeyFunction.__init__( self, arg_types_and_names )
+        PepFunction.__init__( self )
+        #PepFunction.__init__( self, arg_types_and_names )
         self.name = name
         self.ret_type = ret_type
         self.arg_types_and_names = arg_types_and_names
@@ -270,7 +270,7 @@ class EeyUserFunction( EeyFunction ):
                 if not type_matches( env, type_and_name[0], type_and_name[2] ):
                     reqtype = type_and_name[0].evaluate( env )
                     deftype = type_and_name[2].evaluated_type( env )
-                    raise EeyUserErrorException(
+                    raise PepUserErrorException(
                         (
                             "In function '{funcname}', the default for " +
                             "argument '{argname}' should be {reqtype}, but " +
@@ -315,21 +315,21 @@ class EeyUserFunction( EeyFunction ):
 
             for stmt in self.body_stmts:
                 ev_st = stmt.evaluate( newenv )
-                if ev_st.__class__ == EeyReturn:
+                if ev_st.__class__ == PepReturn:
                     return ev_st.value.evaluate( newenv )
-            return EeyPass()
+            return PepPass()
         # TODO: if this is a pure function, could we partially-evaluate it?
 
-        return EeyRuntimeUserFunction( self, args, None )
+        return PepRuntimeUserFunction( self, args, None )
 
     def execution_environment( self, args, known, env ):
         return execution_environment(
             self.arg_types_and_names, args, known, env )
 
 
-class EeyDef( EeyValue ):
+class PepDef( PepValue ):
     def __init__( self, ret_type, name, arg_types_and_names, body_stmts ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.ret_type = ret_type
         self.name = name
         self.arg_types_and_names = arg_types_and_names
@@ -347,7 +347,7 @@ class EeyDef( EeyValue ):
 
         nm = self.name.name()
 
-        fn = EeyUserFunction(
+        fn = PepUserFunction(
             nm,
             self.ret_type.evaluate( env ),
             self.arg_types_and_names,
@@ -357,8 +357,8 @@ class EeyDef( EeyValue ):
         if nm in env.namespace:
             val = env.namespace[nm]
 
-            if val.__class__ is not EeyFunctionOverloadList:
-                raise EeyUserErrorException(
+            if val.__class__ is not PepFunctionOverloadList:
+                raise PepUserErrorException(
                     "The symbol '%s' is already defined." % nm
                 )
                 # TODO: line, column, filename
@@ -366,7 +366,7 @@ class EeyDef( EeyValue ):
             val.append( fn )
 
         else:
-            env.namespace[nm] = EeyFunctionOverloadList( [fn] )
+            env.namespace[nm] = PepFunctionOverloadList( [fn] )
 
         return self
 

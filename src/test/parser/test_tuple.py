@@ -14,10 +14,10 @@ print( ( 3 ) )
     [INT:3]
 """,
         r"""
-EeyFunctionCall(
-    EeySymbol('print'),
+PepFunctionCall(
+    PepSymbol('print'),
     (
-        EeyInt('3'),
+        PepInt('3'),
     )
 )
 """ )
@@ -34,10 +34,10 @@ print( ( ( 3 ) ) )
     [INT:3]
 """,
         r"""
-EeyFunctionCall(
-    EeySymbol('print'),
+PepFunctionCall(
+    PepSymbol('print'),
     (
-        EeyInt('3'),
+        PepInt('3'),
     )
 )
 """ )
@@ -57,14 +57,14 @@ print( ( 1, 2, 3 ) )
         [INT:3]
 """,
         r"""
-EeyFunctionCall(
-    EeySymbol('print'),
+PepFunctionCall(
+    PepSymbol('print'),
     (
-        EeyTuple(
+        PepTuple(
             (
-                EeyInt('1'), 
-                EeyInt('2'), 
-                EeyInt('3')
+                PepInt('1'), 
+                PepInt('2'), 
+                PepInt('3')
             )
         ),
     )

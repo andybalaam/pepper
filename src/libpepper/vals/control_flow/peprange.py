@@ -2,16 +2,16 @@
 # Released under the MIT License.  See the file COPYING.txt for details.
 
 from libpepper.all_known import all_known
-from libpepper.vals.numbers import EeyInt
-from libpepper.values import EeyValue
+from libpepper.vals.numbers import PepInt
+from libpepper.values import PepValue
 
 
 class Iter( object ):
-    def __init__( self, eeyrange ):
+    def __init__( self, peprange ):
         # TODO: handle large numbers
-        self.index = int( eeyrange.begin.value )
-        self.end   = int( eeyrange.end.value )
-        self.step  = int( eeyrange.step.value )
+        self.index = int( peprange.begin.value )
+        self.end   = int( peprange.end.value )
+        self.step  = int( peprange.step.value )
 
     def __iter__( self ):
         return self
@@ -20,14 +20,14 @@ class Iter( object ):
         # TODO: handle large numbers
         if self.index >= self.end:
             raise StopIteration()
-        ret = EeyInt( str( self.index ) )
+        ret = PepInt( str( self.index ) )
         self.index += self.step
         return ret
 
 
-class EeyRange( EeyValue ):
+class PepRange( PepValue ):
     def __init__( self, begin, end, step ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.begin = begin
         self.end   = end
         self.step  = step
@@ -36,7 +36,7 @@ class EeyRange( EeyValue ):
         return ( self.begin, self.end, self.step, )
 
     def do_evaluate( self, env ):
-        return EeyRange(
+        return PepRange(
             self.begin.evaluate( env ),
             self.end.evaluate( env ),
             self.step.evaluate( env )
@@ -47,7 +47,7 @@ class EeyRange( EeyValue ):
 
     @staticmethod
     def init( begin, end, step ):
-        return EeyRange( begin, end, step )
+        return PepRange( begin, end, step )
 
     def __iter__( self ):
         return Iter( self )

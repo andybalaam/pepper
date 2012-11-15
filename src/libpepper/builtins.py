@@ -4,35 +4,35 @@
 
 from libpepper.vals.all_values import *
 
-class EeyRuntimePrint( EeyValue ):
+class PepRuntimePrint( PepValue ):
     def __init__( self, args ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         self.args = args
 
     def construction_args( self ):
         return ( self.args, )
 
-class EeyPrint( EeyFunction ):
+class PepPrint( PepFunction ):
 
 #    def __init__( self ):
-#        EeyFunction.__init__( self, ( ( EeyAny, EeySymbol( "object" ) ), ) )
+#        PepFunction.__init__( self, ( ( PepAny, PepSymbol( "object" ) ), ) )
 
     def construction_args( self ):
         return ()
 
     def call( self, args, env ):
-        return EeyRuntimePrint( args )
+        return PepRuntimePrint( args )
 
     def return_type( self, args, env ):
-        return EeyType( EeyNoneType )
+        return PepType( PepNoneType )
 
     def args_match( self, args ):
         return True # Print accepts anything
 
 
-class EeyRuntimeLen( EeyValue ):
+class PepRuntimeLen( PepValue ):
     def __init__( self, args ):
-        EeyValue.__init__( self )
+        PepValue.__init__( self )
         if( len( args ) != 1 ):
             raise UserErrorException(
                 "There should only ever be one argument to len()" )
@@ -49,55 +49,55 @@ class EeyRuntimeLen( EeyValue ):
         # TODO: if it's known, return True
         return False
 
-class EeyLen( EeyFunction ):
+class PepLen( PepFunction ):
     def construction_args( self ):
         return ()
 
     def call( self, args, env ):
-        return EeyRuntimeLen( args )
+        return PepRuntimeLen( args )
 
     def return_type( self, args, env ):
-        return EeyType( EeyInt )
+        return PepType( PepInt )
 
     def args_match( self, args ):
         return True # TODO
 
 # TODO: write this in pepper
-range_function = EeyUserFunction(
+range_function = PepUserFunction(
     "range_impl",
-    EeyType( EeyRange ),
+    PepType( PepRange ),
     (
-        ( EeyType( EeyInt ), EeySymbol( "begin" ) ),
-        ( EeyType( EeyInt ), EeySymbol( "end" ) ),
-        ( EeyType( EeyInt ), EeySymbol( "step" ), EeyInt( "1" ) ),
+        ( PepType( PepInt ), PepSymbol( "begin" ) ),
+        ( PepType( PepInt ), PepSymbol( "end" ) ),
+        ( PepType( PepInt ), PepSymbol( "step" ), PepInt( "1" ) ),
     ),
     (
         # TODO: if end < begin and step was not supplied, default to -1
-        EeyReturn( EeyRange(
-            EeySymbol( "begin" ), EeySymbol( "end" ), EeySymbol( "step" )
+        PepReturn( PepRange(
+            PepSymbol( "begin" ), PepSymbol( "end" ), PepSymbol( "step" )
         ) ),
     )
 )
 
 def add_builtins( env ):
     # Statements
-    env.namespace["pass"] = EeyPass()
+    env.namespace["pass"] = PepPass()
 
     # Values
-    env.namespace["False"] = EeyBool( False )
-    env.namespace["True"]  = EeyBool( True )
+    env.namespace["False"] = PepBool( False )
+    env.namespace["True"]  = PepBool( True )
 
     # Types
-    env.namespace["bool"]  = EeyType( EeyBool )
-    env.namespace["float"] = EeyType( EeyFloat )
-    env.namespace["int"]   = EeyType( EeyInt )
-    env.namespace["string"]= EeyType( EeyString )
-    env.namespace["void"]  = EeyType( EeyVoid )
-    env.namespace["type"]  = EeyType( EeyType )
-    env.namespace["code"]  = EeyType( EeyQuote )
+    env.namespace["bool"]  = PepType( PepBool )
+    env.namespace["float"] = PepType( PepFloat )
+    env.namespace["int"]   = PepType( PepInt )
+    env.namespace["string"]= PepType( PepString )
+    env.namespace["void"]  = PepType( PepVoid )
+    env.namespace["type"]  = PepType( PepType )
+    env.namespace["code"]  = PepType( PepQuote )
 
     # Functions
-    env.namespace["len"]   = EeyLen()
-    env.namespace["print"] = EeyPrint()
+    env.namespace["len"]   = PepLen()
+    env.namespace["print"] = PepPrint()
     env.namespace["range"] = range_function.evaluate( env )
 
