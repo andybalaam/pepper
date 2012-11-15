@@ -38,3 +38,20 @@ div.listingblock div.title
 div.sectionbody {
   font-family: sans-serif;
 }
+
+div#footer-text {
+    width: 100%;
+}
+
+
+address.lastupdated {
+    font-style: italic;
+    float: right;
+    margin-left: 20px;
+    margin-bottom: 4px;
+}
+
+address.copyright {
+    font-style: normal;
+}
+

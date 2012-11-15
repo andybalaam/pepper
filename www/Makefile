@@ -38,9 +38,13 @@ REAL_SAMPLES = \
 
 HTMLS=html/index.html html/explicitownership.html html/examples.html
 
-all: html
+TEXTS=html/COPYING.txt
+
+all: html txt
 
 html: $(SAMPLES) $(REAL_SAMPLES) $(HTMLS)
+
+txt: $(TEXTS)
 
 # TODO: make this depend on all existing files in the list
 #       .eeyore .eeyorelexed .cpp .eeyoreparsetree .output
@@ -58,11 +62,15 @@ html/%.html: asciidoc/%.asciidoc layout.conf layout.css $(SAMPLES)
 	mkdir -p html
 	$(ASCIIDOC) $(ASCIIDOC_OPTS) --out-file $@ $<
 
+html/%.txt: %.txt
+	mkdir -p html
+	cp $< $@
+
 clean:
-	rm -f $(HTMLS) $(SAMPLES) $(REAL_SAMPLES)
+	rm -f $(HTMLS) $(TEXTS) $(SAMPLES) $(REAL_SAMPLES)
 
 upload: all
-	rsync -azii --delete html/ artificialworlds.net:www/eeyore/
+	rsync -azii --delete html/ artificialworlds.net:www/pepper/
 
 report: clean
 	make | egrep "^fact|fiction"
