@@ -1,3 +1,5 @@
+// Copyright (C) 2012 Andy Balaam and The Pepper Developers
+// Released under the MIT License.  See the file COPYING.txt for details.
 
 // Inspired in places by:
 // http://www.antlr.org/grammar/1200715779785/Python.g
