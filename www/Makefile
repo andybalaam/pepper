@@ -50,14 +50,14 @@ html: $(SAMPLES) $(REAL_SAMPLES) $(HTMLS)
 txt: $(TEXTS)
 
 # TODO: make this depend on all existing files in the list
-#       .eeyore .eeyorelexed .cpp .eeyoreparsetree .output
-$(SAMPLES): samples/%.asciidoc: $(SAMPLE2ASCIIDOC) samples/%.eeyore
+#       .pepper .pepperlexed .cpp .pepperparsetree .output
+$(SAMPLES): samples/%.asciidoc: $(SAMPLE2ASCIIDOC) samples/%.pepper
 	$(SAMPLE2ASCIIDOC) $@
 
 # TODO: make this depend on all existing files in the list
-#       .eeyore .eeyorelexed .cpp .eeyoreparsetree .output
+#       .pepper .pepperlexed .cpp .pepperparsetree .output
 $(REAL_SAMPLES): real_samples/%.asciidoc: $(SAMPLE2ASCIIDOC) \
-		../src/test/%.eeyore
+		../src/test/%.pepper
 	$(SAMPLE2ASCIIDOC) $@
 
 

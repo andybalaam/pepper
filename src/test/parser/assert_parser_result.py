@@ -5,11 +5,11 @@ import re
 
 from cStringIO import StringIO
 
-from parse import EeyoreLexer
-from parse import EeyoreParser
-from parse import EeyoreTreeWalker
-from parse.eeyorestatements import EeyoreStatements
-from parse.eeyoretokenstreamfromfile import EeyoreTokenStreamFromFile
+from parse import PepperLexer
+from parse import PepperParser
+from parse import PepperTreeWalker
+from parse.pepperstatements import PepperStatements
+from parse.peppertokenstreamfromfile import PepperTokenStreamFromFile
 from parse.indentdedenttokenstream import IndentDedentTokenStream
 from parse.iterablefromtokenstream import IterableFromTokenStream
 
@@ -28,7 +28,7 @@ def _ast_node_children_to_string( ast, indent ):
 def _ast_node_to_string( ast, indent ):
     return "{indent}{node}\n{children}".format(
         indent = " " * indent,
-        node = "[%s:%s]" % ( EeyoreParser._tokenNames[ast.getType()],
+        node = "[%s:%s]" % ( PepperParser._tokenNames[ast.getType()],
             ast.getText().replace( "\n", "\\n" ).replace( "<no text>", "" ) ),
         children = _ast_node_children_to_string( ast, indent ),
         )
@@ -48,7 +48,7 @@ def _assert_parser_result_from_token_stream(
     tokens_list = [token for token in token_stream]
 
     tokens = Iterable2TokenStream( tokens_list )
-    parser = EeyoreParser.Parser( tokens )
+    parser = PepperParser.Parser( tokens )
     parser.program()
 
     actual_ast = _ast_to_string( parser.getAST() )
@@ -56,7 +56,7 @@ def _assert_parser_result_from_token_stream(
     assert_multiline_equal( expected_ast, actual_ast )
 
     tokens = Iterable2TokenStream( tokens_list )
-    actual_parsed = "\n".join( repr( s ) for s in EeyoreStatements( tokens ) )
+    actual_parsed = "\n".join( repr( s ) for s in PepperStatements( tokens ) )
     actual_parsed += "\n"
 
     # TODO: format actual nicely, instead of expected nastily
@@ -65,20 +65,20 @@ def _assert_parser_result_from_token_stream(
         actual_parsed.strip() )
 
 def parse_string( lexed_input ):
-    tokens = EeyoreTokenStreamFromFile( StringIO( lexed_input.lstrip() ) )
-    parser = EeyoreParser.Parser( tokens )
+    tokens = PepperTokenStreamFromFile( StringIO( lexed_input.lstrip() ) )
+    parser = PepperParser.Parser( tokens )
     parser.program()
     return parser
 
 def assert_parser_result( lexed_input, expected_ast, expected_parsed ):
-    tokens = EeyoreTokenStreamFromFile( StringIO( lexed_input.lstrip() ) )
+    tokens = PepperTokenStreamFromFile( StringIO( lexed_input.lstrip() ) )
 
     _assert_parser_result_from_token_stream(
         tokens, expected_ast, expected_parsed )
 
 def assert_parser_result_from_code( code_input, expected_ast, expected_parsed ):
     tokens = IndentDedentTokenStream(
-        EeyoreLexer.Lexer( StringIO( code_input ) ) )
+        PepperLexer.Lexer( StringIO( code_input ) ) )
 
     _assert_parser_result_from_token_stream(
         tokens, expected_ast, expected_parsed )

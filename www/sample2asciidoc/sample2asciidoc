@@ -7,22 +7,22 @@ import sys
 
 sys.path.append( os.path.abspath( "../src/test" ) )
 
-from eeyoresamplenoseplugin import RunEeyoreTest
+from peppersamplenoseplugin import RunPepperTest
 
 output_ext = ".asciidoc"
 
 input_exts = (
-	".eeyore",
-	".eeyorelexed",
-	".eeyoreparsed",
+	".pepper",
+	".pepperlexed",
+	".pepperparsed",
 	".cpp",
 	".output",
 	)
 
 formatters = {
-	".eeyore"          : "python",
+	".pepper"          : "python",
 	".cpp"             : "cpp",
-	".eeyoreparsed" : "python"
+	".pepperparsed" : "python"
 	}
 
 def ext_matches( filename, exts ):
@@ -96,7 +96,7 @@ def write_step( output_file, prev_name, thisfl, ext, cwd ):
 
 		with temp_out_file( "this", ext ) as outfile:
 			ret, out, err = run_cmd(
-				( "eeyore", "-o", outfile.name, prev_name ),
+				( "pepper", "-o", outfile.name, prev_name ),
 				cwd )
 			contents = read_file( outfile.name )
 
@@ -109,7 +109,7 @@ def write_step( output_file, prev_name, thisfl, ext, cwd ):
 		output_file.write( ( """
 .({fact_or_fiction})
 ----
-$ eeyore -o {this_name} {prev_name}
+$ pepper -o {this_name} {prev_name}
 ----
 """ ).format(
 				fact_or_fiction = fact_or_fiction,
@@ -121,7 +121,7 @@ $ eeyore -o {this_name} {prev_name}
 	if ext == ".output":
 
 		try:
-			RunEeyoreTest( cwd, None, this_name ).runProgram()
+			RunPepperTest( cwd, None, this_name ).runProgram()
 		except AssertionError, e:
 			passed = False
 		except OSError, e:

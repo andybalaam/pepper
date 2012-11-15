@@ -1,2 +1,2 @@
-$ ./compile_time_fibonacci.eeyore 4
+$ ./compile_time_fibonacci.pepper 4
 5

@@ -5,10 +5,10 @@
 from cStringIO import StringIO
 from nose.tools import *
 
-from libeeyore.usererrorexception import EeyUserErrorException
+from libpepper.usererrorexception import EeyUserErrorException
 from parse.indentdedenttokenstream import IndentDedentTokenStream
-from parse.eeyoretokenstreamfromfile import EeyoreTokenStreamFromFile
-from parse.eeyoretokentostring import render_token
+from parse.peppertokenstreamfromfile import PepperTokenStreamFromFile
+from parse.peppertokentostring import render_token
 
 from eeyasserts import assert_multiline_equal
 
@@ -16,7 +16,7 @@ def _tokens_2_string( tokens ):
     return "\n" + "\n".join( render_token( token ) for token in tokens ) + "\n"
 
 def _indent_dedent_token_string( before ):
-    return IndentDedentTokenStream( EeyoreTokenStreamFromFile(
+    return IndentDedentTokenStream( PepperTokenStreamFromFile(
         StringIO( before.lstrip() ) ) )
 
 def _assert_indent_dedent_generated( before, after ):

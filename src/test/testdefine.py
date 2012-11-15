@@ -4,9 +4,9 @@
 
 from nose.tools import *
 
-from libeeyore.environment import EeyEnvironment
-from libeeyore.values import EeySymbol
-from libeeyore.usererrorexception import EeyUserErrorException
+from libpepper.environment import EeyEnvironment
+from libpepper.values import EeySymbol
+from libpepper.usererrorexception import EeyUserErrorException
 
 @raises( EeyUserErrorException )
 def test_Use_an_undefined_symbol_throws():

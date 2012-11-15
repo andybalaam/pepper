@@ -1,4 +1,4 @@
-$ eeyore overload_wrong_args.eeyore
+$ pepper overload_wrong_args.pepper
 [retval=1]
 [stderr]Error: No overload of function double matches the supplied arguments.  You supplied:
 [stderr](string 6)

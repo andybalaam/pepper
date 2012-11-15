@@ -2,8 +2,8 @@
 # Released under the MIT License.  See the file COPYING.txt for details.
 
 
-EGRAMMAR=parse/eeyore.g
-EGENS=parse/EeyoreLexer.py parse/EeyoreParser.py parse/EeyoreTreeWalker.py
+EGRAMMAR=parse/pepper.g
+EGENS=parse/PepperLexer.py parse/PepperParser.py parse/PepperTreeWalker.py
 
 LGRAMMAR=parse/lexed.g
 LGENS=parse/LexedLexer.py parse/LexedParser.py
@@ -15,17 +15,17 @@ export PATH := ${PWD}:${PATH}
 all: genparse
 
 test: genparse
-	python test/eeyorenosetests.py --with-eeyoresamplenoseplugin
+	python test/peppernosetests.py --with-peppersamplenoseplugin
 
 quick-test: genparse
 	nosetests
 
 parsetests: genparse
-	python scheme.py parse/test.eeyore
+	python scheme.py parse/test.pepper
 
 genparse: $(EGENS) $(LGENS)
 
-parse/Eeyore%.py: $(EGRAMMAR)
+parse/Pepper%.py: $(EGRAMMAR)
 	$(call RUNANTLR,$(EGRAMMAR),$(EGENS))
 
 parse/Lexed%.py: $(LGRAMMAR)

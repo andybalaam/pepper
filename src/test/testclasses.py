@@ -4,13 +4,13 @@
 
 from nose.tools import *
 
-from libeeyore.builtins import add_builtins
-from libeeyore.classvalues import *
-from libeeyore.environment import EeyEnvironment
-from libeeyore.cpp.cppvalues import *
-from libeeyore.cpp.cpprenderer import EeyCppRenderer
+from libpepper.builtins import add_builtins
+from libpepper.classvalues import *
+from libpepper.environment import EeyEnvironment
+from libpepper.cpp.cppvalues import *
+from libpepper.cpp.cpprenderer import EeyCppRenderer
 
-from libeeyore.usererrorexception import EeyUserErrorException
+from libpepper.usererrorexception import EeyUserErrorException
 
 from eeyasserts import assert_contains
 from eeyasserts import assert_multiline_equal

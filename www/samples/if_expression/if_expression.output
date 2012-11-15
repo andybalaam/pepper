@@ -1,9 +1,9 @@
-$ eeyore ./if_expression.eeyore Andy
+$ pepper ./if_expression.pepper Andy
 My name!
 My name!
 My name!
 
-$ eeyore ./if_expression.eeyore Percival
+$ pepper ./if_expression.pepper Percival
 Not my name!
 Not my name!
 Not my name!

@@ -4,11 +4,11 @@
 
 from nose.tools import *
 
-from libeeyore import builtins
-from libeeyore.environment import EeyEnvironment
-from libeeyore.cpp.cppvalues import *
-from libeeyore.cpp.cpprenderer import EeyCppRenderer
-from libeeyore.builtinmodules.eeysys import EeySysArgv
+from libpepper import builtins
+from libpepper.environment import EeyEnvironment
+from libpepper.cpp.cppvalues import *
+from libpepper.cpp.cpprenderer import EeyCppRenderer
+from libpepper.builtinmodules.eeysys import EeySysArgv
 
 
 #def test_Known_plus_string():

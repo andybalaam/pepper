@@ -1,3 +1,3 @@
-$ eeyore incorrect_type.eeyore
+$ pepper incorrect_type.pepper
 [retval=1]
 [stderr]Error: For function 'takes_float', argument 'f' should be float, not int.

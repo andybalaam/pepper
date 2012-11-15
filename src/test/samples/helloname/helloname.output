@@ -1,6 +1,6 @@
-$ eeyore ./helloname.eeyore
+$ pepper ./helloname.pepper
 Hmm.  Who are you?
 
-$ eeyore ./helloname.eeyore Boyd
+$ pepper ./helloname.pepper Boyd
 Hello, Boyd!
 

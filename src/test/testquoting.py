@@ -3,15 +3,15 @@
 
 from nose.tools import *
 
-from libeeyore.builtins import add_builtins
-from libeeyore.environment import EeyEnvironment
-from libeeyore.cpp.cpprenderer import EeyCppRenderer
+from libpepper.builtins import add_builtins
+from libpepper.environment import EeyEnvironment
+from libpepper.cpp.cpprenderer import EeyCppRenderer
 
-from libeeyore.functionvalues import *
-from libeeyore.languagevalues import *
-from libeeyore.values import *
+from libpepper.functionvalues import *
+from libpepper.languagevalues import *
+from libpepper.values import *
 
-from libeeyore.quotevalues import EeyQuote
+from libpepper.quotevalues import EeyQuote
 
 def test_evaluate_returns_same_with_no_symbol_lookup():
     env = EeyEnvironment( EeyCppRenderer() )

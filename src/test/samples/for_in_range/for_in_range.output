@@ -1,4 +1,4 @@
-$ eeyore ./for_in_range.eeyore 2 3 4 5 6
+$ pepper ./for_in_range.pepper 2 3 4 5 6
 0
 1
 2

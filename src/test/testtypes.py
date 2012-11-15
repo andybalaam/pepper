@@ -4,10 +4,10 @@
 
 from nose.tools import *
 
-from libeeyore import builtins
-from libeeyore.environment import EeyEnvironment
-from libeeyore.cpp.cppvalues import *
-from libeeyore.cpp.cpprenderer import EeyCppRenderer
+from libpepper import builtins
+from libpepper.environment import EeyEnvironment
+from libpepper.cpp.cppvalues import *
+from libpepper.cpp.cpprenderer import EeyCppRenderer
 
 def test_Int_evaluated_type():
     env = EeyEnvironment( None )

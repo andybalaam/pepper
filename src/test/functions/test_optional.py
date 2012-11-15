@@ -3,10 +3,10 @@
 
 from nose.tools import *
 
-from libeeyore.builtins import add_builtins
-from libeeyore.vals.all_values import *
-from libeeyore.environment import EeyEnvironment
-from libeeyore.cpp.cpprenderer import EeyCppRenderer
+from libpepper.builtins import add_builtins
+from libpepper.vals.all_values import *
+from libpepper.environment import EeyEnvironment
+from libpepper.cpp.cpprenderer import EeyCppRenderer
 
 def Initial_optional_arg_is_used_when_missed_out___test():
 

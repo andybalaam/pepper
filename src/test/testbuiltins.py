@@ -4,9 +4,9 @@
 
 from nose.tools import *
 
-from libeeyore.builtins import *
-from libeeyore.environment import EeyEnvironment
-from libeeyore.vals.all_values import *
+from libpepper.builtins import *
+from libpepper.environment import EeyEnvironment
+from libpepper.vals.all_values import *
 
 def assert_defined( name, expected_class, expected_value = None ):
     env = EeyEnvironment( None )

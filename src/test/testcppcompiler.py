@@ -4,8 +4,8 @@
 
 from nose.tools import *
 
-from libeeyore.cpp.cppcompiler import CppCompiler
-from libeeyore.cpp.cmdrunner import CmdRunner
+from libpepper.cpp.cppcompiler import CppCompiler
+from libpepper.cpp.cmdrunner import CmdRunner
 
 
 class FakeProcess( object ):

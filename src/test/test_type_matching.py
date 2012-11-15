@@ -4,8 +4,8 @@
 
 from nose.tools import *
 
-from libeeyore.environment import EeyEnvironment
-from libeeyore.vals.all_values import *
+from libpepper.environment import EeyEnvironment
+from libpepper.vals.all_values import *
 
 env = EeyEnvironment( None )
 

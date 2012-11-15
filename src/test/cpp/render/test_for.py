@@ -3,11 +3,11 @@
 
 from test.eeyasserts import assert_multiline_equal
 
-from libeeyore import builtins
-from libeeyore.environment import EeyEnvironment
-from libeeyore.cpp.cpprenderer import EeyCppRenderer
+from libpepper import builtins
+from libpepper.environment import EeyEnvironment
+from libpepper.cpp.cpprenderer import EeyCppRenderer
 
-from libeeyore.vals.all_values import *
+from libpepper.vals.all_values import *
 
 def test_Basic_int_for_loop():
 

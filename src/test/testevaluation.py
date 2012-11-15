@@ -4,10 +4,10 @@
 
 from nose.tools import *
 
-from libeeyore.builtins import *
-from libeeyore.environment import EeyEnvironment
-from libeeyore.languagevalues import *
-from libeeyore.values import *
+from libpepper.builtins import *
+from libpepper.environment import EeyEnvironment
+from libpepper.languagevalues import *
+from libpepper.values import *
 
 def test_initialisation():
     env = EeyEnvironment( None )

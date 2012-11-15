@@ -53,9 +53,9 @@ line returns [t]:
     symbol=tokenName ( content:CONTENT | NEWLINE )
     {
         from antlr import CommonToken
-        import EeyoreParser
+        import PepperParser
         t = CommonToken(
-            type = EeyoreParser._tokenNames.index( symbol.getText() ) )
+            type = PepperParser._tokenNames.index( symbol.getText() ) )
         if content is not None:
             t.setText( content.getText() )
         t.setLine( int( linenum.getText() ) )

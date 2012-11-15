@@ -4,9 +4,9 @@
 
 from nose.tools import *
 
-from libeeyore.environment import EeyEnvironment
-from libeeyore.languagevalues import *
-from libeeyore.values import *
+from libpepper.environment import EeyEnvironment
+from libpepper.languagevalues import *
+from libpepper.values import *
 
 def test_if_true():
     env = EeyEnvironment( None )

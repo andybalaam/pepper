@@ -9,27 +9,27 @@
 from antlr import CommonToken
 from antlr import TokenStream
 
-import EeyoreLexer
+import PepperLexer
 from iterablefromtokenstream import IterableFromTokenStream
-from libeeyore.usererrorexception import EeyUserErrorException
+from libpepper.usererrorexception import EeyUserErrorException
 
 def _new_indent( tok ):
     ret = CommonToken()
-    ret.setType( EeyoreLexer.INDENT )
+    ret.setType( PepperLexer.INDENT )
     ret.setLine( tok.getLine() )
     ret.setColumn( tok.getColumn() )
     return ret
 
 def _new_dedent( tok ):
     ret = CommonToken()
-    ret.setType( EeyoreLexer.DEDENT )
+    ret.setType( PepperLexer.DEDENT )
     ret.setLine( tok.getLine() )
     ret.setColumn( tok.getColumn() )
     return ret
 
 def _new_newline( tok ):
     ret = CommonToken()
-    ret.setType( EeyoreLexer.NEWLINE )
+    ret.setType( PepperLexer.NEWLINE )
     ret.setLine( tok.getLine() )
     ret.setColumn( tok.getColumn() )
     return ret
@@ -44,7 +44,7 @@ class IndentDedentTokenStream( TokenStream, IterableFromTokenStream ):
 
     def nextToken( self ):
         ret = self.GetNextToken()
-        if ret.getType() == EeyoreLexer.NEWLINE:
+        if ret.getType() == PepperLexer.NEWLINE:
             self.last_newline = ret
         else:
             self.last_newline = None
@@ -57,13 +57,13 @@ class IndentDedentTokenStream( TokenStream, IterableFromTokenStream ):
 
         tok = self.base_source.nextToken()
 
-        if tok.getType() == EeyoreLexer.EOF:
+        if tok.getType() == PepperLexer.EOF:
             # If we're at the end of the file generate some dedents
             return self.DedentToLeft( tok )
-        elif tok.getType() == EeyoreLexer.LEADINGSP:
+        elif tok.getType() == PepperLexer.LEADINGSP:
             # If we hit some leading spaces, generate indents or dedents
             return self.HandleLeadingSpace( tok )
-        elif tok.getType() == EeyoreLexer.NEWLINE:
+        elif tok.getType() == PepperLexer.NEWLINE:
             return tok
         elif self.last_newline is not None:
             # If we are the beginning a new line but there is no leading
@@ -87,13 +87,13 @@ class IndentDedentTokenStream( TokenStream, IterableFromTokenStream ):
 
         next_tok = self.base_source.nextToken()
 
-        if next_tok.getType() == EeyoreLexer.EOF:
+        if next_tok.getType() == PepperLexer.EOF:
             # If we are at the end, emit some dedents and stop
             return self.DedentToLeft( next_tok )
 
         self.waiting_token_stack.append( next_tok )
 
-        if next_tok.getType() == EeyoreLexer.NEWLINE:
+        if next_tok.getType() == PepperLexer.NEWLINE:
             # If we find a line containing only a comment or nothing
             # but whitespace, just emit the newline (ignore the space)
             return self.nextToken()

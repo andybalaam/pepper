@@ -7,7 +7,7 @@ from nose.tools import *
 
 from tokenutils import Iterable2TokenStream, make_token
 
-from parse import EeyoreLexer
+from parse import PepperLexer
 from parse import LexedLexer
 from parse import LexedParser
 
@@ -32,12 +32,12 @@ def test_2_lines():
 
     val = value.line()
     assert_equal( val.getText(),   "Hello, world!" )
-    assert_equal( val.getType(),   EeyoreLexer.STRING )
+    assert_equal( val.getType(),   PepperLexer.STRING )
     assert_equal( val.getLine(),   2 )
     assert_equal( val.getColumn(), 8 )
 
     val = value.line()
-    assert_equal( val.getType(),   EeyoreLexer.RPAREN )
+    assert_equal( val.getType(),   PepperLexer.RPAREN )
     assert_equal( val.getLine(),   3 )
     assert_equal( val.getColumn(), 1 )
 

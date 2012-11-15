@@ -4,9 +4,9 @@
 
 from nose.tools import *
 
-from libeeyore.environment import EeyEnvironment
-from libeeyore.cpp.cppvalues import *
-from libeeyore.cpp.cpprenderer import EeyCppRenderer
+from libpepper.environment import EeyEnvironment
+from libpepper.cpp.cppvalues import *
+from libpepper.cpp.cpprenderer import EeyCppRenderer
 
 from eeyasserts import *
 

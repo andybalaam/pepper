@@ -16,7 +16,7 @@
 
 - Overloads on different user-defined types
 
-- Find out why if I call gt3 twice in calculated_type.eeyore it returns the
+- Find out why if I call gt3 twice in calculated_type.pepper it returns the
   same answer each time.
 
 - Line and column number of errors, including in quoted code
