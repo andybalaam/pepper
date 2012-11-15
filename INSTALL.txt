@@ -1,0 +1,4 @@
+Get the code and put the src directory into your path.
+
+Installers and other such things will come later.
+
