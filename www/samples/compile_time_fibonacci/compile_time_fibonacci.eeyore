@@ -1,6 +1,3 @@
-# Copyright (C) 2012 Andy Balaam and The Pepper Developers
-# Released under the MIT License.  See the file COPYING.txt for details.
-
 
 def int next_fib( uint k_minus_1, uint k_minus_2 ):
     return k_minus_1 + k_minus_2

@@ -1,6 +1,3 @@
-# Copyright (C) 2012 Andy Balaam and The Pepper Developers
-# Released under the MIT License.  See the file COPYING.txt for details.
-
 
 for int i in range( 4 ):
     def int symbol( "minus" + str( i ) )( int z ):
