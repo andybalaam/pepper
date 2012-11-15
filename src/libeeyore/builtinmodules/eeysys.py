@@ -1,4 +1,4 @@
-# Copyright (C) 2012 Andy Balaam and The Pepper Developers
+# Copyright (C) 2011-2012 Andy Balaam and The Pepper Developers
 # Released under the MIT License.  See the file COPYING.txt for details.
 
 
@@ -28,7 +28,8 @@ class EeySys( EeyValue ):
         self.namespace = {
             "argv"     : EeySysArgv(),
             "copyright": EeyString(
-                "Copyright (C) 2011 Andy Balaam and the Eeyore developers" ),
+                "Copyright (C) 2010-2012 Andy Balaam and the Eeyore developers"
+            ),
         }
 
     def construction_args( self ):
