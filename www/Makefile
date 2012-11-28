@@ -39,7 +39,12 @@ REAL_SAMPLES = \
 	real_samples/samples/quoting/quoting.asciidoc \
 
 
-HTMLS=html/index.html html/explicitownership.html html/examples.html
+HTMLS = \
+	html/index.html \
+	html/explicitownership.html \
+	html/examples.html \
+	html/choosinglicense.html \
+
 
 TEXTS=html/COPYING.txt
 

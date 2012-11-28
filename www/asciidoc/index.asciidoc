@@ -43,3 +43,8 @@ For example, Pepper will provide generic methods for creating windows, menus, bu
 
 Pepper will allow and encourage the creation of mini-languages (including Domain-Specific Languages) which are native to the language but fit the domain of the problem they are solving.
 
+== Notes ==
+
+link:choosinglicense.html[Choosing a license for Pepper]
+
+

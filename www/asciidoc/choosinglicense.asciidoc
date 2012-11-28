@@ -1,0 +1,123 @@
+////
+Copyright (C) 2012-2012 Andy Balaam and The Pepper Developers
+Released under the MIT License.  See the file COPYING.txt for details.
+////
+
+= Choosing a license for Pepper =
+
+(Andy Balaam, November 2012)
+
+After a significant amount of soul-searching, I chose the MIT Licence
+for Pepper.
+
+My default choice for other projects has been GPLv2 - I like its goal
+of creating a Free world of software, with participants who are
+committed to reciprocating for the benefits they gain.
+
+However, a programming language and library is very different from a
+"normal" project - its potential users are software producers, not just
+end users.  Making Pepper's library GPL would prevent anyone but GPL
+developers using it (even people working on Free software with another
+licence).  Any restriction on use at all is a huge decision,and may
+prevent someone using it (either for good reasons, or simply out of
+confusion or fear).
+
+What's important here is that Pepper is intended to be incorporated
+into other projects, at least at the level of its library, and also as
+a language interpreter and compiler.  That means it needs to be
+compatible with everyone else's license, so developers releasing code
+under GPL, Apache, BSD, MIT, MPL, other OSS, and proprietary licenses
+could all incorporate Pepper's code into their own.
+
+I want everyone, including proprietary developers, to be able to use
+Pepper for anything, and I want it to be absolutely clear to everyone,
+without the need for lawyers, that their use case is allowed.
+
+The only restriction I wanted to add was that I didn't want people to
+be able to stop others using Pepper.  This led me to consider licences
+that explicitly attempt to prevent patent misuse.
+
+The need for compatibility with lots of other licenses rules out the
+GPL and other CopyLeft licences, which require redistribution under the
+same license.  The alternative to CopyLeft is permissive.  The
+permissive licences I considered are below.
+
+The Apache Software License 2.0 (ASL2) is a permissive licence,
+recognised by the Free Software Foundation (FSF), the Open Source
+Institute (OSI) and Debian Free Software Guidelines (DFSG). It includes
+a patent clause that people much cleverer than me consider appropriate
+for avoiding some of the worst evils of software patents. However,
+because of this patent clause, it is incompatible with the GPLv2,
+meaning people writing GPLv2 code can't incorporate code under ASL2.
+
+The Python Software Foundation License is a short, permissive
+licence recognised by FSF and OSI, and using it would fulfill Pepper's
+guiding principle of "when in doubt, make it work like Python".
+However, it is specific to Python, so would need to be modified for
+Pepper, and it appears to be near-identical to the MIT licence, which
+does not require modification in the same way.
+
+The Creative Commons CC0 copyright waiver/licence is a way of giving up
+your copyright rights, with a backup permissive licence if the waiver
+is not legal in the relevant jurisdiction.  It contains an explicit
+clause saying it does not have any effect on patents at all.  The total
+freedom offered by giving up all rights is attractive given the goal of
+anyone being able to use the code, but the explicit allowing of patents
+seems to me to be a bad thing.  The OSI has not accepted that CC0 is an
+open source licence, because of the patent clause.
+
+The MIT Licence is a very popular and venerable permissive licence,
+recognised by FSF, OSI and DFSG.  It is very short, and places no
+restriction on distribution except that the copyright and licence
+notice be preserved.
+
+I like the idea of preventing people from restricting the freedom I am
+trying to provide using patents, so ASL2 looked good, but GPLv2 code is
+not going away - there is lots of it, and some people believe it is a
+better licence than GPLv3, so it will probably never stop being used.
+
+I considered the possibility of dual-licensing Pepper under both ASL2
+and GPLv2.  This solves the problem of GPLv2 code being able to use
+Pepper, but introduces lots of complexity (which I don't fully
+understand) and might even artificially force a fork some day because
+different branches needed to work with different licences.
+
+Some people believe that permissive licences without explicit patent
+exceptions (such as MIT) will be effective in preventing some kinds of
+patent misuse in some jurisdictions even if they don't mention patents.
+This is believed to be true in the UK, for example.
+
+Given the choice of ASL2+GPLv2 which I didn't fully understand, and
+the 168 words of the MIT Licence, pretty much all of which I did
+understand, I went with MIT.
+
+The MIT Licence is one of the oldest open source licences.  It is
+remarkably short, has stood the test of time and clearly intends to
+allow anyone to use the code for anything.
+
+So, if you want Pepper:
+
+----
+Copyright (C) 2010-2012 The Pepper Developers
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+----
+
+
