@@ -18,7 +18,7 @@ However, a programming language and library is very different from a
 "normal" project - its potential users are software producers, not just
 end users.  Making Pepper's library GPL would prevent anyone but GPL
 developers using it (even people working on Free software with another
-licence).  Any restriction on use at all is a huge decision,and may
+licence).  Any restriction on use at all is a huge decision, and may
 prevent someone using it (either for good reasons, or simply out of
 confusion or fear).
 
