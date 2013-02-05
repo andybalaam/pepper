@@ -23,6 +23,10 @@
 
 - lexed.g newlines in text
 
+- Rename package to pepper (from libpepper)
+
+- Move all values into new "vals" structure
+
 - Escaping quotes in strings
 
 - Spaces in class bodies
