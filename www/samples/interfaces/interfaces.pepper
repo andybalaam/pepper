@@ -1,0 +1,21 @@
+
+interface Observer:
+    def void notify()
+
+class Beeper:
+    def void notify():
+        print( "Beep!" )
+
+class Blooper:
+    def void do_bloop():
+        print( "Bloop!" )
+
+
+
+print( "Beeper:" )
+print( Beeper.implements( Observer ) )
+
+print()
+print( "Blooper:" )
+print( Blooper.implements( Observer ) )
+

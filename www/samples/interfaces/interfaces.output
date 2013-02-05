@@ -1,0 +1,7 @@
+$ pepper interfaces.pepper
+Beeper:
+True
+
+Blooper:
+False
+
