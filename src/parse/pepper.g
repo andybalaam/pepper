@@ -1,4 +1,4 @@
-// Copyright (C) 2011-2012 Andy Balaam and The Pepper Developers
+// Copyright (C) 2011-2013 Andy Balaam and The Pepper Developers
 // Released under the MIT License.  See the file COPYING.txt for details.
 
 // Inspired in places by:
@@ -176,6 +176,7 @@ statement :
     | modification
     | functionDefinition
     | classDefinition
+    | interfaceDefinition
     | forStatement
     | importStatement
 ;
@@ -183,6 +184,10 @@ statement :
 classStatement :
     statement
     | initFunctionDefinition
+;
+
+interfaceStatement :
+    interfaceFunctionDefinition
 ;
 
 initialisationOrExpression :
@@ -197,12 +202,20 @@ functionDefinition :
     "def"^ expression SYMBOL typedArgumentsList suite NEWLINE!
 ;
 
+interfaceFunctionDefinition :
+    "def"^ expression SYMBOL typedArgumentsList NEWLINE!
+;
+
 initFunctionDefinition :
     "def_init"^ typedArgumentsList initFunctionSuite NEWLINE!
 ;
 
 classDefinition :
     "class"^ SYMBOL classSuite NEWLINE!
+;
+
+interfaceDefinition :
+    "interface"^ SYMBOL interfaceSuite NEWLINE!
 ;
 
 forStatement :
@@ -288,6 +301,15 @@ classSuite :
     DEDENT!
 ;
 
+interfaceSuite :
+    COLON^
+    NEWLINE!
+    INDENT!
+    ( NEWLINE! )*
+    ( interfaceStatement ( NEWLINE! )* )+
+    DEDENT!
+;
+
 initFunctionSuite :
     COLON^
     NEWLINE!
@@ -332,6 +354,7 @@ statement returns [r]
     | m=modification { r = m }
     | f=functionDefinition { r = f }
     | c=classDefinition { r = c }
+    | n=interfaceDefinition { r = n }
     | f=forStatement { r = f }
     | i=importStatement { r = i }
 ;
@@ -339,6 +362,10 @@ statement returns [r]
 classStatement returns [r]
     : s=statement { r = s }
     | f=initFunctionDefinition { r = f }
+;
+
+interfaceStatement returns [r]
+    : f=interfaceFunctionDefinition { r = f }
 ;
 
 expression returns [r]
@@ -372,6 +399,11 @@ functionDefinition returns [r]
         { r = PepDef( t, n, a, s ) }
 ;
 
+interfaceFunctionDefinition returns [r]
+    : #("def" t=expression n=symbol a=typedArgumentsList)
+        { r = PepInterfaceDef( t, n, a ) }
+;
+
 initFunctionDefinition returns [r]
     : #("def_init" a=typedArgumentsList s=initFunctionSuite)
         { r = PepDefInit( a, s ) }
@@ -380,6 +412,11 @@ initFunctionDefinition returns [r]
 classDefinition returns [r]
     : #("class" n=symbol s=classSuite)
         { r = PepClass( n, (), s ) }
+;
+
+interfaceDefinition returns [r]
+    : #("interface" n=symbol s=interfaceSuite)
+        { r = PepInterface( n, (), s ) }
 ;
 
 forStatement returns [r]
@@ -445,6 +482,10 @@ classSuite returns [r]
     : #(COLON s=classStatementsList) { r = s }
 ;
 
+interfaceSuite returns [r]
+    : #(COLON s=interfaceStatementsList) { r = s }
+;
+
 initFunctionSuite returns [r]
     : #(COLON s=initFunctionStatementsList) { r = s }
 ;
@@ -471,6 +512,12 @@ classStatementsList returns [r]
     { r = () }
     : s=classStatement { r = (s,) }
       ( s=classStatement { r += (s,) } )*
+;
+
+interfaceStatementsList returns [r]
+    { r = () }
+    : s=interfaceStatement { r = (s,) }
+      ( s=interfaceStatement { r += (s,) } )*
 ;
 
 initFunctionStatementsList returns [r]
