@@ -7,6 +7,12 @@
 from libpepper.values import PepValue
 
 class PepInterfaceDef( PepValue ):
+    """
+    The value created when a def within an interface is parsed.
+    Allows specifying a method signature that must be found within a type
+    if it matches the containing interface.
+    """
+
     def __init__( self, ret_type, name, arg_types_and_names ):
         PepValue.__init__( self )
         self.ret_type = ret_type
