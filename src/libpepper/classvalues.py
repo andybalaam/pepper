@@ -22,40 +22,10 @@ from functionvalues import PepFunctionOverloadList
 from functionvalues import PepRuntimeUserFunction
 from usererrorexception import PepUserErrorException
 from vals.types import PepDefInit
+from vals.types import PepInstanceMethod
 
 INIT_METHOD_NAME = "init"
 
-
-class PepInstanceMethod( PepFunction ):
-    def __init__( self, instance, fn ):
-        PepFunction.__init__( self )
-        self.instance = instance
-        self.fn = fn
-
-    def construction_args( self ):
-        return ( self.instance, self.fn )
-
-    def _instance_plus_args( self, args ):
-        return (self.instance,) + args
-
-    def call( self, args, env ):
-        if all_known( args + (self.instance,), env ):
-            return self.fn.call( self._instance_plus_args( args ), env )
-        else:
-            return PepRuntimeUserFunction(
-                self.fn,
-                self._instance_plus_args( args ),
-                self.instance.clazz.name
-            )
-
-    def return_type( self, args, env ):
-        return self.fn.return_type( self._instance_plus_args( args ), env )
-
-    def args_match( self, args, env ):
-        return self.fn.args_match( self._instance_plus_args( args ), env )
-
-    def is_known( self, env ):
-        return self.instance.is_known( env )
 
 
 class PepInstanceNamespace( PepNamespace ):

@@ -2,6 +2,7 @@
 # Released under the MIT License.  See the file COPYING.txt for details.
 
 from pepdefinit import PepDefInit
+from pepinstancemethod import PepInstanceMethod
 from pepinterface import PepInterface
 from pepinterfacedef import PepInterfaceDef
 from pepvar import PepVar
