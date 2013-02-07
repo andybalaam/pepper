@@ -6,7 +6,6 @@ from itertools import ifilter
 
 from libpepper.environment import PepEnvironment
 from libpepper.namespace import PepNamespace
-from languagevalues import PepInit
 from languagevalues import PepPlaceholder
 from values import PepType
 from values import PepTypeMatcher
@@ -22,61 +21,9 @@ from functionvalues import PepFunction
 from functionvalues import PepFunctionOverloadList
 from functionvalues import PepRuntimeUserFunction
 from usererrorexception import PepUserErrorException
+from vals.types import PepDefInit
 
 INIT_METHOD_NAME = "init"
-INIT_IMPL_NAME = "__init__"
-
-
-class PepDefInit( PepDef ):
-    def __init__( self, arg_types_and_names, body_stmts ):
-        PepDef.__init__(
-            self,
-            PepType( PepVoid ),
-            PepSymbol( INIT_IMPL_NAME ),
-            arg_types_and_names,
-            body_stmts
-        )
-        # TODO: check there is at least one arg
-        # TODO: check first arg accepts this class?
-
-    def construction_args( self ):
-        return ( self.arg_types_and_names, self.body_stmts )
-
-    def get_member_variables( self ):
-        ret = []
-
-        is_var = lambda stmt: stmt.__class__ == PepVar
-        for var_stmt in ifilter( is_var, self.body_stmts ):
-            for init_stmt in var_stmt.body_stmts:
-                if init_stmt.__class__ != PepInit:
-                    # Should not happen since this is defined in the syntax
-                    # (but might change one day?)
-                    raise PepUserErrorException(
-                        "Var blocks may only contain initialisation statements"
-                    )
-                # TODO: handle expressions that evaluate to symbols
-                nm = init_stmt.var_name.name()
-                selfdot = self.self_var_name() + "."
-                if not nm.startswith( selfdot ):
-                    raise PepUserErrorException(
-                        "Only members of this class should be initialised in " +
-                        "var blocks.  '" + nm + "' does not start with '" +
-                        selfdot + "', but it should."
-                    )
-                nm = nm[ len(selfdot): ]
-
-                if len( nm ) == 0:
-                    raise PepUserErrorException(
-                        "You must provide a variable name, not just '" +
-                        selfdot + "'."
-                    )
-
-                ret.append( ( init_stmt.var_type, nm ) )
-
-        return ret
-
-    def self_var_name( self ):
-        return self.arg_types_and_names[0][1].name()
 
 
 class PepInstanceMethod( PepFunction ):
@@ -197,8 +144,8 @@ class PepInitMethod( PepFunction ):
     def call( self, args, env ):
         if all_known( args, env ):
             ret = self.user_class.known_instance()
-            if INIT_IMPL_NAME in self.user_class.namespace:
-                self.user_class.namespace[INIT_IMPL_NAME].call(
+            if PepDefInit.INIT_IMPL_NAME in self.user_class.namespace:
+                self.user_class.namespace[PepDefInit.INIT_IMPL_NAME].call(
                     (ret,) + args, env )
             # TODO: else default constructor
             return ret
@@ -207,7 +154,7 @@ class PepInitMethod( PepFunction ):
             return PepRuntimeInit(
                 inst,
                 args,
-                self.user_class.namespace[INIT_IMPL_NAME].call(
+                self.user_class.namespace[PepDefInit.INIT_IMPL_NAME].call(
                     (inst,) + args, env )
             )
 
@@ -215,7 +162,7 @@ class PepInitMethod( PepFunction ):
         return self.user_class
 
     def args_match( self, args ):
-        if INIT_IMPL_NAME not in self.user_class.namespace:
+        if PepDefInit.INIT_IMPL_NAME not in self.user_class.namespace:
             # If there is no __init__, we will supply an empty constructor
             return ( len( args ) == 0 )
 
@@ -225,7 +172,7 @@ class PepInitMethod( PepFunction ):
         # method.
         self_plus_args = [ PepKnownInstance( self.user_class ) ] + args
 
-        return self.user_class.namespace[INIT_IMPL_NAME].args_match(
+        return self.user_class.namespace[PepDefInit.INIT_IMPL_NAME].args_match(
             self_plus_args )
 
     def construction_args( self ):
@@ -330,17 +277,4 @@ class PepClass( PepValue ):
 
     def check_init_matches( self, var_names ):
         pass # TODO: ensure later def_inits match the first one
-
-class PepVar( PepValue ):
-    def __init__( self, body_stmts ):
-        PepValue.__init__( self )
-        self.body_stmts = body_stmts
-
-    def construction_args( self ):
-        return ( self.body_stmts, )
-
-    def do_evaluate( self, env ):
-        for stmt in self.body_stmts:
-            stmt.evaluate( env )
-        return self
 

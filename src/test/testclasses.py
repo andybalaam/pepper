@@ -10,6 +10,8 @@ from libpepper.environment import PepEnvironment
 from libpepper.cpp.cppvalues import *
 from libpepper.cpp.cpprenderer import PepCppRenderer
 
+from libpepper.vals.all_values import *
+
 from libpepper.usererrorexception import PepUserErrorException
 
 from pepasserts import assert_contains
