@@ -8,6 +8,13 @@
 from libpepper.values import PepValue
 
 class PepVar( PepValue ):
+    """
+    The value created when a var is found inside a def_init in source code.
+    A var allows declaring and initialising data members of a class.  It may
+    contain only initialisation statements of variables declared as e.g.
+    "int self.mything = 4"
+    """
+
     def __init__( self, body_stmts ):
         PepValue.__init__( self )
         self.body_stmts = body_stmts
