@@ -7,6 +7,16 @@
 from libpepper.values import PepValue
 
 class PepInterface( PepValue ):
+    """
+    The value created when an interface is parsed in source code.
+    An interface allows specifying which types of object are acceptable as
+    parameters to a particular function.
+    At the moment, this is done only by saying "the following method signatures
+    must be found within this type," but in future interfaces will be allowed
+    to specify the existence of global methods, data members, and inheritance
+    from other interfaces will be allowed.
+    """
+
     def __init__( self, name, base_interfaces, body_stmts ):
         PepValue.__init__( self )
         self.name = name
