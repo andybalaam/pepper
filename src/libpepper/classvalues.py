@@ -22,27 +22,11 @@ from functionvalues import PepFunctionOverloadList
 from functionvalues import PepRuntimeUserFunction
 from usererrorexception import PepUserErrorException
 from vals.types import PepDefInit
+from vals.types import PepInstance
 from vals.types import PepInstanceMethod
 from vals.types import PepInstanceNamespace
 
 INIT_METHOD_NAME = "init"
-
-
-class PepInstance( PepValue ):
-    def __init__( self, clazz ):
-        PepValue.__init__( self )
-        self.clazz = clazz
-        self.namespace = PepInstanceNamespace(
-            self, self.clazz.get_namespace() )
-
-    def get_class_name( self ):
-        return self.clazz.name
-
-    def get_namespace( self ):
-        return self.namespace
-
-    def evaluated_type( self, env ):
-        return self.clazz
 
 
 class PepKnownInstance( PepInstance ):
