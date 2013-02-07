@@ -18,6 +18,14 @@ from pepvar import PepVar
 from libpepper.usererrorexception import PepUserErrorException
 
 class PepDefInit( PepDef ):
+    """
+    The value created when a def_init is parsed in source code.
+    A def_init may contain one or more var declarations, so we can query
+    this object to find what member variables the containing class will have.
+    The base class, PepDef contains most of the functionality that allows
+    this to be called like any other function.
+    """
+
     INIT_IMPL_NAME = "__init__"
 
     def __init__( self, arg_types_and_names, body_stmts ):
