@@ -23,33 +23,10 @@ from functionvalues import PepRuntimeUserFunction
 from usererrorexception import PepUserErrorException
 from vals.types import PepDefInit
 from vals.types import PepInstanceMethod
+from vals.types import PepInstanceNamespace
 
 INIT_METHOD_NAME = "init"
 
-
-
-class PepInstanceNamespace( PepNamespace ):
-    def __init__( self, instance, class_namespace ):
-        PepNamespace.__init__( self )
-        self.instance = instance
-        self.class_namespace = class_namespace
-
-    def _find( self, key ):
-
-        found = PepNamespace._find( self, key)
-        if found is not None:
-            return found
-
-        found = self.class_namespace._find( key )
-        if isinstance( found, PepFunctionOverloadList ):
-            return PepFunctionOverloadList(
-                map(
-                    lambda fn: PepInstanceMethod( self.instance, fn ),
-                    found._list
-                )
-            )
-        else:
-            return found
 
 class PepInstance( PepValue ):
     def __init__( self, clazz ):
