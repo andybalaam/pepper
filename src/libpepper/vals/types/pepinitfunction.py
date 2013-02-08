@@ -11,7 +11,7 @@ from pepdefinit import PepDefInit
 from pepknowninstance import PepKnownInstance
 from pepruntimeinit import PepRuntimeInit
 
-class PepInitMethod( PepFunction ):
+class PepInitFunction( PepFunction ):
     """
     A function automatically present in every user-defined class called "init"
     that returns a new instance of this class.  It uses the relevant def_init

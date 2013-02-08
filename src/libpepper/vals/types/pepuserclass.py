@@ -13,13 +13,13 @@ from libpepper.values import PepTypeMatcher
 from libpepper.values import PepValue
 
 from pepdefinit import PepDefInit
-from pepinitmethod import PepInitMethod
+from pepinitfunction import PepInitFunction
 from pepknowninstance import PepKnownInstance
 from pepruntimeinstance import PepRuntimeInstance
 
 from libpepper.usererrorexception import PepUserErrorException
 
-INIT_METHOD_NAME = "init"
+INIT_FUNCTION_NAME = "init"
 
 class PepUserClass( PepValue, PepTypeMatcher ):
     """
@@ -56,13 +56,13 @@ class PepUserClass( PepValue, PepTypeMatcher ):
         for st in self.body_stmts:
             st.evaluate( subenv )
 
-        if INIT_METHOD_NAME in self.namespace:
+        if INIT_FUNCTION_NAME in self.namespace:
             raise PepUserErrorException( "You may not define the symbol " +
-                "'%s' in a class definition." % INIT_METHOD_NAME )
+                "'%s' in a class definition." % INIT_FUNCTION_NAME )
 
         # TODO: disallow defining functions called __init__
 
-        self.namespace[INIT_METHOD_NAME] = PepInitMethod( self )
+        self.namespace[INIT_FUNCTION_NAME] = PepInitFunction( self )
 
         self.member_variables = self._find_member_variables()
 

@@ -3,7 +3,7 @@
 
 from pepclass import PepClass
 from pepdefinit import PepDefInit
-from pepinitmethod import PepInitMethod
+from pepinitfunction import PepInitFunction
 from pepinstance import PepInstance
 from pepinstancemethod import PepInstanceMethod
 from pepinstancenamespace import PepInstanceNamespace
