@@ -22,27 +22,12 @@ class PepInterfaceDef( PepValue ):
     def construction_args( self ):
         return ( self.ret_type, self.name, self.arg_types_and_names )
 
-#    def do_evaluate( self, env ):
-#
-#        nm = self.name.name()
-#
-#        fn = PepUserInterfaceFunction(
-#            nm,
-#            self.ret_type.evaluate( env ),
-#            self.arg_types_and_names
-#        ).evaluate( env )
-#
-#        if nm in env.namespace:
-#            val = env.namespace[nm]
-#
-#            assert( val.__class__ is PepFunctionOverloadList )
-#
-#            val.append( fn )
-#
-#        else:
-#            env.namespace[nm] = PepFunctionOverloadList( [fn] )
-#
-#        return self
-#
-    pass
+    def do_evaluate( self, env ):
+        return PepInterfaceDef(
+            self.ret_type.evaluate( env ),
+            self.name,
+            tuple(
+                ( x.evaluate( env ), y ) for x, y in self.arg_types_and_names )
+        )
+
 

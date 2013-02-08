@@ -74,6 +74,15 @@ class PepSymbol( PepValue ):
     def construction_args( self ):
         return ( self.symbol_name, )
 
+    def __eq__( self, other ):
+        return (
+            self.__class__ == other.__class__ and
+            self.symbol_name == other.symbol_name
+        )
+
+    def __ne__( self, other ):
+        return not self.__eq__( other )
+
     def _check_contains( self, namespace, name, base_sym ):
         if name not in namespace:
             raise PepUserErrorException(
@@ -273,6 +282,9 @@ class PepTypeMatcher():
         """
         Create an object representing a runtime instance of this class.
         """
+        # TODO: runtime_instance should not be part of PepTypeMatcher.  There
+        #       should be another thing called PepType (and PepType should be
+        #       renamed to PepPyType?)
         pass
 
 class PepEmptyNamespace( object ):

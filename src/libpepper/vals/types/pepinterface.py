@@ -6,6 +6,8 @@
 
 from libpepper.values import PepValue
 
+from pepuserinterface import PepUserInterface
+
 class PepInterface( PepValue ):
     """
     The value created when an interface is parsed in source code.
@@ -26,17 +28,16 @@ class PepInterface( PepValue ):
     def construction_args( self ):
         return ( self.name, self.base_interfaces, self.body_stmts )
 
-#    def do_evaluate( self, env ):
-#
-#        nm = self.name.name()
-#
-#        if nm in env.namespace:
-#            raise PepUserErrorException(
-#                "The symbol '%s' is already defined." % nm )
-#        else:
-#            env.namespace[nm] = PepUserInterface(
-#                nm, self.base_interfaces, self.body_stmts )
-#
-#        return self
-    pass
+    def do_evaluate( self, env ):
+
+        nm = self.name.name()
+
+        if nm in env.namespace:
+            raise PepUserErrorException(
+                "The symbol '%s' is already defined." % nm )
+        else:
+            env.namespace[nm] = PepUserInterface(
+                nm, self.base_interfaces, self.body_stmts )
+
+        return self
 

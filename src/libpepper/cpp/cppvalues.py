@@ -246,6 +246,9 @@ def render_PepReturn( value, env ):
 def render_PepClass( value, env ):
     return ""
 
+def render_PepInterface( value, env ):
+    return ""
+
 def render_PepUserClass( value, env ):
     return value.name
 

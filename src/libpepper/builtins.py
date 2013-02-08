@@ -26,7 +26,7 @@ class PepPrint( PepFunction ):
     def return_type( self, args, env ):
         return PepType( PepNoneType )
 
-    def args_match( self, args ):
+    def args_match( self, args, env ):
         return True # Print accepts anything
 
 
@@ -59,7 +59,7 @@ class PepLen( PepFunction ):
     def return_type( self, args, env ):
         return PepType( PepInt )
 
-    def args_match( self, args ):
+    def args_match( self, args, env ):
         return True # TODO
 
 # TODO: write this in pepper

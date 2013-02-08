@@ -42,7 +42,7 @@ class PepInitFunction( PepFunction ):
     def return_type( self, args, env ):
         return self.user_class
 
-    def args_match( self, args ):
+    def args_match( self, args, env ):
         if PepDefInit.INIT_IMPL_NAME not in self.user_class.namespace:
             # If there is no __init__, we will supply an empty constructor
             return ( len( args ) == 0 )
@@ -54,7 +54,7 @@ class PepInitFunction( PepFunction ):
         self_plus_args = [ PepKnownInstance( self.user_class ) ] + args
 
         return self.user_class.namespace[PepDefInit.INIT_IMPL_NAME].args_match(
-            self_plus_args )
+            self_plus_args, env )
 
     def construction_args( self ):
         return ( self.user_class, )

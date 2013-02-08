@@ -95,6 +95,8 @@ class PepCallable( PepValue ):
     @abstractmethod
     def return_type( self, args, env ): pass
 
+    @abstractmethod
+    def args_match( self, args, env ): pass
 
 class PepFunction( PepCallable ):
     __metaclass__ = ABCMeta
@@ -102,9 +104,6 @@ class PepFunction( PepCallable ):
     def __init__( self ):
         PepValue.__init__( self )
 #        self.arg_types_and_names = arg_types_and_names
-
-    @abstractmethod
-    def args_match( self, args ): pass # TODO: move into PepCallable
 
     def is_known( self, env ):
         return True
@@ -132,6 +131,15 @@ class PepFunctionOverloadList( PepCallable ):
                 return fn
 
         return None
+
+    def args_match( self, args, env ):
+        return ( self._get_fn( args, env ) is not None )
+
+    def signature_matches( self, ret_type, arg_types_and_names ):
+        for fn in reversed( self._list ):
+            if fn.signature_matches( ret_type, arg_types_and_names ):
+                return True
+        return False
 
     def call( self, args, env ):
         assert( len( self._list ) > 0 )
@@ -305,6 +313,11 @@ class PepUserFunction( PepFunction ):
 
             i += 1
 
+    def signature_matches( self, ret_type, arg_types_and_names ):
+        return (
+            ret_type            == self.ret_type and
+            arg_types_and_names == self.arg_types_and_names
+        )
 
     def call( self, args, env ):
         """You  must call args_match first and only call this if the return

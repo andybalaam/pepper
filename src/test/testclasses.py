@@ -1,4 +1,4 @@
-# Copyright (C) 2012 Andy Balaam and The Pepper Developers
+# Copyright (C) 2012-2013 Andy Balaam and The Pepper Developers
 # Released under the MIT License.  See the file COPYING.txt for details.
 
 
@@ -563,5 +563,22 @@ def No_method_called_init_allowed__test():
             PepDef( PepType( PepInt ), PepSymbol( "init" ), (), (PepPass(),) ),
         )
     ).evaluate( env )
+
+@raises(PepUserErrorException)
+def No_method_called_implements_allowed__test():
+    env = PepEnvironment( None )
+    PepUserClass(
+        name=PepSymbol( "MyClass" ),
+        base_classes=(),
+        body_stmts=(
+            PepDef(
+                PepType( PepInt ),
+                PepSymbol( "implements" ),
+                (),
+                (PepPass(),)
+            ),
+        )
+    ).evaluate( env )
+
 
 

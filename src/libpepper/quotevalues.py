@@ -14,7 +14,7 @@ class PepQuoteEvaluate( PepFunction ):
     def construction_args( self ):
         return ( self.quote, )
 
-    def args_match( self, args ):
+    def args_match( self, args, env ):
         return len( args ) == 0
 
     def call( self, args, env ):

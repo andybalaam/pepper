@@ -13,13 +13,15 @@ from libpepper.values import PepTypeMatcher
 from libpepper.values import PepValue
 
 from pepdefinit import PepDefInit
+from pepimplementsfunction import PepImplementsFunction
 from pepinitfunction import PepInitFunction
 from pepknowninstance import PepKnownInstance
 from pepruntimeinstance import PepRuntimeInstance
 
 from libpepper.usererrorexception import PepUserErrorException
 
-INIT_FUNCTION_NAME = "init"
+INIT_FUNCTION_NAME       = "init"
+IMPLEMENTS_FUNCTION_NAME = "implements"
 
 class PepUserClass( PepValue, PepTypeMatcher ):
     """
@@ -62,10 +64,16 @@ class PepUserClass( PepValue, PepTypeMatcher ):
             st.evaluate( subenv )
 
         self.check_symbol_not_defined( INIT_FUNCTION_NAME )
+        self.check_symbol_not_defined( IMPLEMENTS_FUNCTION_NAME )
 
         # TODO: disallow defining functions called __init__
 
-        self.namespace[INIT_FUNCTION_NAME] = PepInitFunction( self )
+        # TODO: use PepFunctionOverloadLists here to make for better validation
+        #       of arguments, and provide self.arg_types_and_names in each
+        #       function class.  Maybe make a StandardArgsFunction type
+        #       that contains this functionality?
+        self.namespace[INIT_FUNCTION_NAME      ] = PepInitFunction( self )
+        self.namespace[IMPLEMENTS_FUNCTION_NAME] = PepImplementsFunction( self )
 
         self.member_variables = self._find_member_variables()
 
