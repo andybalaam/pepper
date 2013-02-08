@@ -5,7 +5,6 @@
 from nose.tools import *
 
 from libpepper.builtins import add_builtins
-from libpepper.classvalues import *
 from libpepper.environment import PepEnvironment
 from libpepper.cpp.cppvalues import *
 from libpepper.cpp.cpprenderer import PepCppRenderer

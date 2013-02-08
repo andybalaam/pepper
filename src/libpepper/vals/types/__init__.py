@@ -1,6 +1,7 @@
 # Copyright (C) 2013 Andy Balaam and The Pepper Developers
 # Released under the MIT License.  See the file COPYING.txt for details.
 
+from pepclass import PepClass
 from pepdefinit import PepDefInit
 from pepinitmethod import PepInitMethod
 from pepinstance import PepInstance

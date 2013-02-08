@@ -1,14 +1,12 @@
 # Copyright (C) 2011-2012 Andy Balaam and The Pepper Developers
 # Released under the MIT License.  See the file COPYING.txt for details.
 
-
 import sys
 
 from cppbuiltins import *
 from cpputils import render_statements
 from special import *
 from libpepper.builtins import *
-from libpepper.classvalues import *
 from libpepper.functionvalues import *
 from libpepper.languagevalues import *
 from libpepper.values import *

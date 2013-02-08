@@ -3,7 +3,6 @@
 
 
 # Old way
-from libpepper.classvalues import *
 from libpepper.functionvalues import *
 from libpepper.languagevalues import *
 from libpepper.quotevalues import *
