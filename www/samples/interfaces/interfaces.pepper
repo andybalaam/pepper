@@ -14,8 +14,6 @@ class Blooper:
 
 print( "Beeper:" )
 print( Beeper.implements( Observer ) )
-
-print()
 print( "Blooper:" )
 print( Blooper.implements( Observer ) )
 
