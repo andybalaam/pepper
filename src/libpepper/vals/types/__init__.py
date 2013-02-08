@@ -8,6 +8,7 @@ from pepinstancenamespace import PepInstanceNamespace
 from pepinterface import PepInterface
 from pepinterfacedef import PepInterfaceDef
 from pepknowninstance import PepKnownInstance
+from pepruntimeinit import PepRuntimeInit
 from pepruntimeinstance import PepRuntimeInstance
 from pepvar import PepVar
 

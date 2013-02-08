@@ -25,26 +25,10 @@ from vals.types import PepDefInit
 from vals.types import PepInstanceMethod
 from vals.types import PepInstanceNamespace
 from vals.types import PepKnownInstance
+from vals.types import PepRuntimeInit
 from vals.types import PepRuntimeInstance
 
 INIT_METHOD_NAME = "init"
-
-class PepRuntimeInit( PepValue ):
-    def __init__( self, instance, args, init_fn ):
-        PepValue.__init__( self )
-        # TODO: check arg types
-        self.instance = instance
-        self.args = args
-        self.init_fn = init_fn
-
-    def construction_args( self ):
-        return ( self.instance, self.args, self.init_fn )
-
-    def evaluated_type( self, env ):
-        return self.instance.clazz
-
-    def is_known( self, env ):
-        return False
 
 
 
