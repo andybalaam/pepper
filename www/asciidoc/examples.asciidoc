@@ -109,6 +109,6 @@ include::../samples/reduce/reduce.asciidoc[]
 
 == Interfaces ==
 
-include::../samples/interfaces/interfaces.asciidoc[]
+include::../real_samples/samples/interfaces/interfaces.asciidoc[]
 
 

@@ -28,7 +28,6 @@ SAMPLES = \
 	samples/web/web.asciidoc \
 	samples/type_switch/type_switch.asciidoc \
 	samples/reduce/reduce.asciidoc \
-	samples/interfaces/interfaces.asciidoc \
 
 REAL_SAMPLES = \
 	real_samples/samples/hello/hello.asciidoc \
@@ -38,6 +37,7 @@ REAL_SAMPLES = \
 	real_samples/samples/overload_runtime/overload_runtime.asciidoc \
 	real_samples/samples/calculated_type/calculated_type.asciidoc \
 	real_samples/samples/quoting/quoting.asciidoc \
+	real_samples/samples/interfaces/interfaces.asciidoc \
 
 
 HTMLS = \
