@@ -210,7 +210,7 @@ def test_Print_unknown_bool_renders_as_percent_s_colon_op():
 
     assert_equal(
         value.render( env ),
-        'printf( "%s\\n", (b ? "true" : "false") )' )
+        'printf( "%s\\n", (b ? "True" : "False") )' )
 
 
 

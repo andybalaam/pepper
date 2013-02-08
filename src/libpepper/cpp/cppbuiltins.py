@@ -52,7 +52,7 @@ def append_print_arg( fmtstr, fmtargs, value, env ):
         # TODO: format float output better
     elif cls is PepBool:
         fmtstr.append( "%s" )
-        fmtargs.append( '(%s ? "true" : "false")' % value.render( env ) )
+        fmtargs.append( '(%s ? "True" : "False")' % value.render( env ) )
     elif implements_interface( value, PepString ):
         fmtstr.append( "%s" )
         fmtargs.append( value.render( env ) )
