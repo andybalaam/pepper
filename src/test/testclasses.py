@@ -553,4 +553,15 @@ def Evaluated_types_of_method_calls_of_runtime_instances_are_correct___test():
 
     assert_equal( PepType( PepVoid ), ev_meth.evaluated_type( env ) )
 
+@raises(PepUserErrorException)
+def No_method_called_init_allowed__test():
+    env = PepEnvironment( None )
+    PepUserClass(
+        name=PepSymbol( "MyClass" ),
+        base_classes=(),
+        body_stmts=(
+            PepDef( PepType( PepInt ), PepSymbol( "init" ), (), (PepPass(),) ),
+        )
+    ).evaluate( env )
+
 

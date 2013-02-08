@@ -50,15 +50,18 @@ class PepUserClass( PepValue, PepTypeMatcher ):
     def known_instance( self ):
         return PepKnownInstance( self )
 
+    def check_symbol_not_defined( self, symbol ):
+        if symbol in self.namespace:
+            raise PepUserErrorException( "You may not define the symbol " +
+                "'%s' in a class definition." % symbol )
+
     def do_evaluate( self, env ):
         self.namespace = PepNamespace( env.namespace )
         subenv = PepEnvironment( env.renderer, self.namespace )
         for st in self.body_stmts:
             st.evaluate( subenv )
 
-        if INIT_FUNCTION_NAME in self.namespace:
-            raise PepUserErrorException( "You may not define the symbol " +
-                "'%s' in a class definition." % INIT_FUNCTION_NAME )
+        self.check_symbol_not_defined( INIT_FUNCTION_NAME )
 
         # TODO: disallow defining functions called __init__
 
