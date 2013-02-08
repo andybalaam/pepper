@@ -11,6 +11,13 @@ from libpepper.values import PepValue
 from pepinstancenamespace import PepInstanceNamespace
 
 class PepInstance( PepValue ):
+    """
+    An instance of a class - what you get back when you call ClassName.init().
+    This is the base class for PepKnownInstance and PepRuntimeInstance.
+    It allows bound methods to be returned when we ask for them by name because
+    it contains a PepInstanceNamespace instead of a normal namespace.
+    """
+
     def __init__( self, clazz ):
         PepValue.__init__( self )
         self.clazz = clazz
