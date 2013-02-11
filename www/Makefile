@@ -28,6 +28,7 @@ SAMPLES = \
 	samples/web/web.asciidoc \
 	samples/type_switch/type_switch.asciidoc \
 	samples/reduce/reduce.asciidoc \
+	samples/interface_param/interface_param.asciidoc \
 
 REAL_SAMPLES = \
 	real_samples/samples/hello/hello.asciidoc \

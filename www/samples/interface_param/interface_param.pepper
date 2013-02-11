@@ -1,0 +1,17 @@
+
+interface IndexableInt:
+    def int __getitem__( int index )
+    def int __len__()
+
+def void print_all( implements(IndexableInt) lst ):
+    for int i in range( len( lst ) ):
+        print( lst[i] )
+
+list(int) mylst = [ 3, 1, 4, 5, 9 ]
+
+# A version of print_all taking list(int) is generated when we call it.  If
+# we called it with different type arguments, another version would be
+# generated.
+
+print_all( mylst )
+

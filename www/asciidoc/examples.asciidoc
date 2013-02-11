@@ -110,5 +110,6 @@ include::../samples/reduce/reduce.asciidoc[]
 == Interfaces ==
 
 include::../real_samples/samples/interfaces/interfaces.asciidoc[]
+include::../samples/interface_param/interface_param.asciidoc[]
 
 
