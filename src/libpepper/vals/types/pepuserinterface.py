@@ -24,7 +24,7 @@ from libpepper.usererrorexception import PepUserErrorException
 
 MATCHES_FUNCTION_NAME = "matches"
 
-class PepUserInterface( PepValue, PepTypeMatcher ):
+class PepUserInterface( PepValue ):
     """
     A user-defined interface, created when we evaluate a PepInterface.
     Provides a matches function that returns true if the supplied type
@@ -67,9 +67,15 @@ class PepUserInterface( PepValue, PepTypeMatcher ):
     def construction_args( self ):
         return ( self.name, self.base_interfaces, self.body_stmts )
 
-    def matches( self, other ):
+    def can_match( self, other ):
         """
-        @return True if other has all the methods we define
+        Decide whether the type other matches this interface.
+
+        Deliberately not called "matches" since an instance of this class
+        is not a TypeMatcher, but must be wrapped with a call to the
+        "implements" function.
+
+        @return True if other has all the methods we define.
         """
 
         otherns = other.get_namespace()
