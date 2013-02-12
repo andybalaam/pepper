@@ -11,7 +11,7 @@ class PepKnownInstance( PepInstance ):
     """
 
     def construction_args( self ):
-        return ( self.clazz )
+        return ( self.clazz, )
 
     def is_known( self, env ):
         return True
