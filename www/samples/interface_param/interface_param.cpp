@@ -1,6 +1,7 @@
 #include <stdio.h>
+#include <vector>
 
-void print_all( vector<int>* lst )
+void print_all( std::vector<int>* lst )
 {
     for( size_t i = 0; i < lst->size(); ++i )
     {
@@ -10,14 +11,14 @@ void print_all( vector<int>* lst )
 
 int main( int argc, char* argv[] )
 {
-    vector<int> mylst;
+    std::vector<int> mylst;
     mylst.push_back( 3 );
     mylst.push_back( 1 );
     mylst.push_back( 4 );
     mylst.push_back( 5 );
     mylst.push_back( 9 );
 
-    print_all( my_lst );
+    print_all( &mylst );
 
     return 0;
 }
