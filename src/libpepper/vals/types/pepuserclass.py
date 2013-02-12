@@ -53,7 +53,7 @@ class PepUserClass( PepValue, PepTypeMatcher ):
         return PepKnownInstance( self )
 
     def check_symbol_not_defined( self, symbol ):
-        if symbol in self.namespace:
+        if symbol in self.namespace.thedict:
             raise PepUserErrorException( "You may not define the symbol " +
                 "'%s' in a class definition." % symbol )
 

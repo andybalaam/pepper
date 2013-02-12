@@ -10,6 +10,7 @@ from pepinstancenamespace import PepInstanceNamespace
 from pepinterface import PepInterface
 from pepinterfacedef import PepInterfaceDef
 from pepinterfacematchesfunction import PepInterfaceMatchesFunction
+from pepinterfacetypematcher import PepInterfaceTypeMatcher
 from pepknowninstance import PepKnownInstance
 from pepruntimeinit import PepRuntimeInit
 from pepruntimeinstance import PepRuntimeInstance

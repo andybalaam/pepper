@@ -4,6 +4,8 @@
 
 from libpepper.vals.all_values import *
 
+from libpepper.usererrorexception import PepUserErrorException
+
 class PepRuntimePrint( PepValue ):
     def __init__( self, args ):
         PepValue.__init__( self )
@@ -79,6 +81,25 @@ range_function = PepUserFunction(
     )
 )
 
+class PepImplements( PepFunction ):
+
+    def construction_args( self ):
+        return ( arg, )
+
+    def call( self, args, env ):
+        if( len( args ) != 1 ):
+            raise UserErrorException(
+                "There should only ever be one argument to implements()" )
+        return PepInterfaceTypeMatcher( args[0].evaluate( env ) )
+
+
+    def return_type( self, args, env ):
+        return PepType( PepBool )
+
+    def args_match( self, args, env ):
+        return True # TODO - only interfaces and classes accepted
+
+
 def add_builtins( env ):
     # Statements
     env.namespace["pass"] = PepPass()
@@ -97,7 +118,8 @@ def add_builtins( env ):
     env.namespace["code"]  = PepType( PepQuote )
 
     # Functions
-    env.namespace["len"]   = PepLen()
-    env.namespace["print"] = PepPrint()
-    env.namespace["range"] = range_function.evaluate( env )
+    env.namespace["implements"] = PepImplements()
+    env.namespace["len"]        = PepLen()
+    env.namespace["print"]      = PepPrint()
+    env.namespace["range"]      = range_function.evaluate( env )
 

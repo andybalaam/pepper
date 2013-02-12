@@ -76,4 +76,6 @@ def test_range():
 def test_print_return_type_is_none():
     assert_equal( PepPrint().return_type( None, () ), PepType( PepNoneType ) )
 
+def test_implements():
+    assert_defined( "implements", PepImplements )
 

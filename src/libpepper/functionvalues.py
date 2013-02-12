@@ -269,6 +269,7 @@ class PepUserFunction( PepFunction ):
         return self.ret_type
 
     def do_evaluate( self, env ):
+        # TODO: check the arguments are type-matchers
         self.check_default_arg_types( env )
         return self
 

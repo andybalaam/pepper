@@ -580,5 +580,18 @@ def No_method_called_implements_allowed__test():
         )
     ).evaluate( env )
 
+def Builtin_implements_method_does_not_break_implements_check__test():
+    # At one point checking for an "implements" method was actually failing
+    # because a global "implements" function existed - this test fails if
+    # that happens.
 
+    env = PepEnvironment( None )
+    add_builtins( env )
+    PepUserClass(
+        name=PepSymbol( "MyClass" ),
+        base_classes=(),
+        body_stmts=(
+            PepPass(),
+        )
+    ).evaluate( env )
 

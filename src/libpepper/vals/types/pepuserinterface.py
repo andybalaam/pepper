@@ -63,6 +63,8 @@ class PepUserInterface( PepValue ):
             self.namespace
         )
 
+    def evaluated_type( self, env ):
+        return self
 
     def construction_args( self ):
         return ( self.name, self.base_interfaces, self.body_stmts )
@@ -81,13 +83,16 @@ class PepUserInterface( PepValue ):
         otherns = other.get_namespace()
         for stmt in self.body_stmts:
             if stmt.name.name() not in otherns:
+                #print "Nothing with this name", stmt.name.name()
                 return False # Nothing with this name
             othermeth = otherns[stmt.name.name()]
             if othermeth.__class__ != PepFunctionOverloadList:
+                #print "Thing with this name is not a method", stmt.name.name()
                 return False # Thing with this name is not a method
             if not othermeth.signature_matches(
                 stmt.ret_type, stmt.arg_types_and_names
             ):
+                #print "No matching signature", stmt.ret_type, stmt.arg_types_and_names
                 return False # No matching signature
         return True
 
