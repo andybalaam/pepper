@@ -98,7 +98,7 @@ allow anyone to use the code for anything.
 So, if you want Pepper:
 
 ----
-Copyright (C) 2010-2012 The Pepper Developers
+Copyright (C) 2010-2013 The Pepper Developers
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the
