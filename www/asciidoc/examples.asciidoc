@@ -112,4 +112,9 @@ include::../samples/reduce/reduce.asciidoc[]
 include::../real_samples/samples/interfaces/interfaces.asciidoc[]
 include::../samples/interface_param/interface_param.asciidoc[]
 
+== Debuggable versions of classes ==
+
+include::../samples/debuggable_version/debuggable_version.asciidoc[]
+
+
 

@@ -1,0 +1,44 @@
+
+import testutils
+
+# Imagine Widget has some horrific dependencies e.g. platform-specific
+class Widget:
+    def display( auto self, string text ):
+        print( text ) # Does some IO or something untestable
+
+class DoSomething:
+    def void do_something( Widget widget ):
+        widget.display( "Hello" )
+
+
+# DoSomething.do_something can't accept any type of object except a Widget.
+# How do we test it?
+
+auto TestableDoSomething = testutils.inheritable( DoSomething )
+
+# Now TestableDoSomething is a class like this:
+# class TestableDoSomething:
+#     def void do_something( implements(Widget) widget ):
+#         widget.display( hs.data )
+
+# and we can test it by supplying a fake:
+
+class FakeWidget:
+    def __init__( auto self ):
+        var:
+            string self.log = ""
+
+    def display( auto self, string text ):
+        self.log += text
+
+auto fake_widget = FakeWidget.init()
+
+auto ds = TestableDoSomething.init()
+
+# TestableDoSomething has a do_something method that is a copy of DoSomething's
+# version, but now we can pass in a fake:
+
+ds.do_something( fake_Widget )
+
+assert_equal( "Hello", fake_widget.log )
+

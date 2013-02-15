@@ -29,6 +29,7 @@ SAMPLES = \
 	samples/type_switch/type_switch.asciidoc \
 	samples/reduce/reduce.asciidoc \
 	samples/interface_param/interface_param.asciidoc \
+	samples/debuggable_version/debuggable_version.asciidoc \
 
 REAL_SAMPLES = \
 	real_samples/samples/hello/hello.asciidoc \
