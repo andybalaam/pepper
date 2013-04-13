@@ -5,6 +5,13 @@ Released under the MIT License.  See the file COPYING.txt for details.
 
 = Pepper Examples =
 
+Below, where you see "(fact)" you know the prototype Pepper compiler does
+produce the output shown when run with these arguments.  Where you see
+"(fiction)" you know the compiler fails on this input, or produces
+different output from what is shown.
+
+Over time, hopefully, the fiction will gradually be replaced by fact.
+
 :toc:
 
 == Hello, world! ==
