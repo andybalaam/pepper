@@ -5,6 +5,7 @@ www/real_samples/samples/*/*.asciidoc
 www/html
 *.marks
 *.smap
+.*.swp
 src/parse/bin
 src/parse/PepperLexerTokenTypes.txt
 src/parse/PepperLexer.py
