@@ -71,7 +71,10 @@ class PepCppRenderer( object ):
             rendered = cppvalues.render_PepUserFunction_body(
                 name, runtime_function, env )
 
-            overloads[signature] = ( name, rendered )
+            forward_decl = cppvalues.render_PepUserFunction_forward_decl(
+                name, runtime_function, env )
+
+            overloads[signature] = ( name, rendered, forward_decl )
 
         return name
 
@@ -122,7 +125,13 @@ class PepCppRenderer( object ):
             ret += rendered_clazz
 
         for overloads in self._functions.values():
-            for name, rendered_fn in sorted( overloads.values() ):
+            for name, rendered_fn, forward_decl in sorted( overloads.values() ):
+                ret += forward_decl
+        if len( self._functions ) > 0:
+            ret += "\n"
+
+        for overloads in self._functions.values():
+            for name, rendered_fn, forward_decl in sorted( overloads.values() ):
                 ret += rendered_fn
 
         ret += "int main( int argc, char* argv[] )\n{\n"

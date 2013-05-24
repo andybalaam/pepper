@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+int reduce( int end );
+
 int reduce( int end )
 {
     int acc = 1;

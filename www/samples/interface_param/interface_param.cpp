@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <vector>
 
+void print_all( std::vector<int>* lst );
+
 void print_all( std::vector<int>* lst )
 {
     for( size_t i = 0; i < lst->size(); ++i )

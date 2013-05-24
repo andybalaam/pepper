@@ -157,6 +157,8 @@ def test_function_with_no_args():
     ans = env.renderer.render_exe( [rtfn], env )
 
     assert_multiline_equal( ans, """
+void myfn();
+
 void myfn()
 {
 }
@@ -181,6 +183,8 @@ def test_function_called_twice_same_args():
     ans = env.renderer.render_exe( [rtfn1, rtfn2], env )
 
     assert_multiline_equal( ans, """
+void myfn();
+
 void myfn()
 {
 }
@@ -226,6 +230,9 @@ def test_overloaded_functions():
     ans = env.renderer.render_exe( [rtfn1, rtfn2, rtfn3, rtfn4], env )
 
     assert_multiline_equal( ans, """
+void myfn( double f );
+void myfn_pep_1( int x );
+
 void myfn( double f )
 {
 }
@@ -336,6 +343,8 @@ struct MyClass
     double b;
 };
 
+void MyClass_pep_c_pep___init__( MyClass& self, int a, double b );
+
 void MyClass_pep_c_pep___init__( MyClass& self, int a, double b )
 {
     self.a = a;
@@ -395,6 +404,9 @@ def test_Render_runtime_method_call():
 struct MyClass
 {
 };
+
+void MyClass_pep_c_pep_my_meth( MyClass& self );
+void MyClass_pep_c_pep___init__( MyClass& self, int x );
 
 void MyClass_pep_c_pep_my_meth( MyClass& self )
 {

@@ -176,16 +176,28 @@ def indent_if_needed( line ):
     else:
         return "    %s;\n" % line
 
-def render_PepUserFunction_body( name, func_call, env ):
-    fn = func_call.user_function.evaluate( env )
 
-    assert( fn.__class__ == PepUserFunction ) # TODO: handle other types
-
+def render_PepuserFunction_signature( fn, name, env ):
     ret = fn.ret_type.render( env )
     ret += " "
     ret += name
     ret += _render_bracketed_list( _render_type_and_name( typename, env ) for
         typename in fn.arg_types_and_names )
+    return ret
+
+def render_PepUserFunction_forward_decl( name, func_call, env ):
+    fn = func_call.user_function.evaluate( env )
+    assert( fn.__class__ == PepUserFunction ) # TODO: handle other types
+
+    ret = render_PepuserFunction_signature( fn, name, env )
+    ret += ";\n"
+    return ret
+
+def render_PepUserFunction_body( name, func_call, env ):
+    fn = func_call.user_function.evaluate( env )
+    assert( fn.__class__ == PepUserFunction ) # TODO: handle other types
+
+    ret = render_PepuserFunction_signature( fn, name, env )
     ret += "\n{\n"
 
     newenv = fn.execution_environment( func_call.args, False, env )

@@ -6,6 +6,9 @@ struct MyClass
     double b;
 };
 
+void MyClass_pep_c_pep___init__( MyClass& self, int a, double b );
+int MyClass_pep_c_pep_meth( MyClass& self );
+
 void MyClass_pep_c_pep___init__( MyClass& self, int a, double b )
 {
     self.a = a;

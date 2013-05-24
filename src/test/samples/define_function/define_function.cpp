@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+void print_this( int num );
+
 void print_this( int num )
 {
     int x = num;
