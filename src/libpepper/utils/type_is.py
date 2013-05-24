@@ -5,6 +5,7 @@
 # Galations 1 v20
 
 import types
+import abc
 
 def type_is( typ, inst ):
     """
@@ -14,7 +15,15 @@ def type_is( typ, inst ):
     function declarations.
     """
 
-    if not ( type(typ) == type or type(typ) == types.ClassType ):
+    # Arguably, we should allow duck typing to take its course
+    # here - there could be some other metaclass we need to
+    # add later, but I prefer the easier-to-understand error
+    # message we get by checking the type.
+    if not (
+            type(typ) == type or
+            type(typ) == types.ClassType or
+            type(typ) == abc.ABCMeta
+    ):
         raise AssertionError(
             "Wrong arguments to type_is: the first argument must be a " +
             "class or type, not %s" % typ.__class__.__name__

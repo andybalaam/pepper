@@ -6,13 +6,15 @@
 
 from nose.tools import *
 
+from abc import ABCMeta
+
 from libpepper.utils.type_is import type_is
 
 class A:
     pass
 
 class B:
-    pass
+    __metaclass__ = ABCMeta
 
 class SonOfB(B):
     pass
