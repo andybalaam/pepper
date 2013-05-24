@@ -3,6 +3,7 @@
 
 
 from libpepper.vals.all_values import *
+from libpepper.utils.type_is import type_is
 
 import cppvalues
 
@@ -78,11 +79,13 @@ class PepCppRenderer( object ):
 
         return name
 
-    def add_def_init( self, runtime_instance, env ):
+    def add_def_init( self, runtime_init, env ):
+        type_is( PepRuntimeInit, runtime_init )
+        type_is( PepEnvironment, env )
 
-        fn = runtime_instance.init_fn.user_function
+        fn = runtime_init.init_fn.user_function
 
-        clazz = runtime_instance.instance.clazz
+        clazz = runtime_init.instance.clazz
 
         clazz_type_and_name = ( clazz, PepSymbol("self") )
         init_style_arg_types_and_names = (
@@ -95,8 +98,8 @@ class PepCppRenderer( object ):
                 init_style_arg_types_and_names,
                 fn.body_stmts
             ),
-            runtime_instance.init_fn.args,
-            runtime_instance.instance.clazz.name
+            runtime_init.init_fn.args,
+            runtime_init.instance.clazz.name
         )
 
         return self.add_function( init_style_fn, env )
