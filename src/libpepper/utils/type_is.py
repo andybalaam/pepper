@@ -9,7 +9,7 @@ import abc
 
 def type_is( typ, inst ):
     """
-    Check that instance is of (exact) type typ.
+    Check that inst is of (exact) type typ.
     Throws an Assertion error if not.
     The arguments order is supposed to be reminiscent of C/Java style
     function declarations.
