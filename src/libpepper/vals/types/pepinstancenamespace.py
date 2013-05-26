@@ -26,7 +26,7 @@ class PepInstanceNamespace( PepNamespace ):
 
     def _find( self, key ):
 
-        found = PepNamespace._find( self, key)
+        found = PepNamespace._find( self, key )
         if found is not None:
             return found
 
