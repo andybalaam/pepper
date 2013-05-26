@@ -17,6 +17,8 @@ class PepInstanceMethod( PepFunction ):
     """
 
     def __init__( self, instance, fn ):
+        # TODO: type_is_one_of( (PepVariable, PepKnownInstance), instance )
+
         PepFunction.__init__( self )
         self.instance = instance
         self.fn = fn
