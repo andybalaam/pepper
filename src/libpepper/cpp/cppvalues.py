@@ -13,6 +13,11 @@ from libpepper.values import *
 from libpepper.builtinmodules.pepsys import PepSysArgv
 
 def render_PepSymbol( value, env ):
+    # In C++ (so far), we can just write the same symbol
+    # we found in the Pepper.  For other output languages,
+    # and possibly other Pepper structures, we will need
+    # to break this up by "." and re-join it somehow, or
+    # change the way we do this.
     return value.name()
 
 def render_PepInt( value, env ):
@@ -241,8 +246,11 @@ def render_PepRuntimeInit( value, env ):
         )
     )
 
-def render_PepRuntimeInstance( value, env ):
-    return value.var_name
+def render_PepVariable( value, env ):
+    # This is only called when rendering a function declaration (I think)
+    # When a variable is actually used, the name of the symbol that is
+    # used to refer to it is dumped directly in.
+    return value.name
 
 def render_PepFunctionCall( value, env ):
     fn = value.func.evaluate( env )

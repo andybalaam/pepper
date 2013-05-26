@@ -20,6 +20,8 @@ class PepInstanceNamespace( PepNamespace ):
     """
 
     def __init__( self, instance, class_namespace ):
+        #type_implements( PepInstance, instance )
+        #type_implements( dict,        class_namespace )
         PepNamespace.__init__( self )
         self.instance = instance
         self.class_namespace = class_namespace

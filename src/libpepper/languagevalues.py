@@ -10,7 +10,7 @@ from vals.numbers import PepInt
 from values import PepSymbol
 from values import PepType
 from values import PepValue
-from values import PepVariable
+from vals.basic_types.pepvariable import PepVariable
 from values import pep_none
 
 from usererrorexception import PepUserErrorException
@@ -139,10 +139,10 @@ class PepInit( PepValue ):
     def do_evaluate( self, env ):
         ( tp, ns, nm, val ) = self._eval_args( env )
 
-        if nm in ns:
-            if not isinstance( ns[nm], PepPlaceholder ):
-                raise PepUserErrorException(
-                    "Namespace already contains the name '" + nm + "'." )
+#        if nm in ns:
+#            if not isinstance( ns[nm], PepVariable ): # TODO: put the placeholders back - enforcing we only do this in an init function
+#                raise PepUserErrorException(
+#                    "Namespace already contains the name '" + nm + "'." )
 
         val_type = val.evaluated_type( env )
         if not tp.matches( val_type ):
@@ -152,10 +152,9 @@ class PepInit( PepValue ):
             if val.is_known( env ):
                 return val
             else:
-                return tp.runtime_instance( nm )
+                return PepVariable( tp.evaluate( env ), nm )
 
         ns.overwrite( nm, make_value() )
-
         return self
 
     def is_known( self, env ):

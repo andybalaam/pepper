@@ -4,5 +4,5 @@
 
 def implements_interface( obj, interface ):
     if str( interface ) == "<class 'libpepper.values.PepSymbol'>":
-        return str( obj.__class__ ) != "<class 'libpepper.values.PepVariable'>"
+        return str( obj.__class__ ) != "<class 'libpepper.vals.basic_types.pepvariable.PepVariable'>"
     return True # TODO: check we implement it

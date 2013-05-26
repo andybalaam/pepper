@@ -37,14 +37,10 @@ class PepInterfaceTypeMatcher( PepValue, PepTypeMatcher ):
     def get_name( self ):
         self.interface.get_name()
 
+    def runtime_namespace( self, instance, insert_placeholders ):
+        return self.get_namespace()
+
     def get_namespace( self ):
         return self.interface.get_namespace()
-
-    def runtime_instance( self, name ):
-        # TODO: runtime_instance should not be part of PepTypeMatcher.  There
-        #       should be another thing called PepType (and PepType should be
-        #       renamed to PepPyType?)
-        raise Exception(
-            "runtime_instance should not be defined on PepUserInterface!" )
 
 

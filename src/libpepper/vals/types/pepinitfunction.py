@@ -6,6 +6,7 @@
 
 from libpepper.functionvalues import PepFunction
 from libpepper.values import all_known
+from libpepper.vals.basic_types import PepVariable
 
 from pepdefinit import PepDefInit
 from pepknowninstance import PepKnownInstance
@@ -31,7 +32,7 @@ class PepInitFunction( PepFunction ):
             # TODO: else default constructor
             return ret
         else:
-            inst = self.user_class.runtime_instance( "" )
+            inst = PepVariable( self.user_class.evaluate( env ), "" )
             return PepRuntimeInit(
                 inst,
                 args,

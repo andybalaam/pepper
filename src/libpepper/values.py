@@ -6,6 +6,7 @@ from abc import ABCMeta, abstractmethod
 from all_known import all_known
 from pepinterface import implements_interface
 from usererrorexception import PepUserErrorException
+from utils.type_is import type_is
 
 # -- Base class and global methods ---
 
@@ -46,24 +47,6 @@ class PepValue( object ):
             )
 
 # --- Specific value types ---
-
-class PepVariable( PepValue ):
-    def __init__( self, clazz, name ):
-        PepValue.__init__( self )
-        self.clazz = clazz
-        self.name = name
-
-    def construction_args( self ):
-        return ( self.clazz, self.name )
-
-    def is_known( self, env ):
-        return False
-
-    def evaluated_type( self, env ):
-        return self.clazz
-
-    def get_namespace( self ):
-        return self.clazz.get_namespace()
 
 
 class PepSymbol( PepValue ):
@@ -270,6 +253,14 @@ class PepTypeMatcher():
     def underlying_class( self ): pass
 
     @abstractmethod
+    def runtime_namespace( self, instance, insert_placeholders ):
+        """
+        @return a namespace representing the allowed properties and method
+                names in an instance of this type
+        """
+        pass
+
+    @abstractmethod
     def get_namespace( self ):
         """
         @return a namespace representing the allowed properties and method
@@ -277,15 +268,6 @@ class PepTypeMatcher():
         """
         pass
 
-    @abstractmethod
-    def runtime_instance( self, name ):
-        """
-        Create an object representing a runtime instance of this class.
-        """
-        # TODO: runtime_instance should not be part of PepTypeMatcher.  There
-        #       should be another thing called PepType (and PepType should be
-        #       renamed to PepPyType?)
-        pass
 
 class PepEmptyNamespace( object ):
 
@@ -323,8 +305,15 @@ class PepType( PepValue, PepTypeMatcher ):
     def underlying_class( self ):
         return self.value
 
-    def runtime_instance( self, name ):
-        return PepVariable( self, name )
+    def runtime_namespace( self, instance, insert_placeholders ):
+        #type_implements( PepValueWithNamespace, instance )
+        type_is( bool, insert_placeholders )
+        # For simple types, there are no methods or properties
+        # yet, so we can return an empty namespace.
+        # TODO: support methods on e.g. ints, meaning we need
+        #       a PepInstanceNamespace, and can maybe combine
+        #       this code with that in PepUserClass?
+        return self.get_namespace()
 
     def get_namespace( self ):
         return PepEmptyNamespace()

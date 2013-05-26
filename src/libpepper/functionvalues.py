@@ -9,7 +9,7 @@ from environment import PepEnvironment
 from values import PepSymbol
 from values import PepType
 from values import PepValue
-from values import PepVariable
+from vals.basic_types.pepvariable import PepVariable
 from values import PepPass
 from values import all_known
 from usererrorexception import PepUserErrorException
@@ -40,7 +40,7 @@ def execution_environment( arg_types_and_names, args, known, env ):
         if known:
             val = val.evaluate( env )
         else:
-            tp   = type_and_name[0]
+            tp  = type_and_name[0]
             val = PepVariable( tp.evaluate( env ), name.name() )
 
         newenv.namespace[name.name()] = val

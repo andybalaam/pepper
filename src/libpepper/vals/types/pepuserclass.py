@@ -9,14 +9,16 @@ from itertools import ifilter
 from libpepper.environment import PepEnvironment
 from libpepper.languagevalues import PepPlaceholder
 from libpepper.namespace import PepNamespace
+from libpepper.utils.type_is import type_is
 from libpepper.values import PepTypeMatcher
 from libpepper.values import PepValue
+from libpepper.vals.basic_types import PepVariable
 
 from pepdefinit import PepDefInit
 from pepimplementsfunction import PepImplementsFunction
 from pepinitfunction import PepInitFunction
+from pepinstancenamespace import PepInstanceNamespace
 from pepknowninstance import PepKnownInstance
-from pepruntimeinstance import PepRuntimeInstance
 
 from libpepper.usererrorexception import PepUserErrorException
 
@@ -46,8 +48,13 @@ class PepUserClass( PepValue, PepTypeMatcher ):
     def is_known( self, env ):
         return True # TODO - not always known
 
-    def runtime_instance( self, name ):
-        return PepRuntimeInstance( self, name )
+    def runtime_namespace( self, instance, insert_placeholders ):
+        #type_implements( PepInstance, instance )
+        type_is( bool, insert_placeholders )
+        ret = PepInstanceNamespace( instance, self.namespace )
+        for var_type, var_name in self.member_variables:
+            ret[var_name] = PepVariable( var_type, "" )
+        return ret
 
     def known_instance( self ):
         return PepKnownInstance( self )
@@ -75,21 +82,18 @@ class PepUserClass( PepValue, PepTypeMatcher ):
         self.namespace[INIT_FUNCTION_NAME      ] = PepInitFunction( self )
         self.namespace[IMPLEMENTS_FUNCTION_NAME] = PepImplementsFunction( self )
 
-        self.member_variables = self._find_member_variables()
-
-        for var_type, var_name in self.member_variables:
-            self.namespace[var_name] = PepPlaceholder()
+        self.member_variables = self._find_member_variables( env )
 
         return self
 
-    def _find_member_variables( self ):
+    def _find_member_variables( self, env ):
         ret = []
 
         first_def_init = True
         is_def_init = lambda stmt: stmt.__class__ == PepDefInit
         for stmt in ifilter( is_def_init, self.body_stmts ):
             if first_def_init:
-                ret = stmt.get_member_variables()
+                ret = stmt.get_member_variables( env )
             else:
                 self.check_init_matches( ret )
             first_def_init = False

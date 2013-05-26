@@ -18,7 +18,6 @@ from pepimplementsfunction import PepImplementsFunction
 from pepinitfunction import PepInitFunction
 from pepinterfacematchesfunction import PepInterfaceMatchesFunction
 from pepknowninstance import PepKnownInstance
-from pepruntimeinstance import PepRuntimeInstance
 
 from libpepper.usererrorexception import PepUserErrorException
 
@@ -101,13 +100,6 @@ class PepUserInterface( PepValue ):
 
     def underlying_class( self ):
         return self
-
-    def runtime_instance( self, name ):
-        # TODO: runtime_instance should not be part of PepTypeMatcher.  There
-        #       should be another thing called PepType (and PepType should be
-        #       renamed to PepPyType?)
-        raise Exception(
-            "runtime_instance should not be defined on PepUserInterface!" )
 
     def get_namespace( self ):
         return self.namespace

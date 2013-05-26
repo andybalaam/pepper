@@ -1,0 +1,16 @@
+import sys
+
+class MyClass:
+    def_init ( MyClass self, int a ):
+        pass
+
+    def void meth( MyClass self, int b ):
+        print( "in meth" )
+
+def void call_meth( MyClass mcp ):
+    mcp.meth( 2 )
+
+MyClass mc = MyClass.init( len( sys.argv ) )
+
+call_meth( mc )
+

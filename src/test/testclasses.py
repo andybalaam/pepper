@@ -176,10 +176,10 @@ def test_Can_get_names_of_member_variables_from_def_init():
 
     assert_equal(
         str( [
-            ( PepSymbol( "int" ),   "member_one" ),
-            ( PepSymbol( "float" ), "member_two" )
+            ( PepSymbol( "int"   ).evaluate( env ), "member_one" ),
+            ( PepSymbol( "float" ).evaluate( env ), "member_two" )
         ] ),
-        str( definit.get_member_variables() )
+        str( definit.get_member_variables( env ) )
     )
 
 
@@ -207,7 +207,7 @@ def test_Not_allowed_non_self_inits_in_var():
 
     exception_caught = False
     try:
-        definit.get_member_variables()
+        definit.get_member_variables( env )
     except PepUserErrorException, e:
         exception_caught = True
         assert_contains( str( e ), "'my_var' does not start with 'barself.'" )
@@ -239,7 +239,7 @@ def test_Must_provide_nonempty_variable_name_in_var():
 
     exception_caught = False
     try:
-        definit.get_member_variables()
+        definit.get_member_variables( env )
     except PepUserErrorException, e:
         exception_caught = True
         assert_contains(
@@ -286,8 +286,8 @@ def test_Can_get_names_of_member_variables_from_class():
 
     assert_equal(
         str( [
-            ( PepSymbol( "int" ),   "member_one" ),
-            ( PepSymbol( "float" ), "member_two" )
+            ( PepSymbol( "int"   ).evaluate( env ), "member_one" ),
+            ( PepSymbol( "float" ).evaluate( env ), "member_two" )
         ] ),
         str( cls.member_variables )
     )
@@ -319,37 +319,6 @@ def test_Class_reports_methods_available():
     assert_true( "myfunc"  in cls.get_namespace() )
     assert_true( "foo" not in cls.get_namespace() )
 
-
-def test_Class_reports_properties_available():
-
-    env = PepEnvironment( PepCppRenderer() )
-    add_builtins( env )
-
-    cls = PepUserClass(
-        name="MyClass",
-        base_classes=(),
-        body_stmts=(
-            PepDefInit(
-                ( ( PepSymbol( "MyClass" ), PepSymbol( 'self' ) ), ),
-                (
-                    (
-                        PepVar(
-                            (
-                                PepInit(
-                                    PepSymbol( "int" ),
-                                    PepSymbol( "self.myprop" ),
-                                    PepInt( 0 )
-                                ),
-                            )
-                        ),
-                    )
-                ),
-            ),
-        )
-    ).evaluate( env )
-
-    assert_true( "myprop"  in cls.get_namespace() )
-    assert_true( "foo" not in cls.get_namespace() )
 
 
 
@@ -392,14 +361,28 @@ def test_Calling_a_method_with_unknown_args_returns_a_runtime_function():
     assert_equal(
         PepRuntimeUserFunction,
         meth.call(
-            ( PepInt( "3" ), PepVariable( PepInt, "x" ) ), "env" ).__class__
+            (
+                PepInt( "3" ),
+                PepVariable( PepType( PepInt ), "x" ) ),
+                "env"
+            ).__class__
     )
 
 def test_Calling_a_method_with_unknown_instance_returns_a_runtime_function():
 
-    # Create a method on a runtime instance
-    clazz = FakeClass()
-    instance = PepRuntimeInstance( clazz, "inst" )
+    class FakeType( PepTypeMatcher ):
+        def __init__( self ):
+            self.name = ""
+        def get_name(): pass
+        def runtime_namespace( self, instance, insert_placeholders ):
+            pass
+        def get_namespace(): pass
+        def matches(): pass
+        def underlying_class(): pass
+
+    # Create a method on a variable holding a class type
+    clazz = FakeType()
+    instance = PepVariable( clazz, "inst" )
     fn = FakeFn()
     meth = PepInstanceMethod( instance, fn )
 
@@ -474,7 +457,7 @@ def test_Instance_returns_a_method_when_class_holds_a_function():
     assert_equal( fn, ans_fn.fn )
 
 
-def create_runtime_instance_and_method_call( env ):
+def create_instance_variable_and_method_call( env ):
     env.namespace['a'] = PepVariable( PepType( PepInt ), "a" )
 
     PepClass(
@@ -509,7 +492,7 @@ def create_runtime_instance_and_method_call( env ):
 
 def Runtime_instance_has_evaluated_type_of_class___test():
     env = PepEnvironment( None )
-    meth = create_runtime_instance_and_method_call( env )
+    meth = create_instance_variable_and_method_call( env )
 
     assert_equal(
         PepSymbol( "MyClass" ).evaluate( env ),
@@ -519,7 +502,7 @@ def Runtime_instance_has_evaluated_type_of_class___test():
 
 def Runtime_instance_allows_access_to_methods___test():
     env = PepEnvironment( None )
-    meth = create_runtime_instance_and_method_call( env )
+    meth = create_instance_variable_and_method_call( env )
 
     # my_meth is a callable taking no args and returning void
     assert_equal(
@@ -532,9 +515,9 @@ def Runtime_instance_allows_access_to_methods___test():
 
 
 
-def Method_calls_of_runtime_instances_are_unknown___test():
+def Method_calls_of_instance_variables_are_unknown___test():
     env = PepEnvironment( None )
-    meth = create_runtime_instance_and_method_call( env )
+    meth = create_instance_variable_and_method_call( env )
 
     assert_false( meth.is_known( env ) )
 
@@ -543,9 +526,9 @@ def Method_calls_of_runtime_instances_are_unknown___test():
     assert_false( ev_meth.is_known( env ) )
 
 
-def Evaluated_types_of_method_calls_of_runtime_instances_are_correct___test():
+def Evaluated_types_of_method_calls_of_instance_variables_are_correct___test():
     env = PepEnvironment( None )
-    meth = create_runtime_instance_and_method_call( env )
+    meth = create_instance_variable_and_method_call( env )
 
     assert_equal( PepType( PepVoid ), meth.evaluated_type( env ) )
 

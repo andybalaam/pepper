@@ -42,7 +42,7 @@ class PepDefInit( PepDef ):
     def construction_args( self ):
         return ( self.arg_types_and_names, self.body_stmts )
 
-    def get_member_variables( self ):
+    def get_member_variables( self, env ):
         ret = []
 
         is_var = lambda stmt: stmt.__class__ == PepVar
@@ -71,7 +71,7 @@ class PepDefInit( PepDef ):
                         selfdot + "'."
                     )
 
-                ret.append( ( init_stmt.var_type, nm ) )
+                ret.append( ( init_stmt.var_type.evaluate( env ), nm ) )
 
         return ret
 
