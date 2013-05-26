@@ -11,7 +11,7 @@ def type_is( typ, inst ):
     """
     Check that instance is of (exact) type typ.
     Throws an Assertion error if not.
-    The arguments order is supposed to be remenicent of C/Java style
+    The arguments order is supposed to be reminiscent of C/Java style
     function declarations.
     """
 
