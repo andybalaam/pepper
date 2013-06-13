@@ -11,6 +11,7 @@ from values import PepType
 from values import PepValue
 from vals.basic_types.pepvariable import PepVariable
 from vals.functions.pepcallable import PepCallable
+from vals.functions.pepfunction import PepFunction
 from values import PepPass
 from values import all_known
 from usererrorexception import PepUserErrorException
@@ -64,16 +65,6 @@ class PepReturn( PepValue ):
 
     def do_evaluate( self, env ):
         return PepReturn( self.value.evaluate( env ) )
-
-class PepFunction( PepCallable ):
-    __metaclass__ = ABCMeta
-
-    def __init__( self ):
-        PepValue.__init__( self )
-#        self.arg_types_and_names = arg_types_and_names
-
-    def is_known( self, env ):
-        return True
 
 class PepFunctionOverloadList( PepCallable ):
     def __init__( self, initial_list ):
