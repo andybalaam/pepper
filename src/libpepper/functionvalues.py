@@ -15,8 +15,6 @@ from values import PepPass
 from values import all_known
 from usererrorexception import PepUserErrorException
 
-from utils.execution_environment import execution_environment
-
 def type_matches( env, tp, val ):
     return tp.evaluate( env ).matches( val.evaluated_type( env ) )
 

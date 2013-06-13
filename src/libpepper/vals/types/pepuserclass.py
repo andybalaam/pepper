@@ -7,7 +7,6 @@
 from itertools import ifilter
 
 from libpepper.environment import PepEnvironment
-from libpepper.languagevalues import PepPlaceholder
 from libpepper.namespace import PepNamespace
 from libpepper.utils.type_is import type_is
 from libpepper.values import PepTypeMatcher

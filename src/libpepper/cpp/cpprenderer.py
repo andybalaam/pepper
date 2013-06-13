@@ -87,7 +87,9 @@ class PepCppRenderer( object ):
 
         clazz = runtime_init.instance.clazz
 
-        clazz_type_and_name = ( clazz, PepSymbol("self") )
+        clazz_type_and_name = (
+            PepConstructingUserClass( clazz ), PepSymbol("self") )
+
         init_style_arg_types_and_names = (
             (clazz_type_and_name,) + fn.arg_types_and_names[1:] )
 

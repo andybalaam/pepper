@@ -8,7 +8,6 @@
 
 from libpepper.environment import PepEnvironment
 from libpepper.functionvalues import PepFunctionOverloadList
-from libpepper.languagevalues import PepPlaceholder
 from libpepper.namespace import PepNamespace
 from libpepper.values import PepTypeMatcher
 from libpepper.values import PepValue

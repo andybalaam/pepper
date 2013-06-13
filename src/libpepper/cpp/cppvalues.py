@@ -145,7 +145,11 @@ def _render_type_and_name( typename, env ):
 
     # TODO: deal with copyable types etc., which should have no ampersand
     # TODO: avoid isinstance?
-    if isinstance( evald_type, PepUserClass ):
+    if (
+        isinstance( evald_type, PepUserClass ) or
+        isinstance( evald_type, PepConstructingUserClass )
+    ):
+
         amp = "&"
     else:
         amp = ""
@@ -270,7 +274,10 @@ def render_PepInterface( value, env ):
     return ""
 
 def render_PepUserClass( value, env ):
-    return value.name
+    return value.get_name()
+
+def render_PepConstructingUserClass( value, env ):
+    return value.get_name()
 
 def render_PepArrayLookup( value, env ):
     # TODO: handle large numbers

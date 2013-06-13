@@ -15,12 +15,13 @@ from values import pep_none
 
 from usererrorexception import PepUserErrorException
 
-class PepPlaceholder( PepValue ):
-    def construction_args( self ):
-        return ()
-
-    def evaluate( self, env ):
-        raise Exception( "Should never have an PepPlaceholder to evaluate." )
+class PepUninitedMemberVariable( PepVariable ):
+    """
+    A placeholder variable that tells us the name of a member
+    that will be initialised during construction.
+    """
+    def __init__( self, clazz, name ):
+        PepVariable.__init__( self, clazz, name )
 
 class PepImport( PepValue ):
     def __init__( self, module_name ):
@@ -139,10 +140,10 @@ class PepInit( PepValue ):
     def do_evaluate( self, env ):
         ( tp, ns, nm, val ) = self._eval_args( env )
 
-#        if nm in ns:
-#            if not isinstance( ns[nm], PepVariable ): # TODO: put the placeholders back - enforcing we only do this in an init function
-#                raise PepUserErrorException(
-#                    "Namespace already contains the name '" + nm + "'." )
+        if nm in ns:
+            if not isinstance( ns[nm], PepUninitedMemberVariable ):
+                raise PepUserErrorException(
+                    "Namespace already contains the name '" + nm + "'." )
 
         val_type = val.evaluated_type( env )
         if not tp.matches( val_type ):

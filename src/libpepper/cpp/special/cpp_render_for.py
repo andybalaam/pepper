@@ -2,6 +2,7 @@
 # Released under the MIT License.  See the file COPYING.txt for details.
 
 from libpepper.vals.all_values import *
+from libpepper.utils.execution_environment import execution_environment
 
 from libpepper.cpp.cpputils import render_statements
 

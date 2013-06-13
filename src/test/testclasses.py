@@ -251,6 +251,72 @@ def test_Must_provide_nonempty_variable_name_in_var():
 
 
 
+def Cannot_overwrite_method_with_member_variable__test():
+
+    env = PepEnvironment( PepCppRenderer() )
+    add_builtins( env )
+
+    decl = PepClass(
+        name=PepSymbol( "MyClass" ),
+        base_classes=(),
+        body_stmts=(
+            PepDefInit(
+                (
+                    ( PepSymbol( "MyClass" ), PepSymbol( 'self' ) ),
+                ),
+                (
+                    (
+                        PepVar(
+                            (
+                                PepInit(
+                                    PepSymbol( "int" ),
+                                    PepSymbol( "self.my_meth" ),
+                                    PepInt( "3" )
+                                ),
+                            )
+                        ),
+                    )
+                ),
+            ),
+            PepDef(
+                PepSymbol( "void" ),
+                PepSymbol( "my_meth" ),
+                (
+                    ( PepSymbol( "MyClass" ), PepSymbol( 'self' ) ),
+                ),
+                (
+                    PepPass(),
+                ),
+            ),
+        )
+    )
+
+    assert_equal( "", decl.render( env ) )
+
+    exception_caught = False
+    try:
+
+        make_instance = PepInit(
+            PepSymbol( "MyClass" ),
+            PepSymbol( "my_instance" ),
+            PepFunctionCall(
+                PepSymbol( "MyClass.init" ), ()
+            )
+        )
+
+        make_instance.render( env )
+
+    except PepUserErrorException, e:
+        exception_caught = True
+        assert_contains(
+            str( e ),
+            "Namespace already contains the name 'my_meth'"
+        )
+
+    assert( exception_caught )
+
+
+
 def test_Can_get_names_of_member_variables_from_class():
 
     env = PepEnvironment( PepCppRenderer() )

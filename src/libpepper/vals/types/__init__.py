@@ -2,6 +2,7 @@
 # Released under the MIT License.  See the file COPYING.txt for details.
 
 from pepclass import PepClass
+from pepconstructinguserclass import PepConstructingUserClass
 from pepdefinit import PepDefInit
 from pepinitfunction import PepInitFunction
 from pepinstance import PepInstance

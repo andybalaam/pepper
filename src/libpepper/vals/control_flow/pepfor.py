@@ -1,7 +1,7 @@
 # Copyright (C) 2012 Andy Balaam and The Pepper Developers
 # Released under the MIT License.  See the file COPYING.txt for details.
 
-from libpepper.functionvalues import execution_environment
+from libpepper.utils.execution_environment import execution_environment
 from libpepper.values import PepValue
 from libpepper.values import pep_none
 
