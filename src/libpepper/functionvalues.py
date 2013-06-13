@@ -10,6 +10,7 @@ from values import PepSymbol
 from values import PepType
 from values import PepValue
 from vals.basic_types.pepvariable import PepVariable
+from vals.functions.pepcallable import PepCallable
 from values import PepPass
 from values import all_known
 from usererrorexception import PepUserErrorException
@@ -63,16 +64,6 @@ class PepReturn( PepValue ):
 
     def do_evaluate( self, env ):
         return PepReturn( self.value.evaluate( env ) )
-
-class PepCallable( PepValue ):
-    @abstractmethod
-    def call( self, args, env ): pass
-
-    @abstractmethod
-    def return_type( self, args, env ): pass
-
-    @abstractmethod
-    def args_match( self, args, env ): pass
 
 class PepFunction( PepCallable ):
     __metaclass__ = ABCMeta
