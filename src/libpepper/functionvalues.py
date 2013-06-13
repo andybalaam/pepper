@@ -12,6 +12,7 @@ from values import PepValue
 from vals.basic_types.pepvariable import PepVariable
 from vals.functions.pepcallable import PepCallable
 from vals.functions.pepfunction import PepFunction
+from vals.functions.pepruntimeuserfunction import PepRuntimeUserFunction
 from values import PepPass
 from values import all_known
 from usererrorexception import PepUserErrorException
@@ -188,25 +189,6 @@ class PepFunctionOverloadList( PepCallable ):
             )
 
         raise PepUserErrorException( msg )
-
-
-
-class PepRuntimeUserFunction( PepValue ):
-    def __init__( self, user_function, args, namespace_name ):
-        PepValue.__init__( self )
-        # TODO: check arg types
-        self.user_function = user_function
-        self.args = args
-        self.namespace_name = namespace_name
-
-    def construction_args( self ):
-        return ( self.user_function, self.args, self.namespace_name )
-
-    def is_known( self, env ):
-        return False
-
-    def evaluated_type( self, env ):
-        return self.user_function.return_type( self.args, env )
 
 
 class PepUserFunction( PepFunction ):
