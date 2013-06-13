@@ -14,7 +14,7 @@ from values import PepPass
 from values import all_known
 from usererrorexception import PepUserErrorException
 
-
+from utils.execution_environment import execution_environment
 
 def has_default( type_and_name ):
     return ( len( type_and_name ) == 3 )
@@ -23,30 +23,6 @@ def type_matches( env, tp, val ):
     return tp.evaluate( env ).matches( val.evaluated_type( env ) )
 
 
-def execution_environment( arg_types_and_names, args, known, env ):
-    newenv = env.clone_deeper()
-
-    i = 0
-    while i < len( arg_types_and_names ):
-        type_and_name = arg_types_and_names[i]
-        name = type_and_name[1]
-
-        if i < len( args ):
-            val = args[i]
-        else:
-            assert has_default( type_and_name )
-            val = type_and_name[2]
-
-        if known:
-            val = val.evaluate( env )
-        else:
-            tp  = type_and_name[0]
-            val = PepVariable( tp.evaluate( env ), name.name() )
-
-        newenv.namespace[name.name()] = val
-        i += 1
-
-    return newenv
 
 
 def is_callable( value ):
