@@ -6,8 +6,8 @@
 
 from libpepper.values import all_known
 
-from libpepper.functionvalues import PepFunction
-from libpepper.functionvalues import PepRuntimeUserFunction
+from libpepper.vals.functions.pepfunction import PepFunction
+from libpepper.vals.functions.pepruntimeuserfunction import PepRuntimeUserFunction
 
 class PepInstanceMethod( PepFunction ):
     """

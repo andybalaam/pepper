@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2012 Andy Balaam and The Pepper Developers
+# Copyright (C) 2011-2013 Andy Balaam and The Pepper Developers
 # Released under the MIT License.  See the file COPYING.txt for details.
 
 from abc import ABCMeta
@@ -9,18 +9,13 @@ from environment import PepEnvironment
 from values import PepSymbol
 from values import PepType
 from values import PepValue
-from vals.basic_types.pepvariable import PepVariable
 from vals.functions.pepcallable import PepCallable
-from vals.functions.pepfunction import PepFunction
-from vals.functions.pepruntimeuserfunction import PepRuntimeUserFunction
+from vals.functions.pepuserfunction import PepUserFunction
 from values import PepPass
 from values import all_known
 from usererrorexception import PepUserErrorException
 
 from utils.execution_environment import execution_environment
-
-def has_default( type_and_name ):
-    return ( len( type_and_name ) == 3 )
 
 def type_matches( env, tp, val ):
     return tp.evaluate( env ).matches( val.evaluated_type( env ) )
@@ -55,17 +50,6 @@ class PepFunctionCall( PepValue ):
 
     def evaluated_type( self, env ):
         return self.func.evaluate( env ).return_type( self.args, env )
-
-class PepReturn( PepValue ):
-    def __init__( self, value ):
-        PepValue.__init__( self )
-        self.value = value
-
-    def construction_args( self ):
-        return ( self.value, )
-
-    def do_evaluate( self, env ):
-        return PepReturn( self.value.evaluate( env ) )
 
 class PepFunctionOverloadList( PepCallable ):
     def __init__( self, initial_list ):
@@ -189,96 +173,6 @@ class PepFunctionOverloadList( PepCallable ):
             )
 
         raise PepUserErrorException( msg )
-
-
-class PepUserFunction( PepFunction ):
-    def __init__( self, name, ret_type, arg_types_and_names, body_stmts ):
-        PepFunction.__init__( self )
-        #PepFunction.__init__( self, arg_types_and_names )
-        self.name = name
-        self.ret_type = ret_type
-        self.arg_types_and_names = arg_types_and_names
-        self.body_stmts = body_stmts
-        assert( len( self.body_stmts ) > 0 ) # TODO: not just assert
-
-    def construction_args( self ):
-        return ( self.name, self.ret_type, self.arg_types_and_names,
-            self.body_stmts )
-
-    def return_type( self, args, env ):
-        return self.ret_type
-
-    def do_evaluate( self, env ):
-        # TODO: check the arguments are type-matchers
-        self.check_default_arg_types( env )
-        return self
-
-    def check_default_arg_types( self, env ):
-        for type_and_name in self.arg_types_and_names:
-            if has_default( type_and_name ):
-                if not type_matches( env, type_and_name[0], type_and_name[2] ):
-                    reqtype = type_and_name[0].evaluate( env )
-                    deftype = type_and_name[2].evaluated_type( env )
-                    raise PepUserErrorException(
-                        (
-                            "In function '{funcname}', the default for " +
-                            "argument '{argname}' should be {reqtype}, but " +
-                            "it is {deftype}."
-                        ).format(
-                            funcname = self.name,
-                            argname = type_and_name[1].symbol_name,
-                            reqtype = env.pretty_name( reqtype ),
-                            deftype = env.pretty_name( deftype ),
-                        )
-                    )
-
-    def args_match( self, args, env ):
-
-        i = 0
-        while True:
-
-            # Have we looked at all allowed args?  Then we're finished
-            if i >= len( self.arg_types_and_names ):
-                # Matches if we've finished all the args too
-                return ( i >= len( args ) )
-
-            type_and_name = self.arg_types_and_names[i]
-
-            # Have we run out of args?  If so, remaining allowed must be opt
-            if i >= len( args ):
-                if not has_default( type_and_name ):
-                    return False
-            else:
-                if not type_matches( env, type_and_name[0], args[i] ):
-                    return False
-
-            i += 1
-
-    def signature_matches( self, ret_type, arg_types_and_names ):
-        return (
-            ret_type            == self.ret_type and
-            arg_types_and_names == self.arg_types_and_names
-        )
-
-    def call( self, args, env ):
-        """You  must call args_match first and only call this if the return
-        value was True"""
-        if all_known( args, env ):
-
-            newenv = self.execution_environment( args, True, env )
-
-            for stmt in self.body_stmts:
-                ev_st = stmt.evaluate( newenv )
-                if ev_st.__class__ == PepReturn:
-                    return ev_st.value.evaluate( newenv )
-            return PepPass()
-        # TODO: if this is a pure function, could we partially-evaluate it?
-
-        return PepRuntimeUserFunction( self, args, None )
-
-    def execution_environment( self, args, known, env ):
-        return execution_environment(
-            self.arg_types_and_names, args, known, env )
 
 
 class PepDef( PepValue ):

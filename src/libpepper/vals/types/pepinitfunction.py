@@ -4,7 +4,7 @@
 # Start children off on the way they should go, and even when they are old they
 # will not turn from it.  Proverbs 22 v6
 
-from libpepper.functionvalues import PepFunction
+from libpepper.vals.functions.pepfunction import PepFunction
 from libpepper.values import all_known
 from libpepper.vals.basic_types import PepVariable
 

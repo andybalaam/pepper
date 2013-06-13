@@ -5,7 +5,7 @@
 # patch an old one. Otherwise, they will have torn the new garment, and the
 # patch from the new will not match the old.'  Luke 5 v36
 
-from libpepper.functionvalues import PepFunction
+from libpepper.vals.functions.pepfunction import PepFunction
 from libpepper.values import PepBool
 from libpepper.values import PepType
 from libpepper.values import PepValue

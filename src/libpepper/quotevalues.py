@@ -2,7 +2,7 @@
 # Released under the MIT License.  See the file COPYING.txt for details.
 
 from libpepper.namespace import PepNamespace
-from functionvalues import PepFunction
+from libpepper.vals.functions.pepfunction import PepFunction
 from values import PepValue
 
 

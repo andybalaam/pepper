@@ -1,5 +1,5 @@
 
-from libpepper.functionvalues import PepFunction
+from libpepper.vals.functions.pepfunction import PepFunction
 from libpepper.values import PepBool
 from libpepper.values import all_known
 
