@@ -10,6 +10,7 @@ from libpepper.cpp.cppvalues import *
 from libpepper.cpp.cpprenderer import PepCppRenderer
 from libpepper.builtinmodules.pepsys import PepSysArgv
 
+from assert_rendered_cpp_equals import assert_rendered_cpp_equals
 
 #def test_Known_plus_string():
 #    env = PepEnvironment( PepCppRenderer() )
@@ -57,5 +58,12 @@ def test_Known_plus_argv_plus_known():
         ) )
 
     assert_equal( value.render( env ), 'printf( "known%sknown2\\n", argv[1] )' )
+
+
+def Adding_known_to_unknown_via_real_parser___test():
+    assert_rendered_cpp_equals(
+        r"""printf( "A%sB\n", argv[1] )""",
+        r"""print( "A" + sys.argv[1] + "B" )"""
+    )
 
 
