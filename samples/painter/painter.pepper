@@ -1,24 +1,24 @@
 
 import sys
 
-# TODO: hold size (100) in a variable
+float size = 100.0
 
 def void svg_start( int unused ):
     print( "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='100' height='100'>" )
 
 def void svg_draw_line( int unused, float x1, float y1, float x2, float y2 ):
-    float ax1 = 100.0 * x1
-    float ay1 = 100.0 * ( 1 - y1 )
-    float ax2 = 100.0 * x2
-    float ay2 = 100.0 * ( 1 - y2 )
+    float ax1 = size * x1
+    float ay1 = size * ( 1 - y1 )
+    float ax2 = size * x2
+    float ay2 = size * ( 1 - y2 )
     print( "  <path d='M " + ax1 + " " + ay1 + " " + ax2 + " " + ay2 + "' style='stroke:#000000;'/>" )
 
 def void svg_draw_circle( int unused, float x, float y, float radius ):
-    # TODO: print( "  <circle cx='%f' cy="%f' r='%f'/>" % ( ( 100.0 * x ), ( 100.0 * y ), ( 100.0 * radius ) )
+    # TODO: print( "  <circle cx='%f' cy="%f' r='%f'/>" % ( ( size * x ), ( size * y ), ( size * radius ) )
     # TODO: allow bracketted expressions within print instead of needing variables ax etc. here
-    float ax = 100.0 * x
-    float ay = 100.0 * y
-    float ar = 100.0 * radius
+    float ax = size * x
+    float ay = size * y
+    float ar = size * radius
     print( "  <circle cx='" + ax + "' cy='" + ay + "' r='" + ar + "'/>" )
 
 def void svg_end( int unused ):
