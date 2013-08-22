@@ -283,52 +283,52 @@ argumentsList:
     ( noCommaExpression ( COMMA noCommaExpression )* )?
 ;
 
-suite :
-    COLON^
+protected suiteStart :
     ( NEWLINE! )+
     INDENT!
     ( NEWLINE! )*
-    ( statement ( NEWLINE! )* | returnStatement ( NEWLINE! )* )+
+;
+
+protected suiteEnd :
     DEDENT!
+;
+
+suite :
+    COLON^
+    suiteStart
+    ( statement ( NEWLINE! )* | returnStatement ( NEWLINE! )* )+
+    suiteEnd
 ;
 
 classSuite :
     COLON^
-    ( NEWLINE! )+
-    INDENT!
-    ( NEWLINE! )*
+    suiteStart
     ( classStatement ( NEWLINE! )* )+
-    DEDENT!
+    suiteEnd
 ;
 
 interfaceSuite :
     COLON^
-    ( NEWLINE! )+
-    INDENT!
-    ( NEWLINE! )*
+    suiteStart
     ( interfaceStatement ( NEWLINE! )* )+
-    DEDENT!
+    suiteEnd
 ;
 
 initFunctionSuite :
     COLON^
-    ( NEWLINE! )+
-    INDENT!
-    ( NEWLINE! )*
+    suiteStart
     (
           ( varStatement ( statement ( NEWLINE! )* )* )
         | ( statement ( NEWLINE! )* )+
     )
-    DEDENT!
+    suiteEnd
 ;
 
 varSuite :
     COLON^
-    ( NEWLINE! )+
-    INDENT!
-    ( NEWLINE! )*
+    suiteStart
     ( initialisation ( NEWLINE! )* )+
-    DEDENT!
+    suiteEnd
 ;
 
 initialisation :
