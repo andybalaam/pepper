@@ -67,3 +67,9 @@ def Adding_known_to_unknown_via_real_parser___test():
     )
 
 
+def Adding_known_to_unknown_numbers___test():
+    assert_rendered_cpp_equals(
+        r"""printf( "A%dB\n", argc )""",
+        r"""print( "A" + len( sys.argv ) + "B" )"""
+    )
+
