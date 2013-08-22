@@ -199,3 +199,34 @@ PepDef(
 
 
 
+def test_comment_in_function():
+    assert_parser_result_from_code(
+        r"""
+def void fn():
+# ignored
+    # ignored
+    pass
+# ignored
+    # ignored
+# ignored
+""",
+        r"""
+["def":def]
+    [SYMBOL:void]
+    [SYMBOL:fn]
+    [LPAREN:(]
+    [COLON::]
+        [SYMBOL:pass]
+""",
+        r"""
+PepDef(
+    PepSymbol('void'),
+    PepSymbol('fn'),
+    (),
+    (
+        PepSymbol('pass'),
+    )
+)
+""" )
+
+

@@ -33,3 +33,32 @@ PepInterface(
 """ )
 
 
+
+def test_comments_in_interface():
+    assert_parser_result_from_code(
+        r"""
+interface MyInterface:
+# ignored
+    # ignored
+    def void foo()
+    # ignored
+# ignored
+""",
+        r"""
+["interface":interface]
+    [SYMBOL:MyInterface]
+    [COLON::]
+        ["def":def]
+            [SYMBOL:void]
+            [SYMBOL:foo]
+            [LPAREN:(]
+""",
+        r"""
+PepInterface(
+    PepSymbol('MyInterface'),
+    (),
+    (PepInterfaceDef(PepSymbol('void'),PepSymbol('foo'),()),)
+)
+""" )
+
+

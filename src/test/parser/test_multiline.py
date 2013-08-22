@@ -4,6 +4,7 @@
 
 from assert_parser_result import assert_parser_result
 
+# Very basic test that multiple-line programs are allowed
 def test_multiline():
     assert_parser_result(
         r"""

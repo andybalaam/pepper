@@ -285,7 +285,7 @@ argumentsList:
 
 suite :
     COLON^
-    NEWLINE!
+    ( NEWLINE! )+
     INDENT!
     ( NEWLINE! )*
     ( statement ( NEWLINE! )* | returnStatement ( NEWLINE! )* )+
@@ -294,7 +294,7 @@ suite :
 
 classSuite :
     COLON^
-    NEWLINE!
+    ( NEWLINE! )+
     INDENT!
     ( NEWLINE! )*
     ( classStatement ( NEWLINE! )* )+
@@ -303,7 +303,7 @@ classSuite :
 
 interfaceSuite :
     COLON^
-    NEWLINE!
+    ( NEWLINE! )+
     INDENT!
     ( NEWLINE! )*
     ( interfaceStatement ( NEWLINE! )* )+
@@ -312,7 +312,7 @@ interfaceSuite :
 
 initFunctionSuite :
     COLON^
-    NEWLINE!
+    ( NEWLINE! )+
     INDENT!
     ( NEWLINE! )*
     (
@@ -324,7 +324,7 @@ initFunctionSuite :
 
 varSuite :
     COLON^
-    NEWLINE!
+    ( NEWLINE! )+
     INDENT!
     ( NEWLINE! )*
     ( initialisation ( NEWLINE! )* )+

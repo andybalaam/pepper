@@ -6,9 +6,9 @@ import sys
 def void svg_start( int unused ):
     print( "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='100' height='100'>" )
 
-# TODO: print without line break
-# TODO: try using + to combine
 def void svg_draw_line( int unused, float x1, float y1, float x2, float y2 ):
+    # TODO: print without line break
+    # TODO: try using + to combine
     print( "  <path d='M " )
     print( 100.0 * x1 )
     print( " " )
@@ -19,8 +19,8 @@ def void svg_draw_line( int unused, float x1, float y1, float x2, float y2 ):
     print( 100.0 * ( 1  - y2 ) )
     print( "' style='stroke:#000000;'/>" )
 
-# TODO: print( "  <circle cx='%f' cy="%f' r='%f'/>" % ( ( 100.0 * x ), ( 100.0 * y ), ( 100.0 * radius ) )
 def void svg_draw_circle( int unused, float x, float y, float radius ):
+    # TODO: print( "  <circle cx='%f' cy="%f' r='%f'/>" % ( ( 100.0 * x ), ( 100.0 * y ), ( 100.0 * radius ) )
     print( "  <circle cx='" )
     print( 100.0 * x )
     print( "' cy='" )
@@ -42,13 +42,9 @@ def void svg_end( int unused ):
 
 # TODO: can't currently hold len( sys.argv ) in a variable!
 
-# TODO: pass len( sys.argv ) to force runtime evaluation
+# TODO: Have to pass len( sys.argv ) to force runtime evaluation
 svg_start( len( sys.argv ) )
 
-
-#svg_draw_circle( len( sys.argv ), 0.5, 0.5, 0.2 )
-
-#svg_draw_line( len( sys.argv ), 0.1, 0.1, 0.5, 0.5 )
 
 def float xcoord( int i, int max ):
     return 0.05 + 0.1 * i * 0.1 * i * 0.1 * i * 0.1 * i
@@ -59,10 +55,9 @@ def float ycoord( int i, int max ):
 def float radius( int i, int max ):
     return 0.1 * 0.1 * i
 
-# TODO: allow comments inside blocks
-# TODO: allow line breaking
 int num_circles = 10
 for int i in range( 0, num_circles + len( sys.argv ) - 1):
+    # TODO: allow line breaking
     svg_draw_circle( len( sys.argv ), xcoord( i, num_circles ), ycoord( i, num_circles ), radius( i, num_circles ) )
 
 

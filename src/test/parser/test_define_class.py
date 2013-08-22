@@ -362,6 +362,55 @@ PepClass(
 """ )
 
 
+def test_comments_in_init_and_var():
+    assert_parser_result_from_code(
+        r"""
+class MyClass:
+    def_init():
+# ignored
+        var:
+        # ignored
+            # ignored
+# ignored
+            int self.x = 3
+""",
+        r"""
+["class":class]
+    [SYMBOL:MyClass]
+    [COLON::]
+        ["def_init":def_init]
+            [LPAREN:(]
+            [COLON::]
+                ["var":var]
+                    [COLON::]
+                        [EQUALS:=]
+                            [SYMBOL:int]
+                            [SYMBOL:self.x]
+                            [INT:3]
+""",
+        r"""
+PepClass(
+    PepSymbol('MyClass'),
+    (),
+    (
+        PepDefInit(
+            (),
+            (
+                PepVar(
+                    (
+                        PepInit(
+                            PepSymbol('int'),
+                            PepSymbol('self.x'),
+                            PepInt('3')
+                        ),
+                    )
+                ),
+            )
+        ),
+    )
+)
+""" )
+
 
 
 def test_empty_line_in_class():
@@ -421,6 +470,72 @@ PepClass(
 """ )
 
 
+
+def test_comments_in_class():
+    assert_parser_result_from_code(
+        r"""
+class MyClass:
+# ignored
+    # ignored
+    def void meth( MyClass self ):
+# ignored
+        #ignored
+        pass
+        #ignored
+# ignored
+    # ignored
+
+    # ignored
+    def void meth2( MyClass self ):
+        pass
+    # ignored
+# ignored
+""",
+        r"""
+["class":class]
+    [SYMBOL:MyClass]
+    [COLON::]
+        ["def":def]
+            [SYMBOL:void]
+            [SYMBOL:meth]
+            [LPAREN:(]
+                [SYMBOL:MyClass]
+                [SYMBOL:self]
+            [COLON::]
+                [SYMBOL:pass]
+        ["def":def]
+            [SYMBOL:void]
+            [SYMBOL:meth2]
+            [LPAREN:(]
+                [SYMBOL:MyClass]
+                [SYMBOL:self]
+            [COLON::]
+                [SYMBOL:pass]
+""",
+        r"""
+PepClass(
+    PepSymbol('MyClass'),
+    (),
+    (
+        PepDef(
+            PepSymbol('void'),
+            PepSymbol('meth'),
+            ((PepSymbol('MyClass'), PepSymbol('self')),),
+            (
+                PepSymbol('pass'),
+            )
+        ), 
+        PepDef(
+            PepSymbol('void'),
+            PepSymbol('meth2'),
+            ((PepSymbol('MyClass'), PepSymbol('self')),),
+            (
+                PepSymbol('pass'),
+            )
+        )
+    )
+)
+""" )
 
 
 

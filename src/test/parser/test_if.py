@@ -3,6 +3,7 @@
 
 
 from assert_parser_result import assert_parser_result
+from assert_parser_result import assert_parser_result_from_code
 
 def test_if():
     assert_parser_result(
@@ -215,4 +216,39 @@ PepIf(
         PepInt('0'),
     )
 )""" )
+
+
+
+def test_comments_in_if_else():
+    assert_parser_result_from_code(
+        r"""
+if True:
+    # ignored
+    pass
+# ignored
+else:
+# ignored
+    # ignored
+    pass
+""",
+        r"""
+["if":if]
+    [SYMBOL:True]
+    [COLON::]
+        [SYMBOL:pass]
+    ["else":else]
+    [COLON::]
+        [SYMBOL:pass]
+""",
+        r"""
+PepIf(
+    PepSymbol('True'),
+    (
+        PepSymbol('pass'),
+    ),
+    (
+        PepSymbol('pass'),
+    )
+)
+""" )
 

@@ -2,6 +2,7 @@
 # Released under the MIT License.  See the file COPYING.txt for details.
 
 from assert_parser_result import assert_parser_result
+from assert_parser_result import assert_parser_result_from_code
 
 def test_quoted_sum():
     assert_parser_result(
@@ -30,6 +31,33 @@ def test_quoted_sum():
 PepQuote((PepPlus(PepSymbol('x'),PepSymbol('y')),))
 """ )
 
+
+
+def test_comments_in_quote():
+    assert_parser_result_from_code(
+        r"""
+quote:
+    # ignored
+    x + y
+# ignored
+""",
+        r"""
+["quote":quote]
+    [COLON::]
+        [PLUS:+]
+            [SYMBOL:x]
+            [SYMBOL:y]
+""",
+        r"""
+PepQuote(
+    (
+        PepPlus(
+            PepSymbol('x'),
+            PepSymbol('y'))
+        ,
+    )
+)
+""" )
 
 
 

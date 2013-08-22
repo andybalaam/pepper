@@ -38,7 +38,7 @@ PepFor(
 """ )
 
 
-def test_for_init_in_range():
+def test_for_int_in_range():
     assert_parser_result_from_code(
         r"""
 for int i in range( 0, 4 ):
@@ -80,5 +80,49 @@ PepFor(
 )
 """ )
 
+
+def test_comments_in_for():
+    assert_parser_result_from_code(
+        r"""
+for int i in range( 0, 4 ):
+    # ignored
+    print( i )
+# ignored
+""",
+        r"""
+["for":for]
+    [SYMBOL:int]
+    [SYMBOL:i]
+    [LPAREN:(]
+        [SYMBOL:range]
+        [INT:0]
+        [COMMA:,]
+        [INT:4]
+    [COLON::]
+        [LPAREN:(]
+            [SYMBOL:print]
+            [SYMBOL:i]
+""",
+        r"""
+PepFor(
+    PepSymbol('int'),
+    PepSymbol('i'),
+    PepFunctionCall(
+        PepSymbol('range'),
+        (
+            PepInt('0'), 
+            PepInt('4')
+        )
+    ),
+    (
+        PepFunctionCall(
+            PepSymbol('print'),
+            (
+                PepSymbol('i'),
+            )
+        ),
+    )
+)
+""" )
 
 
