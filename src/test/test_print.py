@@ -1,7 +1,7 @@
 # Copyright (C) 2013 Andy Balaam and The Pepper Developers
 # Released under the MIT License.  See the file COPYING.txt for details.
 
-from assert_rendered_cpp_equals import assert_rendered_cpp_equals
+from asserts import assert_rendered_cpp_equals
 
 def Adding_known_to_unknown_via_real_parser___test():
     assert_rendered_cpp_equals(
