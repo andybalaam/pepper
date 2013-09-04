@@ -73,6 +73,18 @@ def test_range():
     assert_equal( "3", r.begin.value )
     assert_equal( "4", r.end.value )
 
+def test_function_type():
+    env = PepEnvironment( None )
+    add_builtins( env )
+
+    f = PepSymbol( "function" ).evaluate( env ).call(
+        ( PepType( PepInt ), PepTuple( ( PepType( PepString ), ) ) ), env )
+
+    assert_equal( PepFunctionType, f.__class__ )
+    assert_equal( PepType( PepInt ), f.return_type )
+    assert_equal( PepTuple, f.arg_types.__class__ )
+    assert_equal( PepType( PepString ), f.arg_types.items[0] )
+
 def test_print_return_type_is_none():
     assert_equal( PepPrint().return_type( None, () ), PepType( PepNoneType ) )
 

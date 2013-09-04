@@ -81,6 +81,19 @@ range_function = PepUserFunction(
     )
 )
 
+# TODO: write this in pepper
+function_function = PepUserFunction(
+    "function_impl",
+    PepType( PepFunctionType ),
+    (
+        ( PepType( PepType ), PepSymbol( "return_type" ) ),
+        ( PepType( PepTuple ), PepSymbol( "arg_types" ) ), # TODO: check tuple only holds types?
+    ),
+    (
+        PepReturn( PepFunctionType( PepSymbol( "return_type" ), PepSymbol( "arg_types" ) ) ),
+    )
+)
+
 class PepImplements( PepFunction ):
 
     def construction_args( self ):
@@ -122,4 +135,5 @@ def add_builtins( env ):
     env.namespace["len"]        = PepLen()
     env.namespace["print"]      = PepPrint()
     env.namespace["range"]      = range_function.evaluate( env )
+    env.namespace["function"]   = function_function.evaluate( env )
 
