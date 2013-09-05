@@ -86,16 +86,10 @@ def render_PepFunction( value, env ):
     raise Exception( "Don't know how to render a function yet" )
 
 def render_PepFunctionType( value, env ):
-    # TODO: need to mix name into type to render function arguments
-
-    ret = value.return_type.render( env )
-    ret += " (*)( "
-
-    ret += ", ".join(
-        arg_type.render( env ) for arg_type in value.arg_types.items )
-
-    ret += " )"
-    return ret
+    # We only get here for return types - argument lists have special
+    # handling because the name must be mixed with the type.
+    # TODO: variable declarations should also not get here?
+    return _render_function_pointer_type_and_name( value, "", env )
 
 def render_PepFunctionOverloadList( value, env ):
     assert len( value._list ) > 0
@@ -166,8 +160,18 @@ def render_PepNoneType( value, env ):
     return ""
 
 
-def _render_type_and_name( typename, env ):
-    evald_type = typename[0].evaluate( env )
+
+def _render_function_pointer_type_and_name( evald_type, name, env ):
+
+    return "%s (%s*)( %s )" % (
+        evald_type.return_type.render( env ),
+        name,
+        ", ".join(
+            arg_type.render( env ) for arg_type in evald_type.arg_types.items ),
+    )
+
+
+def _render_normal_type_and_name( evald_type, name, env ):
 
     # TODO: deal with copyable types etc., which should have no ampersand
     # TODO: avoid isinstance?
@@ -183,8 +187,19 @@ def _render_type_and_name( typename, env ):
     return "%s%s %s" % (
         evald_type.render( env ),
         amp,
-        typename[1].symbol_name
+        name
     )
+
+
+def _render_type_and_name( typename, env ):
+    evald_type = typename[0].evaluate( env )
+
+    if isinstance( evald_type, PepFunctionType ):
+        return _render_function_pointer_type_and_name(
+            evald_type, typename[1].symbol_name, env )
+    else:
+        return _render_normal_type_and_name(
+            evald_type, typename[1].symbol_name, env )
 
 def _render_bracketed_list( items ):
     items_list = list( items )
