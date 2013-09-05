@@ -478,14 +478,14 @@ def Can_render_function_taking_function_as_arg__test():
     assert_rendered_program_equals(
         """
 int fn1( double a, double b );
-void myfn( int unused, int (myarg*)( double, double ) );
+void myfn( int unused, int (*myarg)( double, double ) );
 
 int fn1( double a, double b )
 {
     return 1;
 }
 
-void myfn( int unused, int (myarg*)( double, double ) )
+void myfn( int unused, int (*myarg)( double, double ) )
 {
 }
 

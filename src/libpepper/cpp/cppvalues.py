@@ -163,7 +163,7 @@ def render_PepNoneType( value, env ):
 
 def _render_function_pointer_type_and_name( evald_type, name, env ):
 
-    return "%s (%s*)( %s )" % (
+    return "%s (*%s)( %s )" % (
         evald_type.return_type.render( env ),
         name,
         ", ".join(

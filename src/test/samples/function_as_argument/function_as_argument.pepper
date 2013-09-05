@@ -1,0 +1,12 @@
+import sys
+
+def void fn1( float a, float b ):
+    print( "In fn1" )
+
+def void run_it( int unused, function( void, ( float, float ) ) tocall ):
+    # TODO: tocall()
+    print( "in run_it" )
+
+
+run_it( len( sys.argv ), fn1 )
+
