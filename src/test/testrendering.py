@@ -11,6 +11,7 @@ from libpepper.cpp.cpprenderer import PepCppRenderer
 from libpepper.vals.all_values import *
 
 from pepasserts import assert_multiline_equal
+from asserts import assert_rendered_cpp_equals
 
 def test_Hello_World():
     env = PepEnvironment( PepCppRenderer() )
@@ -427,5 +428,11 @@ int main( int argc, char* argv[] )
         ans
     )
 
+
+def Can_render_function_type_as_a_function_pointer__test():
+    assert_rendered_cpp_equals(
+        "int (*)( double, double )",
+        "function( int, ( float, float ) )"
+    )
 
 

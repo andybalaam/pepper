@@ -85,6 +85,18 @@ def render_PepIf( value, env ):
 def render_PepFunction( value, env ):
     raise Exception( "Don't know how to render a function yet" )
 
+def render_PepFunctionType( value, env ):
+    # TODO: need to mix name into type to render function arguments
+
+    ret = value.return_type.render( env )
+    ret += " (*)( "
+
+    ret += ", ".join(
+        arg_type.render( env ) for arg_type in value.arg_types.items )
+
+    ret += " )"
+    return ret
+
 def render_PepPrint( value, env ):
     return render_PepFunction( value, env )
 
