@@ -12,6 +12,7 @@ from libpepper.vals.all_values import *
 
 from pepasserts import assert_multiline_equal
 from asserts import assert_rendered_cpp_equals
+from asserts import assert_rendered_program_equals
 
 def test_Hello_World():
     env = PepEnvironment( PepCppRenderer() )
@@ -435,4 +436,40 @@ def Can_render_function_type_as_a_function_pointer__test():
         "function( int, ( float, float ) )"
     )
 
+
+def Can_render_function_returning_function__test():
+    assert_rendered_program_equals(
+        """
+int fn1( double a, double b );
+int (*)( double, double ) myfn( int unused );
+
+int fn1( double a, double b )
+{
+    return 1;
+}
+
+int (*)( double, double ) myfn( int unused )
+{
+    return fn1;
+}
+
+int main( int argc, char* argv[] )
+{
+    myfn( argc );
+
+    return 0;
+}
+""",
+        """
+import sys
+
+def int fn1( float a, float b ):
+    return 1
+
+def function( int, ( float, float ) ) myfn( int unused ):
+    return fn1
+
+myfn( len( sys.argv ) )
+"""
+)
 

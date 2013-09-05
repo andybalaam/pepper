@@ -97,6 +97,20 @@ def render_PepFunctionType( value, env ):
     ret += " )"
     return ret
 
+def render_PepFunctionOverloadList( value, env ):
+    assert len( value._list ) > 0
+
+    if len( value._list ) > 1:
+        # TODO: How do we know which one you are referring to?
+        raise Exception( "Can't (yet) use an overloaded function as a value." )
+
+    # Pick the first one for now.
+    fn = value._list[0]
+    fakeargs = tuple( [tn[0]] for tn in fn.arg_types_and_names )
+    rtfn = PepRuntimeUserFunction( fn, fakeargs, None )
+    name = env.renderer.add_function( rtfn, env )
+    return name
+
 def render_PepPrint( value, env ):
     return render_PepFunction( value, env )
 
