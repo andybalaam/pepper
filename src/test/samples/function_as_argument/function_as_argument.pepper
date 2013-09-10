@@ -4,7 +4,7 @@ def void fn1( float a, float b ):
     print( "In fn1" )
 
 def void run_it( int unused, function( void, ( float, float ) ) tocall ):
-    # TODO: tocall()
+    tocall( 2.0, 2.0 )
     print( "in run_it" )
 
 

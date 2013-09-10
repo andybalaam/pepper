@@ -510,3 +510,39 @@ myfn( len( sys.argv ), fn1 )
 )
 
 
+def Can_render_function_passed_as_arg__test():
+    assert_rendered_program_equals(
+        """
+int fn1( int unused, double n );
+void myfn( int unused, int (*myarg)( int, double ) );
+
+int fn1( int unused, double n )
+{
+    return 1;
+}
+
+void myfn( int unused, int (*myarg)( int, double ) )
+{
+    myarg( unused, 2.0 );
+}
+
+int main( int argc, char* argv[] )
+{
+    myfn( argc, fn1 );
+
+    return 0;
+}
+""",
+        """
+import sys
+
+def int fn1( int unused, float n ):
+    return 1
+
+def void myfn( int unused, function( int, ( int, float ) ) myarg ):
+    myarg( unused, 2.0 )
+
+myfn( len( sys.argv ), fn1 )
+"""
+)
+

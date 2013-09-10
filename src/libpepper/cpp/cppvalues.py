@@ -299,10 +299,13 @@ def render_PepVariable( value, env ):
 
 def render_PepFunctionCall( value, env ):
     fn = value.func.evaluate( env )
-
-    # TODO: assert fn is callable
-
-    return fn.call( value.args, env ).render( env )
+    if isinstance( fn, PepSymbol ): # TODO: can we do better than isinstance?
+        # TODO: check arguments match?
+        args = tuple( arg.render( env ) for arg in value.args )
+        return render_PepSymbol( fn, env ) + _render_bracketed_list( args )
+    else:
+        # TODO: assert fn is callable
+        return fn.call( value.args, env ).render( env )
 
 def render_PepReturn( value, env ):
     return "return " + value.value.render( env )

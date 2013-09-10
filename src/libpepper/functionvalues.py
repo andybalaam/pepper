@@ -41,7 +41,10 @@ class PepFunctionCall( PepValue ):
     def do_evaluate( self, env ):
         fn = self.func.evaluate( env )
         assert is_callable( fn ) # TODO: not assert
-        return fn.call( self.args, env )
+        if fn.is_known( env ):
+            return fn.call( self.args, env )
+        else:
+            return self
 
     def is_known( self, env ):
         return all_known( self.args + (self.func,), env )
