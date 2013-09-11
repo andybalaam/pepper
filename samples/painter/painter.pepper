@@ -24,37 +24,60 @@ def void svg_draw_circle( int unused, float x, float y, float radius ):
 def void svg_end( int unused ):
     print( "</svg>" )
 
+# TODO: have to name Vector FrameA to make sure it appears first in C++ (!)
+class FrameA:
+    def_init( FrameA self, int unused, float x, float y ):
+        var:
+            float self.x = x
+            float self.y = y
+
+class Frame:
+    def_init( Frame self, int unused, FrameA va1, FrameA va2, FrameA va3 ):
+        var:
+            FrameA self.vb1 = va1
+            FrameA self.vb2 = va2
+            FrameA self.vb3 = va3
+
 # TODO: Will only work when we can pass functions in as arguments
-#def void svg_document( int unused, function(void,(frame)) painter )
-#    svg_start( unused )
-#    (painter (make-frame (make-vect 0 0)
-#                         (make-vect 1 0)
-#                         (make-vect 0 1)))
-#    (svg-end))
+def void svg_document( int unused, function(void,(int, Frame)) painter ):
+    svg_start( unused )
+    FrameA v1 = FrameA.init(  unused, 0.0, 0.0 )
+    FrameA v2 = FrameA.init(  unused, 1.0, 0.0 )
+    FrameA v3 = FrameA.init(  unused, 0.0, 1.0 )
+    Frame frame = Frame.init( unused, v1, v2, v3 )
+    painter( unused, frame )
+    svg_end( unused )
 
 # TODO: can't currently hold len( sys.argv ) in a variable!
 
 # TODO: Have to pass len( sys.argv ) to force runtime evaluation
-svg_start( len( sys.argv ) )
 
 
-def float xcoord( int i, int max ):
-    return 0.05 + 0.1 * i * 0.1 * i * 0.1 * i * 0.1 * i
+def void circle_painter( int unused, Frame f ):
+    svg_draw_circle( unused, 0.5, 0.5, 0.2 )
 
-def float ycoord( int i, int max ):
-    return 0.05 + 0.1 * i * 0.1 * i
-
-def float radius( int i, int max ):
-    return 0.1 * 0.1 * i
-
-int num_circles = 10
-for int i in range( 0, num_circles + len( sys.argv ) - 1):
-    # TODO: allow line breaking
-    svg_draw_circle( len( sys.argv ), xcoord( i, num_circles ), ycoord( i, num_circles ), radius( i, num_circles ) )
+svg_document( len( sys.argv ), circle_painter )
 
 
-
-svg_end( len( sys.argv ) )
+#svg_start( len( sys.argv ) )
+#
+#def float xcoord( int i, int max ):
+#    return 0.05 + 0.1 * i * 0.1 * i * 0.1 * i * 0.1 * i
+#
+#def float ycoord( int i, int max ):
+#    return 0.05 + 0.1 * i * 0.1 * i
+#
+#def float radius( int i, int max ):
+#    return 0.1 * 0.1 * i
+#
+#int num_circles = 10
+#for int i in range( 0, num_circles + len( sys.argv ) - 1):
+#    # TODO: allow line breaking
+#    svg_draw_circle( len( sys.argv ), xcoord( i, num_circles ), ycoord( i, num_circles ), radius( i, num_circles ) )
+#
+#
+#
+#svg_end( len( sys.argv ) )
 
 
 
