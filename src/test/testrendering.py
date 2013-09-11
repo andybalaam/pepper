@@ -438,23 +438,36 @@ def Can_render_function_type_as_a_function_pointer__test():
 
 
 def Can_render_function_returning_function__test():
+    # TODO: remove need for "unused" arguments, by making
+    # things runtime by default
     assert_rendered_program_equals(
         """
-int fn1( double a, double b );
-int (*)( double, double ) myfn( int unused );
+struct Cls
+{
+};
 
-int fn1( double a, double b )
+void Cls_pep_c_pep___init__( Cls& self, int unused );
+int fn1( int unused, Cls& x, double a, double b );
+int (*)( int, Cls&, double, double ) myfn( int unused );
+
+void Cls_pep_c_pep___init__( Cls& self, int unused )
+{
+}
+
+int fn1( int unused, Cls& x, double a, double b )
 {
     return 1;
 }
 
-int (*)( double, double ) myfn( int unused )
+int (*)( int, Cls&, double, double ) myfn( int unused )
 {
     return fn1;
 }
 
 int main( int argc, char* argv[] )
 {
+    Cls x; Cls_pep_c_pep___init__( x, argc );
+    fn1( argc, x, 0.0, 1.0 );
     myfn( argc );
 
     return 0;
@@ -463,12 +476,18 @@ int main( int argc, char* argv[] )
         """
 import sys
 
-def int fn1( float a, float b ):
+class Cls:
+    def_init( Cls self, int unused ):
+        pass
+
+def int fn1( int unused, Cls x, float a, float b ):
     return 1
 
-def function( int, ( float, float ) ) myfn( int unused ):
+def function( int, ( int, Cls, float, float ) ) myfn( int unused ):
     return fn1
 
+Cls x = Cls.init( len( sys.argv ) )
+fn1( len( sys.argv ), x, 0.0, 1.0 )
 myfn( len( sys.argv ) )
 """
 )

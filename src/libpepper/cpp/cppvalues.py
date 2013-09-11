@@ -160,6 +160,23 @@ def render_PepNoneType( value, env ):
     return ""
 
 
+def _render_normal_type( evald_type, env ):
+
+    # TODO: deal with copyable types etc., which should have no ampersand
+    # TODO: avoid isinstance?
+    if (
+        isinstance( evald_type, PepUserClass ) or
+        isinstance( evald_type, PepConstructingUserClass )
+    ):
+
+        amp = "&"
+    else:
+        amp = ""
+
+    return "%s%s" % (
+        evald_type.render( env ),
+        amp
+    )
 
 def _render_function_pointer_type_and_name( evald_type, name, env ):
 
@@ -167,7 +184,9 @@ def _render_function_pointer_type_and_name( evald_type, name, env ):
         evald_type.return_type.render( env ),
         name,
         ", ".join(
-            arg_type.render( env ) for arg_type in evald_type.arg_types.items ),
+            _render_normal_type( arg_type.evaluate( env ), env )
+                for arg_type in evald_type.arg_types.items
+        ),
     )
 
 
