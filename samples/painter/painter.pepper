@@ -1,3 +1,8 @@
+# This is all based on the painter code from
+# Structure and Interpretation of Computer Programs section 2.2.4.
+
+# It is an attempt to write a functioning program in the existing version
+# of Pepper, working around its many limiations.
 
 import sys
 
@@ -31,16 +36,34 @@ class FrameA:
             float self.x = x
             float self.y = y
 
+# TODO: all my vectors have to have different names, because somehow
+#       the arguments to Frame's def_init are clashing with the outer scope?
 class Frame:
-    def_init( Frame self, int unused, FrameA va1, FrameA va2, FrameA va3 ):
+    def_init( Frame self, int unused, FrameA iorigin, FrameA iedge1, FrameA iedge2 ):
         var:
-            FrameA self.vb1 = va1
-            FrameA self.vb2 = va2
-            FrameA self.vb3 = va3
+            FrameA self.origin = iorigin
+            FrameA self.edge1  = iedge1
+            FrameA self.edge2  = iedge2
+
+# TODO: closures
+# TODO: return functions from functions
+# TODO: inline def-as-a-value
+#def function(void,(int,Frame)) make_segments_painter( Segment[] segment_list ):
+#    return def void (int unused ,Frame frame):
+#        for segment in segment_list:
+#
+#            function( function( Vector, ( Vector, ) ), ( Frame, ) ) mapper =
+#                frame_coord_map( frame )
+#
+#            draw_line(
+#                mapper( start_segment( segment ) ),
+#                mapper( end_segment(   segment ) )
+#            )
 
 # TODO: Will only work when we can pass functions in as arguments
 def void svg_document( int unused, function(void,(int, Frame)) painter ):
     svg_start( unused )
+    # TODO: have to make variables here instead of passing function calls as args
     FrameA v1 = FrameA.init(  unused, 0.0, 0.0 )
     FrameA v2 = FrameA.init(  unused, 1.0, 0.0 )
     FrameA v3 = FrameA.init(  unused, 0.0, 1.0 )
@@ -53,31 +76,83 @@ def void svg_document( int unused, function(void,(int, Frame)) painter ):
 # TODO: Have to pass len( sys.argv ) to force runtime evaluation
 
 
-def void circle_painter( int unused, Frame f ):
-    svg_draw_circle( unused, 0.5, 0.5, 0.2 )
-
-svg_document( len( sys.argv ), circle_painter )
 
 
-#svg_start( len( sys.argv ) )
-#
-#def float xcoord( int i, int max ):
-#    return 0.05 + 0.1 * i * 0.1 * i * 0.1 * i * 0.1 * i
-#
-#def float ycoord( int i, int max ):
-#    return 0.05 + 0.1 * i * 0.1 * i
-#
-#def float radius( int i, int max ):
-#    return 0.1 * 0.1 * i
-#
-#int num_circles = 10
-#for int i in range( 0, num_circles + len( sys.argv ) - 1):
-#    # TODO: allow line breaking
-#    svg_draw_circle( len( sys.argv ), xcoord( i, num_circles ), ycoord( i, num_circles ), radius( i, num_circles ) )
-#
-#
-#
-#svg_end( len( sys.argv ) )
+# TODO: take in 2 Segments instead of 4 floats
+def void draw_line( int unused, float x1, float y1, float x2, float y2 ):
+    svg_draw_line( unused, x1, y1, x2, y2 )
+
+# TODO: not componentwise, when we can return an object
+def float scale_vect_x( int unused, float s, FrameA v ):
+    return s * v.x
+
+def float scale_vect_y( int unused, float s, FrameA v ):
+    return s * v.y
+
+# TODO: not componentwise, when we can return an object
+def float add_vect_x( int unused, FrameA v1, FrameA v2 ):
+    return v1.x + v2.x
+
+# TODO: If we change this return type to FrameA it should
+#       produce a decent error about it not beign the right type
+def float add_vect_y( int unused, FrameA v1, FrameA v2 ):
+    return v1.y + v2.y
+
+# TODO: use stuff like make_segments_painter when available
+def float frame_coord_map_vector_x( int unused, Frame frame, FrameA v ):
+    # TODO: remove all these intermediate vars
+    # TODO: assign directly into FrameAs instead of passing to be modified
+
+    FrameA sc1 = FrameA.init( unused, scale_vect_x( unused, v.x, frame.edge1 ), scale_vect_y( unused, v.x, frame.edge1 ) )
+
+    FrameA sc2 = FrameA.init( unused, scale_vect_x( unused, v.y, frame.edge2 ), scale_vect_y( unused, v.y, frame.edge2 ) )
+
+    FrameA summed = FrameA.init( unused, add_vect_x( unused, sc1, sc2 ), add_vect_y( unused, sc1, sc2 ) )
+
+    FrameA ret = FrameA.init( unused, add_vect_x( unused, frame.origin, summed ), add_vect_y( unused, frame.origin, summed ) )
+
+    return ret.x
+
+def float frame_coord_map_vector_y( int unused, Frame frame, FrameA v ):
+
+    FrameA sc1 = FrameA.init( unused, scale_vect_x( unused, v.x, frame.edge1 ), scale_vect_y( unused, v.x, frame.edge1 ) )
+
+    FrameA sc2 = FrameA.init( unused, scale_vect_x( unused, v.y, frame.edge2 ), scale_vect_y( unused, v.y, frame.edge2 ) )
+
+    FrameA summed = FrameA.init( unused, add_vect_x( unused, sc1, sc2 ), add_vect_y( unused, sc1, sc2 ) )
+
+    FrameA ret = FrameA.init( unused, add_vect_x( unused, frame.origin, summed ), add_vect_y( unused, frame.origin, summed ) )
+
+    return ret.y
+
+def void square_painter( int unused, Frame frame ):
+    FrameA tl = FrameA.init( unused, 0.1, 0.9 )
+    FrameA tr = FrameA.init( unused, 0.9, 0.9 )
+    FrameA br = FrameA.init( unused, 0.9, 0.1 )
+    FrameA bl = FrameA.init( unused, 0.1, 0.1 )
+
+    FrameA trans_tl = FrameA.init( unused, frame_coord_map_vector_x( unused, frame, tl ), frame_coord_map_vector_y( unused, frame, tl ) )
+    FrameA trans_tr = FrameA.init( unused, frame_coord_map_vector_x( unused, frame, tr ), frame_coord_map_vector_y( unused, frame, tr ) )
+    FrameA trans_br = FrameA.init( unused, frame_coord_map_vector_x( unused, frame, br ), frame_coord_map_vector_y( unused, frame, br ) )
+    FrameA trans_bl = FrameA.init( unused, frame_coord_map_vector_x( unused, frame, bl ), frame_coord_map_vector_y( unused, frame, bl ) )
+
+    draw_line( unused, trans_tl.x, trans_tl.y, trans_tr.x, trans_tr.y )
+    draw_line( unused, trans_tr.x, trans_tr.y, trans_br.x, trans_br.y )
+    draw_line( unused, trans_br.x, trans_br.y, trans_bl.x, trans_bl.y )
+    draw_line( unused, trans_bl.x, trans_bl.y, trans_tl.x, trans_tl.y )
+
+
+def void two_squares_painter( int unused, Frame frame ):
+    FrameA split_point = FrameA.init( unused, scale_vect_x( unused, 0.5, frame.edge1 ), scale_vect_y( unused, 0.5, frame.edge1 ) )
+    Frame left_frame = Frame.init( unused, frame.origin, split_point, frame.edge2 )
+    Frame right_frame = Frame.init( unused, split_point, split_point, frame.edge2 )
+    square_painter( unused, left_frame )
+    square_painter( unused, right_frame )
+
+
+
+#svg_document( len( sys.argv ), square_painter )
+svg_document( len( sys.argv ), two_squares_painter )
 
 
 
