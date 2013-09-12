@@ -436,63 +436,69 @@ def Can_render_function_type_as_a_function_pointer__test():
         "function( int, ( float, float ) )"
     )
 
+#
+# Incorrect - this is not valid C/C++
+#
+# Correct version might have:
+#
+# class Callable_void_int_int
+# {
+#     void operator()( int, int ) = 0;
+# }
+#
+# Callable_void_int_int get_fn( int unused )
+# {
+#     class TMPNAME : public Callable_void_int_int
+#     {
+#         void operator()( int a1, int a2 )
+#         {
+#             // return myfn( a1, a2 ); if not void, need return
+#             myfn( a1, a2 );
+#         {
+#     }
+#     return TMPNAME();
+# }
+#
+#
+#def Can_render_function_returning_function__test():
+#    assert_rendered_program_equals(
+#        """
+#void (*get_fn)( int, int )( int unused );
+#void myfn( int unused, int i );
+#
+#void (*get_fn)( int, int )( int unused )
+#{
+#    return myfn;
+#}
+#
+#void myfn( int unused, int i )
+#{
+#}
+#
+#int main( int argc, char* argv[] )
+#{
+#    get_fn( argc );
+#
+#    return 0;
+#}
+#""",
+#        """
+#import sys
+#
+#def void myfn( int unused, int i ):
+#    pass
+#
+#def function( void, ( int, int ) ) get_fn( int unused ):
+#    return myfn
+#
+#get_fn( len( sys.argv ) )
+#"""
+#)
+#
 
-def Can_render_function_returning_function__test():
-    # TODO: remove need for "unused" arguments, by making
-    # things runtime by default
-    assert_rendered_program_equals(
-        """
-struct Cls
-{
-};
 
-void Cls_pep_c_pep___init__( Cls& self, int unused );
-int fn1( int unused, Cls& x, double a, double b );
-int (*)( int, Cls&, double, double ) myfn( int unused );
-
-void Cls_pep_c_pep___init__( Cls& self, int unused )
-{
-}
-
-int fn1( int unused, Cls& x, double a, double b )
-{
-    return 1;
-}
-
-int (*)( int, Cls&, double, double ) myfn( int unused )
-{
-    return fn1;
-}
-
-int main( int argc, char* argv[] )
-{
-    Cls x; Cls_pep_c_pep___init__( x, argc );
-    fn1( argc, x, 0.0, 1.0 );
-    myfn( argc );
-
-    return 0;
-}
-""",
-        """
-import sys
-
-class Cls:
-    def_init( Cls self, int unused ):
-        pass
-
-def int fn1( int unused, Cls x, float a, float b ):
-    return 1
-
-def function( int, ( int, Cls, float, float ) ) myfn( int unused ):
-    return fn1
-
-Cls x = Cls.init( len( sys.argv ) )
-fn1( len( sys.argv ), x, 0.0, 1.0 )
-myfn( len( sys.argv ) )
-"""
-)
-
-
+# TODO: remove need for "unused" arguments, by making
+# things runtime by default
 def Can_render_function_taking_function_as_arg__test():
     assert_rendered_program_equals(
         """
@@ -564,4 +570,61 @@ def void myfn( int unused, function( int, ( int, float ) ) myarg ):
 myfn( len( sys.argv ), fn1 )
 """
 )
+
+
+
+def Can_render_function_passed_as_arg_taking_class__test():
+    assert_rendered_program_equals(
+        """
+struct Cls
+{
+};
+
+void Cls_pep_c_pep___init__( Cls& self, int unused );
+int fn1( int unused, Cls& c );
+void myfn( int unused, int (*myarg)( int, Cls& ) );
+
+void Cls_pep_c_pep___init__( Cls& self, int unused )
+{
+}
+
+int fn1( int unused, Cls& c )
+{
+    return 1;
+}
+
+void myfn( int unused, int (*myarg)( int, Cls& ) )
+{
+    myarg( unused, 2.0 );
+}
+
+int main( int argc, char* argv[] )
+{
+    Cls x; Cls_pep_c_pep___init__( x, argc );
+    fn1( argc, x );
+    myfn( argc, fn1 );
+
+    return 0;
+}
+""",
+        """
+import sys
+
+class Cls:
+    def_init( Cls self, int unused ):
+        pass
+
+def int fn1( int unused, Cls c ):
+    return 1
+
+def void myfn( int unused, function( int, ( int, Cls ) ) myarg ):
+    myarg( unused, 2.0 )
+
+Cls x = Cls.init( len( sys.argv ) )
+fn1( len( sys.argv ), x )
+myfn( len( sys.argv ), fn1 )
+"""
+)
+
+
 

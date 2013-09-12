@@ -1,0 +1,15 @@
+import sys
+
+# Disabled because it's tricky, because C/C++ doesn't allow returning functions
+# from functions.  See testrendering.py:Can_render_function_returning_function__test
+# (a commented test) for details on what we should do.
+
+def void myfn( int unused, int i ):
+    print( "in myfn" )
+
+def function( void, ( int, int ) ) get_fn( int unused ):
+    print( "in get_fn" )
+    return myfn
+
+get_fn( len( sys.argv ) )
+
