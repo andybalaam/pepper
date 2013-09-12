@@ -46,7 +46,6 @@ class Frame:
             FrameA self.edge2  = iedge2
 
 # TODO: closures
-# TODO: return functions from functions
 # TODO: inline def-as-a-value
 #def function(void,(int,Frame)) make_segments_painter( Segment[] segment_list ):
 #    return def void (int unused ,Frame frame):
@@ -59,6 +58,17 @@ class Frame:
 #                mapper( start_segment( segment ) ),
 #                mapper( end_segment(   segment ) )
 #            )
+
+
+#(define (transform-painter painter origin corner1 corner2)
+#    (lambda (frame)
+#        (let ((m (frame-coord-map frame)))
+#            (let ((new-origin (m origin)))
+#                (painter
+#                    (make-frame new-origin
+#                                (sub-vect (m corner1) new-origin)
+#                                (sub-vect (m corner2) new-origin)))))))
+#
 
 # TODO: Will only work when we can pass functions in as arguments
 def void svg_document( int unused, function(void,(int, Frame)) painter ):
@@ -125,6 +135,22 @@ def float frame_coord_map_vector_y( int unused, Frame frame, FrameA v ):
 
     return ret.y
 
+def void diamond_painter( int unused, Frame frame ):
+    FrameA tl = FrameA.init( unused, 0.5, 0.9 )
+    FrameA tr = FrameA.init( unused, 0.9, 0.5 )
+    FrameA br = FrameA.init( unused, 0.5, 0.1 )
+    FrameA bl = FrameA.init( unused, 0.1, 0.5 )
+
+    FrameA trans_tl = FrameA.init( unused, frame_coord_map_vector_x( unused, frame, tl ), frame_coord_map_vector_y( unused, frame, tl ) )
+    FrameA trans_tr = FrameA.init( unused, frame_coord_map_vector_x( unused, frame, tr ), frame_coord_map_vector_y( unused, frame, tr ) )
+    FrameA trans_br = FrameA.init( unused, frame_coord_map_vector_x( unused, frame, br ), frame_coord_map_vector_y( unused, frame, br ) )
+    FrameA trans_bl = FrameA.init( unused, frame_coord_map_vector_x( unused, frame, bl ), frame_coord_map_vector_y( unused, frame, bl ) )
+
+    draw_line( unused, trans_tl.x, trans_tl.y, trans_tr.x, trans_tr.y )
+    draw_line( unused, trans_tr.x, trans_tr.y, trans_br.x, trans_br.y )
+    draw_line( unused, trans_br.x, trans_br.y, trans_bl.x, trans_bl.y )
+    draw_line( unused, trans_bl.x, trans_bl.y, trans_tl.x, trans_tl.y )
+
 def void square_painter( int unused, Frame frame ):
     FrameA tl = FrameA.init( unused, 0.1, 0.9 )
     FrameA tr = FrameA.init( unused, 0.9, 0.9 )
@@ -150,13 +176,32 @@ def void two_squares_painter( int unused, Frame frame ):
     square_painter( unused, right_frame )
 
 
+def void beside_painter( int unused, function( void, ( int, Frame ) ) painter1, function( void, ( int, Frame ) ) painter2, Frame frame ):
+    "A bit like SICP beside, but is a painter, instead of returning a painter"
+    FrameA split_point = FrameA.init( unused, scale_vect_x( unused, 0.5, frame.edge1 ), scale_vect_y( unused, 0.5, frame.edge1 ) )
+    Frame left_frame = Frame.init( unused, frame.origin, split_point, frame.edge2 )
+    Frame right_frame = Frame.init( unused, split_point, split_point, frame.edge2 )
+    painter1( unused, left_frame )
+    painter2( unused, right_frame )
 
-#svg_document( len( sys.argv ), square_painter )
-svg_document( len( sys.argv ), two_squares_painter )
+
+#svg_document( len( sys.argv ), two_squares_painter )
+#svg_document( len( sys.argv ), beside_painter( square_painter, square_painter ) )
 
 
 
+def void svg_document_beside( int unused, function(void,(int, Frame)) painter1, function(void,(int, Frame)) painter2 ):
+    svg_start( unused )
+    # TODO: have to make variables here instead of passing function calls as args
+    FrameA v1 = FrameA.init(  unused, 0.0, 0.0 )
+    FrameA v2 = FrameA.init(  unused, 1.0, 0.0 )
+    FrameA v3 = FrameA.init(  unused, 0.0, 1.0 )
+    Frame frame = Frame.init( unused, v1, v2, v3 )
+    beside_painter( unused, painter1, painter2, frame )
+    svg_end( unused )
 
+
+svg_document_beside( len( sys.argv ), diamond_painter, square_painter )
 
 
 
