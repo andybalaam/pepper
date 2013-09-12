@@ -454,6 +454,7 @@ void myfn( int unused, int i )
 int main( int argc, char* argv[] )
 {
     void (*got_fn)( int, int ) = get_fn( argc );
+    got_fn( argc, 1 );
 
     return 0;
 }
@@ -468,6 +469,7 @@ def function( void, ( int, int ) ) get_fn( int unused ):
     return myfn
 
 function(void, ( int, int ) ) got_fn = get_fn( len( sys.argv ) )
+got_fn( len( sys.argv ), 1 )
 """
 )
 

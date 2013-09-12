@@ -1,3 +1,4 @@
 $ pepper function_returned.pepper
-in ret_it
+in get_fn
+in do_something
 
