@@ -122,24 +122,30 @@ def render_PepInit( value, env ):
         return ""
     else:
         ev_var_type = value.var_type.evaluate( env )
+        tp = value.var_type.render( env )
+        name = value.var_name.symbol_name
 
-        # TODO: avoid use of isinstance?
+        # TODO: avoid use of isinstance and __class__
         if isinstance( ev_var_type, PepUserClass ):
             # Remember the variable name in the renderer - we will use it
             # in render_PepRuntimeInit, which needs to know it even
             # though it shouldn't, because the init function is converted
             # from a normal one to one that passes the instance as its
             # first argument.
-            env.renderer.init_variable_name = value.var_name.symbol_name
-            subs = "%s %s; %s"
-        else:
-            subs = "%s %s = %s"
+            env.renderer.init_variable_name = name
+            rhs = value.init_value.render( env )
+            env.renderer.init_variable_name = None
+            return "%s %s; %s" % ( tp, name, rhs )
 
-        return subs % (
-            value.var_type.render( env ),
-            value.var_name.symbol_name,
-            value.init_value.render( env ),
-        )
+        elif ev_var_type.__class__ == PepFunctionType:
+            rhs = value.init_value.render( env )
+            lhs = _render_function_pointer_type_and_name(
+                ev_var_type, value.var_name.symbol_name, env )
+            return "%s = %s" % ( lhs, rhs )
+
+        else:
+            rhs = value.init_value.render( env )
+            return "%s %s = %s" % ( tp, name, rhs )
 
 type2string = {
     PepBool  : "bool",

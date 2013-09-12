@@ -16,7 +16,7 @@ void fn1( double a, double b )
 
 int main( int argc, char* argv[] )
 {
-    ret_it( argc );
+    void (*got_it)( double, double ) = ret_it( argc );
 
     return 0;
 }
