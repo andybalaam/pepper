@@ -7,10 +7,8 @@ def function( void, ( float, float ) ) ret_it( int unused ):
     print( "in ret_it" )
     return fn1
 
+ret_it( len( sys.argv ) )
 
 # TODO: auto got_it = ret_it()
 # TODO: got_it()
-
-ret_it( len( sys.argv ) )
-
 

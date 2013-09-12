@@ -247,11 +247,24 @@ def indent_if_needed( line ):
 
 
 def render_PepuserFunction_signature( fn, name, env ):
-    ret = fn.ret_type.render( env )
-    ret += " "
-    ret += name
-    ret += _render_bracketed_list( _render_type_and_name( typename, env ) for
-        typename in fn.arg_types_and_names )
+
+    evald_ret_type = fn.ret_type.evaluate( env )
+
+    args_list = _render_bracketed_list(
+        _render_type_and_name( typename, env ) for
+            typename in fn.arg_types_and_names
+    )
+
+    # TODO: avoid __class__
+    if evald_ret_type.__class__ == PepFunctionType:
+        ret = _render_function_pointer_type_and_name(
+            evald_ret_type, name + args_list, env )
+    else:
+        ret = fn.ret_type.render( env )
+        ret += " "
+        ret += name
+        ret += args_list
+
     return ret
 
 def render_PepUserFunction_forward_decl( name, func_call, env ):

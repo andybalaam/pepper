@@ -436,61 +436,41 @@ def Can_render_function_type_as_a_function_pointer__test():
         "function( int, ( float, float ) )"
     )
 
-#
-# Incorrect - this is not valid C/C++
-#
-# Correct version might have:
-#
-# class get_fn__pep_rv
-# {
-#     void operator()( int, int )
-#     {
-#         // return myfn( a1, a2 ); if not void, need return
-#         myfn( a1, a2 );
-#     }
-# }
-#
-# get_fn__pep_rv get_fn( int unused )
-# {
-#     return get_fn__pep_rv();
-# }
-#
-#
-#def Can_render_function_returning_function__test():
-#    assert_rendered_program_equals(
-#        """
-#void (*get_fn)( int, int )( int unused );
-#void myfn( int unused, int i );
-#
-#void (*get_fn)( int, int )( int unused )
-#{
-#    return myfn;
-#}
-#
-#void myfn( int unused, int i )
-#{
-#}
-#
-#int main( int argc, char* argv[] )
-#{
-#    get_fn( argc );
-#
-#    return 0;
-#}
-#""",
-#        """
-#import sys
-#
-#def void myfn( int unused, int i ):
-#    pass
-#
-#def function( void, ( int, int ) ) get_fn( int unused ):
-#    return myfn
-#
-#get_fn( len( sys.argv ) )
-#"""
-#)
-#
+def Can_render_function_returning_function__test():
+    assert_rendered_program_equals(
+        """
+void (*get_fn( int unused ))( int, int );
+void myfn( int unused, int i );
+
+void (*get_fn( int unused ))( int, int )
+{
+    return myfn;
+}
+
+void myfn( int unused, int i )
+{
+}
+
+int main( int argc, char* argv[] )
+{
+    get_fn( argc );
+
+    return 0;
+}
+""",
+        """
+import sys
+
+def void myfn( int unused, int i ):
+    pass
+
+def function( void, ( int, int ) ) get_fn( int unused ):
+    return myfn
+
+get_fn( len( sys.argv ) )
+"""
+)
+
 
 
 # TODO: remove need for "unused" arguments, by making
