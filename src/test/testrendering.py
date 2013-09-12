@@ -441,22 +441,18 @@ def Can_render_function_type_as_a_function_pointer__test():
 #
 # Correct version might have:
 #
-# class Callable_void_int_int
+# class get_fn__pep_rv
 # {
-#     void operator()( int, int ) = 0;
+#     void operator()( int, int )
+#     {
+#         // return myfn( a1, a2 ); if not void, need return
+#         myfn( a1, a2 );
+#     }
 # }
 #
-# Callable_void_int_int get_fn( int unused )
+# get_fn__pep_rv get_fn( int unused )
 # {
-#     class TMPNAME : public Callable_void_int_int
-#     {
-#         void operator()( int a1, int a2 )
-#         {
-#             // return myfn( a1, a2 ); if not void, need return
-#             myfn( a1, a2 );
-#         {
-#     }
-#     return TMPNAME();
+#     return get_fn__pep_rv();
 # }
 #
 #
