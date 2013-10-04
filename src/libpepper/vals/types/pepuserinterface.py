@@ -46,7 +46,11 @@ class PepUserInterface( PepValue ):
                 "'%s' in an interface definition." % symbol )
 
     def do_evaluate( self, env ):
+        # TODO: share code with PepUserClass
         self.namespace = PepNamespace( env.namespace )
+        subenv = PepEnvironment( env.renderer, self.namespace )
+        for st in self.body_stmts:
+            st.evaluate( subenv )
 
         self.check_symbol_not_defined( MATCHES_FUNCTION_NAME )
 
@@ -54,12 +58,7 @@ class PepUserInterface( PepValue ):
             ( PepInterfaceMatchesFunction( self ), )
         )
 
-        return PepUserInterface(
-            self.name,
-            self.base_interfaces,
-            list( stmt.evaluate( env ) for stmt in self.body_stmts ),
-            self.namespace
-        )
+        return self
 
     def evaluated_type( self, env ):
         return self

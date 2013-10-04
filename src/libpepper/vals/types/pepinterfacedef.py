@@ -5,6 +5,9 @@
 # Matt 26 v33
 
 from libpepper.values import PepValue
+from libpepper.values import PepPass
+from libpepper.functionvalues import PepFunctionOverloadList
+from libpepper.vals.functions.pepuserfunction import PepUserFunction
 
 class PepInterfaceDef( PepValue ):
     """
@@ -23,11 +26,18 @@ class PepInterfaceDef( PepValue ):
         return ( self.ret_type, self.name, self.arg_types_and_names )
 
     def do_evaluate( self, env ):
-        return PepInterfaceDef(
-            self.ret_type.evaluate( env ),
-            self.name,
-            tuple(
-                ( x.evaluate( env ), y ) for x, y in self.arg_types_and_names )
-        )
+        nm = self.name.name()
 
+        fn = PepUserFunction(
+            nm,
+            self.ret_type.evaluate( env ),
+            self.arg_types_and_names,
+            ( PepPass(), )
+        ).evaluate( env )
+
+        # TODO: share code with PepDef
+
+        env.namespace[nm] = PepFunctionOverloadList( [fn] )
+
+        return self
 
