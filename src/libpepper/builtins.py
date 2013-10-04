@@ -97,7 +97,7 @@ function_function = PepUserFunction(
 class PepImplements( PepFunction ):
 
     def construction_args( self ):
-        return ( arg, )
+        return ()
 
     def call( self, args, env ):
         if( len( args ) != 1 ):
