@@ -67,7 +67,7 @@ class PepUserInterface( PepValue ):
     def construction_args( self ):
         return ( self.name, self.base_interfaces, self.body_stmts )
 
-    def can_match( self, other ):
+    def can_match( self, other, env ):
         """
         Decide whether the type other matches this interface.
 
@@ -88,7 +88,7 @@ class PepUserInterface( PepValue ):
                 #print "Thing with this name is not a method", stmt.name.name()
                 return False # Thing with this name is not a method
             if not othermeth.signature_matches(
-                stmt.ret_type, stmt.arg_types_and_names
+                stmt.ret_type, stmt.arg_types_and_names, env
             ):
                 #print "No matching signature", stmt.ret_type, stmt.arg_types_and_names
                 return False # No matching signature

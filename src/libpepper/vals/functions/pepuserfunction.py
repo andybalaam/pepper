@@ -83,10 +83,13 @@ class PepUserFunction( PepFunction ):
 
             i += 1
 
-    def signature_matches( self, ret_type, arg_types_and_names ):
+    def signature_matches( self, ret_type, arg_types_and_names, env ):
         return (
-            ret_type            == self.ret_type and
-            arg_types_and_names == self.arg_types_and_names
+            ret_type.evaluate( env ) == self.ret_type.evaluate( env ) and
+            (
+                tuple( a[0].evaluate( env ) for a in arg_types_and_names ) ==
+                tuple( a[0].evaluate( env ) for a in self.arg_types_and_names )
+            )
         )
 
     def call( self, args, env ):

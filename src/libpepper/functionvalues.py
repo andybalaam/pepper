@@ -79,9 +79,9 @@ class PepFunctionOverloadList( PepCallable ):
     def args_match( self, args, env ):
         return ( self._get_fn( args, env ) is not None )
 
-    def signature_matches( self, ret_type, arg_types_and_names ):
+    def signature_matches( self, ret_type, arg_types_and_names, env ):
         for fn in reversed( self._list ):
-            if fn.signature_matches( ret_type, arg_types_and_names ):
+            if fn.signature_matches( ret_type, arg_types_and_names, env ):
                 return True
         return False
 

@@ -556,3 +556,27 @@ def test_Overloaded_functions_supply_correct_return_type_based_on_args():
     )
 
 
+
+def Signature_with_types_that_need_evaluating_matches_args_that_dont___test():
+    env = PepEnvironment( PepCppRenderer() )
+    add_builtins( env )
+
+    fn = PepUserFunction(
+        "myfn",
+        PepSymbol( "float" ),
+        (
+            ( PepSymbol( "int" ), PepSymbol( "a1" ) ),
+            ( PepType( PepInt ), PepSymbol( "a2" ) ),
+        ),
+        ( PepPass(), )
+    )
+
+    overloads = PepFunctionOverloadList( ( fn, ) )
+
+    args = (
+        ( PepType( PepInt ), "z1" ),
+        ( PepSymbol( "int" ), "z2" ),
+    )
+
+    assert_true( fn.signature_matches( PepType( PepFloat ), args, env ) )
+

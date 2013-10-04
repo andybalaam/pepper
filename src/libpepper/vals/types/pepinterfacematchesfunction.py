@@ -28,7 +28,7 @@ class PepInterfaceMatchesFunction( PepFunction ):
         if all_known( args, env ):
             ui = self.user_interface.evaluate( env )
             cl = args[0].evaluate( env )
-            return PepBool( ui.can_match( cl ) )
+            return PepBool( ui.can_match( cl, env ) )
         else:
             raise Exception(
                 "We don't (yet) allow checking interfaces at runtime." )
