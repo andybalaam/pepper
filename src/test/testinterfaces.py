@@ -72,13 +72,13 @@ def User_class_matching_interface_matches__test():
     env = PepEnvironment( None )
     myinterface = make_interface( env )
     myclass     = make_matching_class( env ).evaluate( env )
-    assert_true( myinterface.can_match( myclass ) )
+    assert_true( myinterface.can_match( myclass, env ) )
 
 def Nonmatching_interface_doesnt_match__test():
     env = PepEnvironment( None )
     myinterface = make_interface( env )
     myclass     = make_nonmatching_class( env ).evaluate( env )
-    assert_false( myinterface.can_match( myclass ) )
+    assert_false( myinterface.can_match( myclass, env ) )
 
 
 def User_class_matching_interface_call_to_matches_returns_true__test():

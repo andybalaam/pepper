@@ -46,7 +46,11 @@ class PepUserInterface( PepValue ):
                 "'%s' in an interface definition." % symbol )
 
     def do_evaluate( self, env ):
+        # TODO: share code with PepUserClass
         self.namespace = PepNamespace( env.namespace )
+        subenv = PepEnvironment( env.renderer, self.namespace )
+        for st in self.body_stmts:
+            st.evaluate( subenv )
 
         self.check_symbol_not_defined( MATCHES_FUNCTION_NAME )
 
@@ -54,12 +58,7 @@ class PepUserInterface( PepValue ):
             ( PepInterfaceMatchesFunction( self ), )
         )
 
-        return PepUserInterface(
-            self.name,
-            self.base_interfaces,
-            list( stmt.evaluate( env ) for stmt in self.body_stmts ),
-            self.namespace
-        )
+        return self
 
     def evaluated_type( self, env ):
         return self
@@ -67,7 +66,7 @@ class PepUserInterface( PepValue ):
     def construction_args( self ):
         return ( self.name, self.base_interfaces, self.body_stmts )
 
-    def can_match( self, other ):
+    def can_match( self, other, env ):
         """
         Decide whether the type other matches this interface.
 
@@ -88,7 +87,7 @@ class PepUserInterface( PepValue ):
                 #print "Thing with this name is not a method", stmt.name.name()
                 return False # Thing with this name is not a method
             if not othermeth.signature_matches(
-                stmt.ret_type, stmt.arg_types_and_names
+                stmt.ret_type, stmt.arg_types_and_names, env
             ):
                 #print "No matching signature", stmt.ret_type, stmt.arg_types_and_names
                 return False # No matching signature

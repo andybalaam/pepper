@@ -41,7 +41,7 @@ def render_PepFor( value, env ):
     #       iteration variable.
 
     arg_types_and_names = ( ( value.variable_type, value.variable_name ), )
-    args = ( value.variable_name, )
+    args = ( PepVariable( PepType( PepInt ), value.variable_name.name() ), )
     newenv = execution_environment( arg_types_and_names, args, False, env )
 
     if step.evaluate( env ).value == "1":

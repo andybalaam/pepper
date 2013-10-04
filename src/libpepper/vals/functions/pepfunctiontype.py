@@ -26,7 +26,7 @@ class PepFunctionType( PepValue, PepTypeMatcher ):
     def is_known( self, env ):
         return all_known( ( self.return_type, self.arg_types ), env )
 
-    def matches( self, other ):
+    def matches( self, other, env ):
         #if ( not isinstance( other, PepCallable ) ):
         #    return False
         # TODO: check type signature

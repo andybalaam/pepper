@@ -27,8 +27,8 @@ class PepConstructingUserClass( PepValue, PepTypeMatcher ):
     def construction_args( self ):
         return ( self.userclass, )
 
-    def matches( self, other ):
-        return self.userclass.matches( other )
+    def matches( self, other, env ):
+        return self.userclass.matches( other, env )
 
     def get_name( self ):
         return self.userclass.get_name()

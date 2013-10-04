@@ -16,7 +16,7 @@ from values import all_known
 from usererrorexception import PepUserErrorException
 
 def type_matches( env, tp, val ):
-    return tp.evaluate( env ).matches( val.evaluated_type( env ) )
+    return tp.evaluate( env ).matches( val.evaluated_type( env ), env )
 
 
 
@@ -79,9 +79,9 @@ class PepFunctionOverloadList( PepCallable ):
     def args_match( self, args, env ):
         return ( self._get_fn( args, env ) is not None )
 
-    def signature_matches( self, ret_type, arg_types_and_names ):
+    def signature_matches( self, ret_type, arg_types_and_names, env ):
         for fn in reversed( self._list ):
-            if fn.signature_matches( ret_type, arg_types_and_names ):
+            if fn.signature_matches( ret_type, arg_types_and_names, env ):
                 return True
         return False
 

@@ -102,7 +102,7 @@ class PepUserClass( PepValue, PepTypeMatcher ):
     def construction_args( self ):
         return ( self.name, self.base_classes, self.body_stmts )
 
-    def matches( self, other ):
+    def matches( self, other, env ):
         """
         @return True if other is this class.
         """

@@ -27,9 +27,9 @@ class PepInterfaceTypeMatcher( PepValue, PepTypeMatcher ):
         # TODO: support unknown
         return True
 
-    def matches( self, value_type ):
+    def matches( self, value_type, env ):
         # TODO: check arg is an interface
-        return self.interface.can_match( value_type )
+        return self.interface.can_match( value_type, env )
 
     def underlying_class( self ):
         return self.interface

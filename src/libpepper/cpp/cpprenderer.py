@@ -21,12 +21,12 @@ def _render_with_semicolon( value, env ):
         ret += ";"
     return ret
 
-def _function_signature_string( user_function, env ):
-    ret = user_function.name
+def _function_signature_string( runtime_function, env ):
+    ret = runtime_function.user_function.name
     ret += "_pep_s_pep_"
     ret += "_pep_s_pep_".join(
         str( tn[0].evaluate( env ).get_name() ) for
-            tn in user_function.arg_types_and_names )
+            tn in runtime_function.user_function.arg_types_and_names )
     return ret
 
 def _overload_name( name, num_overloads ):
@@ -46,7 +46,7 @@ class PepCppRenderer( object ):
     def add_function( self, runtime_function, env ):
 
         signature = _function_signature_string(
-            runtime_function.user_function, env )
+            runtime_function, env )
 
         if runtime_function.namespace_name is not None:
             name = runtime_function.namespace_name

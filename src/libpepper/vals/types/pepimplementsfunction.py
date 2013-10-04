@@ -17,7 +17,7 @@ class PepImplementsFunction( PepFunction ):
         if all_known( ( self.clazz,) + args, env ):
             evaldarg = args[0].evaluate( env )
             # TODO: check evaldarg is an interface (or at least has can_match)
-            return PepBool( evaldarg.can_match( self.clazz ) )
+            return PepBool( evaldarg.can_match( self.clazz, env ) )
         else:
             raise Exception(
                 "Can't (currently) support checking whether classes " +

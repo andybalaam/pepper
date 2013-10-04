@@ -29,10 +29,13 @@ class PepEnvironment( object ):
     def pretty_name( self, value ):
         ret = self.namespace.key_for_value( value )
 
-        assert ret is not None, (
-            "Could not find " + str( value ) + " in namespace " +
-            str( self.namespace.thedict )
-        )
+        # TODO: should never happen?
+        if ret is None:
+            return str( value )[:20]
+        #assert ret is not None, (
+        #    "Could not find " + str( value ) + " in namespace " +
+        #    str( self.namespace.thedict )
+        #)
 
         return ret
 
