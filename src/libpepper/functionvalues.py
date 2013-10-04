@@ -16,7 +16,7 @@ from values import all_known
 from usererrorexception import PepUserErrorException
 
 def type_matches( env, tp, val ):
-    return tp.evaluate( env ).matches( val.evaluated_type( env ) )
+    return tp.evaluate( env ).matches( val.evaluated_type( env ), env )
 
 
 

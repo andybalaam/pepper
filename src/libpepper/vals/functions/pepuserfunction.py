@@ -18,7 +18,7 @@ def _has_default( type_and_name ):
     return ( len( type_and_name ) == 3 )
 
 def _type_matches( env, tp, val ):
-    return tp.evaluate( env ).matches( val.evaluated_type( env ) )
+    return tp.evaluate( env ).matches( val.evaluated_type( env ), env )
 
 class PepUserFunction( PepFunction ):
     def __init__( self, name, ret_type, arg_types_and_names, body_stmts ):

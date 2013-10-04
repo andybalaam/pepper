@@ -236,7 +236,7 @@ class PepTypeMatcher():
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def matches( self, value_type ):
+    def matches( self, value_type, env ):
         """
         @return True if the supplied value_type matches this matcher
         """
@@ -293,7 +293,7 @@ class PepType( PepValue, PepTypeMatcher ):
         # TODO: check we have been passed a type
         self.value = value
 
-    def matches( self, other ):
+    def matches( self, other, env ):
         return ( self == other )
 
     def get_name( self ):

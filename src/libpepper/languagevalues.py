@@ -146,7 +146,7 @@ class PepInit( PepValue ):
                     "Namespace already contains the name '" + nm + "'." )
 
         val_type = val.evaluated_type( env )
-        if not tp.matches( val_type ):
+        if not tp.matches( val_type, env ):
             raise PepInitialisingWithWrongType( tp, val_type )
 
         def make_value():
