@@ -186,9 +186,69 @@ def void beside_painter( int unused, function( void, ( int, Frame ) ) painter1, 
 
 
 #svg_document( len( sys.argv ), two_squares_painter )
-#svg_document( len( sys.argv ), beside_painter( square_painter, square_painter ) )
 
-
+# Possible solution with classes:
+#
+#interface Painter:
+#    def void paint( int unused, Frame frame )
+#
+#class Square:
+#    def_init( Square self, int unused ):
+#        pass
+#
+#    def void paint( Square self, int unused, Frame frame ):
+#
+#        FrameA tl = FrameA.init( unused, 0.1, 0.9 )
+#        FrameA tr = FrameA.init( unused, 0.9, 0.9 )
+#        FrameA br = FrameA.init( unused, 0.9, 0.1 )
+#        FrameA bl = FrameA.init( unused, 0.1, 0.1 )
+#
+#        FrameA trans_tl = FrameA.init( unused, frame_coord_map_vector_x( unused, frame, tl ), frame_coord_map_vector_y( unused, frame, tl ) )
+#        FrameA trans_tr = FrameA.init( unused, frame_coord_map_vector_x( unused, frame, tr ), frame_coord_map_vector_y( unused, frame, tr ) )
+#        FrameA trans_br = FrameA.init( unused, frame_coord_map_vector_x( unused, frame, br ), frame_coord_map_vector_y( unused, frame, br ) )
+#        FrameA trans_bl = FrameA.init( unused, frame_coord_map_vector_x( unused, frame, bl ), frame_coord_map_vector_y( unused, frame, bl ) )
+#
+#        draw_line( unused, trans_tl.x, trans_tl.y, trans_tr.x, trans_tr.y )
+#        draw_line( unused, trans_tr.x, trans_tr.y, trans_br.x, trans_br.y )
+#        draw_line( unused, trans_br.x, trans_br.y, trans_bl.x, trans_bl.y )
+#        draw_line( unused, trans_bl.x, trans_bl.y, trans_tl.x, trans_tl.y )
+#
+#implements(Painter) p = Square.init( len( sys.argv ) )
+#
+#class Beside:
+#    def_init( Beside self, int unused, function( void, ( int, Frame ) ) painter1, function( void, ( int, Frame ) ) painter2 ):
+#        var:
+#            implements(Painter) self.p1 = painter1
+#            implements(Painter) self.p2 = painter2
+#
+#    def void paint( Beside self, int unused, Frame frame ):
+#
+#        FrameA split_point = FrameA.init( unused, scale_vect_x( unused, 0.5, frame.edge1 ), scale_vect_y( unused, 0.5, frame.edge1 ) )
+#        Frame left_frame = Frame.init( unused, frame.origin, split_point, frame.edge2 )
+#        Frame right_frame = Frame.init( unused, split_point, split_point, frame.edge2 )
+#        self.p1.paint( unused, left_frame )
+#        self.p2.paint( unused, right_frame )
+#
+#
+#
+#
+#def void svg_document_cls( int unused, implements(Painter) painter ):
+#    svg_start( unused )
+#    # TODO: have to make variables here instead of passing function calls as args
+#    FrameA v1 = FrameA.init(  unused, 0.0, 0.0 )
+#    FrameA v2 = FrameA.init(  unused, 1.0, 0.0 )
+#    FrameA v3 = FrameA.init(  unused, 0.0, 1.0 )
+#    Frame frame = Frame.init( unused, v1, v2, v3 )
+#    painter.paint( unused, frame )
+#    svg_end( unused )
+#
+#
+#Square sq1 = Square.init()
+#Square sq2 = Square.init()
+#Beside beside = Beside.init( len( sys.argv), sq1, sq2 )
+#
+#svg_document_cls( len( sys.argv ), beside )
+#
 
 def void svg_document_beside( int unused, function(void,(int, Frame)) painter1, function(void,(int, Frame)) painter2 ):
     svg_start( unused )
@@ -202,7 +262,6 @@ def void svg_document_beside( int unused, function(void,(int, Frame)) painter1, 
 
 
 svg_document_beside( len( sys.argv ), diamond_painter, square_painter )
-
 
 
 
