@@ -7,9 +7,12 @@
 from itertools import izip
 
 from libpepper.usererrorexception import PepUserErrorException
-from libpepper.vals.functions.pepcallable import PepCallable
+from libpepper.vals.basic_types import PepTuple
+from libpepper.vals.functions import PepCallable
+from libpepper.vals.functions import PepFunctionType
 from libpepper.values import all_known
 from libpepper.values import PepValue
+
 
 def type_matches( env, tp, val ):
     return tp.evaluate( env ).matches( val.evaluated_type( env ), env )
@@ -42,6 +45,15 @@ class PepFunctionOverloadList( PepCallable ):
 
     def args_match( self, args, env ):
         return ( self._get_fn( args, env ) is not None )
+
+    def evaluated_type( self, env ):
+        # TODO: Assume there is only 1 overload for now
+        assert len( self._list ) == 1
+        fn = self._list[0]
+        return PepFunctionType(
+            fn.ret_type,
+            PepTuple( tuple( a[0] for a in fn.arg_types_and_names ) )
+        )
 
     def signature_matches( self, ret_type, arg_types_and_names, env ):
         for fn in reversed( self._list ):
