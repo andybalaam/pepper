@@ -17,6 +17,12 @@ class PepInterfaceTypeMatcher( PepValue, PepTypeMatcher ):
     def __init__( self, interface ):
         self.interface = interface
 
+    def __eq__( self, other ):
+        return (
+            self.__class__ == other.__class__ and
+            self.construction_args() == other.construction_args()
+        )
+
     def construction_args( self ):
         return ( (self.interface,), )
 
