@@ -4,8 +4,8 @@
 # Let love and faithfulness never leave you; bind them round your neck, write
 # them on the tablet of your heart.  Proverbs 3 v3
 
-from libpepper.functionvalues import PepFunctionOverloadList
 from libpepper.namespace import PepNamespace
+from libpepper.vals.functions import PepFunctionOverloadList
 
 from pepinstancemethod import PepInstanceMethod
 

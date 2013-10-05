@@ -7,8 +7,8 @@
 # Genesis 1 v21
 
 from libpepper.environment import PepEnvironment
-from libpepper.functionvalues import PepFunctionOverloadList
 from libpepper.namespace import PepNamespace
+from libpepper.vals.functions import PepFunctionOverloadList
 from libpepper.values import PepTypeMatcher
 from libpepper.values import PepValue
 

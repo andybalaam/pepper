@@ -6,8 +6,8 @@
 
 from libpepper.values import PepValue
 from libpepper.values import PepPass
-from libpepper.functionvalues import PepFunctionOverloadList
-from libpepper.vals.functions.pepuserfunction import PepUserFunction
+from libpepper.vals.functions import PepFunctionOverloadList
+from libpepper.vals.functions import PepUserFunction
 
 class PepInterfaceDef( PepValue ):
     """
