@@ -15,11 +15,6 @@ from values import PepPass
 from values import all_known
 from usererrorexception import PepUserErrorException
 
-def type_matches( env, tp, val ):
-    return tp.evaluate( env ).matches( val.evaluated_type( env ), env )
-
-
-
 
 def is_callable( value ):
     return True # TODO: check whether the object may be called
@@ -51,6 +46,7 @@ class PepFunctionCall( PepValue ):
 
     def evaluated_type( self, env ):
         return self.func.evaluate( env ).return_type( self.args, env )
+
 
 class PepDef( PepValue ):
     def __init__( self, ret_type, name, arg_types_and_names, body_stmts ):
