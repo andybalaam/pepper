@@ -36,7 +36,7 @@ class PepInstanceMethod( PepFunction ):
             return PepRuntimeUserFunction(
                 self.fn,
                 self._instance_plus_args( args ),
-                self.instance.clazz.name
+                self.instance.clazz.get_name()
             )
 
     def return_type( self, args, env ):

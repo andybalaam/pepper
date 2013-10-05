@@ -399,6 +399,9 @@ class FakeClass( object ):
     def get_namespace( self ):
         return {}
 
+    def get_name( self ):
+        return self.name
+
 def create_method():
     clazz = FakeClass()
     instance = PepKnownInstance( clazz )
@@ -439,7 +442,7 @@ def test_Calling_a_method_with_unknown_instance_returns_a_runtime_function():
     class FakeType( PepTypeMatcher ):
         def __init__( self ):
             self.name = ""
-        def get_name(): pass
+        def get_name( self ): pass
         def runtime_namespace( self, instance, insert_placeholders ):
             pass
         def get_namespace(): pass
