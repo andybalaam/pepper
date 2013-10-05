@@ -26,7 +26,25 @@ def execution_environment( arg_types_and_names, args, known, env ):
         if known:
             val = val.evaluate( env )
         else:
-            tp  = type_and_name[0]
+            if i < len( args ):
+                tp = args[i].evaluated_type( newenv )
+
+                # TODO: imports here to avoid circular deps
+                from libpepper.vals.types import PepUserClass
+                from libpepper.vals.types import PepConstructingUserClass
+
+                # TODO: this seems like a hack to me.  Can we make
+                #       the evaluated type of args[i] just be the
+                #       right type (PepConstructingUserClass) already?
+                #       If so, we probably do it in cpprenderer.add_def_init.
+                if (
+                    tp.__class__ == PepUserClass and
+                    type_and_name[0].__class__ == PepConstructingUserClass
+                ):
+                    tp = PepConstructingUserClass( tp )
+
+            else:
+                tp  = type_and_name[0]
             val = PepVariable( tp.evaluate( env ), name.name() )
 
         newenv.namespace[name.name()] = val

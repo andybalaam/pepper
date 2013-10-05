@@ -1,0 +1,4 @@
+$ pepper interface_param_simple.pepper
+do_foo
+A.foo
+

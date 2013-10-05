@@ -1,0 +1,20 @@
+import sys
+
+interface Fooable:
+    def void foo( implements(Fooable) self, int a )
+
+class A:
+    def_init( A self, int a ):
+        pass
+
+    def void foo( implements(Fooable) self, int a ):
+        print( "A.foo" )
+
+def void do_foo( int a, implements(Fooable) f ):
+    print( "do_foo" )
+    f.foo( a )
+
+A ainst = A.init( len( sys.argv ) )
+
+do_foo( len( sys.argv ), ainst )
+

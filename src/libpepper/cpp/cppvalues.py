@@ -255,13 +255,18 @@ def indent_if_needed( line ):
         return "    %s;\n" % line
 
 
-def render_PepuserFunction_signature( fn, name, env ):
+def render_PepuserFunction_signature( fn, args, name, env ):
 
     evald_ret_type = fn.ret_type.evaluate( env )
 
+    types_and_names = izip(
+        ( arg.evaluated_type( env ) for arg in args ),
+        ( typename[1] for typename in fn.arg_types_and_names )
+    )
+
     args_list = _render_bracketed_list(
         _render_type_and_name( typename, env ) for
-            typename in fn.arg_types_and_names
+            typename in types_and_names
     )
 
     # TODO: avoid __class__
@@ -280,7 +285,7 @@ def render_PepUserFunction_forward_decl( name, func_call, env ):
     fn = func_call.user_function.evaluate( env )
     assert( fn.__class__ == PepUserFunction ) # TODO: handle other types
 
-    ret = render_PepuserFunction_signature( fn, name, env )
+    ret = render_PepuserFunction_signature( fn, func_call.args, name, env )
     ret += ";\n"
     return ret
 
@@ -288,7 +293,7 @@ def render_PepUserFunction_body( name, func_call, env ):
     fn = func_call.user_function.evaluate( env )
     assert( fn.__class__ == PepUserFunction ) # TODO: handle other types
 
-    ret = render_PepuserFunction_signature( fn, name, env )
+    ret = render_PepuserFunction_signature( fn, func_call.args, name, env )
     ret += "\n{\n"
 
     newenv = fn.execution_environment( func_call.args, False, env )
