@@ -9,7 +9,6 @@
 from libpepper.environment import PepEnvironment
 from libpepper.namespace import PepNamespace
 from libpepper.vals.functions import PepFunctionOverloadList
-from libpepper.values import PepTypeMatcher
 from libpepper.values import PepValue
 
 from pepdefinit import PepDefInit
