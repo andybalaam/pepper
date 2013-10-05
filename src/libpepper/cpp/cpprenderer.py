@@ -25,8 +25,8 @@ def _function_signature_string( runtime_function, env ):
     ret = runtime_function.user_function.name
     ret += "_pep_s_pep_"
     ret += "_pep_s_pep_".join(
-        str( tn[0].evaluate( env ).get_name() ) for
-            tn in runtime_function.user_function.arg_types_and_names )
+        str( a.evaluated_type( env ).get_name() )
+            for a in runtime_function.args )
     return ret
 
 def _overload_name( name, num_overloads ):

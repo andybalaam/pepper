@@ -100,7 +100,10 @@ def render_PepFunctionOverloadList( value, env ):
 
     # Pick the first one for now.
     fn = value._list[0]
-    fakeargs = tuple( [tn[0]] for tn in fn.arg_types_and_names )
+    fakeargs = tuple(
+        PepVariable( tn[0].evaluate( env ), tn[1].symbol_name )
+            for tn in fn.arg_types_and_names
+    )
     rtfn = PepRuntimeUserFunction( fn, fakeargs, None )
     name = env.renderer.add_function( rtfn, env )
     return name
