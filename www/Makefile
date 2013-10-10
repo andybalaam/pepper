@@ -7,8 +7,9 @@ ASCIIDOC_OPTS = \
 	-f layout.conf \
 	-a stylesdir=/etc/asciidoc/stylesheets \
 	-a scriptsdir=/etc/asciidoc/javascripts \
-	-a stylesheet=${PWD}/layout.css
-#-a toc
+	-a stylesheet=${PWD}/layout.css \
+	-a toc=true
+
 SAMPLE2ASCIIDOC = sample2asciidoc/sample2asciidoc
 
 SAMPLES = \
