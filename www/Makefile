@@ -3,7 +3,11 @@
 
 
 ASCIIDOC = asciidoc
-ASCIIDOC_OPTS = -f layout.conf
+ASCIIDOC_OPTS = \
+	-f layout.conf \
+	-a stylesdir=/etc/asciidoc/stylesheets \
+	-a scriptsdir=/etc/asciidoc/javascripts \
+	-a stylesheet=${PWD}/layout.css
 #-a toc
 SAMPLE2ASCIIDOC = sample2asciidoc/sample2asciidoc
 
