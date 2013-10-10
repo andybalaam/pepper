@@ -16,3 +16,5 @@ src/parse/LexedLexerTokenTypes.txt
 src/parse/LexedLexer.py
 src/parse/LexedParser.py
 .pepper
+www/xhtml11-modified.conf
+

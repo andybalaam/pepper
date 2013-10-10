@@ -3,8 +3,8 @@
 
 
 ASCIIDOC = asciidoc
+ASCIIDOC_CONF = xhtml11-modified.conf
 ASCIIDOC_OPTS = \
-	-f layout.conf \
 	-a stylesdir=/etc/asciidoc/stylesheets \
 	-a scriptsdir=/etc/asciidoc/javascripts \
 	-a stylesheet=${PWD}/layout.css \
@@ -74,10 +74,12 @@ $(REAL_SAMPLES): real_samples/%.asciidoc: $(SAMPLE2ASCIIDOC) \
 		../src/test/%.pepper
 	$(SAMPLE2ASCIIDOC) $@
 
+$(ASCIIDOC_CONF): xhtml11-modifications.patch
+	patch -o $(ASCIIDOC_CONF) /etc/asciidoc/xhtml11.conf xhtml11-modifications.patch
 
-html/%.html: asciidoc/%.asciidoc layout.conf layout.css $(SAMPLES)
+html/%.html: asciidoc/%.asciidoc layout.css $(ASCIIDOC_CONF) $(SAMPLES)
 	mkdir -p html
-	$(ASCIIDOC) $(ASCIIDOC_OPTS) --out-file $@ $<
+	$(ASCIIDOC) -f $(ASCIIDOC_CONF) $(ASCIIDOC_OPTS) --out-file $@ $<
 
 html/%.txt: %.txt
 	mkdir -p html

@@ -1,0 +1,35 @@
+--- /etc/asciidoc/xhtml11.conf	2012-02-28 05:42:01.000000000 +0000
++++ layout.conf	2013-10-10 02:09:02.813586369 +0100
+@@ -526,12 +526,14 @@
+     "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{lang=en}">
+ <head>
++<link rel="icon" href="../favicon.png" type="image/png" /><!-- others -->
++<link rel="SHORTCUT ICON" href="../favicon.png" /><!-- ie -->
+ <meta http-equiv="Content-Type" content="{quirks=application/xhtml+xml}{quirks?text/html}; charset={encoding}" />
+ <meta name="generator" content="AsciiDoc {asciidoc-version}" />
+ <meta name="description" content="{description}" />
+ <meta name="keywords" content="{keywords}" />
+ <title>{title}</title>
+-{title%}<title>{doctitle=}</title>
++{title%}<title>{doctitle=} - Pepper Programming Language</title>
+ ifdef::linkcss[]
+ <link rel="stylesheet" href="{stylesdir=.}/{theme=asciidoc}.css" type="text/css" />
+ ifdef::quirks[]
+@@ -610,6 +612,7 @@
+ template::[docinfo]
+ </head>
+ <body class="{doctype}"{max-width? style="max-width:{max-width}"}{css-signature? id="{css-signature}"}>
++<div class="topmenu">Pepper programming language: <a href="index.html">Home</a> | <a href="explicitownership.html">Explicit Ownership</a> | <a href="examples.html">Examples</a></div>
+ # Article, book header.
+ ifndef::doctype-manpage[]
+ <div id="header">
+@@ -647,6 +650,8 @@
+ <div id="footer">
+ <div id="footer-text">
+ template::[footer-text]
++<address class="lastupdated">Last updated {docdate} {doctime}</address>
++<address class="copyright">Copyright (C) 2010-2013 Andy Balaam and The Pepper Developers.  Pepper and all its associated documentation are released under the MIT License.  See the file <a href="COPYING.txt">COPYING.txt</a> for details.</address>
+ </div>
+ ifdef::badges[]
+ <div id="footer-badges">
