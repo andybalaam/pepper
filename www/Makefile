@@ -8,6 +8,7 @@ ASCIIDOC_OPTS = \
 	-a stylesdir=/etc/asciidoc/stylesheets \
 	-a scriptsdir=/etc/asciidoc/javascripts \
 	-a stylesheet=${PWD}/layout.css \
+	-a max-width=50em \
 	-a toc=true
 
 SAMPLE2ASCIIDOC = sample2asciidoc/sample2asciidoc
