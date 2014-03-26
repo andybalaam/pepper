@@ -1,4 +1,14 @@
-Get the code and put the src directory into your path.
 
-Installers and other such things will come later.
+sudo apt-get install antlr python-antlr python-nose g++
+git clone https://github.com/andybalaam/pepper.git
+cd pepper/src
+make quick-test
+
+# Add the pepper/src directory to your PATH
+
+# To run the full system tests, still in the pepper/src dir:
+make test  # NOTE: fails if pepper/src is not on the PATH
+
+# Now you can run a program like this:
+pepper myprog.pepper
 
