@@ -47,6 +47,9 @@ class PepRuntimeLen( PepValue ):
         # TODO: if it's known, do it
         return self
 
+    def evaluated_type( self, env ):
+        return PepType( PepInt )
+
     def is_known( self, env ):
         # TODO: if it's known, return True
         return False

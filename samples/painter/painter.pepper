@@ -81,8 +81,6 @@ def void svg_document( int unused, function(void,(int, Frame)) painter ):
     painter( unused, frame )
     svg_end( unused )
 
-# TODO: can't currently hold len( sys.argv ) in a variable!
-
 # TODO: Have to pass len( sys.argv ) to force runtime evaluation
 
 
@@ -260,8 +258,9 @@ def void svg_document_beside( int unused, function(void,(int, Frame)) painter1, 
     beside_painter( unused, painter1, painter2, frame )
     svg_end( unused )
 
+int rt_hack = len( sys.argv )
 
-svg_document_beside( len( sys.argv ), diamond_painter, square_painter )
+svg_document_beside( rt_hack, diamond_painter, square_painter )
 
 
 
