@@ -38,6 +38,9 @@ class PepClass( PepValue ):
 
         return self
 
+    def ct_eval( self, env ):
+        return self.evaluate( env )
+
     def check_init_matches( self, var_names ):
         pass # TODO: ensure later def_inits match the first one
 

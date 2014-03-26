@@ -35,10 +35,7 @@ def append_print_arg( fmtstr, fmtargs, value, env ):
         append_print_arg( fmtstr, fmtargs, value.right_value, env )
         return
 
-    if value.is_known( env ):
-        cls = value.__class__
-    else:
-        cls = value.evaluated_type( env ).underlying_class()
+    cls = value.evaluated_type( env ).underlying_class()
 
     if cls is PepString:
         # We don't call render, because we add our own quotes here
@@ -68,7 +65,7 @@ def render_PepRuntimePrint( value, env ):
 
     env.renderer.add_header( "stdio.h" )
 
-    arg0 = arg0.evaluate( env )
+    arg0 = arg0#.evaluate( env )
 
     fmtstr = FormatString( '"' )
     fmtargs = FormatArgs()
@@ -84,7 +81,11 @@ def render_PepRuntimePrint( value, env ):
     return ret
 
 def render_PepRuntimeLen( value, env ):
-    arg = value.arg.evaluate( env )
-    assert( arg.__class__ == PepSysArgv ) # TODO other types
-    return "argc"
+    if value.arg.evaluated_type( env ).underlying_class() == PepSysArgv:
+        return "argc"
+    else:
+        raise Exception(
+            "We don't yet support taking the length of anything"
+            + " except sys.argv."
+        )
 

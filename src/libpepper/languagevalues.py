@@ -43,6 +43,9 @@ class PepImport( PepValue ):
         self.cached_eval = self
         return self
 
+    def ct_eval( self, env ):
+        return self.evaluate( env )
+
 
 class PepArrayLookup( PepValue ):
     def __init__( self, array_value, index ):
@@ -91,7 +94,7 @@ class PepIf( PepValue ):
             return self
 
     def is_known( self, env ):
-        pred = self.predicate.evaluate( env )
+        pred = self.predicate#.evaluate( env )
         return ( pred.is_known( env ) and (
                 ( pred.value and all_known( self.cmds_if_true ) )
                 or
@@ -99,11 +102,14 @@ class PepIf( PepValue ):
                 )
             )
 
+    def ct_eval( self, env ):
+        return self.evaluate( env )
+
     def _run_commands( self, cmds, env ):
         # TODO: support PepArray of statements?  As well?
         ret = None
         for cmd in cmds:
-            ret = cmd.evaluate( env )
+            ret = cmd#.evaluate( env )
         return ret # TODO: should we return all evaluated statements?
 
 class PepInitialisingWithWrongType( PepUserErrorException ):
@@ -133,7 +139,8 @@ class PepInit( PepValue ):
         (namespace, name, base_sym) = self.var_name.find_namespace_and_name(
             env )
 
-        val = self.init_value.evaluate( env )
+        # TODO: don't think it's right to evaluate here - maybe ct_eval?
+        val = self.init_value.evaluate( env ) #.evaluate(
 
         return ( tp, namespace, name, val )
 
@@ -157,6 +164,9 @@ class PepInit( PepValue ):
 
         ns.overwrite( nm, make_value() )
         return self
+
+    def ct_eval( self, env ):
+        return self.evaluate( env ) # TODO: not a real evaluate here
 
     def is_known( self, env ):
         ( tp, ns, nm, val ) = self._eval_args( env )

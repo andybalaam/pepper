@@ -4,6 +4,8 @@
 # Truly I tell you, whatever you did for one of the least of these brothers and
 # sisters of mine, you did for me.  Matt 25 v40
 
+from libpepper.values import PepBool
+from libpepper.values import PepType
 from libpepper.values import PepValue
 
 from pepuserinterface import PepUserInterface
@@ -40,4 +42,7 @@ class PepInterface( PepValue ):
                 nm, self.base_interfaces, self.body_stmts )
 
         return self
+
+    def ct_eval( self, env ):
+        return self.evaluate( env )
 

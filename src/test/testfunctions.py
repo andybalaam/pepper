@@ -11,6 +11,9 @@ from libpepper.cpp.cpprenderer import PepCppRenderer
 
 from pepasserts import assert_multiline_equal
 
+def render_evald( val, env ):
+    return val.evaluate( env ).render( env )
+
 def test_Call_fn_with_wrong_num_args():
     env = PepEnvironment( PepCppRenderer() )
 
@@ -25,7 +28,7 @@ def test_Call_fn_with_wrong_num_args():
             )
         )
 
-    assert_equal( fndecl.render( env ), "" )
+    assert_equal( render_evald( fndecl, env ), "" )
 
     value = PepFunctionCall( PepSymbol( "myfunc" ), () )
 
@@ -35,7 +38,7 @@ def test_Call_fn_with_wrong_num_args():
     assert_raises_regexp(
         PepUserErrorException,
         expected_error,
-        lambda: value.render( env )
+        lambda: render_evald( value, env )
     )
 
 
@@ -54,7 +57,7 @@ def test_Call_fn_with_wrong_arg_type():
             )
         )
 
-    assert_equal( fndecl.render( env ), "" )
+    assert_equal( render_evald( fndecl, env ), "" )
 
     value = PepFunctionCall( PepSymbol( "myfunc" ), ( PepString( "zzz" ), ) )
 
@@ -65,7 +68,7 @@ def test_Call_fn_with_wrong_arg_type():
     assert_raises_regexp(
         PepUserErrorException,
         expected_error,
-        lambda: value.render( env )
+        lambda: render_evald( value, env )
     )
 
 
@@ -84,12 +87,12 @@ def test_Define_and_call_fn_to_add_known_numbers():
             )
         )
 
-    assert_equal( fndecl.render( env ), "" )
+    assert_equal( render_evald( fndecl, env ), "" )
 
     value = PepFunctionCall( PepSymbol( "myfunc" ),
         ( PepInt( "3" ), PepInt( "4" ) ) )
 
-    assert_equal( value.render( env ), "7" )
+    assert_equal( render_evald( value, env ), "7" )
 
 
 def test_Define_and_call_fn_to_add_unknown_numbers():
@@ -108,12 +111,12 @@ def test_Define_and_call_fn_to_add_unknown_numbers():
             )
         )
 
-    assert_equal( fndecl.render( env ), "" )
+    assert_equal( render_evald( fndecl, env ), "" )
 
     value = PepFunctionCall( PepSymbol( "myfunc" ),
         ( PepInt( "3" ), PepSymbol( "othernum" ) ) )
 
-    assert_equal( value.render( env ), "myfunc( 3, othernum )" )
+    assert_equal( render_evald( value, env ), "myfunc( 3, othernum )" )
     assert_multiline_equal( env.renderer._functions["myfunc"].values()[0][1],
 """int myfunc( int x, int y )
 {
@@ -144,11 +147,11 @@ def test_Define_and_call_fn_returning_void_known():
             )
         )
 
-    assert_equal( fndecl.render( env ), "" )
+    assert_equal( render_evald( fndecl, env ), "" )
 
     value = PepFunctionCall( PepSymbol( "myfunc" ), () )
 
-    assert_equal( value.render( env ), "" )
+    assert_equal( render_evald( value, env ), "" )
 
 
 def test_Define_and_call_fn_returning_void_unknown():
@@ -166,15 +169,15 @@ def test_Define_and_call_fn_returning_void_unknown():
             ),
         (
             PepSymbol( "pass" ),
-            )
         )
+    )
 
-    assert_equal( fndecl.render( env ), "" )
+    assert_equal( render_evald( fndecl, env ), "" )
 
     value = PepFunctionCall( PepSymbol( "myfunc" ),
         ( PepInt( "3" ), PepSymbol( "othernum" ) ) )
 
-    assert_equal( value.render( env ), "myfunc( 3, othernum )" )
+    assert_equal( render_evald( value, env ), "myfunc( 3, othernum )" )
     assert_multiline_equal( env.renderer._functions["myfunc"].values()[0][1],
 """void myfunc( int x, int y )
 {
@@ -199,12 +202,12 @@ def test_Define_and_call_multiline_known_fn():
             )
         )
 
-    assert_equal( fndecl.render( env ), "" )
+    assert_equal( render_evald( fndecl, env ), "" )
 
     value = PepFunctionCall( PepSymbol( "myfunc" ),
         ( PepInt( "2" ), PepInt( "8" ) ) )
 
-    assert_equal( value.render( env ), "10" )
+    assert_equal( render_evald( value, env ), "10" )
 
 
 
@@ -226,12 +229,12 @@ def test_Define_and_call_multiline_unknown_fn():
             )
         )
 
-    assert_equal( fndecl.render( env ), "" )
+    assert_equal( render_evald( fndecl, env ), "" )
 
     value = PepFunctionCall( PepSymbol( "myfunc" ),
         ( PepInt( "2" ), PepSymbol( "othernum" ) ) )
 
-    assert_equal( value.render( env ), "myfunc( 2, othernum )" )
+    assert_equal( render_evald( value, env ), "myfunc( 2, othernum )" )
     assert_multiline_equal( env.renderer._functions["myfunc"].values()[0][1],
 """int myfunc( int x, int y )
 {
@@ -268,11 +271,11 @@ def test_Can_define_2_fns_with_same_name():
             )
         )
 
-    fndecl1.render( env )
+    render_evald( fndecl1, env )
 
      # This should not throw - we are allowed to declare a second function
      # with the same name.
-    fndecl2.render( env )
+    render_evald( fndecl2, env )
 
 
 def test_Call_overloaded_fn_with_wrong_arg_type():
@@ -297,8 +300,8 @@ def test_Call_overloaded_fn_with_wrong_arg_type():
             )
         )
 
-    fndecl1.render( env )
-    fndecl2.render( env )
+    render_evald( fndecl1, env )
+    render_evald( fndecl2, env )
 
     value = PepFunctionCall( PepSymbol( "myfunc" ), ( PepString( "foo" ), ) )
 
@@ -313,7 +316,7 @@ but the only allowed argument lists are:
     assert_raises_regexp(
         PepUserErrorException,
         expected_error,
-        lambda: value.render( env )
+        lambda: render_evald( value, env )
     )
 
 
@@ -341,8 +344,8 @@ def test_Call_overloaded_fn_with_wrong_num_args():
             )
         )
 
-    fndecl1.render( env )
-    fndecl2.render( env )
+    render_evald( fndecl1, env )
+    render_evald( fndecl2, env )
 
     value = PepFunctionCall( PepSymbol( "myfunc" ), () )
 
@@ -357,7 +360,7 @@ but the only allowed argument lists are:
     assert_raises_regexp(
         PepUserErrorException,
         expected_error,
-        lambda: value.render( env )
+        lambda: render_evald( value, env )
     )
 
 
@@ -384,8 +387,8 @@ def test_Choose_overload_by_arg_type():
             )
         )
 
-    fndecl1.render( env )
-    fndecl2.render( env )
+    render_evald( fndecl1, env )
+    render_evald( fndecl2, env )
 
     intvalue = PepFunctionCall( PepSymbol( "myfunc" ),
         ( PepString( "foo" ), PepInt( "3" ) ) )
@@ -393,8 +396,8 @@ def test_Choose_overload_by_arg_type():
     floatvalue = PepFunctionCall( PepSymbol( "myfunc" ),
         ( PepString( "foo" ), PepFloat( "3.2" ) ) )
 
-    assert_equal( intvalue.render( env ), '"String,Int"' )
-    assert_equal( floatvalue.render( env ), '"String,Float"' )
+    assert_equal( render_evald( intvalue, env ), '"String,Int"' )
+    assert_equal( render_evald( floatvalue, env ), '"String,Float"' )
 
 
 
@@ -421,16 +424,16 @@ def test_Choose_overload_by_num_args():
             )
         )
 
-    fndecl1.render( env )
-    fndecl2.render( env )
+    render_evald( fndecl1, env )
+    render_evald( fndecl2, env )
 
     value1 = PepFunctionCall( PepSymbol( "myfunc" ),
         ( PepString( "foo" ), PepInt( "3" ) ) )
 
     value2 = PepFunctionCall( PepSymbol( "myfunc" ), ( PepString( "foo" ), ) )
 
-    assert_equal( value1.render( env ), '"String,Int"' )
-    assert_equal( value2.render( env ), '"String"' )
+    assert_equal( render_evald( value1, env ), '"String,Int"' )
+    assert_equal( render_evald( value2, env ), '"String"' )
 
 
 

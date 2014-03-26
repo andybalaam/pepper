@@ -6,7 +6,7 @@ from libpepper.values import PepPass
 def render_statements( statements, indent, env ):
     ret = ""
     for stmt in statements:
-        st = stmt.evaluate( env )
+        st = stmt#.evaluate( env )
         if st.__class__ is PepPass:
             continue
         ret += "%s%s;\n" % ( indent, st.render( env ) )

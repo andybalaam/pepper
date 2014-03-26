@@ -19,10 +19,21 @@ class PepValue( object ):
         self.cached_eval_env = None
 
     def render( self, env ):
-        return env.render_value( self.evaluate( env ) )
+        ret = env.render_value( self.ct_eval( env ) )
+        return ret
 
     def is_known( self, env ):
         return True
+
+    def ct_eval( self, env ):
+        """
+        Evaluate this value in compile-time mode.
+        For most values, this does nothing, but for calls
+        to the now() function, it evaluates the argument
+        immediately, and for symbols, it resolves them
+        as far as it can.
+        """
+        return self
 
     def evaluate( self, env ):
         if self.cached_eval is None or env is not self.cached_eval_env:
@@ -128,6 +139,10 @@ class PepSymbol( PepValue ):
     def name( self ):
         # TODO: delete this method, or use it consistently
         return self.symbol_name
+
+    def ct_eval( self, env ):
+        PepValue.ct_eval( self, env )
+        return self.evaluate( env )
 
     def do_evaluate( self, env ):
         # Look up this symbol in the namespace of our environment

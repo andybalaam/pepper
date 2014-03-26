@@ -15,7 +15,7 @@ def _has_semicolon( val ):
         return True
 
 def _render_with_semicolon( value, env ):
-    val = value.evaluate( env )
+    val = value.ct_eval( env )
     ret = val.render( env )
     if ret != "" and _has_semicolon( val ):
         ret += ";"
@@ -44,7 +44,6 @@ class PepCppRenderer( object ):
             self._headers.append( header )
 
     def add_function( self, runtime_function, env ):
-
         signature = _function_signature_string(
             runtime_function, env )
 

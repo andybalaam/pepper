@@ -324,7 +324,7 @@ def test_Render_runtime_class():
                 )
             ),
         )
-    )
+    ).evaluate( env )
 
     init = PepInit(
         PepSymbol( 'MyClass' ),
@@ -333,7 +333,7 @@ def test_Render_runtime_class():
             PepSymbol( 'MyClass.init' ),
             ( PepSymbol( 'a' ), PepFloat('1.5') )
         )
-    )
+    ).evaluate( env )
 
     ans = env.renderer.render_exe( [ cls, init ], env )
 
@@ -389,15 +389,15 @@ def test_Render_runtime_method_call():
                 ( PepPass(), )
             )
         )
-    )
+    ).evaluate( env )
 
     init = PepInit(
         PepSymbol( 'MyClass' ),
         PepSymbol( 'mc' ),
         PepFunctionCall( PepSymbol( 'MyClass.init' ), ( PepSymbol( "a" ), ) )
-    )
+    ).evaluate( env )
 
-    meth = PepFunctionCall( PepSymbol( "mc.my_meth" ), () )
+    meth = PepFunctionCall( PepSymbol( "mc.my_meth" ), () ).evaluate( env )
 
     ans = env.renderer.render_exe( [ cls, init, meth ], env )
 
@@ -603,6 +603,32 @@ fn1( len( sys.argv ), x )
 myfn( len( sys.argv ), fn1 )
 """
 )
+
+
+def Now_evaluates_now_but_otherwise_not__test():
+    """
+        If we render some stuff that could be evaluated at
+        compile time, it is not evaluated, unless we wrap it
+        in a call to the now() builtin.
+    """
+
+    assert_rendered_program_equals(
+        r"""#include <stdio.h>
+
+int main( int argc, char* argv[] )
+{
+    printf( "%d\n", (3 * 2) );
+    printf( "%d\n", 6 );
+
+    return 0;
+}
+""",
+        """
+print( 3 * 2 )
+print( now( 3 *2 ) )
+"""
+)
+
 
 
 

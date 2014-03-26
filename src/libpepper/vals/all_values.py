@@ -9,6 +9,7 @@ from libpepper.values import *
 
 # New way - move to this
 from libpepper.vals.basic_types import *
+from libpepper.vals.builtin import *
 from libpepper.vals.control_flow import *
 from libpepper.vals.functions import *
 from libpepper.vals.numbers import *

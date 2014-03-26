@@ -3,6 +3,7 @@
 
 from libpepper.namespace import PepNamespace
 from libpepper.vals.functions.pepfunction import PepFunction
+from values import PepType
 from values import PepValue
 
 
@@ -18,10 +19,10 @@ class PepQuoteEvaluate( PepFunction ):
         return len( args ) == 0
 
     def call( self, args, env ):
-        return self.quote.unquote().evaluate( env )
+        return self.quote.unquote()
 
     def return_type( self, args, env ):
-        return PepType( PepQuote )
+        return self.quote.unquote().evaluated_type( env )
 
 
 class PepQuote( PepValue ):

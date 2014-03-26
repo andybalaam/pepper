@@ -1,6 +1,7 @@
 
 from libpepper.vals.functions.pepfunction import PepFunction
 from libpepper.values import PepBool
+from libpepper.values import PepType
 from libpepper.values import all_known
 
 class PepImplementsFunction( PepFunction ):
@@ -25,7 +26,7 @@ class PepImplementsFunction( PepFunction ):
             )
 
     def return_type( self, args, env ):
-        return self.clazz
+        return PepType( PepBool )
 
     def args_match( self, args, env ):
         if PepDefInit.INIT_IMPL_NAME not in self.user_class.namespace:

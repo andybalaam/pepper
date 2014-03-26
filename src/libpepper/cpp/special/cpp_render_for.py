@@ -9,7 +9,8 @@ from libpepper.cpp.cpputils import render_statements
 from libpepper import builtins
 
 def render_PepFor( value, env ):
-    evald_it = value.iterator.evaluate( env )
+    # TODO: should only ct_eval here
+    evald_it = value.iterator.evaluate( env ) #.evaluate(
 
     if evald_it.evaluated_type( env ).value is PepRange:
         if evald_it.__class__ is PepRange:
@@ -44,7 +45,8 @@ def render_PepFor( value, env ):
     args = ( PepVariable( PepType( PepInt ), value.variable_name.name() ), )
     newenv = execution_environment( arg_types_and_names, args, False, env )
 
-    if step.evaluate( env ).value == "1":
+    # TODO: should only ct_eval here
+    if step.evaluate( env ).value == "1": #.evaluate(
         modify_code = "++{variable_name}"
     else:
         modify_code = "{variable_name} += {step}"

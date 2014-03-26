@@ -91,4 +91,7 @@ class PepDef( PepValue ):
 
         return self
 
+    def ct_eval( self, env ):
+        return self.evaluate( env )
+
 

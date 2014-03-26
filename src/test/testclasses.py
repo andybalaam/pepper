@@ -16,6 +16,9 @@ from libpepper.usererrorexception import PepUserErrorException
 from pepasserts import assert_contains
 from pepasserts import assert_multiline_equal
 
+def render_evald( val, env ):
+    return val.evaluate( env ).render( env )
+
 def test_Static_variable_can_be_read():
     env = PepEnvironment( PepCppRenderer() )
 
@@ -27,11 +30,11 @@ def test_Static_variable_can_be_read():
         )
     )
 
-    assert_equal( decl.render( env ), "" )
+    assert_equal( render_evald( decl, env ), "" )
 
     value = PepSymbol( "MyClass.i" )
 
-    assert_equal( value.render( env ), "7" )
+    assert_equal( render_evald( value, env ), "7" )
 
 
 def test_Member_function_can_be_executed():
@@ -60,7 +63,7 @@ def test_Member_function_can_be_executed():
         )
     )
 
-    assert_equal( decl.render( env ), "" )
+    assert_equal( render_evald( decl, env ), "" )
 
     value3 = PepFunctionCall(
         PepSymbol( "MyClass.myfunc" ),
@@ -76,7 +79,7 @@ def test_Member_function_can_be_executed():
         )
     )
 
-    assert_equal( value5.render( env ), "5" )
+    assert_equal( render_evald( value5, env ), "5" )
 
 
 def test_Init_returns_a_new_instance():
@@ -91,7 +94,7 @@ def test_Init_returns_a_new_instance():
         )
     )
 
-    assert_equal( decl.render( env ), "" )
+    assert_equal( render_evald( decl, env ), "" )
 
     value = PepFunctionCall( PepSymbol( "MyClass.init" ), () )
     ev_value = value.evaluate( env )
@@ -130,7 +133,7 @@ def test_Init_with_arg_returns_new_instance_constructed_with_arg():
         )
     )
 
-    assert_equal( "", decl.render( env ) )
+    assert_equal( "", render_evald( decl, env ) )
 
     make_instance = PepInit(
         PepSymbol( "MyClass" ),
@@ -140,11 +143,11 @@ def test_Init_with_arg_returns_new_instance_constructed_with_arg():
         )
     )
 
-    assert_equal( "", make_instance.render( env ) )
+    assert_equal( "", render_evald( make_instance, env ) )
 
     value = PepSymbol( "my_instance.x" )
 
-    assert_equal( "3", value.render( env ) )
+    assert_equal( "3", render_evald( value, env ) )
 
 
 def test_Can_get_names_of_member_variables_from_def_init():
@@ -291,7 +294,7 @@ def Cannot_overwrite_method_with_member_variable__test():
         )
     )
 
-    assert_equal( "", decl.render( env ) )
+    assert_equal( "", render_evald( decl, env ) )
 
     exception_caught = False
     try:
@@ -304,7 +307,7 @@ def Cannot_overwrite_method_with_member_variable__test():
             )
         )
 
-        make_instance.render( env )
+        render_evald( make_instance, env )
 
     except PepUserErrorException, e:
         exception_caught = True

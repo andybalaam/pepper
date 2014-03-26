@@ -299,7 +299,7 @@ def render_PepUserFunction_body( name, func_call, env ):
     newenv = fn.execution_environment( func_call.args, False, env )
 
     for body_stmt in fn.body_stmts:
-        st = body_stmt.evaluate( newenv )
+        st = body_stmt.ct_eval( newenv )
         if st.__class__ == PepPass:
             continue
         ret += indent_if_needed( st.render( newenv ) )

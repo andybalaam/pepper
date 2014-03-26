@@ -1,1 +1,1 @@
-PepFunctionCall(PepSymbol('print'),(PepPlus(PepInt('1'),PepInt('2')),))
+PepFunctionCall(PepSymbol('print'),(PepFunctionCall(PepSymbol('now'),(PepPlus(PepInt('1'),PepInt('2')),)),))

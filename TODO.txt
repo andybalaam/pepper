@@ -1,4 +1,24 @@
 
++ Don't evaluate things unless they are wrapped in now().
+  Exceptions: anything used in a context where it is expected to be one
+  of the following _will_ be immediately evaluated:
+  - type
+  - function
+  - import statement
+  - if condition (does this make sense?)
+
+- Delete some calls to ct_eval - should be enough in PepValue.render()?
+
+- Make a new now_if instead of evaluating if conditions?  If so,
+  we'll need versions for lots of things like switch, type_switch...
+
+- Rename evaluate() on a quote to "unquote" or something similar
+
+- Try an "addatruntime" sample to flush out emitting printf 1, 2 when
+  it should be 1 + 2.
+
+- Fix problem where a void method can return in int with no complaints.
+
 - Break into lots of separate files and dirs
 
 - Remove special cases for def_init - it can work just like any method I think

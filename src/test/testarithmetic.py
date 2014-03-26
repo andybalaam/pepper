@@ -10,9 +10,12 @@ from libpepper.cpp.cppvalues import *
 from libpepper.cpp.cpprenderer import PepCppRenderer
 from libpepper.vals import *
 
+def now( val ):
+    return PepFunctionCall( PepNow(), ( val, ) )
+
 def test_Add_known():
     env = PepEnvironment( PepCppRenderer() )
-    value = PepPlus( PepInt( "14" ), PepInt( "17" ) )
+    value = now( PepPlus( PepInt( "14" ), PepInt( "17" ) ) )
     assert_equal( value.render( env ), "31" )
 
 def test_Add_unknown():
@@ -23,7 +26,7 @@ def test_Add_unknown():
 
 def test_Subtract_known():
     env = PepEnvironment( PepCppRenderer() )
-    value = PepMinus( PepInt( "17" ), PepInt( "14" ) )
+    value = now( PepMinus( PepInt( "17" ), PepInt( "14" ) ) )
     assert_equal( value.render( env ), "3" )
 
 def test_Subtract_unknown():
@@ -35,7 +38,7 @@ def test_Subtract_unknown():
 
 def test_Multiply_known():
     env = PepEnvironment( PepCppRenderer() )
-    value = PepTimes( PepInt( "4" ), PepInt( "3" ) )
+    value = now( PepTimes( PepInt( "4" ), PepInt( "3" ) ) )
     assert_equal( value.render( env ), "12" )
 
 def test_Multiply_unknown():

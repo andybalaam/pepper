@@ -108,7 +108,6 @@ class PepImplements( PepFunction ):
                 "There should only ever be one argument to implements()" )
         return PepInterfaceTypeMatcher( args[0].evaluate( env ) )
 
-
     def return_type( self, args, env ):
         return PepType( PepBool )
 
@@ -134,6 +133,7 @@ def add_builtins( env ):
     env.namespace["code"]  = PepType( PepQuote )
 
     # Functions
+    env.namespace["now"]        = PepNow()
     env.namespace["implements"] = PepImplements()
     env.namespace["len"]        = PepLen()
     env.namespace["print"]      = PepPrint()

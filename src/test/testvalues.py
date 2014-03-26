@@ -10,6 +10,9 @@ from libpepper.namespace import PepNamespace
 from libpepper.cpp.cppvalues import *
 from libpepper.cpp.cpprenderer import PepCppRenderer
 
+def now( val ):
+    return PepFunctionCall( PepNow(), ( val, ) )
+
 def test_Const_int_value_renders_as_a_number():
     env = PepEnvironment( PepCppRenderer() )
     value = PepInt( "23" )
@@ -100,13 +103,13 @@ def test_Subnamespace_referred_by_symbol_is_found():
 
 def test_Add_two_known_ints_renders_calculated_sum():
     env = PepEnvironment( PepCppRenderer() )
-    value = PepPlus( PepInt( "2" ), PepInt( "3" ) )
+    value = now( PepPlus( PepInt( "2" ), PepInt( "3" ) ) )
 
     assert_equal( value.render( env ), "5" )
 
 def test_Add_two_known_floats_renders_calculated_sum():
     env = PepEnvironment( PepCppRenderer() )
-    value = PepPlus( PepFloat( "2.9" ), PepFloat( "3.1" ) )
+    value = now( PepPlus( PepFloat( "2.9" ), PepFloat( "3.1" ) ) )
 
     assert_equal( value.render( env ), "6.0" )
 
@@ -214,6 +217,9 @@ def test_Print_unknown_bool_renders_as_percent_s_colon_op():
 
 
 
+def now( val ):
+    return PepFunctionCall( PepNow(), ( val, ) )
+
 
 def test_known_array_lookup():
     env = PepEnvironment( PepCppRenderer() )
@@ -224,7 +230,7 @@ def test_known_array_lookup():
     env.namespace["myarr"] = PepArray( PepType( PepInt ), (
         PepInt( "3" ), PepInt( "4" ), PepInt( "5" ), ) )
 
-    value = PepArrayLookup( PepSymbol( "myarr" ), PepInt( "1" ) )
+    value = now( PepArrayLookup( PepSymbol( "myarr" ), PepInt( "1" ) ) )
 
     assert_equal( value.render( env ), "4" )
 

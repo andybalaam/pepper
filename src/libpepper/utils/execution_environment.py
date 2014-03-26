@@ -24,7 +24,7 @@ def execution_environment( arg_types_and_names, args, known, env ):
             val = type_and_name[2]
 
         if known:
-            val = val.evaluate( env )
+            val = val#.evaluate( env )
         else:
             if i < len( args ):
                 tp = args[i].evaluated_type( newenv )

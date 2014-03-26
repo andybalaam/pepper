@@ -1,7 +1,7 @@
-print( 1 + 2 )
+print( now( 1 + 2 ) )
 
-# Because all the arguments to "+" are known at compile time,
-# it can execute at compile time.
+# The now() function tells Pepper to evaluate this value at
+# compile time.
 
 # "print" can never execute at compile time because it has
 # a runtime side effect.
