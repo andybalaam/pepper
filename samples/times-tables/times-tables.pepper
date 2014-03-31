@@ -1,0 +1,37 @@
+import sys
+import random
+
+int num_questions = 60
+
+int num_correct = 0
+int num_wrong = 0
+
+for int i in range( num_questions ):
+
+    int n1 = random.randint( 1, 12 )
+    int n2 = random.randint( 1, 12 )
+
+    bool right = False
+    #while not right:
+    while True:
+        #print( "Question %d of %d.  What is %d x %d?" % ( i + 1, num_questions, n1, n2 ) )
+
+        string ans = raw_input()
+
+        #try:
+        int nans = convert_to(int)( ans )
+        if nans == n1*n2:
+            num_correct += 1
+            #print( "Correct!" )
+            right = True
+        else:
+            num_wrong += 1
+            #print( "Wrong.  Try again." )
+        #except:
+            #print( "That is not a number!" )
+
+#print()
+#print( "Finished, well done!" )
+#print( "You got %d correct answers and %d incorrect answers." % ( num_correct, num_wrong ) )
+#print()
+
