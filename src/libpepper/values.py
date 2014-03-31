@@ -237,6 +237,13 @@ class PepGreaterThan( PepBinaryOp ):
     def evaluated_type( self, env ):
         return PepType( PepBool )
 
+class PepLessThan( PepBinaryOp ):
+    def operator( self, lv, rv ):
+        return lv.less_than( rv )
+
+    def evaluated_type( self, env ):
+        return PepType( PepBool )
+
 
 class PepPass( PepValue ):
     """A statement that does nothing."""

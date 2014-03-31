@@ -125,6 +125,13 @@ int main( int argc, char* argv[] )
 """ )
 
 
+def Less_than_renders_in_cpp__test():
+    env = PepEnvironment( PepCppRenderer() )
+    assert_equal(
+        "(3 < 4)",
+        PepLessThan( PepInt("3"), PepInt("4" ) ).render( env )
+    )
+
 
 def test_Two_prints():
     env = PepEnvironment( PepCppRenderer() )

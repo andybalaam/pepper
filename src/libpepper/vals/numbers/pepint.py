@@ -37,4 +37,9 @@ class PepInt( PepValue ):
         # TODO: handle large numbers
         return PepBool( int( self.value ) > int( other.value ) )
 
+    def less_than( self, other ):
+        assert other.__class__ == self.__class__
+        # TODO: handle large numbers
+        return PepBool( int( self.value ) < int( other.value ) )
+
 

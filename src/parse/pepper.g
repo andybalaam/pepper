@@ -151,6 +151,7 @@ TIMES : '*' ;
 PLUSEQUALS : "+=" ;
 
 GT : '>' ;
+LT : '<' ;
 
 COLON : ':';
 
@@ -239,7 +240,7 @@ commaExpression :
 ;
 
 calcExpression :
-    simpleExpression ( ( PLUS^ | MINUS^ | TIMES^ | GT^ ) noCommaExpression )?
+    simpleExpression ( ( PLUS^ | MINUS^ | TIMES^ | GT^ | LT^ ) noCommaExpression )?
 ;
 
 typedArgumentsList :
@@ -379,6 +380,7 @@ expression returns [r]
     | #(MINUS e1=expression e2=expression) { r = PepMinus( e1, e2 ) }
     | #(TIMES e1=expression e2=expression) { r = PepTimes( e1, e2 ) }
     | #(GT e1=expression e2=expression) { r = PepGreaterThan( e1, e2 ) }
+    | #(LT e1=expression e2=expression) { r = PepLessThan( e1, e2 ) }
     | f=functionCall { r = f }
     | q=quotedCode { r = q }
     | t=tuple { r = t }

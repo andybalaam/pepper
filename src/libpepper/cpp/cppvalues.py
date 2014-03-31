@@ -60,6 +60,11 @@ def render_PepGreaterThan( value, env ):
     return "(%s > %s)" % (
         value.left_value.render( env ), value.right_value.render( env ) )
 
+def render_PepLessThan( value, env ):
+    # TODO: assert they are comparable
+    return "(%s < %s)" % (
+        value.left_value.render( env ), value.right_value.render( env ) )
+
 
 def render_PepIf( value, env ):
     # TODO: assert predicate is a bool or function returning one

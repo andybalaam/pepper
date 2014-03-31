@@ -32,4 +32,9 @@ class PepFloat( PepValue ):
         # TODO: handle arbitrary numbers
         return PepBool( float( self.value ) > float( other.value ) )
 
+    def less_than( self, other ):
+        assert other.__class__ == self.__class__
+        # TODO: handle arbitrary numbers
+        return PepBool( float( self.value ) < float( other.value ) )
+
 

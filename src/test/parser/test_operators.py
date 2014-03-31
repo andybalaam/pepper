@@ -88,6 +88,27 @@ PepGreaterThan(
 )
 """ )
 
+def test_operator_less_than():
+    assert_parser_result(
+        r"""
+0001:0001     SYMBOL(a)
+0001:0002         LT(<)
+0001:0003     SYMBOL(b)
+0001:0004    NEWLINE
+""",
+        r"""
+[LT:<]
+    [SYMBOL:a]
+    [SYMBOL:b]
+[EOF:]
+""",
+        r"""
+PepLessThan(
+    PepSymbol('a'),
+    PepSymbol('b')
+)
+""" )
+
 
 def test_plus_in_function_call():
     assert_parser_result(

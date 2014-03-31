@@ -102,7 +102,16 @@ def test_operator_gt():
     tokens = _lex( """a > b""" )
 
     _assert_token( tokens[0], "a", PepperLexer.SYMBOL, 1, 1 )
-    _assert_token( tokens[1], ">", PepperLexer.GT,   1, 3 )
+    _assert_token( tokens[1], ">", PepperLexer.GT,     1, 3 )
+    _assert_token( tokens[2], "b", PepperLexer.SYMBOL, 1, 5 )
+
+    assert_equal( len( tokens ), 3 )
+
+def test_operator_lt():
+    tokens = _lex( """a < b""" )
+
+    _assert_token( tokens[0], "a", PepperLexer.SYMBOL, 1, 1 )
+    _assert_token( tokens[1], "<", PepperLexer.LT,     1, 3 )
     _assert_token( tokens[2], "b", PepperLexer.SYMBOL, 1, 5 )
 
     assert_equal( len( tokens ), 3 )
