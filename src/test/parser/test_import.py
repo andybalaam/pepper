@@ -14,6 +14,7 @@ def test_import():
         r"""
 ["import":import]
     [SYMBOL:sys]
+[EOF:]
 """,
         r"""
 PepImport('sys')

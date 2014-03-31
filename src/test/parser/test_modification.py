@@ -17,6 +17,7 @@ def test_simple_modification():
 [PLUSEQUALS:+=]
     [SYMBOL:i]
     [INT:7]
+[EOF:]
 """,
         r"""
 PepModification(
@@ -36,6 +37,7 @@ self.x += 4
 [PLUSEQUALS:+=]
     [SYMBOL:self.x]
     [INT:4]
+[EOF:]
 """,
         r"""
 PepModification(

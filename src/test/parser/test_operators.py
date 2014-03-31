@@ -15,6 +15,7 @@ def test_operator_plus():
 [PLUS:+]
     [SYMBOL:a]
     [SYMBOL:b]
+[EOF:]
 """,
         r"""
 PepPlus(
@@ -35,6 +36,7 @@ def test_operator_minus():
 [MINUS:-]
     [SYMBOL:a]
     [SYMBOL:b]
+[EOF:]
 """,
         r"""
 PepMinus(
@@ -55,6 +57,7 @@ def test_operator_times():
 [TIMES:*]
     [SYMBOL:a]
     [SYMBOL:b]
+[EOF:]
 """,
         r"""
 PepTimes(
@@ -76,6 +79,7 @@ def test_operator_greater_than():
 [GT:>]
     [SYMBOL:a]
     [SYMBOL:b]
+[EOF:]
 """,
         r"""
 PepGreaterThan(
@@ -102,6 +106,7 @@ def test_plus_in_function_call():
     [PLUS:+]
         [INT:3]
         [SYMBOL:b]
+[EOF:]
 """,
         r"""
 PepFunctionCall(

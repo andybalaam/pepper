@@ -23,6 +23,7 @@ interface MyInterface:
             [SYMBOL:void]
             [SYMBOL:foo]
             [LPAREN:(]
+[EOF:]
 """,
         r"""
 PepInterface(
@@ -52,6 +53,7 @@ interface MyInterface:
             [SYMBOL:void]
             [SYMBOL:foo]
             [LPAREN:(]
+[EOF:]
 """,
         r"""
 PepInterface(

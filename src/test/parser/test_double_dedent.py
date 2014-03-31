@@ -61,6 +61,7 @@ def test_double_dedent():
             [COLON::]
                 ["return":return]
                     [SYMBOL:float]
+[EOF:]
 """,
         r"""
 PepDef(

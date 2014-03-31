@@ -17,6 +17,7 @@ print( ( 3 ) )
 [LPAREN:(]
     [SYMBOL:print]
     [INT:3]
+[EOF:]
 """,
         r"""
 PepFunctionCall(
@@ -37,6 +38,7 @@ print( ( ( 3 ) ) )
 [LPAREN:(]
     [SYMBOL:print]
     [INT:3]
+[EOF:]
 """,
         r"""
 PepFunctionCall(
@@ -60,6 +62,7 @@ print( ( 1, 2, 3 ) )
         [INT:1]
         [INT:2]
         [INT:3]
+[EOF:]
 """,
         r"""
 PepFunctionCall(

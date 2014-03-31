@@ -20,6 +20,10 @@ def test_multiline():
         r"""
 ["import":import]
     [SYMBOL:sys]
+[LPAREN:]
+    [SYMBOL:print]
+    [SYMBOL:sys.argv]
+[EOF:]
 """,
         r"""
 PepImport('sys')

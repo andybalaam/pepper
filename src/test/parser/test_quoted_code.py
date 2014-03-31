@@ -26,6 +26,7 @@ def test_quoted_sum():
         [PLUS:+]
             [SYMBOL:x]
             [SYMBOL:y]
+[EOF:]
 """,
         r"""
 PepQuote((PepPlus(PepSymbol('x'),PepSymbol('y')),))
@@ -47,6 +48,7 @@ quote:
         [PLUS:+]
             [SYMBOL:x]
             [SYMBOL:y]
+[EOF:]
 """,
         r"""
 PepQuote(

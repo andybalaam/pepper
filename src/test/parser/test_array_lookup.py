@@ -16,6 +16,7 @@ def test_array_lookup():
 [LSQUBR:]
     [SYMBOL:myarr]
     [INT:1]
+[EOF:]
 """,
         r"""
 PepArrayLookup(
@@ -43,6 +44,7 @@ def test_function_with_array_lookup():
     [LSQUBR:]
         [SYMBOL:myarr]
         [INT:2]
+[EOF:]
 """,
     r"""
 PepFunctionCall(
@@ -70,6 +72,7 @@ def test_array_lookup_qualified():
 [LSQUBR:]
     [SYMBOL:a.b]
     [INT:3]
+[EOF:]
 """,
     r"""
 PepArrayLookup(

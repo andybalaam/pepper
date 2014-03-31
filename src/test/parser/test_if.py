@@ -29,6 +29,7 @@ def test_if():
         [LPAREN:]
             [SYMBOL:print]
             [INT:3]
+[EOF:]
 """,
         r"""
 PepIf(
@@ -70,6 +71,7 @@ def test_if_function_call():
         [INT:3]
     [COLON::]
         [INT:3]
+[EOF:]
 """,
         r"""
 PepIf(
@@ -111,6 +113,7 @@ def test_if_operator():
         [INT:4]
     [COLON::]
         [INT:3]
+[EOF:]
 """,
         r"""
 PepIf(
@@ -154,6 +157,7 @@ def test_if_operator_and_function():
         [INT:4]
     [COLON::]
         [INT:3]
+[EOF:]
 """,
         r"""
 PepIf(
@@ -205,6 +209,7 @@ def test_if_else():
     ["else":else]
     [COLON::]
         [INT:0]
+[EOF:]
 """,
         r"""
 PepIf(
@@ -239,6 +244,7 @@ else:
     ["else":else]
     [COLON::]
         [SYMBOL:pass]
+[EOF:]
 """,
         r"""
 PepIf(

@@ -30,6 +30,7 @@ def test_define_function():
     [COLON::]
         ["return":return]
             [INT:1]
+[EOF:]
 """,
         r"""
 PepDef(
@@ -85,6 +86,7 @@ def test_define_function_with_args():
         [SYMBOL:z]
     [COLON::]
         [SYMBOL:pass]
+[EOF:]
 """,
         r"""
 PepDef(
@@ -137,6 +139,7 @@ def test_define_function_two_lines():
             [INT:7]
         ["return":return]
             [SYMBOL:a]
+[EOF:]
 """,
         """
 PepDef(
@@ -178,6 +181,7 @@ def int fn():
             [INT:0]
         ["return":return]
             [SYMBOL:x]
+[EOF:]
 """,
         r"""
 PepDef(
@@ -217,6 +221,7 @@ def void fn():
     [LPAREN:(]
     [COLON::]
         [SYMBOL:pass]
+[EOF:]
 """,
         r"""
 PepDef(

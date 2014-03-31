@@ -34,7 +34,7 @@ def _ast_node_to_string( ast, indent ):
         )
 
 def _ast_to_string( ast ):
-    return '\n' + _ast_node_to_string( ast, 0 )
+    return _ast_node_to_string( ast, 0 )
 
 # Strip out newlines followed by spaces or a closing bracket
 UNPRETTY_RE = re.compile( "\n(\\s+|([)]))" )
@@ -51,7 +51,11 @@ def _assert_parser_result_from_token_stream(
     parser = PepperParser.Parser( tokens )
     parser.program()
 
-    actual_ast = _ast_to_string( parser.getAST() )
+    actual_ast = "\n"
+    ast = parser.getAST()
+    while ast is not None:
+        actual_ast += _ast_to_string( ast )
+        ast = ast.getNextSibling()
 
     assert_multiline_equal( expected_ast, actual_ast )
 

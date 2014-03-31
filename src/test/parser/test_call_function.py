@@ -14,6 +14,7 @@ def test_call_function():
         r"""
 [LPAREN:]
     [SYMBOL:f]
+[EOF:]
 """,
         r"""
 PepFunctionCall(
@@ -44,6 +45,7 @@ def test_call_function_with_args():
     [INT:2]
     [COMMA:,]
     [INT:3]
+[EOF:]
 """,
         r"""
 PepFunctionCall(

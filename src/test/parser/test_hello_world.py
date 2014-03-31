@@ -19,6 +19,7 @@ def test_hello_world():
 [LPAREN:]
     [SYMBOL:print]
     [STRING:Hello, world!]
+[EOF:]
 """,
         r"""
 PepFunctionCall(

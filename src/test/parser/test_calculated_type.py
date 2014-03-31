@@ -40,6 +40,7 @@ def test_calculated_type():
         [SYMBOL:cfg]
     [COLON::]
         [SYMBOL:pass]
+[EOF:]
 """,
         r"""
 PepDef(

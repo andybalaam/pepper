@@ -29,6 +29,7 @@ def test_empty_class():
     [SYMBOL:MyClass]
     [COLON::]
         [SYMBOL:pass]
+[EOF:]
 """,
         r"""
 PepClass(
@@ -65,6 +66,7 @@ def test_static_member_variable():
             [SYMBOL:int]
             [SYMBOL:x]
             [INT:3]
+[EOF:]
 """,
         r"""
 PepClass(
@@ -116,6 +118,7 @@ def test_method():
             [LPAREN:]
             [COLON::]
                 [SYMBOL:pass]
+[EOF:]
 """,
         r"""
 PepClass(
@@ -188,6 +191,7 @@ def test_init_method():
                 [SYMBOL:x]
             [COLON::]
                 [SYMBOL:pass]
+[EOF:]
 """,
         r"""
 PepClass(
@@ -230,6 +234,7 @@ class MyClass:
                             [SYMBOL:int]
                             [SYMBOL:self.x]
                             [INT:3]
+[EOF:]
 """,
         r"""
 PepClass(
@@ -279,6 +284,7 @@ class MyClass:
                     [SYMBOL:int]
                     [SYMBOL:y]
                     [INT:2]
+[EOF:]
 """,
         r"""
 PepClass(
@@ -332,6 +338,7 @@ class MyClass:
                             [SYMBOL:int]
                             [SYMBOL:self.y]
                             [INT:4]
+[EOF:]
 """,
         r"""
 PepClass(
@@ -387,6 +394,7 @@ class MyClass:
                             [SYMBOL:int]
                             [SYMBOL:self.x]
                             [INT:3]
+[EOF:]
 """,
         r"""
 PepClass(
@@ -443,6 +451,7 @@ class MyClass:
                 [SYMBOL:self]
             [COLON::]
                 [SYMBOL:pass]
+[EOF:]
 """,
         r"""
 PepClass(
@@ -511,6 +520,7 @@ class MyClass:
                 [SYMBOL:self]
             [COLON::]
                 [SYMBOL:pass]
+[EOF:]
 """,
         r"""
 PepClass(

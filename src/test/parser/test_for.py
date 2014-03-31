@@ -19,6 +19,7 @@ for int i in ( 1, 2, 3 ):
         [INT:3]
     [COLON::]
         [SYMBOL:pass]
+[EOF:]
 """,
         r"""
 PepFor(
@@ -57,6 +58,7 @@ for int i in range( 0, 4 ):
         [LPAREN:(]
             [SYMBOL:print]
             [SYMBOL:i]
+[EOF:]
 """,
         r"""
 PepFor(
@@ -102,6 +104,7 @@ for int i in range( 0, 4 ):
         [LPAREN:(]
             [SYMBOL:print]
             [SYMBOL:i]
+[EOF:]
 """,
         r"""
 PepFor(

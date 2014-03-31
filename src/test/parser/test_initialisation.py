@@ -19,6 +19,7 @@ def test_simple_initialisation():
     [SYMBOL:int]
     [SYMBOL:i]
     [INT:7]
+[EOF:]
 """,
         r"""
 PepInit(
@@ -43,6 +44,7 @@ def test_float_initialisation():
     [SYMBOL:float]
     [SYMBOL:f]
     [FLOAT:7.4]
+[EOF:]
 """,
         r"""
 PepInit(
@@ -63,6 +65,7 @@ int self.x = 4
     [SYMBOL:int]
     [SYMBOL:self.x]
     [INT:4]
+[EOF:]
 """,
         r"""
 PepInit(
