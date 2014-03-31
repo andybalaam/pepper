@@ -361,6 +361,13 @@ def render_PepFunctionCall( value, env ):
 def render_PepReturn( value, env ):
     return "return " + value.value.render( env )
 
+def render_PepWhile( value, env ):
+    return """while( {expression} )
+    {{
+        {body_statements}    }}""".format(
+        expression = value.expression.render( env ),
+        body_statements = render_statements( value.body_stmts, "", env ),
+    )
 
 def render_PepClass( value, env ):
     return ""

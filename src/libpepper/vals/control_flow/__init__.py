@@ -4,4 +4,5 @@
 
 from pepfor import PepFor
 from peprange import PepRange
+from pepwhile import PepWhile
 

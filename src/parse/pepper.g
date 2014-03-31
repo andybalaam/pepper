@@ -179,6 +179,7 @@ statement :
     | classDefinition
     | interfaceDefinition
     | forStatement
+    | whileStatement
     | importStatement
 ;
 
@@ -221,6 +222,10 @@ interfaceDefinition :
 
 forStatement :
     "for"^ expression SYMBOL "in"! expression suite NEWLINE!
+;
+
+whileStatement :
+    "while"^ expression suite NEWLINE!
 ;
 
 importStatement :
@@ -357,6 +362,7 @@ statement returns [r]
     | c=classDefinition { r = c }
     | n=interfaceDefinition { r = n }
     | f=forStatement { r = f }
+    | w=whileStatement { r = w }
     | i=importStatement { r = i }
 ;
 
@@ -424,6 +430,11 @@ interfaceDefinition returns [r]
 forStatement returns [r]
     : #("for" t=expression v=symbol i=expression s=suite)
         { r = PepFor( t, v, i, s ) }
+;
+
+whileStatement returns [r]
+    : #("while" e=expression s=suite)
+        { r = PepWhile( e, s ) }
 ;
 
 importStatement returns [r]

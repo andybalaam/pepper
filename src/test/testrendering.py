@@ -124,6 +124,31 @@ int main( int argc, char* argv[] )
 }
 """ )
 
+# TODO: fails - symbols need to be not evaluated,
+# but this breaks a lot of other stuff at the moment.
+#def While_renders__test():
+#    assert_rendered_program_equals(
+#        r"""#include <stdio.h>
+#
+#int main( int argc, char* argv[] )
+#{
+#    int i = 0;
+#    while( ( i < 10 ) )
+#    {
+#        printf( "%d\\n", i );
+#    }
+#
+#    return 0;
+#}
+#""",
+#        """
+#int i = 0
+#while i < 10:
+#    print( i )
+#"""
+#)
+#
+
 
 def Less_than_renders_in_cpp__test():
     env = PepEnvironment( PepCppRenderer() )

@@ -1,0 +1,14 @@
+
+# DISABLED because while requires mutable state
+# and it turns out we don't really have it.
+
+while False:
+    print( "Don't print this" )
+
+int x = 0
+while x < 5:
+    print( "x=" + x )
+    x += 1
+
+print( "End")
+

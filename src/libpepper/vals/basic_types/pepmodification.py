@@ -15,8 +15,9 @@ class PepModification( PepValue ):
 
     def do_evaluate( self, env ):
         if self.is_known( env ):
-            self.var.evaluate(
-                env ).plusequals( self.mod_value.evaluate( env ) )
+            print "is_known"
+            namespace, name, base_name = self.var.find_namespace_and_name( env )
+            namespace[name].plusequals( self.mod_value.evaluate( env ) )
         return self
 
     def is_known( self, env ):

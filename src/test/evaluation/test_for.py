@@ -136,3 +136,33 @@ def Loop_through_stepped_range_function___test():
 
     assert_equal( ["0", "2"], loop_stmt.evals )
 
+
+def While_loop___test():
+    env = PepEnvironment( None )
+    builtins.add_builtins( env )
+
+    loop_stmt = FakeStatement( "k1" )
+
+    stmt1 = PepInit(
+        PepSymbol('int'),
+        PepSymbol('k1'),
+        PepInt('1')
+    )
+    stmt2 = PepWhile(
+        PepLessThan( PepSymbol('k1'), PepInt('4') ),
+        (
+            loop_stmt,
+            PepModification(
+                # Note: have to use a PepVariable here to make
+                # PepModification work right.  Needs more thought.
+                PepSymbol('k1'),
+                PepInt('1')
+            ),
+        )
+    )
+
+    stmt1.evaluate( env )
+    stmt2.evaluate( env )
+
+    assert_equal( ["1", "2", "3"], loop_stmt.evals )
+
