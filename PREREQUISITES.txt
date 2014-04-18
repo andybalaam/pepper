@@ -3,7 +3,10 @@
 sudo apt-get install antlr python-antlr
 
 # To run Pepper:
-sudo apt-get install python g++
+sudo apt-get install python g++ make
+
+# To run the tests:
+sudu apt-get install python-nose
 
 # To build the docs:
 sudo apt-get install asciidoc source-highlight
