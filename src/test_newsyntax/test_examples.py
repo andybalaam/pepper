@@ -1,6 +1,5 @@
 from tools_examples import *
 
-@skip
 @istest
 def function_call():
     assert_example(

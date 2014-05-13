@@ -8,7 +8,14 @@ EGENS=parse/PepperLexer.py parse/PepperParser.py parse/PepperTreeWalker.py
 LGRAMMAR=parse/lexed.g
 LGENS=parse/LexedLexer.py parse/LexedParser.py
 
+NEWGRAMMAR=newsyntaxparse/newsyntaxpepper.g
+NEWGENS=\
+	newsyntaxparse/NewSyntaxPepperLexer.py \
+	newsyntaxparse/NewSyntaxPepperParser.py \
+	newsyntaxparse/NewSyntaxPepperTreeWalker.py
+
 RUNANTLR=runantlr -o parse/ $(1) && touch $(2)
+NEWRUNANTLR=runantlr -o newsyntaxparse/ $(1) && touch $(2)
 
 export PATH := ${PWD}:${PATH}
 
@@ -23,7 +30,7 @@ quick-test: genparse
 parsetests: genparse
 	python scheme.py parse/test.pepper
 
-genparse: $(EGENS) $(LGENS)
+genparse: $(EGENS) $(LGENS) $(NEWGENS)
 
 parse/Pepper%.py: $(EGRAMMAR)
 	$(call RUNANTLR,$(EGRAMMAR),$(EGENS))
@@ -31,7 +38,10 @@ parse/Pepper%.py: $(EGRAMMAR)
 parse/Lexed%.py: $(LGRAMMAR)
 	$(call RUNANTLR,$(LGRAMMAR),$(LGENS))
 
+newsyntaxparse/NewSyntaxPepper%.py: $(NEWGRAMMAR)
+	$(call NEWRUNANTLR,$(NEWGRAMMAR),$(NEWGENS))
+
 clean:
-	rm $(EGENS)
+	rm $(EGENS) $(LGENS) $(NEWGENS)
 	find ./ -name "*.pyc" -delete
 

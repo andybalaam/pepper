@@ -15,6 +15,15 @@ src/parse/PepperTreeWalker.py
 src/parse/LexedLexerTokenTypes.txt
 src/parse/LexedLexer.py
 src/parse/LexedParser.py
+src/newsyntaxparse/bin
+src/newsyntaxparse/NewSyntaxPepperLexerTokenTypes.txt
+src/newsyntaxparse/NewSyntaxPepperLexer.py
+src/newsyntaxparse/NewSyntaxPepperParserTokenTypes.txt
+src/newsyntaxparse/NewSyntaxPepperParser.py
+src/newsyntaxparse/NewSyntaxPepperTreeWalker.py
+src/newsyntaxparse/NewSyntaxLexedLexerTokenTypes.txt
+src/newsyntaxparse/NewSyntaxLexedLexer.py
+src/newsyntaxparse/NewSyntaxLexedParser.py
 .pepper
 www/xhtml11-modified.conf
 
