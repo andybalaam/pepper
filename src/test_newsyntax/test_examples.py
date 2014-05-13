@@ -12,7 +12,6 @@ def function_call():
         None,
     )
 
-@skip
 @istest
 def for_loop():
     assert_example(
@@ -82,7 +81,6 @@ def for_loop():
     )
 
 
-@skip
 @istest
 def if_elif_else():
     assert_example(
@@ -108,7 +106,7 @@ def if_elif_else():
             ( symbol:x == int:2 )
             { symbol:print ( int:2 ) }
             symbol:else
-            { symbol:print ( int:2 ) }
+            { symbol:print ( int:0 ) }
         """,
         """
             PepFunctionCall(

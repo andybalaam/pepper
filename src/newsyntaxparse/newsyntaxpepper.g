@@ -21,19 +21,14 @@ options
 
 tokens
 {
-    INDENT;
-    DEDENT;
+    NEWLINE; // Fake to avoid fixing parser yet
 }
 
-WHITESPACE : { self.getColumn() > 1 }?
+WHITESPACE :
     (
-          ' '
+          ' ' | '\n'
     )
     { $setType(Token.SKIP); }
-;
-
-LEADINGSP: { self.getColumn() == 1 }
-    ( ' ' )+
 ;
 
 COMMENT :
@@ -53,14 +48,16 @@ protected INT
     : DIGITS
 ;
 
+protected DOT : '.' ;
+
 protected FLOAT
-    : '.' DIGITS
-    | DIGITS '.' ( DIGITS )?
+    : DOT DIGITS
+    | DIGITS DOT ( DIGITS )?
 ;
 
-INT_OR_FLOAT
-    : ( INT '.' ) => FLOAT { $setType(FLOAT) }
-    | ( '.' )     => FLOAT { $setType(FLOAT) }
+INT_OR_DOT_OR_FLOAT
+    : ( INT DOT ) => FLOAT { $setType(FLOAT) }
+    | ( DOT )     => DOT   { $setType(DOT) }
     | INT                  { $setType(INT) }
 ;
 
@@ -141,20 +138,10 @@ protected MIDSYMBOLCHAR :
     )
 ;
 
-protected SYMBOL_EL :
+SYMBOL :
     STARTSYMBOLCHAR ( MIDSYMBOLCHAR )*
 ;
 
-SYMBOL :
-    SYMBOL_EL ( "." SYMBOL_EL )*
-;
-
-NEWLINE :
-      "\r\n"
-    | '\r'
-    | '\n'
-        { $newline }
-;
 
 PLUS : '+' ;
 MINUS : '-' ;
@@ -168,6 +155,7 @@ LT : '<' ;
 COLON : ':';
 
 EQUALS : '=';
+EQUALSEQUALS : "==";
 
 class NewSyntaxPepperParser extends Parser;
 
@@ -190,7 +178,6 @@ statement :
     | functionDefinition
     | classDefinition
     | interfaceDefinition
-    | forStatement
     | whileStatement
     | importStatement
 ;
@@ -232,10 +219,6 @@ interfaceDefinition :
     "interface"^ SYMBOL interfaceSuite NEWLINE!
 ;
 
-forStatement :
-    "for"^ expression SYMBOL "in"! expression suite NEWLINE!
-;
-
 whileStatement :
     "while"^ expression suite NEWLINE!
 ;
@@ -273,7 +256,6 @@ simpleExpression :
     | STRING
     | functionCall
     | arrayLookup
-    | ifExpression
     | quotedCode
 ;
 
@@ -287,10 +269,6 @@ functionCall :
 
 arrayLookup :
     SYMBOL LSQUBR^ expression RSQUBR!
-;
-
-ifExpression :
-    "if"^ expression suite ( NEWLINE! "else" suite )?
 ;
 
 quotedCode :
@@ -373,7 +351,6 @@ statement returns [r]
     | f=functionDefinition { r = f }
     | c=classDefinition { r = c }
     | n=interfaceDefinition { r = n }
-    | f=forStatement { r = f }
     | w=whileStatement { r = w }
     | i=importStatement { r = i }
 ;
@@ -393,7 +370,6 @@ expression returns [r]
     | d:FLOAT  { r = PepFloat(  d.getText() ) }
     | t:STRING { r = PepString( t.getText() ) }
     | a=arraylookup { r = a }
-    | i=ifExpression { r = i }
     | #(PLUS e1=expression e2=expression) { r = PepPlus( e1, e2 ) }
     | #(MINUS e1=expression e2=expression) { r = PepMinus( e1, e2 ) }
     | #(TIMES e1=expression e2=expression) { r = PepTimes( e1, e2 ) }
@@ -439,10 +415,10 @@ interfaceDefinition returns [r]
         { r = PepInterface( n, (), s ) }
 ;
 
-forStatement returns [r]
+/*forStatement returns [r]
     : #("for" t=expression v=symbol i=expression s=suite)
         { r = PepFor( t, v, i, s ) }
-;
+;*/
 
 whileStatement returns [r]
     : #("while" e=expression s=suite)
@@ -460,16 +436,6 @@ symbol returns [r]
 arraylookup returns [r]
     : #(LSQUBR arr=symbol idx=expression)
         { r = PepArrayLookup( arr, idx ) }
-;
-
-ifExpression returns [r]
-    : #("if" pred=expression s=suite es=elseExpression )
-        { r = PepIf( pred, s, es ) }
-;
-
-elseExpression returns [r]
-    { r = None }
-    : ( "else" s=suite { r = s } )?
 ;
 
 quotedCode returns [r]
