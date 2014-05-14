@@ -1,8 +1,11 @@
 from tools_lex import *
+from tools_ast import *
+from tools_parse import *
 
 def assert_example(
     code,
     lexed,
+    ast,
     parsed,
     reduced,
     blocked,
@@ -10,6 +13,7 @@ def assert_example(
     output
 ):
     assert_lex( code, lexed )
-    #assert_parsed( lexed, parsed )
+    assert_ast( code, ast )
+    assert_parsed( code, parsed )
     #assert_reduced( parsed, reduced )
 

@@ -19,11 +19,6 @@ options
     defaultErrorHandler=false;
 }
 
-tokens
-{
-    NEWLINE; // Fake to avoid fixing parser yet
-}
-
 WHITESPACE :
     (
           ' ' | '\n'
@@ -167,8 +162,7 @@ options
 }
 
 program :
-    ( NEWLINE! )*
-    ( statement ( NEWLINE! )* )*
+    ( statement )*
     EOF
 ;
 
@@ -180,6 +174,21 @@ statement :
     | interfaceDefinition
     | whileStatement
     | importStatement
+    | codeBlock
+;
+
+/*expression :
+    calcExpression
+;*/
+
+codeBlock :
+    LBRACE^ ( codeBlockArgs ) ?
+    (statement ) *
+    RBRACE!
+;
+
+codeBlockArgs :
+    PIPE^ SYMBOL PIPE!
 ;
 
 classStatement :
@@ -192,39 +201,39 @@ interfaceStatement :
 ;
 
 initialisationOrExpression :
-    expression ( SYMBOL EQUALS^ expression )? NEWLINE!
+    expression ( SYMBOL EQUALS^ expression )?
 ;
 
 modification :
-    SYMBOL PLUSEQUALS^ expression NEWLINE!
+    SYMBOL PLUSEQUALS^ expression
 ;
 
 functionDefinition :
-    "def"^ expression SYMBOL typedArgumentsList suite NEWLINE!
+    "def"^ expression SYMBOL typedArgumentsList suite
 ;
 
 interfaceFunctionDefinition :
-    "def"^ expression SYMBOL typedArgumentsList NEWLINE!
+    "def"^ expression SYMBOL typedArgumentsList
 ;
 
 initFunctionDefinition :
-    "def_init"^ typedArgumentsList initFunctionSuite NEWLINE!
+    "def_init"^ typedArgumentsList initFunctionSuite
 ;
 
 classDefinition :
-    "class"^ SYMBOL classSuite NEWLINE!
+    "class"^ SYMBOL classSuite
 ;
 
 interfaceDefinition :
-    "interface"^ SYMBOL interfaceSuite NEWLINE!
+    "interface"^ SYMBOL interfaceSuite
 ;
 
 whileStatement :
-    "while"^ expression suite NEWLINE!
+    "while"^ expression suite
 ;
 
 importStatement :
-    "import"^ SYMBOL NEWLINE!
+    "import"^ SYMBOL
 ;
 
 noCommaExpression :
@@ -240,7 +249,7 @@ commaExpression :
 ;
 
 calcExpression :
-    simpleExpression ( ( PLUS^ | MINUS^ | TIMES^ | GT^ | LT^ ) noCommaExpression )?
+    simpleExpression ( ( EQUALSEQUALS^ | PLUS^ | MINUS^ | TIMES^ | GT^ | LT^ ) noCommaExpression )?
 ;
 
 typedArgumentsList :
@@ -250,21 +259,22 @@ typedArgumentsList :
 ;
 
 simpleExpression :
-      SYMBOL
-    | INT
+      INT
     | FLOAT
     | STRING
-    | functionCall
+    | functionCallOrSymbol
     | arrayLookup
     | quotedCode
 ;
 
 
-functionCall :
+functionCallOrSymbol :
     SYMBOL
-    LPAREN^
-    argumentsList
-    RPAREN!
+    (
+        LPAREN^
+        argumentsList
+        RPAREN!
+    )*
 ;
 
 arrayLookup :
@@ -328,15 +338,15 @@ varSuite :
 ;
 
 initialisation :
-    expression SYMBOL EQUALS^ expression NEWLINE!
+    expression SYMBOL EQUALS^ expression
 ;
 
 varStatement :
-    "var"^ varSuite NEWLINE!
+    "var"^ varSuite
 ;
 
 returnStatement :
-    "return"^ expression NEWLINE!
+    "return"^ expression
 ;
 
 {
@@ -353,6 +363,15 @@ statement returns [r]
     | n=interfaceDefinition { r = n }
     | w=whileStatement { r = w }
     | i=importStatement { r = i }
+    | c=codeBlock { r = c }
+;
+
+codeBlock returns [r]
+    : #(LBRACE a=codeBlockArgs s=statementsList) { r = PepCodeBlock(a, s) }
+;
+
+codeBlockArgs returns [r]
+    : #(PIPE s=symbol) { r = (s,) }  // TODO: list of args, with types
 ;
 
 classStatement returns [r]
@@ -414,11 +433,6 @@ interfaceDefinition returns [r]
     : #("interface" n=symbol s=interfaceSuite)
         { r = PepInterface( n, (), s ) }
 ;
-
-/*forStatement returns [r]
-    : #("for" t=expression v=symbol i=expression s=suite)
-        { r = PepFor( t, v, i, s ) }
-;*/
 
 whileStatement returns [r]
     : #("while" e=expression s=suite)

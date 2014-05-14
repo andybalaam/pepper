@@ -10,8 +10,8 @@ whitespace_re = re.compile( r'\s+' )
 def _simplify_lexed( lexed ):
     return whitespace_re.sub( " ", lexed ).strip()
 
-def _lex( string ):
-    return list( NewSyntaxPepperLexer.Lexer( StringIO( string ) ) )
+def lex( string ):
+    return NewSyntaxPepperLexer.Lexer( StringIO( string ) )
 
 def _format_token( token ):
     tp = token.getType()
@@ -30,6 +30,6 @@ def _format_lexed( lexed ):
 def assert_lex( code, result ):
     assert_long_strings_equal(
         _simplify_lexed( result ),
-        _format_lexed( _lex( code ) )
+        _format_lexed( lex( code ) )
     )
 

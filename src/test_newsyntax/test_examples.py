@@ -5,9 +5,15 @@ def function_call():
     assert_example(
         "foo( 3 )",
         "symbol:foo ( int:3 )",
-        "PepFunctionCall( PepSymbol('foo'), [PepInt('3')] )",
-        "PepFunctionCall( PepSymbol('foo'), [PepInt('3')] )",
-        "PepFunctionCall( PepSymbol('foo'), [PepInt('3')] )",
+        """
+        [LPAREN:(]
+            [SYMBOL:foo]
+            [INT:3]
+        [EOF:]
+        """,
+        "PepFunctionCall(PepSymbol('foo'),(PepInt('3'),))",
+        "PepFunctionCall(PepSymbol('foo'),(PepInt('3'),))",
+        "PepFunctionCall(PepSymbol('foo'),(PepInt('3'),))",
         None,
         None,
     )
@@ -32,14 +38,28 @@ def for_loop():
             }
         """,
         """
-            PepFunctionCall( PepSymbol('for'), [
-                PepFunctionCall( PepSymbol('range'), [PepInt('3')] )
-            ]
+        [LPAREN:(]
+            [SYMBOL:for]
+            [LPAREN:(]
+                [SYMBOL:range]
+                [INT:3]
+        [LBRACE:{]
+            [PIPE:|]
+                [SYMBOL:i]
+            [LPAREN:(]
+                [SYMBOL:print]
+                [SYMBOL:i]
+        [EOF:]
+        """,
+        """
+            PepFunctionCall(PepSymbol('for'),(
+                PepFunctionCall(PepSymbol('range'),(PepInt('3'),)),
+            ))
             PepCodeBlock(
-                [PepSymbol('i')],
-                [
-                    PepFunctionCall( PepSymbol('print'), [PepSymbol('i')] )
-                ]
+                (PepSymbol('i'),),
+                (
+                    PepFunctionCall(PepSymbol('print'),(PepSymbol('i'),)),
+                )
             )
         """,
         """
@@ -80,7 +100,7 @@ def for_loop():
         """,
     )
 
-
+@skip
 @istest
 def if_elif_else():
     assert_example(
@@ -107,6 +127,32 @@ def if_elif_else():
             { symbol:print ( int:2 ) }
             symbol:else
             { symbol:print ( int:0 ) }
+        """,
+        """
+        [LPAREN:(]
+            [SYMBOL:if]
+            [EQUALSEQUALS:==]
+                [SYMBOL:x]
+                [INT:3]
+        [LBRACE:{]
+            [LPAREN:(]
+                [SYMBOL:print]
+                [INT:3]
+        [LPAREN:(]
+            [SYMBOL:elif]
+            [EQUALSEQUALS:==]
+                [SYMBOL:x]
+                [INT:2]
+        [LBRACE:{]
+            [LPAREN:(]
+                [SYMBOL:print]
+                [INT:2]
+        [SYMBOL:else]
+        [LBRACE:{]
+            [LPAREN:(]
+                [SYMBOL:print]
+                [INT:0]
+        [EOF:]
         """,
         """
             PepFunctionCall(
