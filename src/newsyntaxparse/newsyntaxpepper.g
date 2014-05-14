@@ -116,6 +116,8 @@ COMMA :
     ','
 ;
 
+SEMICOLON: ';' ;
+
 protected STARTSYMBOLCHAR :
     (
           'a'..'z'
@@ -166,8 +168,9 @@ program :
     EOF
 ;
 
-statement :
-      initialisationOrExpression
+statement
+    : SEMICOLON
+    | initialisationOrExpression
     | modification
     | functionDefinition
     | classDefinition
@@ -176,10 +179,6 @@ statement :
     | importStatement
     | codeBlock
 ;
-
-/*expression :
-    calcExpression
-;*/
 
 codeBlock :
     LBRACE^ ( codeBlockArgs ) ?
@@ -245,7 +244,11 @@ expression :
 ;
 
 commaExpression :
-    calcExpression ( COMMA^ calcExpression ( COMMA! calcExpression )* )?
+    lookupExpression ( COMMA^ lookupExpression ( COMMA! lookupExpression )* )?
+;
+
+lookupExpression :
+    calcExpression ( DOT^ calcExpression )?
 ;
 
 calcExpression :
@@ -267,10 +270,9 @@ simpleExpression :
     | quotedCode
 ;
 
-
 functionCallOrSymbol :
     SYMBOL
-    (
+    (options {greedy=true;}:
         LPAREN^
         argumentsList
         RPAREN!

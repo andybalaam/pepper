@@ -137,16 +137,33 @@ def double_function_call():
         """
     )
 
-@skip
 @istest
-def two_blocks_function_call_bracketted():
-    """
-    two_blocks_function_call_bracketted
-    MAYBE: This is not parsed as a double function call (like the above test)
-    because there is a space before the bracket.
-    """
+def double_function_call_even_if_space():
     assert_ast(
         "foo( 1, bar, 4 ) ( 1 )",
+        """
+        [LPAREN:(]
+            [LPAREN:(]
+                [SYMBOL:foo]
+                [INT:1]
+                [COMMA:,]
+                [SYMBOL:bar]
+                [COMMA:,]
+                [INT:4]
+            [INT:1]
+        [EOF:]
+        """
+    )
+
+@istest
+def two_blocks_function_call_separator_bracketed_item():
+    """
+    two_blocks_function_call_bracketted
+    This is not parsed as a double function call (like the above test)
+    because there is a semi-colon separating the two blocks.
+    """
+    assert_ast(
+        "foo( 1, bar, 4 ) ; ( 1 )",
         """
         [LPAREN:(]
             [SYMBOL:foo]
@@ -155,24 +172,38 @@ def two_blocks_function_call_bracketted():
             [SYMBOL:bar]
             [COMMA:,]
             [INT:4]
+        [SEMICOLON:;]
         [INT:1]
         [EOF:]
         """
     )
 
-@skip
+@istest
+def lookup():
+    assert_ast(
+        'foo.bar',
+        """
+        [DOT:.]
+            [SYMBOL:foo]
+            [SYMBOL:bar]
+        [EOF:]
+        """
+    )
+
+@skip    # Need to make . and ( at the same level, not allow . precedence
 @istest
 def several():
     assert_ast(
         'x(3).foo(7)',
-        """
-        LBRACKET:
-            LOOKUP:.foo
-                LBRACKET:(
-                    SYMBOL:x
-                    INT:3
-            INT:7
-        """
+        ""
+#        [LPAREN:(]
+#            [DOT:.]
+#                [LPAREN:(]
+#                    [SYMBOL:x]
+#                    [INT:3]
+#            [INT:7]
+#        [EOF:]
+#        """
     )
 
 
