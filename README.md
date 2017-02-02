@@ -47,5 +47,5 @@ Web site: http://www.artificialworlds.net/pepper
 ## Copying
 
 Pepper and all its associated documentation are released under the MIT License.
-See the file COPYING.txt for details.
+See the file [COPYING.txt](COPYING.txt) for details.
 
