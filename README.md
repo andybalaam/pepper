@@ -29,9 +29,15 @@ int main(System sys)
 
 ## Build
 
+Install all prerequisites (on Debian/Ubuntu):
+
 ```bash
-make setup  # Install all prerequisites
-make test   # Build and run tests
+make setup
+```
+Build and run tests:
+
+```bash
+make
 ```
 
 ## More info
