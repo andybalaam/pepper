@@ -21,11 +21,40 @@ Ruby.  With some ideas that are a bit like Rust and Node.
 ## Examples
 
 ```pepper2
-int main(System sys)
-{
+fn(int, [System]) main =
+{:(System sys)
     print(sys.stdout, "Hello, world!");
+    return 0;
+}
+``
+
+`main` is a function returning `int` that takes an argument of type `System`.
+Pepper tries to encourage you to use a "parameterise from above" style so
+instead of providing a `print` function that prints to a globally-available
+standard output, we must pass it `stdout` which is part of the `System`
+object.
+
+The integer value returned from `main` will be the status code of the generated
+executable, and is mandatory.
+
+Blocks of code and function bodies are the same thing and are built with the
+literal syntax shown, starting with a `{` and optional `:(ARGS)`, and ending
+with `}`.  This can be used to make named functions like `main` above as well
+as anonymous (lambda) functions, and also the bodies of compound statement
+blocks like `if` and `for`:
+
+```pepper2
+if (x == 2)
+{
+    for (range(3))
+    {:(int i)
+        x += i;
+    }
 }
 ```
+
+The bodies of the `if` and `for` blocks above are actually anonymous functions
+- the `for` block takes and argument which is the loop variable.
 
 ## Build
 
