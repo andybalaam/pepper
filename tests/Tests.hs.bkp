@@ -1,6 +1,8 @@
-import ParserTests
+import tests.ParserTests
 import Test.Tasty (defaultMain, testGroup)
 import Test.Tasty.HUnit (assertEqual, testCase)
 
 main :: IO ()
-main = defaultMain $ testGroup "All unit tests" [ParserTests.run]
+main = defaultMain $ testGroup "All unit tests"
+    [ ParserTests.run
+    ]

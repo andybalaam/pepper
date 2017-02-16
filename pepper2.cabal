@@ -5,6 +5,7 @@ build-type:         Simple
 
 Library
   Exposed-Modules:  Pepper2Main
+                  , Parser
   Build-Depends:    base >= 3 && < 5
                   , megaparsec
 

@@ -12,7 +12,7 @@ function all_hs_files()
 for FILE in $(all_hs_files); do
 {
     NEWFILE=${FILE}.formatted
-    cat ${FILE} | ${HINDENT} > ${NEWFILE}
+    ${HINDENT} < ${FILE} > ${NEWFILE}
 
     if diff -q ${FILE} ${NEWFILE} >/dev/null; then
     {
