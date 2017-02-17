@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+
+import importlib
+import os.path
+import shutil
+import sys
+
+
+def find_dirs(path):
+    for (dirpath, dirnames, filenames) in os.walk(path):
+        for dr in dirnames:
+            yield os.path.join(dirpath, dr)
+
+
+def find(path, name_glob):
+    for (dirpath, dirnames, filenames) in os.walk(path):
+        for fl in shutil.fnmatch.filter(filenames, name_glob):
+            yield os.path.join(dirpath, fl)
+
+
+prod_path = os.path.abspath("./src/main/python")
+test_path = os.path.abspath("./src/test/python")
+
+
+sys.path += [test_path, prod_path]
+
+
+def path_2_module(test_path, pyfile):
+    return pyfile[len(test_path) + 1 : -3].replace("/", ".")
+
+
+def touch(path):
+    with open(path, "w") as f:
+        pass
+
+
+for dr in find_dirs(prod_path):
+    dr_init = os.path.join(dr, "__init__.py")
+    if not os.path.exists(dr_init):
+        touch(dr_init)
+
+
+for pyfile in find(test_path, "*.py"):
+    importlib.import_module(path_2_module(test_path, pyfile))
+

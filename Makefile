@@ -1,19 +1,10 @@
 all: test
 
 test: format
-	cabal test
-
-build: format
-	cabal build
+	./buildtools/test
 
 format:
-	./buildtools/hindent-all
-
-clean:
-	cabal clean
+	@echo "TODO: pep8 check and formatting"
 
 setup:
-	sudo apt-get install cabal-install happy
-	cabal update
-	cabal install hindent
-	cabal install --run-tests
+	sudo apt-get install python3
