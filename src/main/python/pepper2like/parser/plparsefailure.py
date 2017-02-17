@@ -1,0 +1,3 @@
+
+class plParseFailure:
+    pass
