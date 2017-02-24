@@ -1,11 +1,16 @@
 from unittest import TestCase
 
-from base_lexer import lex
+import base_lexer
 from symbol import Symbol
 
+
+def lex(chars):
+    return list(base_lexer.lex(chars))
+
+
 class TestBaseLexer(TestCase):
-    def test_lex_symbol(self):
+    def test_Lexing_plain_characters_yields_a_symbol(self):
         self.assertEqual(
-            Symbol("foo"),
-            lex("foo")
+            lex("foo"),
+            [Symbol("foo")],
         )
