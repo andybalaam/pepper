@@ -20,6 +20,7 @@ class TestBaseLexer(TestCase):
     def test_Lexing_nonchars_is_an_error(self):
         with self.assertRaisesRegex(
                 plTypeError,
-                ""
+                r'"chars" was expected to be Iterable\(plChar\) ' +
+                r'but it is int\.  Value: 3\.'
         ):
             lex(3)
