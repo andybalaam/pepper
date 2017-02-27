@@ -1,7 +1,8 @@
 from unittest import TestCase
 
 import base_lexer
-from symbol import Symbol
+from psymbol import pSymbol
+from pltypeerror import plTypeError
 
 
 def lex(chars):
@@ -9,8 +10,16 @@ def lex(chars):
 
 
 class TestBaseLexer(TestCase):
+
     def test_Lexing_plain_characters_yields_a_symbol(self):
         self.assertEqual(
             lex("foo"),
-            [Symbol("foo")],
+            [pSymbol("foo")],
         )
+
+    def test_Lexing_nonchars_is_an_error(self):
+        with self.assertRaisesRegex(
+                plTypeError,
+                ""
+        ):
+            lex(3)
