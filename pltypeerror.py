@@ -1,12 +1,3 @@
-def _check_has_property(var_name, var_value, property_name):
-    if property_name not in var_value:
-        raise AssertionError(
-            "'%s' has no property '%s' - it is '%s'." % (
-                var_name, property_name, str(var_value)
-            )
-        )
-
-
 class plTypeError(Exception):
     """
     Raised if some Pepper2Like code fails to pass
@@ -15,6 +6,7 @@ class plTypeError(Exception):
     Usually raised by the type_check() function.
     """
     def __init__(self, var_name, var_value, expected_type):
+        # No type_check here because type_check uses this
         assert var_name.__class__ == str
 
         self.var_name = var_name
