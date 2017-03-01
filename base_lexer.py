@@ -1,20 +1,12 @@
 from psymbol import pSymbol
-from pltypeerror import plTypeError
-
-
-class plChar:
-    pass
-
-
-class Iterable:
-    def __init__(self, type_):
-        self.type_ = type_
-
-    def __str__(self):
-        return "Iterable(%s)" % self.type_.__name__
+from pltypes.iterable import Iterable
+from pltypes.plchar import plChar
+from type_check import type_check
 
 
 def lex(chars):
-    if chars.__class__ != str:
-        raise plTypeError("chars", chars, Iterable(plChar))
+    chars_type = Iterable(plChar())
+    type_check(chars_type, chars, "chars")
+    for ch in chars:
+        type_check(chars_type.item_type, ch, "chars")
     yield pSymbol(chars)
