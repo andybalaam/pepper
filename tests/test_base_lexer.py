@@ -43,8 +43,8 @@ class TestBaseLexer(TestCase):
         ):
             lex(["x", "yz"])
 
-    # def test_Lexing_a_bracket_yields_a_bracket(self):
-    #     self.assertEqual(
-    #         lex("foo()"),
-    #         [pSymbol("foo"), pOpenBracket(), pCloseBracket()]
-    #     )
+    def test_Lexing_a_bracket_yields_a_bracket(self):
+        self.assertEqual(
+            lex("foo()"),
+            [pSymbol("foo"), pOpenBracket(), pCloseBracket()]
+        )
