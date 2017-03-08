@@ -1,10 +1,4 @@
-import itertools
-import re
-
 from lexing.lexfailure import LexFailure
-from pclosebracket import pCloseBracket
-from popenbracket import pOpenBracket
-from psymbol import pSymbol
 from ptoken import pToken
 from pltypes.iterable import Iterable
 from pltypes.plchar import plChar
@@ -12,43 +6,8 @@ from type_check import type_check
 from windowediterator import WindowedIterator
 
 
-def lex_punctuation(chars):
-    ch = next(chars)
-    if ch == "(":
-        return pOpenBracket()
-    elif ch == ")":
-        return pCloseBracket()
-    else:
-        return None
-
-
-begin_symbol_char_re_ = re.compile("[a-zA-Z_]")
-symbol_char_re_ = re.compile("[a-zA-Z0-9_]")
-
-
-def lex_symbol(chars):
-    ch = chars.peek()
-    if not begin_symbol_char_re_.match(ch):
-        return None
-
-    ret = ""
-    while True:
-        try:
-            ch = chars.peek()
-        except StopIteration as e:
-            if len(ret) > 0:
-                return pSymbol(ret)
-            else:
-                raise e
-
-        if symbol_char_re_.match(ch):
-            ret += next(chars)
-        else:
-            return pSymbol(ret)
-
-
-def _next_token(it):
-    for fn in [lex_punctuation, lex_symbol]:
+def _next_token(it, lex_fns):
+    for fn in lex_fns:
         tok = fn(it)
         if tok is None:
             it.back()   # This lexer failed - backtrack
@@ -59,12 +18,12 @@ def _next_token(it):
     return None
 
 
-def base_lex(chars):
+def base_lex(chars, lex_fns):
     type_check(Iterable(plChar()), chars, "chars")
     it = WindowedIterator(chars, Iterable(plChar()).item_type, "chars")
     try:
         while True:
-            tok = _next_token(it)
+            tok = _next_token(it, lex_fns)
             if tok is not None:
                 yield tok
             else:
