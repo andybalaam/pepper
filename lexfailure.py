@@ -1,0 +1,2 @@
+class LexFailure(Exception):
+    pass
