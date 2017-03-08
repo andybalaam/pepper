@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-import base_lexer
-from lexfailure import LexFailure
+from lexing.base_lex import base_lex
+from lexing.lexfailure import LexFailure
 from pclosebracket import pCloseBracket
 from popenbracket import pOpenBracket
 from psymbol import pSymbol
@@ -10,7 +10,7 @@ from windowediterator import WindowedIterator
 
 
 def lex(chars):
-    return list(base_lexer.lex(chars))
+    return list(base_lex(chars))
 
 
 class TestBaseLexer(TestCase):

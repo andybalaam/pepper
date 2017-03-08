@@ -1,7 +1,7 @@
 import itertools
 import re
 
-from lexfailure import LexFailure
+from lexing.lexfailure import LexFailure
 from pclosebracket import pCloseBracket
 from popenbracket import pOpenBracket
 from psymbol import pSymbol
@@ -59,7 +59,7 @@ def _next_token(it):
     return None
 
 
-def lex(chars):
+def base_lex(chars):
     type_check(Iterable(plChar()), chars, "chars")
     it = WindowedIterator(chars, Iterable(plChar()).item_type, "chars")
     try:
