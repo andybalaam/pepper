@@ -2,12 +2,9 @@ from pltypes.checkabletype import CheckableType
 from pltypeerror import plTypeError
 
 
-class Backable(CheckableType):
+class Callable(CheckableType):
     def check(self, obj, var_name):
-        if not (
-            hasattr(obj, "back") and
-            hasattr(obj, "mark")
-        ):
+        if not callable(obj):
             raise plTypeError(var_name, type(obj).__name__, str(self), obj)
 
     def name(self):

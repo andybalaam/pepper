@@ -1,4 +1,5 @@
 from pltypes.checkabletype import CheckableType
+from pltypeerror import plTypeError
 
 
 class Peekable(CheckableType):
