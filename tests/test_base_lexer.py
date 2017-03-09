@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+import lexing.base_lex
 import lexing.lex
 from lexing.lexfailure import LexFailure
 from pclosebracket import pCloseBracket
@@ -72,3 +73,12 @@ class TestBaseLexer(TestCase):
     def test_Symbols_may_not_start_with_numbers(self):
         with self.assertRaises(LexFailure):
             lex("3_foo9a_")
+
+    def test_noncallable_lex_function_is_an_error(self):
+        fn = 3
+        with self.assertRaisesRegex(
+            plTypeError,
+            r'"lex_fns" was expected to be Iterable\(Callable\) but ' +
+            r'it is Iterable\(int\).  Value: 3.'
+        ):
+            list(lexing.base_lex.base_lex("a", [fn]))
