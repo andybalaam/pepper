@@ -1,19 +1,21 @@
 from lexing.lexfailure import LexFailure
 from ptoken import pToken
+from pltypes.backable import Backable
 from pltypes.iterable import Iterable
 from pltypes.plchar import plChar
 from type_check import type_check
 from windowediterator import WindowedIterator
 
 
-def _next_token(it, lex_fns):
+def _next_token(chars, lex_fns):
+    type_check(Backable(), chars, "chars")
     for fn in lex_fns:
-        tok = fn(it)
+        tok = fn(chars)
         if tok is None:
-            it.back()   # This lexer failed - backtrack
+            chars.back()   # This lexer failed - backtrack
         else:
             assert isinstance(tok, pToken)
-            it.mark()   # This lexer found a token
+            chars.mark()   # This lexer found a token
             return tok
     return None
 

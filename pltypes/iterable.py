@@ -44,4 +44,4 @@ class Iterable(CheckableType):
         return repr(self)
 
     def __repr__(self):
-        return "Iterable(%s)" % self.type_.name()
+        return "%s(%s)" % (self.name(), self.type_.name())
