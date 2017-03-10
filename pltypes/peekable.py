@@ -1,17 +1,15 @@
-from pltypes.checkabletype import CheckableType
+from pltypes.checkable import Checkable
+from pltypes.type_checker import type_checker
+from pltypes.value import value
 from pltypeerror import plTypeError
+from type_check import type_check
 
 
-class Peekable(CheckableType):
-    def check(self, obj, var_name):
-        if not hasattr(obj, "peek"):
-            raise plTypeError(var_name, type(obj).__name__, str(self), obj)
+@type_checker
+@value
+class Peekable:
+    def matches(self, obj):
+        return hasattr(obj, "peek")
 
-    def name(self):
-        return type(self).__name__
 
-    def __str__(self):
-        return repr(self)
-
-    def __repr__(self):
-        return "%s()" % self.name()
+type_check(Checkable(), Peekable(), "Peekable")

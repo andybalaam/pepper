@@ -1,6 +1,4 @@
-from pltypes.checkabletype import CheckableType
-
-
 def type_check(type_, var_value, var_name):
-    assert isinstance(type_, CheckableType)
+    assert hasattr(type_, "check")
+    assert type(var_name) == str
     type_.check(var_value, var_name)

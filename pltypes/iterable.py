@@ -1,14 +1,13 @@
-from pltypes.checkabletype import CheckableType
+from pltypes.checkable import Checkable
 from pltypes.pltypeequals import plTypeEquals
 from pltypeerror import plTypeError
+from type_check import type_check
 
 
-class Iterable(CheckableType):
-    class ItemType(CheckableType):
+class Iterable:
+    class ItemType:
         def __init__(self, parent, type_):
             assert isinstance(parent, Iterable)
-            # type_ is not always CheckableType, when we are
-            #       building error messages
             self.parent = parent
             self.type_ = type_
 
@@ -45,3 +44,7 @@ class Iterable(CheckableType):
 
     def __repr__(self):
         return "%s(%s)" % (self.name(), self.type_.name())
+
+
+type_check(Checkable(), Iterable(int), "Iterable")
+type_check(Checkable(), Iterable(int).item_type, "Iterable.item_type")

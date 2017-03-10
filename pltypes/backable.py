@@ -1,20 +1,18 @@
-from pltypes.checkabletype import CheckableType
+from pltypes.checkable import Checkable
+from pltypes.type_checker import type_checker
+from pltypes.value import value
 from pltypeerror import plTypeError
+from type_check import type_check
 
 
-class Backable(CheckableType):
-    def check(self, obj, var_name):
-        if not (
+@type_checker
+@value
+class Backable:
+    def matches(self, obj):
+        return (
             hasattr(obj, "back") and
             hasattr(obj, "mark")
-        ):
-            raise plTypeError(var_name, type(obj).__name__, str(self), obj)
+        )
 
-    def name(self):
-        return type(self).__name__
 
-    def __str__(self):
-        return repr(self)
-
-    def __repr__(self):
-        return "%s()" % self.name()
+type_check(Checkable(), Backable(), "Backable")

@@ -1,21 +1,26 @@
+from pltypes.checkable import Checkable
+from pltypes.type_checker import type_checker
 from pltypeerror import plTypeError
-from pltypes.checkabletype import CheckableType
+from type_check import type_check
 
 
-class plTypeEquals(CheckableType):
+@type_checker
+class plTypeEquals:
     def __init__(self, type_):
         assert type(type_) == type
         self.type_ = type_
 
     def check(self, obj, var_name):
-        assert isinstance(var_name, str)
-        if type(obj) != self.type_:
-            raise plTypeError(
-                var_name,
-                str(type(obj)),
-                str(self),
-                obj
-            )
+        return type(obj) == self.type_
 
     def name(self):
         return self.type_.__name__
+
+    def __str__(self):
+        return repr(self)
+
+    def __repr__(self):
+        return "%s(%s)" % (type(self).__name__, repr(self.type_))
+
+
+type_check(Checkable(), plTypeEquals(int), "plTypeEquals")

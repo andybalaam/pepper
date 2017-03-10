@@ -1,17 +1,18 @@
+from pltypes.checkable import Checkable
+from pltypes.type_checker import type_checker
+from pltypes.value import value
 from pltypeerror import plTypeError
-from pltypes.checkabletype import CheckableType
+from type_check import type_check
 
 
-class plChar(CheckableType):
-    def check(self, obj, var_name):
-        assert isinstance(var_name, str)
-        if not isinstance(obj, str) or len(obj) != 1:
-            raise plTypeError(
-                var_name,
-                str(type(obj)),
-                str(self),
-                obj
-            )
+@type_checker
+@value
+class plChar:
+    def matches(self, obj):
+        return (
+            isinstance(obj, str) and
+            len(obj) == 1
+        )
 
-    def name(self):
-        return type(self).__name__
+
+type_check(Checkable(), plChar, "plChar")
