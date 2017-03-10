@@ -1,3 +1,4 @@
+from pltypes.hasmethod import hasmethod
 from pltypes.type_checker import type_checker
 from pltypes.value import value
 from type_check import type_check
@@ -12,10 +13,7 @@ class Checkable:
     """
 
     def matches(self, obj):
-        return (
-            hasattr(obj, "check") and
-            callable(obj.check)
-        )
+        return hasmethod(obj, "check")
 
 
 # Ironically, check that we ourselves are a type checker

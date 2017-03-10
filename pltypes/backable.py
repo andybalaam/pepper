@@ -1,4 +1,5 @@
 from pltypes.checkable import Checkable
+from pltypes.hasmethod import hasmethod
 from pltypes.type_checker import type_checker
 from pltypes.value import value
 from pltypeerror import plTypeError
@@ -10,8 +11,8 @@ from type_check import type_check
 class Backable:
     def matches(self, obj):
         return (
-            hasattr(obj, "back") and
-            hasattr(obj, "mark")
+            hasmethod(obj, "back") and
+            hasmethod(obj, "mark")
         )
 
 
