@@ -1,0 +1,10 @@
+// $ANTLR 2.7.7 (20160104): lexed.g -> LexedLexerTokenTypes.txt$
+LexedLexer    // output token vocab name
+DIGIT=4
+COLON=5
+SPACES=6
+NEWLINE=7
+NUMBER=8
+SYMBOL=9
+QUOTED_LITERAL=10
+CONTENT=11
