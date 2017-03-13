@@ -18,7 +18,7 @@ class MyVal(MyBase):
     nm = 3
 
 
-class TestValue(TestCase):
+class TestHasMethod(TestCase):
 
     def test_true_if_method_exists(self):
         self.assertTrue(hasmethod(MyVal(), "existing"))
