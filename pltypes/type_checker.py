@@ -19,5 +19,6 @@ def type_checker(clazz):
     """
     assert type(clazz) == type
     ret = copy.deepcopy(clazz)
+    ret.name = lambda self: clazz.__class__.__name__
     ret.check = _check
     return ret
