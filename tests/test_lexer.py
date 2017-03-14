@@ -14,7 +14,7 @@ def lex(chars):
     return list(lexing.lex.lex(chars))
 
 
-class TestBaseLexer(TestCase):
+class TestLexer(TestCase):
 
     def test_Lexing_plain_characters_yields_a_symbol(self):
         self.assertEqual(
