@@ -41,10 +41,21 @@ class TestValue(TestCase):
         self.assertEqual(3, obj.x1)
         self.assertEqual("x", obj.ch)
 
-    def test_type_check_on_value_connstruction(self):
+    def test_type_check_on_value_construction(self):
         with self.assertRaisesRegex(
             plTypeError,
             """"x1" was expected to be <class 'int'> """ +
             """but it is str.  Value: '3'."""
         ):
             WithMembers(x1="3", ch="x")
+
+    def test_value_type_must_be_a_type_or_checkable(self):
+        with self.assertRaisesRegex(
+            plTypeError,
+            """"type_" was expected to be Checkable or type """ +
+            """but it is int.  Value: 3."""
+        ):
+            @value(x=3)
+            class MyClass:
+                pass
+            MyClass(x=3)
