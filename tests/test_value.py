@@ -1,10 +1,21 @@
 from unittest import TestCase
 
+from pltypeerror import plTypeError
+from pltypes.plchar import plChar
+from pltypes.pltypeequals import plTypeEquals
 from pltypes.value import value
 
 
 @value
 class MyVal:
+    pass
+
+
+@value(
+    x1=int,
+    ch=plChar()
+)
+class WithMembers:
     pass
 
 
@@ -21,3 +32,19 @@ class TestValue(TestCase):
             str(MyVal()),
             "MyVal()"
         )
+
+    def test_value_with_fields_has_constructor(self):
+        WithMembers(x1=3, ch="x")
+
+    def test_value_construction_holds_field_values(self):
+        obj = WithMembers(x1=3, ch="x")
+        self.assertEqual(3, obj.x1)
+        self.assertEqual("x", obj.ch)
+
+    def test_type_check_on_value_connstruction(self):
+        with self.assertRaisesRegex(
+            plTypeError,
+            """"x1" was expected to be <class 'int'> """ +
+            """but it is str.  Value: '3'."""
+        ):
+            WithMembers(x1="3", ch="x")

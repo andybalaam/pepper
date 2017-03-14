@@ -1,4 +1,3 @@
-from pltypes.checkable import Checkable
 from pltypes.type_checker import type_checker
 from pltypeerror import plTypeError
 from type_check import type_check
@@ -10,17 +9,15 @@ class plTypeEquals:
         assert type(type_) == type
         self.type_ = type_
 
-    def check(self, obj, var_name):
+    def matches(self, obj):
         return type(obj) == self.type_
 
-    def name(self):
-        return self.type_.__name__
-
     def __str__(self):
-        return repr(self)
+        return str(self.type_)
 
     def __repr__(self):
         return "%s(%s)" % (type(self).__name__, repr(self.type_))
 
 
-type_check(Checkable(), plTypeEquals(int), "plTypeEquals")
+# Can't do it because of circular dependencies, but it is true:
+# type_check(Checkable(), plTypeEquals(int), "plTypeEquals")
