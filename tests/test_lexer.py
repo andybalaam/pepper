@@ -5,6 +5,7 @@ import lexing.lex
 from lexing.lexfailure import LexFailure
 from pclosebracket import pCloseBracket
 from popenbracket import pOpenBracket
+from pstring import pString
 from psymbol import pSymbol
 from pltypeerror import plTypeError
 from windowediterator import WindowedIterator
@@ -82,3 +83,15 @@ class TestLexer(TestCase):
             r'it is Iterable\(int\).  Value: 3.'
         ):
             list(lexing.base_lex.base_lex("a", [fn]))
+
+    def test_Lexing_a_string(self):
+        self.assertEqual(
+            lex('"foo"'),
+            [pString(value="foo")]
+        )
+
+    def test_Strings_may_be_followed_by_other_tokens(self):
+        self.assertEqual(
+            lex('("foo")'),
+            [pOpenBracket(), pString(value="foo"), pCloseBracket()]
+        )
