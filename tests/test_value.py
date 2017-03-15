@@ -77,6 +77,10 @@ class TestValue(TestCase):
             WithMembers(x1=1, ch="z"),
             WithMembers(x1=1, ch="z"),
         )
+        self.assertEqual(
+            MyVal(),
+            MyVal(),
+        )
 
     def test_value_equality_for_unequal(self):
         self.assertNotEqual(
@@ -86,4 +90,25 @@ class TestValue(TestCase):
         self.assertNotEqual(
             WithMembers(x1=3, ch="a"),
             WithMembers(x1=3, ch="b"),
+        )
+
+    def test_different_values_with_same_members_are_not_equal(self):
+        @value(
+            x1=int,
+            ch=plChar()
+        )
+        class OtherClass:
+            pass
+        self.assertNotEqual(
+            WithMembers(x1=3, ch="a"),
+            OtherClass(x1=3, ch="b"),
+        )
+
+    def test_different_values_with_no_members_are_not_equal(self):
+        @value
+        class MyVal1:
+            pass
+        self.assertNotEqual(
+            MyVal(),
+            MyVal1(),
         )
