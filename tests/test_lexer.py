@@ -5,6 +5,7 @@ import lexing.lex
 from lexing.lexfailure import LexFailure
 from pclosebracket import pCloseBracket
 from popenbracket import pOpenBracket
+from psemicolon import pSemicolon
 from pstring import pString
 from psymbol import pSymbol
 from pltypeerror import plTypeError
@@ -55,6 +56,12 @@ class TestLexer(TestCase):
         self.assertEqual(
             lex(")"),
             [pCloseBracket()]
+        )
+
+    def test_Lexing_a_semicolon_yields_one(self):
+        self.assertEqual(
+            lex(";"),
+            [pSemicolon()]
         )
 
     def test_Lexing_symbol_bracket_yields_that(self):

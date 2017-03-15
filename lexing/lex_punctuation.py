@@ -3,6 +3,7 @@ from pltypes.iterable import Iterable
 from pltypes.peekable import Peekable
 from pltypes.plchar import plChar
 from popenbracket import pOpenBracket
+from psemicolon import pSemicolon
 from type_check import type_check
 
 
@@ -15,5 +16,7 @@ def lex_punctuation(chars):
         return pOpenBracket()
     elif ch == ")":
         return pCloseBracket()
+    elif ch == ";":
+        return pSemicolon()
     else:
         return None
