@@ -52,6 +52,10 @@ class TestLexer(TestCase):
             lex("("),
             [pOpenBracket()]
         )
+        self.assertEqual(
+            lex(")"),
+            [pCloseBracket()]
+        )
 
     def test_Lexing_symbol_bracket_yields_that(self):
         self.assertEqual(
