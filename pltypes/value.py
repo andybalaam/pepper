@@ -12,11 +12,34 @@ def mk_checkable(type_, name):
         return type_
 
 
-def init(self, arg_types, **kwargs):
+def init_(self, arg_types, **kwargs):
     for name in arg_types.keys():
         v = kwargs[name]
         type_check(mk_checkable(arg_types[name], name), v, name)
         self.__dict__[name] = v
+
+
+def repr_(self, clazz):
+    def impl(s):
+        return "%s(%s)" % (
+            clazz.__name__,
+            ", ".join(
+                "%s=%s" % (k, repr(s.__dict__[k])) for k in
+                sorted(self.init_args.keys())
+            )
+        )
+    return impl
+
+
+def eq_(self):
+    def impl(s, other):
+        if type(s) != type(other):
+            return False
+        for arg_name in self.init_args:
+            if s.__dict__[arg_name] != other.__dict__[arg_name]:
+                return False
+        return True
+    return impl
 
 
 class ValueModifier:
@@ -27,9 +50,10 @@ class ValueModifier:
         assert clazz is not None
         assert type(clazz) == type
         ret = copy.deepcopy(clazz)
-        ret.__repr__ = lambda s: "%s()" % clazz.__name__
-        ret.__str__ = lambda s: repr(s)
-        ret.__init__ = lambda s, **kwargs: init(s, self.init_args, **kwargs)
+        ret.__eq__ = eq_(self)
+        ret.__repr__ = repr_(self, clazz)
+        ret.__str__ = repr_(self, clazz)
+        ret.__init__ = lambda s, **kwargs: init_(s, self.init_args, **kwargs)
         return ret
 
 

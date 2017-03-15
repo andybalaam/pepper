@@ -59,3 +59,31 @@ class TestValue(TestCase):
             class MyClass:
                 pass
             MyClass(x=3)
+
+    def test_value_str_includes_fields(self):
+        self.assertEqual(
+            str(WithMembers(x1=2, ch="y")),
+            "WithMembers(ch='y', x1=2)"
+        )
+
+    def test_value_repr_includes_fields(self):
+        self.assertEqual(
+            repr(WithMembers(x1=1, ch="z")),
+            "WithMembers(ch='z', x1=1)"
+        )
+
+    def test_value_equality_for_equal(self):
+        self.assertEqual(
+            WithMembers(x1=1, ch="z"),
+            WithMembers(x1=1, ch="z"),
+        )
+
+    def test_value_equality_for_unequal(self):
+        self.assertNotEqual(
+            WithMembers(x1=2, ch="z"),
+            WithMembers(x1=1, ch="z"),
+        )
+        self.assertNotEqual(
+            WithMembers(x1=3, ch="a"),
+            WithMembers(x1=3, ch="b"),
+        )
