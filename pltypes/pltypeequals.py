@@ -1,6 +1,4 @@
 from pltypes.type_checker import type_checker
-from pltypeerror import plTypeError
-from type_check import type_check
 
 
 @type_checker
@@ -19,5 +17,5 @@ class plTypeEquals:
         return "%s(%s)" % (type(self).__name__, repr(self.type_))
 
 
-# Can't do it because of circular dependencies, but it is true:
-# type_check(Checkable(), plTypeEquals(int), "plTypeEquals")
+# Can't use type_check because of circular dependencies
+assert hasattr(plTypeEquals(int), "check")
