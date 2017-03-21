@@ -9,6 +9,7 @@ from psemicolon import pSemicolon
 from pstring import pString
 from psymbol import pSymbol
 from pltypeerror import plTypeError
+from pwhitespace import pWhitespace
 from windowediterator import WindowedIterator
 
 
@@ -106,3 +107,44 @@ class TestLexer(TestCase):
             lex('("foo")'),
             [pOpenBracket(), pString(value="foo"), pCloseBracket()]
         )
+
+    def test_Whitespace_gets_lexed(self):
+        self.assertEqual(
+            lex(' \n '),
+            [pWhitespace(value=" \n ")]
+        )
+
+    def test_Symbols_can_be_separated_by_whitespace(self):
+        self.assertEqual(
+            lex('foo bar'),
+            [pSymbol("foo"), pWhitespace(value=" "), pSymbol("bar")]
+        )
+
+#    def test_Tab_characters_are_errors(self):
+#        with self.assertRaisesRegex(
+#                LexFailure,
+#                """<stdin>:1,3 Error - tab characters are not allowed.
+#                1|xx\ty
+#                    ^^^ <-- here
+#                """):
+#            lex("xx\ty")
+
+#    def test_Complete_example(self):
+#        # TODO: new lines etc.
+#        self.assertEqual(
+#            lex('int x = int("4");'),
+#            [
+#                pSymbol("int"),
+#                pWhitespace(" "),
+#                pSymbol("x"),
+#                pWhitespace(" "),
+#                pEqualsSign(),
+#                pSymbol("int"),
+#                pOpenBracket(),
+#                pString(value="4"),
+#                pCloseBracket(),
+#                pSemiColon(),
+#            ]
+#        )
+
+    # todo errors with line and column numbers, and file names

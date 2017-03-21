@@ -2,9 +2,11 @@ from lexing.base_lex import base_lex
 from lexing.lex_punctuation import lex_punctuation
 from lexing.lex_string import lex_string
 from lexing.lex_symbol import lex_symbol
+from lexing.lex_whitespace import lex_whitespace
 
 
 lex_fns = [
+    lex_whitespace,
     lex_punctuation,
     lex_symbol,
     lex_string,
