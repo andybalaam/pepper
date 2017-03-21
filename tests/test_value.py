@@ -112,3 +112,8 @@ class TestValue(TestCase):
             MyVal(),
             MyVal1(),
         )
+
+    # TODO: allow value or another class to be constructed
+    #       without named arguments
+
+    # TODO: Better error message when not constructed correctly
