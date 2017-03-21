@@ -2,7 +2,6 @@ from unittest import TestCase
 
 from pltypeerror import plTypeError
 from pltypes.plchar import plChar
-from pltypes.pltypeequals import plTypeEquals
 from pltypes.value import value
 
 

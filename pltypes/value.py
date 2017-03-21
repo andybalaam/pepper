@@ -1,21 +1,13 @@
 import copy
 
 
-from pltypes.pltypeequals import plTypeEquals
 from type_check import type_check
-
-
-def mk_checkable(type_, name):
-    if type(type_) == type:
-        return plTypeEquals(type_)
-    else:
-        return type_
 
 
 def init_(self, arg_types, **kwargs):
     for name in arg_types.keys():
         v = kwargs[name]
-        type_check(mk_checkable(arg_types[name], name), v, name)
+        type_check(arg_types[name], v, name)
         self.__dict__[name] = v
 
 
