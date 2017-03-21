@@ -10,7 +10,6 @@ from pstring import pString
 from psymbol import pSymbol
 from pltypeerror import plTypeError
 from pwhitespace import pWhitespace
-from windowediterator import WindowedIterator
 
 
 def lex(chars):
@@ -120,14 +119,17 @@ class TestLexer(TestCase):
             [pSymbol("foo"), pWhitespace(value=" "), pSymbol("bar")]
         )
 
-#    def test_Tab_characters_are_errors(self):
-#        with self.assertRaisesRegex(
-#                LexFailure,
-#                """<stdin>:1,3 Error - tab characters are not allowed.
-#                1|xx\ty
-#                    ^^^ <-- here
-#                """):
-#            lex("xx\ty")
+    def test_Tab_characters_are_errors(self):
+        # TODO:
+        # """<stdin>:1:3 Error - tab characters are not allowed.
+        # 1|xx\ty
+        #     ^^^ <-- here
+        # """):
+        with self.assertRaisesRegex(
+                LexFailure,
+                """Tab characters are not allowed."""
+                ):
+            lex("xx\ty")
 
 #    def test_Complete_example(self):
 #        # TODO: new lines etc.
