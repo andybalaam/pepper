@@ -1,15 +1,15 @@
+from charatpostype import CharAtPosType
 from lexing.lexfailure import LexFailure
 from type_check import type_check
 from pltypes.peekable import Peekable
-from pltypes.plchar import plChar
 from pwhitespace import pWhitespace
 
 
 def _is_whitespace(char):
-    type_check(plChar(), char, "char")
-    if char == "\t":
+    type_check(CharAtPosType(), char, "char")
+    if char.char == "\t":
         raise LexFailure("<stdin>:1:1 Tab characters are not allowed.")
-    return char in " \n"
+    return char.char in " \n"
 
 
 def lex_whitespace(chars):
@@ -17,7 +17,7 @@ def lex_whitespace(chars):
     ret = ""
     try:
         while _is_whitespace(chars.peek()):
-            ret += str(next(chars))
+            ret += next(chars).char
     except StopIteration as e:
         if len(ret) > 0:
             return pWhitespace(value=ret)

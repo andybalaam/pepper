@@ -1,5 +1,5 @@
+from charsiterable import CharsIterable
 from pclosebracket import pCloseBracket
-from pltypes.iterable import Iterable
 from pltypes.peekable import Peekable
 from pltypes.plchar import plChar
 from popenbracket import pOpenBracket
@@ -8,10 +8,11 @@ from type_check import type_check
 
 
 def lex_punctuation(chars):
-    type_check(Iterable(plChar()), chars, "chars")
+    type_check(CharsIterable(), chars, "chars")
     type_check(Peekable(), chars, "chars")
-    ch = next(chars)
-    type_check(Iterable(plChar()).item_type, ch, "chars")
+    char_at_pos = next(chars)
+    type_check(CharsIterable().item_type, char_at_pos, "chars")
+    ch = char_at_pos.char
     if ch == "(":
         return pOpenBracket()
     elif ch == ")":

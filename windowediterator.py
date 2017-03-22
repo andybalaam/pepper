@@ -70,5 +70,5 @@ class WindowedIterator:
     def peek(self):
         ret = next(self.it)
         type_check(self.item_type, ret, self.var_name)
-        self.it = itertools.chain(ret, self.it)
+        self.it = itertools.chain([ret], self.it)
         return ret

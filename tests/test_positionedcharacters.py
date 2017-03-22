@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 
+from charsiterable import CharsIterable
 from pltypes.iterable import Iterable
 from pltypes.plchar import plChar
 from positionedcharacters import PositionedCharacters
@@ -8,8 +9,8 @@ from type_check import type_check
 
 
 def _join_chars(it):
-    type_check(Iterable(plChar()), it, "it")
-    return "".join(str(v) for v in iter(it))
+    type_check(CharsIterable(), it, "it")
+    return "".join(v.char for v in iter(it))
 
 
 class TestPositionedCharacters(TestCase):

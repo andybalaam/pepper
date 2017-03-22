@@ -1,19 +1,7 @@
+from charatpos import CharAtPos
 from type_check import type_check
 from pltypes.iterable import Iterable
 from pltypes.plchar import plChar
-
-
-class CharAtPos:
-    def __init__(self, char, column, line):
-        type_check(plChar(), char, "char")
-        type_check(int, column, "column")
-        type_check(int, line, "line")
-
-        self.char = char
-        self.pos = (column, line)
-
-    def __str__(self):
-        return self.char
 
 
 class PositionedCharacters:
@@ -23,32 +11,32 @@ class PositionedCharacters:
 
     >>> it = PositionedCharacters("abc\ndef\n", "it")
     >>> ch = next(it)
-    >>> str(ch)
+    >>> ch.char
     'a'
     >>> ch.pos
     (1, 1)
     >>> ch = next(it)
-    >>> str(ch)
+    >>> ch.char
     'b'
     >>> ch.pos
     (2, 1)
     >>> ch = next(it)
-    >>> str(ch)
+    >>> ch.char
     'c'
     >>> ch = next(it)
-    >>> str(ch)
+    >>> ch.char
     '\n'
     >>> ch.pos
     (4, 1)
     >>> ch = next(it)
-    >>> str(ch), ch.pos
+    >>> ch.char, ch.pos
     ('d', (1, 2))
     >>> ch = next(it)
-    >>> str(ch), ch.pos
+    >>> ch.char, ch.pos
     ('e', (2, 2))
-    >>> str(next(it))
+    >>> next(it).char
     'f'
-    >>> str(next(it))
+    >>> next(it).char
     '\n'
     >>> next(it)
     Traceback (most recent call last):

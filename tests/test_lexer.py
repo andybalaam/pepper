@@ -27,7 +27,7 @@ class TestLexer(TestCase):
     def test_Lexing_nonlist_is_an_error(self):
         with self.assertRaisesRegex(
                 plTypeError,
-                r'"chars" was expected to be Iterable\(plChar\) ' +
+                r'"chars" was expected to be Iterable\(CharAtPosType\) ' +
                 r'but it is int\.  Value: 3\.'
         ):
             lex(3)
