@@ -24,6 +24,26 @@ def _next_token(chars, lex_fns):
     return None
 
 
+def _failure_message(chars):
+    tok = ""
+    start_pos = None
+    for ch in chars:
+        if start_pos is None:
+            start_pos = ch.pos
+        if ch.char in " \n":
+            break
+        tok += ch.char
+
+    return (
+        (
+            "<stdin>:%d:%d I can't understand '%s' (it is not " +
+            "recognised by the lexer)."
+        ) % (
+            start_pos[1], start_pos[0], tok
+        )
+    )
+
+
 def base_lex(chars, lex_fns):
     type_check(CharsIterable(), chars, "chars")
     type_check(Iterable(Callable()), lex_fns, "lex_fns")
@@ -38,6 +58,6 @@ def base_lex(chars, lex_fns):
             if tok is not None:
                 yield tok
             else:
-                raise LexFailure()
+                raise LexFailure(_failure_message(it))
     except StopIteration:
         pass  # Finished iterating, exit normally

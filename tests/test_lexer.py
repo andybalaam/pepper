@@ -83,8 +83,12 @@ class TestLexer(TestCase):
         )
 
     def test_Symbols_may_not_start_with_numbers(self):
-        with self.assertRaises(LexFailure):
-            lex("3_foo9a_")
+        with self.assertRaisesRegex(
+            LexFailure,
+            r"<stdin>:2:5 I can't understand '3_foo9a_' \(it is not " +
+            "recognised by the lexer\)\."
+        ):
+            lex("foo\nbar 3_foo9a_")
 
     def test_noncallable_lex_function_is_an_error(self):
         fn = 3
