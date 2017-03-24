@@ -54,15 +54,15 @@ class TestLinesWindow(TestCase):
         list(islice(it, 5))
         self.assertEqual(it.before(), "abc\nd")
 
-    def test_after_many_lines_three_are_in_before(self):
+    def test_after_many_lines_four_are_in_before(self):
         it = iter(LinesWindow("\n".join("abcdef"), "it"))
         list(islice(it, 10))
-        self.assertEqual(it.before(), "c\nd\ne\n")
+        self.assertEqual(it.before(), "b\nc\nd\ne\n")
 
     def test_current_is_in_before_even_after_lines(self):
-        it = iter(LinesWindow("a\nb\nc\nd\nefghu", "it"))
-        list(islice(it, 10))
-        self.assertEqual(it.before(), "b\nc\nd\nef")
+        it = iter(LinesWindow("z\na\nb\nc\nd\nefghu", "it"))
+        list(islice(it, 12))
+        self.assertEqual(it.before(), "a\nb\nc\nd\nef")
 
     def test_rest_of_current_line_is_in_after(self):
         it = iter(LinesWindow("ab\ncd\nef\ngh\nij\nkl\nmn\n", "it"))

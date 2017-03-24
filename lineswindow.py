@@ -9,15 +9,15 @@ class LinesWindow:
     and provides the previous N and next N lines when asked.
 
     >>> from itertools import islice
-    >>> it = LinesWindow("ab\ncd\nef\ngh\nij\nkl\nmn\nop\nqr\n", "it")
+    >>> it = LinesWindow("ab\nc\ne\ng\nij\nkl\nmn\nop\nqr\nst\n", "it")
     >>> list(islice(it, 12))
-    ['a', 'b', '\n', 'c', 'd', '\n', 'e', 'f', '\n', 'g', 'h', '\n']
+    ['a', 'b', '\n', 'c', '\n', 'e', '\n', 'g', '\n', 'i', 'j', '\n']
     >>> next(it)
-    'i'
+    'k'
     >>> it.before()
-    'cd\nef\ngh\ni'
+    'c\ne\ng\nij\nk'
     >>> it.after()
-    'j\nkl\nmn\nop\n'
+    'l\nmn\nop\nqr\n'
     >>> it = LinesWindow("a\nd\n", "it")
     >>> next(it); next(it); next(it); next(it)
     'a'
@@ -46,7 +46,7 @@ class LinesWindow:
         self._current += ret
         if ret == "\n":
             self._before.append(self._current)
-            self._before = self._before[-3:]
+            self._before = self._before[-4:]
             self._current = ""
         return ret
 
