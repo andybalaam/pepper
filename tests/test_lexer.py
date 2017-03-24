@@ -83,18 +83,23 @@ class TestLexer(TestCase):
             [pSymbol("_foo9a_")]
         )
 
-    def IGNORE_test_Symbols_may_not_start_with_numbers(self):
-        with self.assertRaisesRegex(
-            LexFailure,
-            r"<stdin>:2:5 I can't understand '3_foo9a_' \(it is not " +
-            "recognised by the lexer\)\." +
-            textwrap.dedent("""
-            1|foo
-            2|bar 3_foo9a_
-                  ^^^ <--- here
-            """)
-        ):
+    def test_Symbols_may_not_start_with_numbers(self):
+        with self.assertRaises(LexFailure) as msg:
             lex("foo\nbar 3_foo9a_")
+
+        self.assertEqual(
+            str(msg.exception),
+            textwrap.dedent(
+                """
+                <stdin>:2:5 I can't understand '3_foo9a_'
+                (it is not recognised by the lexer).
+
+                1|foo
+                2|bar 3_foo9a_
+                      ^^^ <--- here
+                """
+            )[1:]
+        )
 
     def test_noncallable_lex_function_is_an_error(self):
         fn = 3
