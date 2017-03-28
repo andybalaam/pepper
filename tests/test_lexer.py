@@ -101,6 +101,60 @@ class TestLexer(TestCase):
             )[1:]
         )
 
+    def test_LexFailure_prints_leading_and_trailing_lines(self):
+        with self.assertRaises(LexFailure) as msg:
+            lex(
+                "a1\na2\na3\na4\na5\na6\na7\na8\na9\n" +
+                "a10  6a\na11\na12\na13\na14\n"
+            )
+
+        self.assertEqual(
+            str(msg.exception),
+            textwrap.dedent(
+                """
+                <stdin>:10:6 I can't understand '6a'
+                (it is not recognised by the lexer).
+
+                 7|a7
+                 8|a8
+                 9|a9
+                10|a10  6a
+                        ^^^ <--- here
+                11|a11
+                12|a12
+                13|a13
+                14|a14
+                """
+            )[1:]
+        )
+
+    def test_LexFailure_with_later_chars_prints_lines(self):
+        with self.assertRaises(LexFailure) as msg:
+            lex(
+                "a1\na2\na3\na4\na5\na6\na7\na8\na9\n" +
+                "a10  6a b\na11\na12\na13\na14\n"
+            )
+
+        self.assertEqual(
+            str(msg.exception),
+            textwrap.dedent(
+                """
+                <stdin>:10:6 I can't understand '6a'
+                (it is not recognised by the lexer).
+
+                 6|a6
+                 7|a7
+                 8|a8
+                 9|a9
+                10|a10  6a b
+                        ^^^ <--- here
+                11|a11
+                12|a12
+                13|a13
+                """
+            )[1:]
+        )
+
     def test_noncallable_lex_function_is_an_error(self):
         fn = 3
         with self.assertRaisesRegex(
@@ -135,16 +189,18 @@ class TestLexer(TestCase):
         )
 
     def test_Tab_characters_are_errors(self):
-        # TODO:
-        # """<stdin>:1:3 Error - tab characters are not allowed.
-        # 1|xx\ty
-        #     ^^^ <-- here
-        # """):
-        with self.assertRaisesRegex(
-                LexFailure,
-                """Tab characters are not allowed."""
-                ):
+        with self.assertRaises(LexFailure) as e:
             lex("xx\ty")
+
+        # self.assertEqual(
+        #     str(e.exception),
+        #     textwrap.dedent(
+        #         """<stdin>:1:3 Error - tab characters are not allowed.
+        #         1|xx\ty
+        #             ^^^ <-- here
+        #         """
+        #     )
+        # )
 
 #    def test_Complete_example(self):
 #        # TODO: new lines etc.
