@@ -1,7 +1,7 @@
 from charsiterable import CharsIterable
 from type_check import type_check
 from pltypes.peekable import Peekable
-from pstring import pString
+from tokens.pstring import pString
 
 
 def lex_string(chars):

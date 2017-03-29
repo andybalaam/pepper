@@ -2,7 +2,7 @@ from charatpostype import CharAtPosType
 from lexing.lexfailure import LexFailure
 from type_check import type_check
 from pltypes.peekable import Peekable
-from pwhitespace import pWhitespace
+from tokens.pwhitespace import pWhitespace
 
 
 def _is_whitespace(char, chars):

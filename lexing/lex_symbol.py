@@ -4,7 +4,7 @@ from charsiterable import CharsIterable
 from pltypes.iterable import Iterable
 from pltypes.peekable import Peekable
 from pltypes.plchar import plChar
-from psymbol import pSymbol
+from tokens.psymbol import pSymbol
 from type_check import type_check
 
 begin_symbol_char_re_ = re.compile("[a-zA-Z_]")

@@ -1,4 +1,4 @@
-from ptoken import pToken
+from tokens.ptoken import pToken
 
 
 class pOpenBracket(pToken):

@@ -2,12 +2,12 @@ from charsiterable import CharsIterable
 from lexing.lexfailure import LexFailure
 from lineswindow import LinesWindow
 from listing import listing
-from ptoken import pToken
 from pltypes.backable import Backable
 from pltypes.callable import Callable
 from pltypes.iterable import Iterable
 from pltypes.plchar import plChar
 from positionedcharacters import PositionedCharacters
+from tokens.ptoken import pToken
 from type_check import type_check
 from windowediterator import WindowedIterator
 

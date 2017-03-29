@@ -1,10 +1,10 @@
 from charsiterable import CharsIterable
-from pclosebracket import pCloseBracket
-from pequalssign import pEqualsSign
 from pltypes.peekable import Peekable
 from pltypes.plchar import plChar
-from popenbracket import pOpenBracket
-from psemicolon import pSemicolon
+from tokens.pclosebracket import pCloseBracket
+from tokens.pequalssign import pEqualsSign
+from tokens.popenbracket import pOpenBracket
+from tokens.psemicolon import pSemicolon
 from type_check import type_check
 
 

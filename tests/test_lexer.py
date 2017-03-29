@@ -4,14 +4,14 @@ import textwrap
 import lexing.base_lex
 import lexing.lex
 from lexing.lexfailure import LexFailure
-from pclosebracket import pCloseBracket
-from pequalssign import pEqualsSign
-from popenbracket import pOpenBracket
-from psemicolon import pSemicolon
-from pstring import pString
-from psymbol import pSymbol
 from pltypeerror import plTypeError
-from pwhitespace import pWhitespace
+from tokens.pclosebracket import pCloseBracket
+from tokens.pequalssign import pEqualsSign
+from tokens.popenbracket import pOpenBracket
+from tokens.psemicolon import pSemicolon
+from tokens.pstring import pString
+from tokens.psymbol import pSymbol
+from tokens.pwhitespace import pWhitespace
 
 
 def lex(chars):
