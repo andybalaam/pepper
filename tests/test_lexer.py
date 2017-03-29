@@ -5,6 +5,7 @@ import lexing.base_lex
 import lexing.lex
 from lexing.lexfailure import LexFailure
 from pclosebracket import pCloseBracket
+from pequalssign import pEqualsSign
 from popenbracket import pOpenBracket
 from psemicolon import pSemicolon
 from pstring import pString
@@ -204,22 +205,21 @@ class TestLexer(TestCase):
             )[1:]
         )
 
-#    def test_Complete_example(self):
-#        # TODO: new lines etc.
-#        self.assertEqual(
-#            lex('int x = int("4");'),
-#            [
-#                pSymbol("int"),
-#                pWhitespace(" "),
-#                pSymbol("x"),
-#                pWhitespace(" "),
-#                pEqualsSign(),
-#                pSymbol("int"),
-#                pOpenBracket(),
-#                pString(value="4"),
-#                pCloseBracket(),
-#                pSemiColon(),
-#            ]
-#        )
-
-    # todo errors with line and column numbers, and file names
+    def test_Complete_example(self):
+        # TODO: new lines etc.
+        self.assertEqual(
+            lex('int x = int("4");'),
+            [
+                pSymbol("int"),
+                pWhitespace(value=" "),
+                pSymbol("x"),
+                pWhitespace(value=" "),
+                pEqualsSign(),
+                pWhitespace(value=" "),
+                pSymbol("int"),
+                pOpenBracket(),
+                pString(value="4"),
+                pCloseBracket(),
+                pSemicolon(),
+            ]
+        )
