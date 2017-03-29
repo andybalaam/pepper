@@ -30,27 +30,6 @@ def _num_newlines(s):
     return len(list(filter(lambda x: x == '\n', s)))
 
 
-def _failure_message(chars, lines_window):
-    tok = ""
-    start_pos = None
-    for ch in chars:
-        if start_pos is None:
-            start_pos = ch.pos
-        if ch.char in " \n":
-            break
-        tok += ch.char
-
-    return (
-        (
-            "<stdin>:%d:%d I can't understand '%s'\n" +
-            "(it is not recognised by the lexer).\n\n"
-        ) % (
-            start_pos[1], start_pos[0], tok
-        ) +
-        listing(lines_window.before(), lines_window.after(), start_pos)
-    )
-
-
 def base_lex(chars, lex_fns):
     type_check(CharsIterable(), chars, "chars")
     type_check(Iterable(Callable()), lex_fns, "lex_fns")
@@ -66,6 +45,15 @@ def base_lex(chars, lex_fns):
             if tok is not None:
                 yield tok
             else:
-                raise LexFailure(_failure_message(it, lines_window))
+                raise LexFailure(
+                    it,
+                    "I can't understand '%s'\n" +
+                    "(it is not recognised by the lexer)."
+                )
     except StopIteration:
         pass  # Finished iterating, exit normally
+    except LexFailure as e:
+        e.listing = listing(
+            lines_window.before(), lines_window.after(), e.pos)
+        e.file = "<stdin>"  # TODO
+        raise e

@@ -192,15 +192,17 @@ class TestLexer(TestCase):
         with self.assertRaises(LexFailure) as e:
             lex("xx\ty")
 
-        # self.assertEqual(
-        #     str(e.exception),
-        #     textwrap.dedent(
-        #         """<stdin>:1:3 Error - tab characters are not allowed.
-        #         1|xx\ty
-        #             ^^^ <-- here
-        #         """
-        #     )
-        # )
+        self.assertEqual(
+            str(e.exception),
+            textwrap.dedent(
+                """
+                <stdin>:1:3 Tab characters are not allowed.
+
+                1|xx\ty
+                    ^^^ <--- here
+                """
+            )[1:]
+        )
 
 #    def test_Complete_example(self):
 #        # TODO: new lines etc.
