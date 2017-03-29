@@ -1,6 +1,6 @@
 from pltypes.checkable import Checkable
-from pltypes.value import value
 from type_check import type_check
+from value import value
 
 
 @value

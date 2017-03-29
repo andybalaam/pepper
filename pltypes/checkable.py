@@ -1,7 +1,7 @@
 from pltypes.hasmethod import hasmethod
 from pltypes.type_checker import type_checker
-from pltypes.value import value
 from type_check import type_check
+from value import value
 
 
 @type_checker

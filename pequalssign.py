@@ -1,5 +1,5 @@
 from ptoken import pToken
-from pltypes.value import value
+from value import value
 
 
 @value
