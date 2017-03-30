@@ -5,7 +5,7 @@ from value import value
 
 
 @type_checker
-@value
+@value()
 class Checkable:
     """
     A type checker that checks that the supplied object

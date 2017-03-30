@@ -6,7 +6,7 @@ from value import value
 
 
 @type_checker
-@value
+@value()
 class NoType:
     """
     Always fails a type check for any type.

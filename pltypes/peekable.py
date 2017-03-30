@@ -7,7 +7,7 @@ from value import value
 
 
 @type_checker
-@value
+@value()
 class Peekable:
     def matches(self, obj):
         return hasmethod(obj, "peek")

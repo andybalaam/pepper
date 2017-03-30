@@ -5,7 +5,7 @@ from pltypes.plchar import plChar
 from value import value
 
 
-@value
+@value()
 class MyVal:
     pass
 
@@ -31,6 +31,9 @@ class TestValue(TestCase):
             str(MyVal()),
             "MyVal()"
         )
+
+#     def test_value_with_fields_has_non_kwargs_constructor(self):
+#         WithMembers(3, "x")
 
     def test_value_with_fields_has_constructor(self):
         WithMembers(x1=3, ch="x")
@@ -104,7 +107,7 @@ class TestValue(TestCase):
         )
 
     def test_different_values_with_no_members_are_not_equal(self):
-        @value
+        @value()
         class MyVal1:
             pass
         self.assertNotEqual(

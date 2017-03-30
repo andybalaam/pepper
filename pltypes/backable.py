@@ -7,7 +7,7 @@ from value import value
 
 
 @type_checker
-@value
+@value()
 class Backable:
     def matches(self, obj):
         return (

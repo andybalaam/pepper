@@ -3,7 +3,7 @@ from type_check import type_check
 from value import value
 
 
-@value
+@value()
 class AnyType:
     """
     Always passes any type check.

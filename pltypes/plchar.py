@@ -6,7 +6,7 @@ from value import value
 
 
 @type_checker
-@value
+@value()
 class plChar:
     def matches(self, obj):
         return (

@@ -2,6 +2,6 @@ from tokens.ptoken import pToken
 from value import value
 
 
-@value
+@value()
 class pSemicolon(pToken):
     pass

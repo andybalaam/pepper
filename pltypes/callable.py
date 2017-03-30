@@ -4,7 +4,7 @@ from type_check import type_check
 from value import value
 
 
-@value
+@value()
 class Callable:
     def check(self, obj, var_name):
         if not callable(obj):

@@ -49,12 +49,9 @@ class ValueModifier:
         return ret
 
 
-def value(clazz=None, **kwargs):
+def value(**kwargs):
     """
     Provide standard methods for a class that holds
     member variables and has value semantics.
     """
-    if clazz is None:
-        return ValueModifier(kwargs)
-    else:
-        return ValueModifier(kwargs)(clazz)
+    return ValueModifier(kwargs)
