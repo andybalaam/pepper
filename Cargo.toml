@@ -1,0 +1,6 @@
+[package]
+name = "pepper3"
+version = "0.1.0"
+authors = ["Andy Balaam <andybalaam@artificialworlds.net>"]
+
+[dependencies]
