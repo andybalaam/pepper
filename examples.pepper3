@@ -1,0 +1,50 @@
+
+
+
+Int x = 3;
+Auto y = 1;
+
+x + y;
+
+
+
+fn([Int] -> Int) double =
+    {:(Int value -> Int)
+        value * 2;
+    };
+
+
+impure(fn([World] -> Int)) main =
+    {:(World world)
+        world.out.print("Hello, world!");
+    };
+
+Auto TypeSpec =
+    fn([Any] -> Boolean);
+
+describe(
+    TypeSpec,
+    description="Like an interface - decides whether an object is of a type.",
+    returns="true if the supplied object is of this type, false otherwise."
+    params=["The object to decide about."]
+);
+
+Auto Interface =
+    {:(
+        [ [PropertySpec]? properties
+        , [MethodSpec]? methods
+        , [TypeSpec]? implements // Other TypeSpecs we implement
+        ]
+        -> InterfaceTypeSpec)
+        // TODO
+    };
+
+TypeSpec World =
+    {:(Any object)
+        and(
+            hasProperty(InStream in),
+            hasProperty(OutStream out),
+            hasProperty(OutStream err),
+            hasProperty(FileSystem fs)
+        );
+    };
