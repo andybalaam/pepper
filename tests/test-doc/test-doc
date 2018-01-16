@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+set -u
+
+echo "Check all documentation examples are correct"
+
+find ./doc/ -name "*.md" | while read F; do
+
+    echo "  ${F}"
+    ./tests/test-doc/test-file < "${F}"
+
+done
+
+echo "Finished checking documentation examples."

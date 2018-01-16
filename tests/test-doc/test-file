@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+
+import subprocess
+import sys
+
+from textwrap import dedent
+from os import getcwd, getenv
+
+stdin = sys.stdin
+stdout = sys.stdout
+stderr = sys.stderr
+
+class Code:
+    def __init__(self, type_):
+        self.type_ = type_
+        self.first_line = None
+        self.code = ""
+
+
+def test(stdout, stderr, code):
+    stdout.write("      {}\n".format(code.first_line))
+    proc = subprocess.run(
+        code.first_line[2:],
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        env={"PATH": "{pwd}/target/debug:{path}".format(
+            path=getenv("PATH"),
+            pwd=getcwd()
+        )},
+
+    )
+    output = proc.stdout.decode().strip()
+    expected = code.code.strip()
+    if proc.returncode != 0:
+        raise AssertionError(
+            dedent(
+                """
+                Unexpected status returned from bash code!
+                Output:
+                {output}
+                """
+            ).format(output=output)
+        )
+    if output != expected:
+        raise AssertionError(
+            dedent(
+                """
+                Unexpected output from bash code!
+                Expected:
+                {expected}
+
+                Actual:
+                {actual}
+                """
+            ).format(expected=expected, actual=output)
+        )
+
+
+code = None
+for ln in stdin:
+    if code == None:
+        if ln.strip() == "```bash":
+            code = Code("bash")
+    else:
+        if ln.strip() == "```":
+            test(stdout, stderr, code)
+            code = None
+        else:
+            if code.first_line is None:
+                code.first_line = ln.strip()
+            else:
+                code.code += ln
+
+if code != None:
+    stderr.write("Unfinished code block!\n")
+    exit(1)
