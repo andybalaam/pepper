@@ -57,6 +57,14 @@ def test(stdout, stderr, code):
         )
 
 
+def remove_comments(ln):
+    f = ln.find("#")
+    if f >= 0:
+        return ln[:f]
+    else:
+        return ln
+
+
 code = None
 for ln in stdin:
     if code == None:
@@ -70,7 +78,7 @@ for ln in stdin:
             if code.first_line is None:
                 code.first_line = ln.strip()
             else:
-                code.code += ln
+                code.code += remove_comments(ln)
 
 if code != None:
     stderr.write("Unfinished code block!\n")
