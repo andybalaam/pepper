@@ -6,7 +6,7 @@ Future plans for Pepper3 features.
 Code examples in docs get executed and checked.
 
 ## ~~Command line examples~~
-See [command_line.md] - write examples of run, eval and compile.
+See [](doc/command_line.md) - write examples of run, eval and compile.
 
 ## Minimal example
 

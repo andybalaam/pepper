@@ -24,3 +24,8 @@ Some ideas:
 - Functional purity when you want it
 - Memory management through object ownership, not garbage collection
 - Types like "int" and "string" can be swapped at compile time
+
+## What to read next
+
+- [](doc/command_line.md) - how to run the pepper3 program
+- [](docs/todo.md) - current plans
