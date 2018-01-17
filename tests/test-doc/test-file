@@ -6,9 +6,6 @@ import sys
 from textwrap import dedent
 from os import getcwd, getenv
 
-stdin = sys.stdin
-stdout = sys.stdout
-stderr = sys.stderr
 
 class Code:
     def __init__(self, type_):
@@ -17,8 +14,15 @@ class Code:
         self.code = ""
 
 
-def test(stdout, stderr, code):
-    stdout.write("      {}\n".format(code.first_line))
+def remove_comments(ln):
+    f = ln.find("#")
+    if f >= 0:
+        return ln[:f]
+    else:
+        return ln
+
+
+def nonempty_test(stdout, stderr, code):
     proc = subprocess.run(
         code.first_line[2:],
         shell=True,
@@ -57,29 +61,37 @@ def test(stdout, stderr, code):
         )
 
 
-def remove_comments(ln):
-    f = ln.find("#")
-    if f >= 0:
-        return ln[:f]
+def test(stdout, stderr, code):
+    stdout.write("      {}".format(code.first_line))
+    if remove_comments(code.first_line).strip() == "":
+        stdout.write(" [SKIPPED]\n")
     else:
-        return ln
+        stdout.write("\n")
+        nonempty_test(stdout, stderr, code)
 
 
-code = None
-for ln in stdin:
-    if code == None:
-        if ln.strip() == "```bash":
-            code = Code("bash")
-    else:
-        if ln.strip() == "```":
-            test(stdout, stderr, code)
-            code = None
+def main(stdin, stdout, stderr):
+    code = None
+    for ln in stdin:
+        if code == None:
+            if ln.strip() == "```bash":
+                code = Code("bash")
         else:
-            if code.first_line is None:
-                code.first_line = ln.strip()
+            if ln.strip() == "```":
+                test(stdout, stderr, code)
+                code = None
             else:
-                code.code += remove_comments(ln)
+                if code.first_line is None:
+                    code.first_line = ln.strip()
+                else:
+                    code.code += ln
 
-if code != None:
-    stderr.write("Unfinished code block!\n")
-    exit(1)
+    if code != None:
+        stderr.write("Unfinished code block!\n")
+        return 1
+
+    return 0
+
+
+if __name__ == "__main__":
+    exit(main(sys.stdin, sys.stdout, sys.stderr))
