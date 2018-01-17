@@ -56,3 +56,19 @@ $ echo "1 + 2" | pepper3 run -
 #(Not implemented) $ pepper3 compile myprogram.pepper && ./myprogram
 Hello from my program!
 ```
+
+## Running multiple commands
+
+You can run multiple Pepper3 subcommands in the same environment by joining
+them together with `--`.  For example, to evaluate a command in the context
+of come code in a file, you can `run` the file, then `eval` the command:
+
+```bash
+$ cat snippets/set_x_to_4.pepper3
+x = 4
+```
+
+```bash
+$ pepper3 run snippets/set_x_to_4.pepper3 -- eval "x - 1"
+3
+```

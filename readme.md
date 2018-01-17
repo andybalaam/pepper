@@ -29,3 +29,4 @@ Some ideas:
 
 - [](doc/command_line.md) - how to run the pepper3 program
 - [](docs/todo.md) - current plans
+- [](doc/lexing.md) - internals of how the lexer works
