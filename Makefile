@@ -1,5 +1,5 @@
 
-all: build test
+all: test
 
 setup:
 	sudo apt install python3
@@ -9,4 +9,5 @@ build:
 	cargo build
 
 test:
+	cargo test
 	./tests/test-doc/test-doc
