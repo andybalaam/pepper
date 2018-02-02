@@ -8,6 +8,6 @@ setup:
 build:
 	cargo build
 
-test:
+test: build
 	cargo test
 	./tests/test-doc/test-doc
