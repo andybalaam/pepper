@@ -28,5 +28,5 @@ Some ideas:
 ## What to read next
 
 - [command_line](doc/command_line.md) - how to run the pepper3 program
-- [todo](docs/todo.md) - current plans
+- [todo](doc/todo.md) - current plans
 - [lexing](doc/lexing.md) - internals of how the lexer works
