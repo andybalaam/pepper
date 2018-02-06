@@ -23,14 +23,18 @@ impl<'a> Iterator for Lexed<'a> {
 
     fn next(&mut self) -> Option<Token> {
         match self.chars.next() {
-            Some(c) => {
-                let mut s = String::new();
-                s.push(c);
-                Some(Token::IntTok(s))
-            },
-            None => None,
+            Some(c) => Some(next_int(c, &mut self.chars)),
+            None    => None,
         }
     }
+
+}
+
+
+fn next_int(first_char: char, chars: &mut Chars) -> Token {
+    let mut s = String::new();
+    s.push(first_char);
+    Token::IntTok(s)
 }
 
 
@@ -58,4 +62,12 @@ mod tests {
         assert_lex("3", &[intt("3")]);
         assert_lex("9", &[intt("9")]);
     }
+
+//    #[test]
+//    fn multiple_character_int() {
+//        assert_lex("31", &[intt("31")]);
+//
+//        let long_int = "01234567891111111111012345678911111111110123456789";
+//        assert_lex(long_int, &[intt(long_int)]);
+//    }
 }
