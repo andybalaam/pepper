@@ -35,9 +35,16 @@ fn next_int(first_char: char, chars: &mut Chars) -> Token {
     s.push(first_char);
     loop {
         match chars.next() {
-            Some(c) => s.push(c),
-            None => return Token::IntTok(s)
+            Some(c) if within_int_char(c)  => s.push(c),
+            _ => return Token::IntTok(s)
         }
+    }
+}
+
+fn within_int_char(c: char) -> bool {
+    match c {
+        '0' ... '9' => true,
+        _           => false,
     }
 }
 
@@ -73,5 +80,10 @@ mod tests {
 
         let long_int = "01234567891111111111012345678911111111110123456789";
         assert_lex(long_int, &[intt(long_int)]);
+    }
+
+    #[test]
+    fn several_ints() {
+        assert_lex("31 420", &[intt("31"), intt("420")]);
     }
 }
