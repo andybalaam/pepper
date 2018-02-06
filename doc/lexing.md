@@ -22,6 +22,31 @@ tokens again by evaluating the output with `pepper3 run`.  Also, if you want
 to make lexing tokens yourself in your own code, the above is a good starting
 point for figuring out how to do it.
 
+## Numbers
+
+Pepper3's lexer recognises two types of numeric literal: integers and
+floating-point numbers.  While the code is running, these could be put into
+variables of various types (e.g. a 32-bit IEEE floating point, or an
+arbitrary-precision integer class) but the lexer only looks for literals - we
+will find out later in the compilation (or running) process whether they are
+suitable to put into the type of variable being used.
+
+# Integers
+
+Integers start with a digit (0-9) and contain only digits and underscores.
+
+Underscores must be used as thousand separators in integers.
+
+```bash
+# (Not implemented) $ echo "10_000" | pepper3 lex -
+tokens = import(language.lexing.tokens);
+[
+    tokens.int("10_000"),
+];
+```
+
+## Custom lexing
+
 (Future, not done yet)  If you are customising Pepper3's lexing process with
 your own code, you can test it like this:
 
