@@ -91,5 +91,6 @@ mod tests {
     #[test]
     fn single_character_symbol() {
         assert_lex("x", &[symbolt("x")]);
+        assert_lex("y", &[symbolt("y")]);
     }
 }

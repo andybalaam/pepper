@@ -8,5 +8,7 @@ pub fn first_char(first_char: char) -> bool {
 
 
 pub fn token(first_char: char, chars: &mut Chars) -> Token {
-    Token::SymbolTok(String::from("x"))
+    let mut s = String::new();
+    s.push(first_char);
+    Token::SymbolTok(s)
 }
