@@ -2,5 +2,5 @@
 #[derive(PartialEq)]
 pub enum Token {
     IntTok(String),
-//    StringTok(String)
+    SymbolTok(String),
 }

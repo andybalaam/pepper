@@ -23,10 +23,19 @@ impl<'a> Iterator for Lexed<'a> {
 
     fn next(&mut self) -> Option<Token> {
         match self.chars.next() {
-            Some(c) => Some(next_int(c, &mut self.chars)),
-            None    => None,
+            Some(c) if begin_int_char(c) =>
+                Some(next_int(c, &mut self.chars)),
+            Some(c) =>
+                Some(next_symbol(c, &mut self.chars)),
+            None =>
+                None,
         }
     }
+}
+
+
+fn next_symbol(first_char: char, chars: &mut Chars) -> Token {
+    Token::SymbolTok(String::from("x"))
 }
 
 
@@ -35,9 +44,16 @@ fn next_int(first_char: char, chars: &mut Chars) -> Token {
     s.push(first_char);
     loop {
         match chars.next() {
-            Some(c) if within_int_char(c)  => s.push(c),
+            Some(c) if within_int_char(c) => s.push(c),
             _ => return Token::IntTok(s)
         }
+    }
+}
+
+fn begin_int_char(c: char) -> bool {
+    match c {
+        '0' ... '9' => true,
+        _           => false,
     }
 }
 
@@ -68,6 +84,10 @@ mod tests {
         Token::IntTok(String::from(chars))
     }
 
+    fn symbolt(chars: &str) -> Token {
+        Token::SymbolTok(String::from(chars))
+    }
+
     #[test]
     fn single_character_int() {
         assert_lex("3", &[intt("3")]);
@@ -85,5 +105,10 @@ mod tests {
     #[test]
     fn several_ints() {
         assert_lex("31 420", &[intt("31"), intt("420")]);
+    }
+
+    #[test]
+    fn single_character_symbol() {
+        assert_lex("x", &[symbolt("x")]);
     }
 }
