@@ -1,7 +1,8 @@
+mod lex_int;
+mod lex_symbol;
 mod token;
 
 use std::str::Chars;
-
 use self::token::Token;
 
 
@@ -9,6 +10,7 @@ use self::token::Token;
 struct Lexed<'a> {
     chars: Chars<'a>,
 }
+
 
 impl<'a> Lexed<'a> {
     fn new(chars: Chars<'a>) -> Lexed {
@@ -18,49 +20,19 @@ impl<'a> Lexed<'a> {
     }
 }
 
+
 impl<'a> Iterator for Lexed<'a> {
     type Item = Token;
 
     fn next(&mut self) -> Option<Token> {
         match self.chars.next() {
-            Some(c) if begin_int_char(c) =>
-                Some(next_int(c, &mut self.chars)),
+            Some(c) if lex_int::begin_int_char(c) =>
+                Some(lex_int::next_int(c, &mut self.chars)),
             Some(c) =>
-                Some(next_symbol(c, &mut self.chars)),
+                Some(lex_symbol::next_symbol(c, &mut self.chars)),
             None =>
                 None,
         }
-    }
-}
-
-
-fn next_symbol(first_char: char, chars: &mut Chars) -> Token {
-    Token::SymbolTok(String::from("x"))
-}
-
-
-fn next_int(first_char: char, chars: &mut Chars) -> Token {
-    let mut s = String::new();
-    s.push(first_char);
-    loop {
-        match chars.next() {
-            Some(c) if within_int_char(c) => s.push(c),
-            _ => return Token::IntTok(s)
-        }
-    }
-}
-
-fn begin_int_char(c: char) -> bool {
-    match c {
-        '0' ... '9' => true,
-        _           => false,
-    }
-}
-
-fn within_int_char(c: char) -> bool {
-    match c {
-        '0' ... '9' => true,
-        _           => false,
     }
 }
 
