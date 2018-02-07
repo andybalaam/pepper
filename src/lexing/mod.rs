@@ -45,7 +45,7 @@ impl<'a> Iterator for Lexed<'a> {
 fn lex_token(first: char, others: &mut Chars) -> Token {
     if lex_int::first_char(first) {
         lex_int::token(first, others)
-    } else{ // TODO if lex_symbol::first_char(first)
+    } else {
         lex_symbol::token(first, others)
     }
 }
@@ -92,5 +92,16 @@ mod tests {
     fn single_character_symbol() {
         assert_lex("x", &[symbolt("x")]);
         assert_lex("y", &[symbolt("y")]);
+    }
+
+    #[test]
+    fn multiple_character_symbol() {
+        assert_lex("foo", &[symbolt("foo")]);
+        assert_lex("bar", &[symbolt("bar")]);
+    }
+
+    #[test]
+    fn several_symbols() {
+        assert_lex("foo bar", &[symbolt("foo"), symbolt("bar")]);
     }
 }
