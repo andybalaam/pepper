@@ -31,7 +31,7 @@ arbitrary-precision integer class) but the lexer only looks for literals - we
 will find out later in the compilation (or running) process whether they are
 suitable to put into the type of variable being used.
 
-# Integers
+### Integers
 
 Integers start with a digit (0-9) and contain only digits and underscores.
 
@@ -58,6 +58,38 @@ tokens = import(language.lexing.tokens);
     tokens.symbol("foo"),
     tokens.symbol("bar"),
 ];
+```
+
+### Operators
+
+Operators are symbols that have been added to a special list meaning they
+are used as "infix" operators - i.e. they are functions taking two arguments,
+and those arguments are written before and after the symbol, instead of
+using the normal function call syntax.
+
+For example, "+" is an operator:
+
+```bash
+# (Not implemented) $ echo "3 + 5" | pepper3 lex -
+tokens = import(language.lexing.tokens);
+[
+    tokens.int("3"),
+    tokens.operator("+"),
+    tokens.int("5"),
+];
+```
+
+Some programming languages restrict infix operators to a specific list of
+known symbols, and some require special syntax to use a normal symbol as an
+infix operator (e.g. Haskell's back-tick syntax).  Pepper3 allows any symbol
+to be an operator, and it handles this by recognising them during the lexing
+phase.
+
+To treat an operator as a word, enclose it in brackets like this:
+
+```pepper3shell
+# (Not implemented) >>> (+)(3, 5)
+8
 ```
 
 ## Custom lexing
