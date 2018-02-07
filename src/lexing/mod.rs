@@ -6,8 +6,15 @@ use std::str::Chars;
 use self::token::Token;
 
 
+/// Lex the supplied characters, providing the
+/// results as an Iterator of Tokens.
+pub fn lex(chars: Chars) -> Lexed {
+    Lexed::new(chars)
+}
+
+
 #[derive(Debug)]
-struct Lexed<'a> {
+pub struct Lexed<'a> {
     chars: Chars<'a>,
 }
 
@@ -26,19 +33,21 @@ impl<'a> Iterator for Lexed<'a> {
 
     fn next(&mut self) -> Option<Token> {
         match self.chars.next() {
-            Some(c) if lex_int::begin_int_char(c) =>
-                Some(lex_int::next_int(c, &mut self.chars)),
-            Some(c) =>
-                Some(lex_symbol::next_symbol(c, &mut self.chars)),
-            None =>
-                None,
+            Some(c) => Some(lex_token(c, &mut self.chars)),
+            None    => None,
         }
     }
 }
 
 
-fn lex(chars: Chars) -> Lexed {
-    Lexed::new(chars)
+/// Lex a token starting with `first`,
+/// pulling more tokens from `others` as needed.
+fn lex_token(first: char, others: &mut Chars) -> Token {
+    if lex_int::first_char(first) {
+        lex_int::token(first, others)
+    } else{ // TODO if lex_symbol::first_char(first)
+        lex_symbol::token(first, others)
+    }
 }
 
 
