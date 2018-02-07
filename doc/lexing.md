@@ -45,6 +45,21 @@ tokens = import(language.lexing.tokens);
 ];
 ```
 
+## Symbols
+
+Symbols are words and operators that are used as names for things like
+variables and functions.  They start with a character that is not special
+in any other way, i.e. anything except a quote, bracket or digit.
+
+```bash
+# (Not implemented) $ echo "foo bar" | pepper3 lex -
+tokens = import(language.lexing.tokens);
+[
+    tokens.symbol("foo"),
+    tokens.symbol("bar"),
+];
+```
+
 ## Custom lexing
 
 (Future, not done yet)  If you are customising Pepper3's lexing process with
