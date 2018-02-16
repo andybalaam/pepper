@@ -72,3 +72,19 @@ x = 4
 $ pepper3 run snippets/set_x_to_4.pepper3 -- eval "x - 1"
 3
 ```
+
+## Echo and Cat
+
+Mainly to facilitate testing of argument and stream handling, Pepper3 includes
+two subcommands, `echo` and `cat` that are very simple versions of the Unix
+commands with the same names:
+
+```bash
+$ pepper3 echo Just print my arguments
+Just print my arguments
+```
+
+```bash
+$ echo "Some input" | pepper3 cat
+Some input
+```
