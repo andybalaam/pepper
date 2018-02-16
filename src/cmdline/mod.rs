@@ -1,8 +1,10 @@
 pub mod world;
+mod cmdlex;
 mod command;
 
 use self::command::Command::*;
 use self::world::World;
+use self::cmdlex::lex;
 
 use std::io;
 
@@ -10,10 +12,11 @@ use std::io;
 pub fn run(world: World) -> i32 {
     let (cmd, args) = command::identify(&world.args);
     match cmd {
-        Shell  => shell(world, args),
-        Echo   => echo(world, args),
         Cat    => cat(world, args),
+        Echo   => echo(world, args),
+        Lex    => lex(world, args),
         Print3 => print3(world, args),
+        Shell  => shell(world, args),
     }
 }
 

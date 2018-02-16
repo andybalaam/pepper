@@ -8,7 +8,7 @@ compiler.
 To see how the lexer treats some code, you can invoke it like this:
 
 ```bash
-# (Not implemented) $ echo "1 + 2" | pepper3 lex -
+$ echo "1 + 2" | pepper3 lex -
 tokens = import(language.lexing.tokens);
 [
     tokens.int("1"),

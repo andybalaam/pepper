@@ -1,4 +1,5 @@
 mod lex_int;
+mod lex_operator;
 mod lex_symbol;
 mod token;
 
@@ -46,7 +47,7 @@ fn lex_token(first: char, others: &mut Chars) -> Token {
     if lex_int::first_char(first) {
         lex_int::token(first, others)
     } else {
-        lex_symbol::token(first, others)
+        lex_operator::if_known(lex_symbol::token(first, others))
     }
 }
 
@@ -63,6 +64,10 @@ mod tests {
 
     fn intt(chars: &str) -> Token {
         Token::IntTok(String::from(chars))
+    }
+
+    fn operatort(chars: &str) -> Token {
+        Token::OperatorTok(String::from(chars))
     }
 
     fn symbolt(chars: &str) -> Token {
@@ -103,5 +108,10 @@ mod tests {
     #[test]
     fn several_symbols() {
         assert_lex("foo bar", &[symbolt("foo"), symbolt("bar")]);
+    }
+
+    #[test]
+    fn operator() {
+        assert_lex("1 + 2", &[intt("1"), operatort("+"), intt("2")]);
     }
 }
