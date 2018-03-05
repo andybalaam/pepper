@@ -1,3 +1,5 @@
+pub mod fakereadfile;
+pub mod fakeworld;
 pub mod world;
 mod cmdlex;
 mod command;
@@ -98,79 +100,9 @@ fn cat(world: World, _args: Vec<String>) -> i32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use super::fakeworld::tests::FakeWorld;
 
 
-    struct FakeReadFile {
-        contents: Vec<u8>,
-    }
-
-
-    impl FakeReadFile {
-        fn from(contents: &[u8]) -> FakeReadFile {
-            let mut c = Vec::from(contents);
-            c.reverse();
-            FakeReadFile {
-                contents: c,
-            }
-        }
-    }
-
-
-    impl io::Read for FakeReadFile {
-        fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
-            if buf.len() == 0 {
-                Ok(0)
-            } else {
-                match self.contents.pop() {
-                    Some(b) => {
-                        buf[0] = b;
-                        Ok(1)
-                    }
-                    None => Ok(0)
-                }
-            }
-        }
-    }
-
-
-    struct FakeWorld {
-        args: Vec<String>,
-        stdin: FakeReadFile,
-        stdout: Vec<u8>,
-        stderr: Vec<u8>,
-    }
-
-
-    impl FakeWorld {
-
-        fn new(inp: &[u8], args: &[&str]) -> FakeWorld {
-            let mut a: Vec<String> = Vec::new();
-            a.push(String::from("exename"));
-            for s in args {
-                a.push(String::from(*s));
-            }
-            FakeWorld {
-                args: a,
-                stdin: FakeReadFile::from(inp),
-                stdout: Vec::new(),
-                stderr: Vec::new(),
-            }
-        }
-
-        fn world(&mut self) -> World {
-            World {
-                args: self.args.clone(),
-                stdin: &mut self.stdin,
-                stdout: &mut self.stdout,
-                stderr: &mut self.stderr,
-            }
-        }
-
-    }
-
-
-    /// The following test the fake behaviour I have made
-    /// so far.  They will be deleted.
     #[test]
     fn no_arg_fails() {
         let mut fake = FakeWorld::new(b"", &[]);

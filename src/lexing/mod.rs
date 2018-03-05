@@ -1,27 +1,26 @@
+pub mod char_iter;
+pub mod token;
 mod lex_int;
 mod lex_operator;
 mod lex_symbol;
-mod token;
 
-use std::str::Chars;
+use std::error::Error;
 use self::token::Token;
+use self::char_iter::CharsError;
 
 
-/// Lex the supplied characters, providing the
-/// results as an Iterator of Tokens.
-pub fn lex(chars: Chars) -> Lexed {
+pub fn lex<I: Iterator<Item=Result<char, CharsError>>>(chars: I) -> Lexed<I> {
     Lexed::new(chars)
 }
 
 
-#[derive(Debug)]
-pub struct Lexed<'a> {
-    chars: Chars<'a>,
+pub struct Lexed<I: Iterator<Item=Result<char, CharsError>>> {
+    chars: I
 }
 
 
-impl<'a> Lexed<'a> {
-    fn new(chars: Chars<'a>) -> Lexed {
+impl <I: Iterator<Item=Result<char, CharsError>>> Lexed<I> {
+    fn new(chars: I) -> Lexed<I> {
         Lexed {
             chars: chars,
         }
@@ -29,13 +28,20 @@ impl<'a> Lexed<'a> {
 }
 
 
-impl<'a> Iterator for Lexed<'a> {
+impl <I: Iterator<Item=Result<char, CharsError>>> Iterator for Lexed<I> {
     type Item = Token;
 
     fn next(&mut self) -> Option<Token> {
         match self.chars.next() {
-            Some(c) => Some(lex_token(c, &mut self.chars)),
-            None    => None,
+            Some(Ok(c)) => {
+                Some(lex_token(c, &mut self.chars))
+            },
+            Some(Err(e)) => {
+                Some(Token::IoErrorTok(e.description().to_string()))
+            },
+            None => {
+                None
+            },
         }
     }
 }
@@ -43,7 +49,10 @@ impl<'a> Iterator for Lexed<'a> {
 
 /// Lex a token starting with `first`,
 /// pulling more tokens from `others` as needed.
-fn lex_token(first: char, others: &mut Chars) -> Token {
+fn lex_token<I: Iterator<Item=Result<char, CharsError>>>(
+        first: char,
+        others: &mut I,
+) -> Token {
     if lex_int::first_char(first) {
         lex_int::token(first, others)
     } else {
@@ -55,9 +64,27 @@ fn lex_token(first: char, others: &mut Chars) -> Token {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::str::Chars;
+
+    struct IoLikeChars<'a> {
+        wrapped: Chars<'a>,
+    }
+
+    impl <'a> Iterator for IoLikeChars<'a> {
+        type Item = Result<char, CharsError>;
+
+        fn next(&mut self) -> Option<Result<char, CharsError>> {
+            match self.wrapped.next() {
+                Some(c) => Some(Ok(c)),
+                None => None,
+            }
+        }
+    }
 
     fn assert_lex(input: &str, output: &[Token]) {
-        let actual: Vec<Token> = lex(input.chars()).collect();
+        let instr = String::from(input);
+        let ioch = IoLikeChars { wrapped: instr.chars() };
+        let actual: Vec<Token> = lex(ioch).collect();
         let actual: &[Token] = actual.as_ref();
         assert_eq!(actual, output);
     }
