@@ -3,6 +3,7 @@ pub mod token;
 mod lex_int;
 mod lex_operator;
 mod lex_symbol;
+mod lex_whitespace;
 
 use std::error::Error;
 use self::token::Token;
@@ -30,33 +31,45 @@ impl <I: Iterator<Item=Result<char, CharsError>>> Lexed<I> {
 
 impl <I: Iterator<Item=Result<char, CharsError>>> Iterator for Lexed<I> {
     type Item = Token;
-
     fn next(&mut self) -> Option<Token> {
-        match self.chars.next() {
-            Some(Ok(c)) => {
-                Some(lex_token(c, &mut self.chars))
-            },
-            Some(Err(e)) => {
-                Some(Token::IoErrorTok(e.description().to_string()))
-            },
-            None => {
-                None
-            },
-        }
+        next_token(&mut self.chars)
     }
 }
 
+fn next_token<I: Iterator<Item=Result<char, CharsError>>>(
+    chars: &mut I
+) -> Option<Token> {
+    match chars.next() {
+        Some(Ok(c)) => {
+            next_token_starting_with(c, chars)
+        },
+        Some(Err(e)) => {
+            Some(Token::IoErrorTok(e.description().to_string()))
+        },
+        None => {
+            None
+        },
+    }
+}
 
 /// Lex a token starting with `first`,
 /// pulling more tokens from `others` as needed.
-fn lex_token<I: Iterator<Item=Result<char, CharsError>>>(
+fn next_token_starting_with<I: Iterator<Item=Result<char, CharsError>>>(
         first: char,
         others: &mut I,
-) -> Token {
-    if lex_int::first_char(first) {
-        lex_int::token(first, others)
-    } else {
-        lex_operator::if_known(lex_symbol::token(first, others))
+) -> Option<Token> {
+    if lex_whitespace::is_space(first) {
+        next_token(others)
+    }
+    else
+    {
+        Some(
+            if lex_int::first_char(first) {
+                lex_int::token(first, others)
+            } else {
+                lex_operator::if_known(lex_symbol::token(first, others))
+            }
+        )
     }
 }
 
@@ -135,6 +148,16 @@ mod tests {
     #[test]
     fn several_symbols() {
         assert_lex("foo bar", &[symbolt("foo"), symbolt("bar")]);
+    }
+
+    #[test]
+    fn symbols_separated_by_newline() {
+        assert_lex("foo\nbar", &[symbolt("foo"), symbolt("bar")]);
+    }
+
+    #[test]
+    fn newlines_before_symbol() {
+        assert_lex("\n\n\nfoo", &[symbolt("foo")]);
     }
 
     #[test]

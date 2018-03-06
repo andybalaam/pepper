@@ -25,5 +25,11 @@ pub fn token<I: Iterator<Item=Result<char, CharsError>>>(
 
 
 fn within_symbol_char(c: char) -> bool {
-    c != ' '
+    match c {
+        'a' ... 'z' => true,
+        'A' ... 'Z' => true,
+        '0' ... '9' => true,
+        '_' => true,
+        _ => false,
+    }
 }

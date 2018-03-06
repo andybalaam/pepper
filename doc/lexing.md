@@ -52,7 +52,7 @@ variables and functions.  They start with a character that is not special
 in any other way, i.e. anything except a quote, bracket or digit.
 
 ```bash
-# (Not implemented) $ echo "foo bar" | pepper3 lex -
+$ echo "foo bar" | pepper3 lex -
 tokens = import(language.lexing.tokens);
 [
     tokens.symbol("foo"),
