@@ -44,6 +44,15 @@ fn write_lexed<I: Iterator<Item=Token>>(
                 stderr.write(e.as_bytes())?;
                 stderr.write(b"\n")?;
             },
+            Token::BadIntLexErrorTok(actual, correct) => {
+                stderr.write(b"BADINTERROR: wrong underscores in int ")?;
+                stderr.write(b"value. You wrote '")?;
+                stderr.write(actual.as_bytes())?;
+                stderr.write(b"', but with correct underscores ")?;
+                stderr.write(b"it should be '")?;
+                stderr.write(correct.as_bytes())?;
+                stderr.write(b"'.\n")?;
+            },
         }
     }
     stdout.write(b"];\n")?;

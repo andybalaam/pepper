@@ -114,6 +114,13 @@ mod tests {
         Token::SymbolTok(String::from(chars))
     }
 
+    fn badintt(chars: &str, correct_chars: &str) -> Token {
+        Token::BadIntLexErrorTok(
+            String::from(chars),
+            String::from(correct_chars),
+        )
+    }
+
     #[test]
     fn single_character_int() {
         assert_lex("3", &[intt("3")]);
@@ -121,10 +128,22 @@ mod tests {
     }
 
     #[test]
+    fn int_starting_with_underscore_is_actually_a_symbol() {
+        assert_lex("_3_4", &[symbolt("_3_4")]);
+    }
+
+    #[test]
+    fn int_with_wrong_underscores_is_an_error() {
+        assert_lex("3_1", &[badintt("3_1", "31")]);
+        assert_lex("123_1", &[badintt("123_1", "1_231")]);
+        assert_lex("59_87123_1", &[badintt("59_87123_1", "59_871_231")]);
+    }
+
+    #[test]
     fn multiple_character_int() {
         assert_lex("31", &[intt("31")]);
 
-        let long_int = "01234567891111111111012345678911111111110123456789";
+        let long_int = "21_345_789_111_111_101_345_789_111_111_101_345_789";
         assert_lex(long_int, &[intt(long_int)]);
     }
 

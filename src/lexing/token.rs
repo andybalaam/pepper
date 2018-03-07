@@ -5,4 +5,5 @@ pub enum Token {
     SymbolTok(String),
     OperatorTok(String),
     IoErrorTok(String),
+    BadIntLexErrorTok(String, String),
 }
