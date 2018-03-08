@@ -40,18 +40,35 @@ fn write_lexed<I: Iterator<Item=Token>>(
                 stdout.write(b"\"),\n")?;
             },
             Token::IoErrorTok(e) => {
-                stderr.write(b"IOERROR:")?;
-                stderr.write(e.as_bytes())?;
-                stderr.write(b"\n")?;
+                return Err(
+                    io::Error::new(
+                        io::ErrorKind::Other,
+                        format!(
+                            "{file}:{line}:{column} IO error: {err}\n",
+                            file="-",
+                            line=1,
+                            column=1,
+                            err=e,
+                        )
+                    )
+                )
             },
             Token::BadIntLexErrorTok(actual, correct) => {
-                stderr.write(b"BADINTERROR: wrong underscores in int ")?;
-                stderr.write(b"value. You wrote '")?;
-                stderr.write(actual.as_bytes())?;
-                stderr.write(b"', but with correct underscores ")?;
-                stderr.write(b"it should be '")?;
-                stderr.write(correct.as_bytes())?;
-                stderr.write(b"'.\n")?;
+                return Err(
+                    io::Error::new(
+                        io::ErrorKind::Other,
+                        format!(
+                            "{file}:{line}:{column} Lexing error: \
+                            the number \"{actual}\" has underscores in the \
+                            wrong place: it should be written \"{correct}\".\n",
+                            file="-",
+                            line=1,
+                            column=1,
+                            actual=actual,
+                            correct=correct,
+                        )
+                    )
+                )
             },
         }
     }

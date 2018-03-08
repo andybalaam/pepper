@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import re
 import subprocess
 import sys
 
@@ -22,6 +23,9 @@ def remove_comments(ln):
         return ln
 
 
+status_code_re = re.compile(r"\[exited with status code (\d+)\]")
+
+
 def nonempty_test(stdout, stderr, code):
     proc = subprocess.run(
         code.first_line[2:],
@@ -36,15 +40,33 @@ def nonempty_test(stdout, stderr, code):
     )
     output = proc.stdout.decode().strip()
     expected = code.code.strip()
-    if proc.returncode != 0:
+
+    expected_lines = expected.split("\n")
+    if len(expected_lines) < 2:
+        m = False
+    else:
+        m = status_code_re.match(expected_lines[-1])
+
+    if m:
+        expected_returncode = int(m.group(1))
+        expected = "\n".join(expected_lines[:-1])
+    else:
+        expected_returncode = 0
+
+    if proc.returncode != expected_returncode:
         raise AssertionError(
             dedent(
                 """
-                Unexpected status returned from bash code!
+                Unexpected status returned from bash code.
+                Expected: {exp}, actual: {act}
                 Output:
                 {output}
                 """
-            ).format(output=output)
+            ).format(
+                output=output,
+                exp=expected_returncode,
+                act=proc.returncode,
+            )
         )
     if output != expected:
         raise AssertionError(

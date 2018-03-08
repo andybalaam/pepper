@@ -38,11 +38,19 @@ Integers start with a digit (0-9) and contain only digits and underscores.
 Underscores must be used as thousand separators in integers.
 
 ```bash
-# (Not implemented) $ echo "10_000" | pepper3 lex -
+$ echo "10_000" | pepper3 lex -
 tokens = import(language.lexing.tokens);
 [
     tokens.int("10_000"),
 ];
+```
+
+```bash
+$ echo "1000_0" | pepper3 lex -
+tokens = import(language.lexing.tokens);
+[
+-:1:1 Lexing error: the number "1000_0" has underscores in the wrong place: it should be written "10_000".
+[exited with status code 2]
 ```
 
 ## Symbols
@@ -70,7 +78,7 @@ using the normal function call syntax.
 For example, "+" is an operator:
 
 ```bash
-# (Not implemented) $ echo "3 + 5" | pepper3 lex -
+$ echo "3 + 5" | pepper3 lex -
 tokens = import(language.lexing.tokens);
 [
     tokens.int("3"),
