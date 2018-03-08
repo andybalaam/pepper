@@ -26,6 +26,18 @@ def remove_comments(ln):
 status_code_re = re.compile(r"\[exited with status code (\d+)\]")
 
 
+def process_expected(raw_expected):
+    lines = raw_expected.split("\n")
+    if len(lines) < 1:
+        return (raw_expected, 0)
+
+    m = status_code_re.match(lines[-1])
+    if m:
+        return ("\n".join(lines[:-1]), int(m.group(1)))
+    else:
+        return (raw_expected, 0)
+
+
 def nonempty_test(stdout, stderr, code):
     proc = subprocess.run(
         code.first_line[2:],
@@ -39,19 +51,8 @@ def nonempty_test(stdout, stderr, code):
 
     )
     output = proc.stdout.decode().strip()
-    expected = code.code.strip()
 
-    expected_lines = expected.split("\n")
-    if len(expected_lines) < 2:
-        m = False
-    else:
-        m = status_code_re.match(expected_lines[-1])
-
-    if m:
-        expected_returncode = int(m.group(1))
-        expected = "\n".join(expected_lines[:-1])
-    else:
-        expected_returncode = 0
+    expected, expected_returncode = process_expected(code.code.strip())
 
     if proc.returncode != expected_returncode:
         raise AssertionError(
