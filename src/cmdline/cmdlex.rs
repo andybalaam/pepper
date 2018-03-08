@@ -7,7 +7,7 @@ use super::world::World;
 
 pub fn lex(world: World, _args: Vec<String>) -> i32 {
     let tokens = lexing::lex(lexing::char_iter::chars(world.stdin));
-    match write_lexed(world.stdout, world.stderr, tokens) {
+    match write_lexed(world.stdout, tokens) {
         Ok(_) => 0,
         Err(e) => {
             world.stderr.write(e.description().as_bytes())
@@ -19,7 +19,7 @@ pub fn lex(world: World, _args: Vec<String>) -> i32 {
 
 
 fn write_lexed<I: Iterator<Item=Token>>(
-    stdout: &mut io::Write, stderr: &mut io::Write, tokens: I
+    stdout: &mut io::Write, tokens: I
 ) -> io::Result<usize> {
     stdout.write(b"tokens = import(language.lexing.tokens);\n[\n")?;
     for t in tokens {
@@ -112,6 +112,23 @@ mod tests {
                 tokens.int(\"2\"),\n\
             ];\n\
             "
+        );
+    }
+
+    #[test]
+    fn lex_error_printed_to_stderr() {
+        let mut fake = FakeWorld::new(b"1000\n", &["lex", "-"]);
+        let args = vec!(String::from("-"));
+        let status = lex(fake.world(), args);
+        assert_eq!(status, 2);
+        assert_vec_eq(
+            &fake.stderr, b"\
+            -:1:1 Lexing error: the number \"1000\" has underscores in the \
+            wrong place: it should be written \"1_000\".\n"
+        );
+        assert_vec_eq(&fake.stdout, b"\
+            tokens = import(language.lexing.tokens);\n\
+            [\n"
         );
     }
 }
