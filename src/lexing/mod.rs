@@ -1,4 +1,5 @@
 pub mod char_iter;
+pub mod filepos;
 pub mod token;
 mod lex_int;
 mod lex_operator;
@@ -8,68 +9,117 @@ mod lex_whitespace;
 use std::error::Error;
 use self::token::Token;
 use self::char_iter::CharsError;
+use self::filepos::FilePos;
 
 
 pub fn lex<I: Iterator<Item=Result<char, CharsError>>>(chars: I) -> Lexed<I> {
     Lexed::new(chars)
 }
 
+struct CharsWithPos<I: Iterator<Item=Result<char, CharsError>>> {
+    chars: I,
+    file_pos: FilePos,
+}
+
+impl <I: Iterator<Item=Result<char, CharsError>>> Iterator
+        for CharsWithPos<I> {
+    type Item = Result<char, CharsError>;
+    fn next(&mut self) -> Option<Result<char, CharsError>> {
+        match self.chars.next() {
+            Some(Ok(c)) => {
+                let ret = Some(Ok(c));
+                if c == '\n' {
+                    self.file_pos.line += 1;
+                    self.file_pos.column = 1;
+                } else {
+                    self.file_pos.column += 1;
+                }
+                ret
+            },
+            Some(Err(e)) => Some(Err(e)),
+            None => None,
+        }
+    }
+}
 
 pub struct Lexed<I: Iterator<Item=Result<char, CharsError>>> {
-    chars: I
+    chars: CharsWithPos<I>,
 }
 
 
 impl <I: Iterator<Item=Result<char, CharsError>>> Lexed<I> {
     fn new(chars: I) -> Lexed<I> {
         Lexed {
-            chars: chars,
+            chars: CharsWithPos {
+                chars: chars,
+                file_pos: FilePos {
+                    filename: String::new(),
+                    line: 1,
+                    column: 1,
+                },
+            }
         }
     }
+
+    fn next_token(&mut self) -> Option<Token> {
+        let fp = self.chars.file_pos.clone();
+        match self.chars.next() {
+            Some(Ok(c)) => {
+                self.next_token_starting_with(c, fp)
+            },
+            Some(Err(e)) => {
+                Some(
+                    Token::IoErrorTok(
+                        e.description().to_string(),
+                        fp,
+                    )
+                )
+            },
+            None => {
+                None
+            },
+        }
+    }
+
+    /// Lex a token starting with `first`,
+    /// pulling more tokens from `others` as needed.
+    fn next_token_starting_with(
+        &mut self,
+        first: char,
+        file_pos: FilePos,
+    ) -> Option<Token> {
+        if lex_whitespace::is_space(first) {
+            self.next_token()
+        }
+        else
+        {
+            Some(
+                if lex_int::first_char(first) {
+                    lex_int::token(
+                        first,
+                        &mut self.chars,
+                        file_pos,
+                    )
+                } else {
+                    lex_operator::if_known(
+                        lex_symbol::token(
+                            first,
+                            &mut self.chars,
+                            file_pos,
+                        )
+                    )
+                }
+            )
+        }
+    }
+
 }
 
 
 impl <I: Iterator<Item=Result<char, CharsError>>> Iterator for Lexed<I> {
     type Item = Token;
     fn next(&mut self) -> Option<Token> {
-        next_token(&mut self.chars)
-    }
-}
-
-fn next_token<I: Iterator<Item=Result<char, CharsError>>>(
-    chars: &mut I
-) -> Option<Token> {
-    match chars.next() {
-        Some(Ok(c)) => {
-            next_token_starting_with(c, chars)
-        },
-        Some(Err(e)) => {
-            Some(Token::IoErrorTok(e.description().to_string()))
-        },
-        None => {
-            None
-        },
-    }
-}
-
-/// Lex a token starting with `first`,
-/// pulling more tokens from `others` as needed.
-fn next_token_starting_with<I: Iterator<Item=Result<char, CharsError>>>(
-        first: char,
-        others: &mut I,
-) -> Option<Token> {
-    if lex_whitespace::is_space(first) {
-        next_token(others)
-    }
-    else
-    {
-        Some(
-            if lex_int::first_char(first) {
-                lex_int::token(first, others)
-            } else {
-                lex_operator::if_known(lex_symbol::token(first, others))
-            }
-        )
+        self.next_token()
     }
 }
 
@@ -114,10 +164,16 @@ mod tests {
         Token::SymbolTok(String::from(chars))
     }
 
-    fn badintt(chars: &str, correct_chars: &str) -> Token {
+    fn badintt(
+        chars: &str,
+        correct_chars: &str,
+        line: usize,
+        column: usize,
+    ) -> Token {
         Token::BadIntLexErrorTok(
             String::from(chars),
             String::from(correct_chars),
+            FilePos { filename: String::new(), line: line, column: column },
         )
     }
 
@@ -134,9 +190,9 @@ mod tests {
 
     #[test]
     fn int_with_wrong_underscores_is_an_error() {
-        assert_lex("3_1", &[badintt("3_1", "31")]);
-        assert_lex("123_1", &[badintt("123_1", "1_231")]);
-        assert_lex("59_87123_1", &[badintt("59_87123_1", "59_871_231")]);
+        assert_lex("3_1", &[badintt("3_1", "31", 1, 1)]);
+        assert_lex("\n  123_1", &[badintt("123_1", "1_231", 2, 3)]);
+        assert_lex("59_87123_1", &[badintt("59_87123_1", "59_871_231", 1, 1)]);
     }
 
     #[test]

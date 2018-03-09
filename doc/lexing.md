@@ -46,10 +46,11 @@ tokens = import(language.lexing.tokens);
 ```
 
 ```bash
-$ echo "1000_0" | pepper3 lex -
+$ echo "a 1000_0" | pepper3 lex -
 tokens = import(language.lexing.tokens);
 [
--:1:1 Lexing error: the number "1000_0" has underscores in the wrong place: it should be written "10_000".
+    tokens.symbol("a"),
+-:1:3 Lexing error: the number "1000_0" has underscores in the wrong place: it should be written "10_000".
 [exited with status code 2]
 ```
 

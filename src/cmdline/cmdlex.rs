@@ -1,5 +1,6 @@
 use std::error::Error;
 use std::io;
+
 use lexing;
 use lexing::token::Token;
 use super::world::World;
@@ -39,21 +40,21 @@ fn write_lexed<I: Iterator<Item=Token>>(
                 stdout.write(o.as_bytes())?;
                 stdout.write(b"\"),\n")?;
             },
-            Token::IoErrorTok(e) => {
+            Token::IoErrorTok(e, file_pos) => {
                 return Err(
                     io::Error::new(
                         io::ErrorKind::Other,
                         format!(
                             "{file}:{line}:{column} IO error: {err}\n",
                             file="-",
-                            line=1,
-                            column=1,
+                            line=file_pos.line,
+                            column=file_pos.column,
                             err=e,
                         )
                     )
                 )
             },
-            Token::BadIntLexErrorTok(actual, correct) => {
+            Token::BadIntLexErrorTok(actual, correct, file_pos) => {
                 return Err(
                     io::Error::new(
                         io::ErrorKind::Other,
@@ -62,8 +63,8 @@ fn write_lexed<I: Iterator<Item=Token>>(
                             the number \"{actual}\" has underscores in the \
                             wrong place: it should be written \"{correct}\".\n",
                             file="-",
-                            line=1,
-                            column=1,
+                            line=file_pos.line,
+                            column=file_pos.column,
                             actual=actual,
                             correct=correct,
                         )
@@ -124,11 +125,34 @@ mod tests {
         assert_vec_eq(
             &fake.stderr, b"\
             -:1:1 Lexing error: the number \"1000\" has underscores in the \
-            wrong place: it should be written \"1_000\".\n"
+            wrong place: it should be written \"1_000\".\n\
+            "
         );
         assert_vec_eq(&fake.stdout, b"\
             tokens = import(language.lexing.tokens);\n\
-            [\n"
+            [\n\
+            "
+        );
+    }
+
+    #[test]
+    fn line_and_column_included_in_lex_error_message() {
+        let mut fake = FakeWorld::new(b"10\n10 2003", &["lex", "-"]);
+        let args = vec!(String::from("-"));
+        let status = lex(fake.world(), args);
+        assert_eq!(status, 2);
+        assert_vec_eq(
+            &fake.stderr, b"\
+            -:2:4 Lexing error: the number \"2003\" has underscores in the \
+            wrong place: it should be written \"2_003\".\n\
+            "
+        );
+        assert_vec_eq(&fake.stdout, b"\
+            tokens = import(language.lexing.tokens);\n\
+            [\n    \
+                tokens.int(\"10\"),\n    \
+                tokens.int(\"10\"),\n\
+            "
         );
     }
 }

@@ -1,12 +1,15 @@
 use std::error::Error;
 use std::iter::FromIterator;
 
-use super::token::Token;
 use super::char_iter::CharsError;
+use super::filepos::FilePos;
+use super::token::Token;
 
 
 pub fn token<I: Iterator<Item=Result<char, CharsError>>>(
-    first_char: char, chars: &mut I
+    first_char: char,
+    chars: &mut I,
+    file_pos: FilePos,
 ) -> Token {
     let mut s = String::new();
     s.push(first_char);
@@ -16,10 +19,11 @@ pub fn token<I: Iterator<Item=Result<char, CharsError>>>(
                 s.push(c);
             },
             Some(Err(e)) => {
-                return Token::IoErrorTok(e.description().to_string())
+                return Token::IoErrorTok(
+                    e.description().to_string(), file_pos)
             },
             _ => {
-                return int_tok_if_underscores_valid(s)
+                return int_tok_if_underscores_valid(s, file_pos)
             },
         }
     }
@@ -43,10 +47,13 @@ fn within_int_char(c: char) -> bool {
 }
 
 
-fn int_tok_if_underscores_valid(s: String) -> Token {
+fn int_tok_if_underscores_valid(
+    s: String,
+    file_pos: FilePos,
+) -> Token {
     match validate_underscores(&s) {
         Ok(_) => Token::IntTok(s),
-        Err(correct) => Token::BadIntLexErrorTok(s, correct),
+        Err(correct) => Token::BadIntLexErrorTok(s, correct, file_pos),
     }
 }
 

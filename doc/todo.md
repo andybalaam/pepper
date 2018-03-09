@@ -10,7 +10,7 @@ See [command_line](command_line.md) - write examples of run, eval and compile.
 
 ## Minimal example
 
-Get lexing, parsing, evaluation and compilation of a simple example working.
+Get ~~lexing~~, parsing, evaluation and compilation of a simple example working.
 
 Includes unit test setup.  System tests are provided by the docs test
 (probably).

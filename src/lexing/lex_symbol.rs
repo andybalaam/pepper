@@ -1,10 +1,13 @@
 use std::error::Error;
-use super::token::Token;
 use super::char_iter::CharsError;
+use super::filepos::FilePos;
+use super::token::Token;
 
 
 pub fn token<I: Iterator<Item=Result<char, CharsError>>>(
-    first_char: char, chars: &mut I
+    first_char: char,
+    chars: &mut I,
+    file_pos: FilePos,
 ) -> Token {
     let mut s = String::new();
     s.push(first_char);
@@ -14,7 +17,10 @@ pub fn token<I: Iterator<Item=Result<char, CharsError>>>(
                 s.push(c);
             },
             Some(Err(e)) => {
-                return Token::IoErrorTok(e.description().to_string())
+                return Token::IoErrorTok(
+                    e.description().to_string(),
+                    file_pos,
+                )
             },
             _ => {
                 return Token::SymbolTok(s)
