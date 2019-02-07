@@ -103,8 +103,60 @@ To treat an operator as a word, enclose it in brackets like this:
 
 ## Custom lexing
 
-(Future, not done yet)  If you are customising Pepper3's lexing process with
-your own code, you can test it like this:
+(Future, not done yet) Any program can customise how Pepper3 lexes its code.
+To do this you need to write code modifying the lexing setup, then call the
+special `lang.reparse` function to tell Pepper3 to use what you have changed.
+For example:
+
+```pepper3
+import(lang)
+import(lang.lexer)
+
+lang.lexer.operators += ":-)"  # Add a new operator
+
+lang.reparse()  # Tell Pepper3 to evaluate the following code
+                # after applying the change above
+
+:-) = {:(int a, int b)  # Define a function called ":-)"
+    a*2 + b
+}
+
+x = 3 :-) 4   # Now we can use it!
+```
+
+If you import a file that customises lexing, you must call `lang.reparse`
+before you use it:
+
+```pepper3
+import(lang)
+import_inline(mylexing)
+lang.reparse()  # You must include this, or the next line is an error
+x = 3 :-) 4
+```
+
+In the above example, mylexing.pepper3 could look like this:
+
+```pepper3
+import(lang)
+import(lang.lexer)
+lang.lexer.operators += ":-)"
+lang.reparse()
+:-) = {:(int a, int b)  # Define a function called ":-)"
+    a*2 + b
+}
+```
+
+Note that it is not enough for mylexing.pepper3 to include a call to
+`lang.reparse` - the file that includes it must do so too.
+
+`lang.reparse` is a special function that tells the lexer and parser to stop
+working on this file, and continue after the previous code has been run.
+Because of this special behaviour, it can't be called from within some other
+function - it must be written at the top level of the file's code as shown
+in these examples.
+
+If you are customising Pepper3's lexing process with your own code, you can
+test it like this:
 
 ```bash
 $ echo "1 :-) 2" | pepper3 run mylexing.pepper3 -- lex -

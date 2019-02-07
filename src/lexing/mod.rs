@@ -236,7 +236,7 @@ mod tests {
     }
 
     #[test]
-    fn operator() {
+    fn operator_plus() {
         assert_lex("1 + 2", &[intt("1"), operatort("+"), intt("2")]);
     }
 }
